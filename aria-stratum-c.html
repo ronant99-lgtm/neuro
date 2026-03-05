@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARIA Guide — Stratum C · Medulloblastoma</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2330;
+    --border: #2a3441;
+    --accent: #58a6ff;
+    --accent2: #f0883e;
+    --accent3: #3fb950;
+    --accent4: #d2a8ff;
+    --danger: #f85149;
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --text3: #6e7681;
+    --chemo-color: #f0883e;
+    --rt-color: #58a6ff;
+    --alt-color: #3fb950;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* Header */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 20px 24px 16px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .header-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.35rem;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .header-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--accent);
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 4px;
+    padding: 2px 8px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .header-sub {
+    font-size: 0.75rem;
+    color: var(--text3);
+    margin-left: auto;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Main layout */
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  /* Progress bar */
+  .progress-wrap {
+    margin-bottom: 32px;
+  }
+  .progress-steps {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .step-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.3s, transform 0.2s;
+  }
+  .step-dot.active { background: var(--accent); transform: scale(1.3); }
+  .step-dot.done { background: var(--accent3); }
+  .progress-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text3);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* Question card */
+  .q-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 28px 24px;
+    animation: fadeSlide 0.3s ease;
+  }
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-step-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .q-text {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.25rem;
+    color: var(--text);
+    margin-bottom: 6px;
+    line-height: 1.35;
+  }
+  .q-hint {
+    font-size: 0.78rem;
+    color: var(--text3);
+    margin-bottom: 22px;
+    font-style: italic;
+  }
+
+  /* Options grid */
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .opt-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 13px 16px;
+    cursor: pointer;
+    text-align: left;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 400;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .opt-btn:hover {
+    border-color: var(--accent);
+    background: rgba(88,166,255,0.06);
+    color: var(--accent);
+  }
+  .opt-btn .opt-key {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text3);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .opt-btn:hover .opt-key { border-color: var(--accent); color: var(--accent); }
+
+  /* Breadcrumb trail */
+  .trail {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 20px;
+    align-items: center;
+  }
+  .trail-item {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text2);
+  }
+  .trail-arrow {
+    color: var(--text3);
+    font-size: 0.7rem;
+  }
+
+  /* Result panel */
+  .result-wrap {
+    animation: fadeSlide 0.4s ease;
+  }
+
+  .result-header {
+    margin-bottom: 24px;
+  }
+  .result-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .result-subtitle {
+    font-size: 0.78rem;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Treatment cards */
+  .treatment-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .treatment-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 18px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .treatment-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .treatment-card.chemo::before { background: var(--chemo-color); }
+  .treatment-card.rt::before { background: var(--rt-color); }
+  .treatment-card.alt::before { background: var(--alt-color); }
+  .treatment-card.full { grid-column: 1 / -1; }
+
+  .tc-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tc-label.chemo { color: var(--chemo-color); }
+  .tc-label.rt    { color: var(--rt-color); }
+  .tc-label.alt   { color: var(--alt-color); }
+
+  .tc-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .chemo .tc-dot { background: var(--chemo-color); }
+  .rt .tc-dot    { background: var(--rt-color); }
+  .alt .tc-dot   { background: var(--alt-color); }
+
+  .tc-value {
+    font-size: 1.0rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+    margin-bottom: 6px;
+  }
+  .tc-detail {
+    font-size: 0.75rem;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+
+  /* Protocol reference accordion */
+  .protocols-section {
+    margin-top: 20px;
+  }
+  .proto-accordion {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .proto-header {
+    padding: 14px 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .proto-header:hover { background: var(--surface2); }
+  .proto-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--accent);
+    flex: 0 0 auto;
+    min-width: 90px;
+  }
+  .proto-short {
+    font-size: 0.8rem;
+    color: var(--text2);
+    flex: 1;
+  }
+  .proto-chevron {
+    margin-left: auto;
+    color: var(--text3);
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .proto-accordion.open .proto-chevron { transform: rotate(90deg); }
+
+  .proto-body {
+    display: none;
+    padding: 0 18px 16px;
+    border-top: 1px solid var(--border);
+  }
+  .proto-accordion.open .proto-body { display: block; }
+
+  .proto-row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 4px 14px;
+    margin-top: 12px;
+    font-size: 0.77rem;
+  }
+  .proto-row-label {
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding-top: 2px;
+  }
+  .proto-row-val { color: var(--text2); line-height: 1.5; }
+  .proto-outcome {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 7px 12px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 6px;
+    font-size: 0.77rem;
+    color: var(--accent3);
+    font-family: 'DM Mono', monospace;
+  }
+  .proto-ref {
+    margin-top: 8px;
+    font-size: 0.68rem;
+    color: var(--text3);
+    font-style: italic;
+  }
+
+  /* Notes */
+  .notes-box {
+    margin-top: 18px;
+    padding: 14px 16px;
+    background: rgba(210,168,255,0.05);
+    border: 1px solid rgba(210,168,255,0.15);
+    border-radius: 8px;
+    font-size: 0.78rem;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+  .notes-box strong {
+    color: var(--accent4);
+    font-weight: 500;
+  }
+  .notes-box ul { padding-left: 16px; margin-top: 6px; }
+  .notes-box li { margin-bottom: 4px; }
+
+  /* Footer buttons */
+  .action-bar {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    padding: 9px 18px;
+    border-radius: 7px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    letter-spacing: 0.01em;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+  }
+  .btn-primary:hover { background: #79baff; }
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text2);
+  }
+  .btn-ghost:hover { border-color: var(--text2); color: var(--text); }
+
+  /* Footer */
+  footer {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 0.68rem;
+    color: var(--text3);
+    line-height: 1.6;
+    font-family: 'DM Mono', monospace;
+  }
+
+  @media (max-width: 560px) {
+    .treatment-grid { grid-template-columns: 1fr; }
+    .treatment-card.full { grid-column: auto; }
+  }
+
+  /* RT Dose Section */
+  .rt-dose-box {
+    margin-top: 14px;
+    background: rgba(88,166,255,0.04);
+    border: 1px solid rgba(88,166,255,0.15);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .rt-dose-title {
+    background: rgba(88,166,255,0.1);
+    padding: 8px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--rt-color);
+    border-bottom: 1px solid rgba(88,166,255,0.15);
+  }
+  .rt-dose-grid { padding: 10px 14px; display: flex; flex-direction: column; gap: 0; }
+  .rt-dose-row {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 4px 12px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 0.76rem;
+    align-items: start;
+  }
+  .rt-dose-row:last-child { border-bottom: none; }
+  .rt-dose-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; padding-top: 2px; }
+  .rt-dose-val { color: var(--text2); line-height: 1.5; }
+  .rt-dose-val strong { color: var(--rt-color); font-weight: 600; }
+  .rt-dose-val em { color: var(--accent4); font-style: normal; }
+  .rt-dose-note { padding: 8px 14px; font-size: 0.72rem; color: var(--accent4); border-top: 1px solid rgba(88,166,255,0.15); background: rgba(210,168,255,0.04); }
+
+  /* OAR Button */
+  .oar-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    margin-top: 14px; padding: 8px 14px;
+    background: transparent; border: 1px solid rgba(63,185,80,0.3);
+    border-radius: 6px; color: var(--accent3);
+    font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.06em;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .oar-btn:hover { background: rgba(63,185,80,0.08); border-color: var(--accent3); }
+
+  /* OAR Modal */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.78); z-index: 1000;
+    align-items: flex-start; justify-content: center;
+    padding: 20px; overflow-y: auto;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; width: 100%; max-width: 880px; margin: auto; overflow: hidden;
+  }
+  .modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 12px; }
+  .modal-title { font-family: 'DM Serif Display', serif; font-size: 1.05rem; color: var(--text); flex: 1; }
+  .modal-close { background: transparent; border: 1px solid var(--border); border-radius: 6px; color: var(--text2); cursor: pointer; padding: 5px 10px; font-size: 0.8rem; flex-shrink: 0; }
+  .modal-close:hover { border-color: var(--text2); color: var(--text); }
+  .modal-body { padding: 16px 20px 24px; overflow-y: auto; max-height: 72vh; }
+
+  /* OAR Table */
+  .oar-table { width: 100%; border-collapse: collapse; font-size: 0.72rem; }
+  .oar-table thead tr { background: var(--surface2); border-bottom: 2px solid var(--border); }
+  .oar-table th { padding: 8px 10px; text-align: left; font-family: 'DM Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); white-space: nowrap; }
+  .oar-table td { padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--text2); vertical-align: top; line-height: 1.45; }
+  .oar-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .oar-table .oar-name { color: var(--text); font-weight: 500; }
+  .oar-table .goal { color: var(--accent3); font-family: 'DM Mono', monospace; font-size: 0.69rem; }
+  .oar-table .minor { color: var(--accent2); font-family: 'DM Mono', monospace; font-size: 0.69rem; }
+  .oar-table .unaccept { color: var(--danger); font-family: 'DM Mono', monospace; font-size: 0.69rem; }
+  .oar-section-header td { background: rgba(88,166,255,0.06); font-family: 'DM Mono', monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--rt-color); padding: 6px 10px; border-top: 1px solid rgba(88,166,255,0.12); }
+  .oar-ref { margin-top: 14px; font-size: 0.68rem; color: var(--text3); font-style: italic; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="header-title">ARIA Guide — Medulloblastoma</span>
+  <span class="header-badge">Stratum C</span>
+  <span class="header-sub">Treatment Decision Framework · v1.1 · Dec 2025</span>
+</header>
+
+<div class="container">
+  <!-- Breadcrumb trail -->
+  <div class="trail" id="trail" style="display:none"></div>
+
+  <!-- Progress -->
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-steps" id="progressDots"></div>
+    <div class="progress-label" id="progressLabel"></div>
+  </div>
+
+  <!-- Main content area -->
+  <div id="mainArea"></div>
+
+  <footer id="mainFooter">
+    Source: ARIA Guide Adapted Management Guideline — Medulloblastoma (MED) Version 1.1, December 2025.<br>
+    SJCRH · SIOP · PROS · IPSO · CCI — For clinical decision support only. Always defer to multidisciplinary team consensus.
+  </footer>
+</div>
+
+<!-- OAR Modal -->
+<div class="modal-overlay" id="oarModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Appendix IX — Pediatric OAR Dose Constraints</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--text3);margin-top:3px;">PENTEC Project · ARIA Guide MED v1.1 · Constine LS et al. IJROBP 2025 · doi:10.1016/j.ijrobp.2023.09.005</div>
+      </div>
+      <button class="modal-close" onclick="document.getElementById('oarModal').classList.remove('open')">✕ Close</button>
+    </div>
+    <div class="modal-body">
+      <table class="oar-table">
+        <thead>
+          <tr>
+            <th style="width:36%">OAR / Structure</th>
+            <th style="width:22%">DVH Point</th>
+            <th style="width:42%">Goal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="oar-section-header"><td colspan="3">CNS — Brain & Cognition</td></tr>
+          <tr><td class="oar-name">Brain (necrosis / IQ)</td><td>Max 1 cc</td><td class="goal">&lt;70 Gy · 18 Gy → 100% brain · 22 Gy → 50% brain · 29 Gy → 30% brain</td></tr>
+          <tr><td class="oar-name">Temporal lobe (unilateral)</td><td>V20 Gy</td><td class="goal">&lt;10%</td></tr>
+          <tr><td class="oar-name">Hippocampus (unilateral) #</td><td>Mean dose</td><td class="goal">&lt;10 Gy</td></tr>
+          <tr><td class="oar-name">Hippocampi (bilateral) #</td><td>D40%</td><td class="goal">&lt;8 Gy</td></tr>
+          <tr><td class="oar-name">Hypothalamus</td><td>Mean dose</td><td class="goal">&lt;30 Gy</td></tr>
+          <tr class="oar-section-header"><td colspan="3">Visual Pathway</td></tr>
+          <tr><td class="oar-name">Optic nerve (unilateral)</td><td>D(0.1 cc)</td><td class="goal">&lt;55 Gy</td></tr>
+          <tr><td class="oar-name">Optic chiasm</td><td>D(0.1 cc)</td><td class="goal">&lt;54 Gy</td></tr>
+          <tr><td class="oar-name">Retina (unilateral)</td><td>D(0.1 cc)</td><td class="goal">&lt;50 Gy</td></tr>
+          <tr><td class="oar-name">Retina + fovea (unilateral)</td><td>D(0.1 cc)</td><td class="goal">&lt;40 Gy</td></tr>
+          <tr><td class="oar-name">Lens (unilateral)</td><td>Mean dose</td><td class="goal">&lt;6 Gy</td></tr>
+          <tr><td class="oar-name">Lacrimal gland (unilateral)</td><td>Mean dose</td><td class="goal">&lt;34 Gy</td></tr>
+          <tr class="oar-section-header"><td colspan="3">Brainstem & Spinal Cord</td></tr>
+          <tr><td class="oar-name">Brainstem (3rd ventricle → foramen magnum)</td><td>D50% · D10% · D(0.1 cc)</td><td class="goal">&lt;52.4 Gy · &lt;55.4 Gy · &lt;56.6 Gy</td></tr>
+          <tr><td class="oar-name">Brainstem core</td><td>D(0.1 cc)</td><td class="goal">&lt;56.1 Gy</td></tr>
+          <tr><td class="oar-name">Spinal cord (foramen magnum → conus)</td><td>D(0.03 cc) · D(1 cc)</td><td class="goal">≤54 Gy (50.4 Gy with chemo) · ≤50.4 Gy (45 Gy with chemo)</td></tr>
+          <tr><td class="oar-name">Spinal cord &gt;50% of entire length</td><td>—</td><td class="goal">&lt;45 Gy</td></tr>
+          <tr><td class="oar-name">Cervical cord</td><td>D0.1 cc · D1 cc</td><td class="goal">54 Gy · 50.4 Gy</td></tr>
+          <tr><td class="oar-name">Thoracic / lumbar cord</td><td>D0.1 cc</td><td class="goal">54 Gy</td></tr>
+          <tr><td class="oar-name">Cauda equina</td><td>V65 · D100</td><td class="goal">&lt;0.03 cc · &lt;60 Gy</td></tr>
+          <tr class="oar-section-header"><td colspan="3">Hearing</td></tr>
+          <tr><td class="oar-name">Cochlea (unilateral) — with cisplatin</td><td>Mean dose</td><td class="goal">&lt;30 Gy</td></tr>
+          <tr><td class="oar-name">Cochlea (unilateral) — no cisplatin</td><td>Mean dose</td><td class="goal">&lt;35 Gy</td></tr>
+          <tr class="oar-section-header"><td colspan="3">Vascular</td></tr>
+          <tr><td class="oar-name">Circle of Willis / suprasellar cistern</td><td>D0.1 cc</td><td class="goal">&lt;45 Gy (~6.5% stroke risk at attained age 45)</td></tr>
+          <tr class="oar-section-header"><td colspan="3">Head & Neck</td></tr>
+          <tr><td class="oar-name">Parotid gland (unilateral)</td><td>Mean dose</td><td class="goal">&lt;20 Gy</td></tr>
+          <tr><td class="oar-name">Submandibular gland (unilateral)</td><td>Mean dose</td><td class="goal">&lt;20 Gy</td></tr>
+          <tr><td class="oar-name">Thyroid</td><td>Mean dose</td><td class="goal">&lt;26 Gy</td></tr>
+          <tr><td class="oar-name">Brachial plexus</td><td>D(0.1 cc)</td><td class="goal">&lt;63 Gy</td></tr>
+          <tr><td class="oar-name">Larynx</td><td>Mean dose</td><td class="goal">&lt;25 Gy</td></tr>
+          <tr><td class="oar-name">Mandibular bone (ORN)</td><td>D1 cc</td><td class="goal">&lt;66 Gy</td></tr>
+          <tr><td class="oar-name">Mandibular bone (hypoplasia)</td><td>Max</td><td class="goal">&lt;20 Gy</td></tr>
+          <tr class="oar-section-header"><td colspan="3">Thorax</td></tr>
+          <tr><td class="oar-name">Heart / LAD (low risk)</td><td>Mean dose</td><td class="goal">&lt;5 Gy</td></tr>
+          <tr><td class="oar-name">Heart / LAD (moderate risk)</td><td>Mean dose</td><td class="goal">&lt;10 Gy</td></tr>
+          <tr><td class="oar-name">Lung</td><td>Mean · V20</td><td class="goal">&lt;14 Gy · &lt;30%</td></tr>
+          <tr><td class="oar-name">Esophagus</td><td>Mean · V50</td><td class="goal">&lt;34 Gy · &lt;2 cc</td></tr>
+          <tr class="oar-section-header"><td colspan="3">Abdomen & Pelvis</td></tr>
+          <tr><td class="oar-name">Kidneys (both — no nephrotoxic chemo)</td><td>Mean dose</td><td class="goal">&lt;10 Gy</td></tr>
+          <tr><td class="oar-name">Liver</td><td>Mean · V35</td><td class="goal">&lt;10 Gy · &lt;30%</td></tr>
+          <tr><td class="oar-name">Spleen</td><td>Mean dose</td><td class="goal">&lt;10 Gy</td></tr>
+          <tr><td class="oar-name">Small bowel space</td><td>V45 · D(0.1 cc)</td><td class="goal">&lt;120 cc · &lt;50 Gy</td></tr>
+          <tr><td class="oar-name">Rectum</td><td>V60 · V54 · V50</td><td class="goal">&lt;0.1 cc · &lt;1 cc · &lt;30%</td></tr>
+          <tr><td class="oar-name">Bladder</td><td>V60 · V45</td><td class="goal">&lt;1 cc · &lt;50%</td></tr>
+          <tr class="oar-section-header"><td colspan="3">Musculoskeletal & Endocrine</td></tr>
+          <tr><td class="oar-name">Vertebral body</td><td>V100</td><td class="goal">&lt;20 Gy + gradient to &lt;5 Gy @ 20 Gy level, &lt;10 Gy @ 30 Gy level</td></tr>
+          <tr><td class="oar-name">Femur (unilateral)</td><td>V25 · V45</td><td class="goal">&lt;50% · &lt;5%</td></tr>
+          <tr><td class="oar-name">Epiphysis (prepubertal)</td><td>D0.1 cc</td><td class="goal">&lt;15 Gy</td></tr>
+          <tr><td class="oar-name">Ovaries (ipsilateral, 0–&lt;5 yrs)</td><td>Max</td><td class="goal">&lt;4 Gy</td></tr>
+          <tr><td class="oar-name">Ovaries (ipsilateral, ≥10 yrs)</td><td>Max</td><td class="goal">&lt;2 Gy</td></tr>
+          <tr><td class="oar-name">Testes</td><td>Mean dose</td><td class="goal">&lt;4 Gy</td></tr>
+          <tr><td class="oar-name">Breast bud (hypoplasia)</td><td>Mean dose</td><td class="goal">&lt;2 Gy</td></tr>
+          <tr><td class="oar-name">Breast (SMN risk)</td><td>Mean dose</td><td class="goal">&lt;10 Gy</td></tr>
+        </tbody>
+      </table>
+      <div class="oar-ref">Constine LS, Marks LB, Milano MT, et al. A user's guide and summary of Pediatric Normal Tissue Effects in the Clinic (PENTEC): radiation dose-volume response for adverse effects after childhood cancer therapy and future directions. Int J Radiat Oncol Biol Phys. 2025;119:321-337. doi:10.1016/j.ijrobp.2023.09.005<br><br>* Except when prescribed dose necessarily exceeds this value (e.g. ependymoma). # Applies only to focal treatment.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// PROTOCOL DATABASE (from Appendix X + Table 10)
+// ─────────────────────────────────────────────
+const PROTOCOLS = {
+  "HIT 2000 SKK vtr MTX": {
+    full: "HIT-SKK 2000 with intraventricular MTX",
+    category: "Infant (<36 months)",
+    n: "87 (42 DMB/MBEN)",
+    rt: "None (primary); focal RT 54 Gy for classic/LCA in incomplete remission after 2006",
+    regimen: "3 cycles of HIT-SKK with intraventricular MTX: cyclophosphamide-vincristine / high-dose MTX + vincristine / carboplatin-etoposide. Patients received intraventricular MTX during each course.",
+    outcome_dmb: "5-year PFS = 93% · 5-year OS = 100% · 5-year CSI-free OS = 91%",
+    outcome_other: "5-year PFS = 37% · 5-year OS = 62% · No impact of XRT",
+    note: "No impact of additional RT in non-DMB/MBEN group.",
+    ref: "Mynarek M et al. J Clin Oncol. 2020;38(18):2028-2040."
+  },
+  "HIT 2000 SKK LP MTX (No HDMTX)": {
+    full: "HIT-SKK without intraventricular MTX (lumbar puncture / intrathecal MTX)",
+    category: "Infant alternate — SHH/DN/MBEN",
+    n: "25 DMB (ACNS1221 study)",
+    rt: "None",
+    regimen: "SKK-HIT without intraventricular MTX. Intrathecal MTX substituted (1 injection/cycle). No HDMTX.",
+    outcome_dmb: "2-year PFS SHH1 = 30% · 2-year PFS SHH2 = 66.7%",
+    outcome_other: "Limited data; study closed early due to relapse.",
+    note: "Preferred when Ommaya reservoir not available. Results inferior to intraventricular MTX approach.",
+    ref: "Lafay-Cousin L et al. J Clin Oncol. 2019;38(3):223-231 (ACNS1221)."
+  },
+  "HIT 2000 SKK LP MTX (HDMTX)": {
+    full: "HIT-SKK LP MTX with HDMTX — for incomplete resection or metastatic",
+    category: "Infant alternate — non-SHH or higher risk",
+    n: "See HIT-SKK 2000 cohort",
+    rt: "Salvage CSI or tumor site if progression",
+    regimen: "SKK protocol with intrathecal MTX + HDMTX component. For patients without Ommaya reservoir.",
+    outcome_dmb: "5-year PFS = 93% (DMB/MBEN reference from SKK 2000)",
+    outcome_other: "5-year PFS = 37% (non-DMB/MBEN)",
+    note: "Risk of encephalopathy if MTX given post-radiotherapy.",
+    ref: "Mynarek M et al. J Clin Oncol. 2020;38(18):2028-2040."
+  },
+  "Baroni": {
+    full: "Baroni et al. — LMIC-adapted multiagent chemotherapy + focal RT",
+    category: "Infant — all molecular groups",
+    n: "≈27 (23 M0 including 16 SHH; 4 M+)",
+    rt: "PF RT 54 Gy / 1.8 Gy for children >18 months (concurrent temozolomide)",
+    regimen: "5 cycles: cisplatin + vincristine + etoposide + cyclophosphamide ± MTX (metastatic only), followed by focal RT + concomitant temozolomide, then maintenance: carboplatin + vincristine + cyclophosphamide + etoposide (4–56 day cycles).",
+    outcome_dmb: "5-year PFS SHHδ = 100% · 5-year PFS SHHβ = 56%",
+    outcome_other: "5-year PFS Group 3 = 50%",
+    note: "Designed for LMIC settings. One of few protocols showing positive results with focal RT in infants.",
+    ref: "Baroni LV et al. Neuro Oncol. 2020;22:1873-1881."
+  },
+  "ACNS0334 (ASCT available)": {
+    full: "ACNS0334 — Sequential high-dose chemotherapy with ASCT",
+    category: "Infant — non-WNT/non-SHH, ASCT available",
+    n: "See COG ACNS0334 dataset",
+    rt: "No upfront CSI. Focal if residual disease.",
+    regimen: "3 courses induction (with or without HDMTX arm): cisplatin + vincristine + cyclophosphamide + etoposide ± HDMTX, followed by 3 courses high-dose carboplatin + thiotepa + stem-cell rescue.",
+    outcome_dmb: "Group 3 with HDMTX: higher response rate + better EFS/OS. SHH subgroup: 5-year OS 100% (both arms).",
+    outcome_other: "Non-WNT/non-SHH: promising results vs standard approaches.",
+    note: "Requires ASCT capability. HDMTX arm superior for Group 3. Risk of encephalopathy post-RT.",
+    ref: "Mazewski C et al. (ACNS0334 results). Recent COG publication 2023-2024."
+  },
+  "Standard-dose CSI": {
+    full: "Standard-dose Craniospinal Irradiation (23.4 Gy)",
+    category: "≥36 months — average risk",
+    n: "Multiple trials (COG9961, ACNS0331, SJMB03, PNET4)",
+    rt: "CSI 23.4 Gy / 1.8 Gy + boost to tumor bed up to 55.8 Gy / 1.8 Gy",
+    regimen: "Weekly vincristine during RT (1.5 mg/m²) in most protocols. Post-RT: cisplatin + lomustine/cyclophosphamide + vincristine × 6–8 cycles.",
+    outcome_dmb: "5-year PFS 80–83% (average risk, non-LC/A)",
+    outcome_other: "ACNS0331: 5-year PFS = 82.9% (23.4 Gy arm)",
+    note: "Standard for average-risk ≥36 months. Downgrade to 18 Gy being investigated for WNT MB. TB boost preferred over PF boost (less ototoxicity).",
+    ref: "Packer RJ et al. J Clin Oncol. 2006. Michalski JM et al. J Clin Oncol. 2021;39:2685-2697 (ACNS0331).",
+    doseSection: `
+      <div class="rt-dose-box">
+        <div class="rt-dose-title">Standard-Risk–Dose CSI — Appendix VIII</div>
+        <div class="rt-dose-grid">
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">Phase I · CSI</span>
+            <span class="rt-dose-val"><strong>23.4 Gy</strong> in <strong>13 fractions</strong> · 5 fx/week · entire craniospinal axis</span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">Phase II · Boost</span>
+            <span class="rt-dose-val"><strong>30.6 Gy</strong> in <strong>17 fractions</strong> → cumulative <strong>54 Gy</strong> · tumor bed (3D conformal preferred) or posterior fossa (2D)</span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">Boost volume</span>
+            <span class="rt-dose-val">Average risk + conformal RT available: <em>tumor bed GTV + 1–1.5 cm CTV</em>. If 2D only: entire posterior fossa.</span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">Positioning</span>
+            <span class="rt-dose-val">Prone preferred (better immobilization, easier junction). Supine acceptable if planar on-board imaging available.</span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">Immobilization</span>
+            <span class="rt-dose-val">Thermoplastic mask + body vacuum bag or acrylic head cast. CT-based 3D planning standard; 2D (simulator) acceptable in LMICs. Cobalt-60 acceptable if LINAC unreliable.</span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">Junctions</span>
+            <span class="rt-dose-val">Feathering: shift 5–10 mm every ~9 Gy (≈ weekly) to avoid hot/cold spots at brain–spine junctions. Min. 2 shifts during CSI course.</span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">CTV_Brain</span>
+            <span class="rt-dose-val">Entire brain + cribriform plate + superior orbital fissure. PTV margin: 3–5 mm. Junction with spinal field.</span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">CTV_Spine</span>
+            <span class="rt-dose-val">Entire thecal sac. Inferior border: 1.5 cm below subdural space terminus (≥ S2–S3 interspace, up to S4 inferior border). PTV margin: 3–5 mm.</span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">Imaging</span>
+            <span class="rt-dose-val">Daily orthogonal imaging minimum. CBCT recommended for IMRT/VMAT. CT slices ≤ 3 mm (boost volume: ≤ 2.5 mm, ideally 1.0–1.5 mm).</span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">Sedation</span>
+            <span class="rt-dose-val">Children &lt;5 yrs or with posterior fossa mutism: daily sedation/GA required. Child Life Specialist helpful to avoid sedation when possible.</span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">Timing</span>
+            <span class="rt-dose-val">Start within 4–6 weeks post-surgery, no later than week 7. Delay &gt;7 weeks → upgrade to high-dose CSI (36 Gy) regardless of risk.</span>
+          </div>
+        </div>
+        <div class="rt-dose-note">⚠ If adjuvant chemotherapy unavailable: full-dose CSI (36 Gy) has shown better long-term efficacy regardless of risk stratification.</div>
+      </div>`
+  },
+  "High-dose CSI": {
+    full: "High-dose Craniospinal Irradiation (36 Gy)",
+    category: "≥36 months — high risk / LC/A / delayed RT",
+    n: "ACNS0332: 261 high-risk patients",
+    rt: "CSI 36 Gy / 1.8 Gy + boost to PF 55.8 Gy / 1.8 Gy",
+    regimen: "Concurrent: weekly vincristine (1.5 mg/m²) + daily carboplatin (35 mg/m²) during RT. Maintenance: 6 × 28-day cycles — cisplatin (75 mg/m²) + cyclophosphamide (1000 mg/m², days 2–3) + vincristine (1.5 mg/m², days 1 & 8).",
+    outcome_dmb: "5-year OS = 73.4% (high-risk overall)",
+    outcome_other: "5-year OS = 73.4% (ACNS0332)",
+    note: "Mandatory if: LC/A histology, <GTR + risk factor (MYC ampl), metastatic disease, or RT delayed >7 weeks post-surgery.",
+    ref: "Leary SES et al. JAMA Oncol. 2021;7(9):1313-1321 (ACNS0332).",
+    doseSection: `
+      <div class="rt-dose-box">
+        <div class="rt-dose-title">High-Risk–Dose CSI — Appendix VIII</div>
+        <div class="rt-dose-grid">
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">Phase I · CSI</span>
+            <span class="rt-dose-val"><strong>36 Gy</strong> in <strong>20 fractions</strong> · 5 fx/week · entire craniospinal axis</span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">Phase II · PF Boost</span>
+            <span class="rt-dose-val"><strong>18 Gy</strong> in <strong>10 fractions</strong> → cumulative <strong>54 Gy</strong> to posterior fossa. If 3D planning + adequate portal imaging available: reduce to tumor bed boost.</span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">Diffuse spinal disease</span>
+            <span class="rt-dose-val">Boost entire spine <strong>3.6 Gy</strong> after 36 Gy CSI → total <strong>39.6 Gy</strong> to spine.</span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">Brain metastases</span>
+            <span class="rt-dose-val">If conformal boost possible: <strong>9 Gy boost</strong> to residual brain metastases after 36 Gy CSI → total <strong>45 Gy</strong>. CTV expansion: 1.0 cm. If close to optic chiasm: limit CTV to 0.5 cm and total dose to 54 Gy. <em>[Note: line 2762 correction: 55.8 Gy, not 55.845]</em></span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">Boost volume</span>
+            <span class="rt-dose-val">Full posterior fossa for high-risk disease. GTV = contrast-enhancing tumor on pre/post-op + pre-RT MRI. GTVp 5400 includes resection cavity walls + residual tumor.</span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">Positioning</span>
+            <span class="rt-dose-val">Prone preferred (better immobilization, easier junction). Supine acceptable if planar on-board imaging available.</span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">Immobilization</span>
+            <span class="rt-dose-val">Thermoplastic mask + body vacuum bag or acrylic head cast. CT-based 3D planning standard; 2D (simulator) acceptable in LMICs. Cobalt-60 acceptable if LINAC unreliable.</span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">Junctions</span>
+            <span class="rt-dose-val">Feathering: shift 5–10 mm every ~9 Gy (≈ weekly). Min. 2 shifts. MLCs or IMRT for blending dose at field junctions.</span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">CTV_Brain</span>
+            <span class="rt-dose-val">Entire brain + cribriform plate + superior orbital fissure. PTV_CSI_3600: 3–5 mm margin. Junction with spinal field.</span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">CTV_Spine</span>
+            <span class="rt-dose-val">Entire thecal sac + exiting nerve roots. Inferior border: 1.5 cm below thecal sac (≥ S2–S3, up to S4). PTV: 3–5 mm.</span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">Imaging</span>
+            <span class="rt-dose-val">Daily orthogonal imaging minimum. CBCT strongly recommended. CT slices ≤ 3 mm (boost: ≤ 2.5 mm). Pre-RT MRI brain + spine mandatory (if RT delayed &gt;7 wks: negative MRI required).</span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">Sedation</span>
+            <span class="rt-dose-val">Children &lt;5 yrs or with posterior fossa mutism: daily sedation/GA required. Do NOT delay RT start pending recovery from posterior fossa mutism.</span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">Timing</span>
+            <span class="rt-dose-val">Start within 4–6 weeks post-surgery. Mandatory if RT delayed &gt;7 weeks even if pre-RT chemotherapy given.</span>
+          </div>
+          <div class="rt-dose-row">
+            <span class="rt-dose-label">Peer review</span>
+            <span class="rt-dose-val">Mandatory pre-treatment peer review strongly recommended. SIOP PNET5 data: target volume deviations in 41.5% of cases without central review. Teleconference review with pediatric RT expert acceptable.</span>
+          </div>
+        </div>
+        <div class="rt-dose-note">⚠ OAR constraints: see Appendix IX (PENTEC). Special attention to cochlea (with cisplatin: mean &lt;30 Gy), optic chiasm (D0.1cc &lt;54 Gy), brainstem (D0.1cc &lt;56.6 Gy), spinal cord (D0.03cc ≤54 Gy). See full table below.</div>
+      </div>`
+  },
+  "SIOP ATR Regimen 2": {
+    full: "SIOP Adapted Treatment Regimen 2",
+    category: "≥36 months — principal chemotherapy",
+    n: "See SIOP PNET4/5 datasets",
+    rt: "Standard or high-dose CSI per risk group",
+    regimen: "Post-RT maintenance chemotherapy (SIOP-adapted protocol). Typically: cisplatin + lomustine + vincristine cycles.",
+    outcome_dmb: "5-year PFS ~78–81% (PNET4 data)",
+    outcome_other: "5-year PFS ~78% (PNET4 hyperfractionated arm)",
+    note: "Standard SIOP chemotherapy backbone for Stratum C ≥36 months. Principal regimen across most ≥36 months scenarios.",
+    ref: "Lannering B et al. J Clin Oncol. 2012;30:3187-3193 (HIT-SIOP PNET4)."
+  },
+  "ACNS0332": {
+    full: "ACNS0332 — High-risk chemotherapy with carboplatin + ASCT",
+    category: "≥36 months — LC/A, metastatic, high-risk",
+    n: "261 high-risk patients",
+    rt: "High-dose CSI 36 Gy + boost 55.8 Gy",
+    regimen: "RT concurrent: vincristine + daily carboplatin. Maintenance (6 cycles): cisplatin + cyclophosphamide + vincristine.",
+    outcome_dmb: "5-year OS = 73.4%",
+    outcome_other: "5-year OS = 73.4%",
+    note: "Principal chemo for high-dose CSI arm. Carboplatin radiosensitization during RT.",
+    ref: "Leary SES et al. JAMA Oncol. 2021;7(9):1313-1321."
+  },
+  "ACNS0331": {
+    full: "ACNS0331 — Reduced-dose CSI with tumor bed boost",
+    category: "≥36 months — average risk alternate",
+    n: "Multiple arms: 110–237 patients",
+    rt: "23.4 Gy or 18 Gy + TB or PF boost to 55.8 Gy",
+    regimen: "Vincristine × 6 during RT. Post-RT: 6 cycles (A) cisplatin + lomustine + vincristine + 3 cycles (B) vincristine + cyclophosphamide. Sequence: AABAABAAB.",
+    outcome_dmb: "5-year PFS = 82.9% (23.4 Gy) · 71.4% (18 Gy) · TB boost ~82.5%",
+    outcome_other: "Tumor bed boost non-inferior to PF boost; reduced cochlear dose.",
+    note: "TB boost now preferred over PF boost for ototoxicity reduction. 18 Gy arm closed early (inferior).",
+    ref: "Michalski JM et al. J Clin Oncol. 2021;39:2685-2697."
+  },
+  "A9961 (CCG9961)": {
+    full: "A9961 / CCG9961 — Standard-risk adjuvant chemotherapy",
+    category: "≥36 months — average risk alternate",
+    n: "193–186 patients per arm",
+    rt: "23.4 Gy / 1.8 Gy + boost PF 55.8 Gy",
+    regimen: "Vincristine × 6 during RT. Post-RT: 8 cycles of cisplatin (70 mg/m²) + lomustine (75 mg/m²) + vincristine OR cisplatin + cyclophosphamide (1000 mg/m² days 1–2) + vincristine.",
+    outcome_dmb: "5-year PFS = 80% (CCNU arm) · 82% (cyclo arm) · 5-year OS ≈ 85–87%",
+    outcome_other: "No significant difference between CCNU and cyclophosphamide arms. Ototoxicity a major concern.",
+    note: "Demonstrated feasibility of reduced-dose CSI. Cisplatin ototoxicity led to subsequent protocol modifications.",
+    ref: "Packer RJ et al. J Clin Oncol. 2006;24:4202-4208."
+  },
+  "SIOP ATR Regimen 3": {
+    full: "SIOP Adapted Treatment Regimen 3",
+    category: "≥36 months — alternate chemotherapy",
+    n: "See SIOP datasets",
+    rt: "Standard or high-dose CSI",
+    regimen: "Alternative SIOP maintenance regimen. Cyclophosphamide-containing backbone post-RT. Adapted for resource-limited settings.",
+    outcome_dmb: "5-year PFS ~78% (derived from PNET4 data)",
+    outcome_other: "Comparable to Regimen 2 in available data",
+    note: "Alternative to Regimen 2 when specific drugs unavailable.",
+    ref: "Lannering B et al. J Clin Oncol. 2012 (HIT-SIOP PNET4)."
+  },
+  "Salvage CSI (progression)": {
+    full: "Salvage CSI — Reserved for progression under chemotherapy",
+    category: "Infant <36 months — salvage only",
+    n: "N/A (salvage)",
+    rt: "CSI dose adapted per physician discretion at progression",
+    regimen: "Salvage CSI at progression, or focal RT to tumor site for local progression only.",
+    outcome_dmb: "Risk of encephalopathy if methotrexate given post-radiotherapy.",
+    outcome_other: "Not first-line. Reserved for disease progression.",
+    note: "⚠️ Risk of encephalopathy if MTX given post-radiotherapy. Physician discretion.",
+    ref: "ARIA Guide Stratum C Table 10, footnote ¶."
+  }
+};
+
+// ─────────────────────────────────────────────
+// DECISION TREE
+// ─────────────────────────────────────────────
+const STEPS = [
+  {
+    id: "age",
+    label: "Step 1 / 4",
+    question: "What is the patient's age?",
+    hint: "Age stratification determines the entire treatment pathway.",
+    options: [
+      { label: "< 36 months (infant / young child)", value: "infant" },
+      { label: "≥ 36 months (older child / adolescent)", value: "older" }
+    ]
+  },
+  {
+    id: "stage",
+    label: "Step 2 / 4",
+    question: "What is the disease stage?",
+    hint: "Based on post-operative MRI brain + spine with contrast.",
+    options: [
+      { label: "Localized (M0)", value: "localized" },
+      { label: "Metastatic (M1–M3)", value: "metastatic" }
+    ]
+  },
+  {
+    id: "histo",
+    label: "Step 3 / 4",
+    question: "What is the histomorphology?",
+    hint: "LC/A = large-cell/anaplastic (>50% significant anaplasia).",
+    options: [] // filled dynamically
+  },
+  {
+    id: "molecular",
+    label: "Step 4 / 4",
+    question: "What is the molecular subgroup?",
+    hint: "By IHC: β-catenin (WNT), GLI2/YAP (SHH), GAB1. For ≥36 months also check age: WNT peaks 7–14 yrs; SHH peaks in infants and >16 yrs.",
+    options: [] // filled dynamically
+  }
+];
+
+// For ≥36 months, we also need resection
+const RESECTION_STEP = {
+  id: "resection",
+  label: "Step 2b / 5",
+  question: "What is the extent of resection?",
+  hint: "GTR = gross total resection, defined as residual ≤ 1.5 cm².",
+  options: [
+    { label: "GTR (≤ 1.5 cm² residual)", value: "gtr" },
+    { label: "< GTR — no additional risk factors (e.g. no MYC amplification)", value: "subgtr_low" },
+    { label: "< GTR — with ≥ 1 risk factor (e.g. MYC amplification)", value: "subgtr_high" },
+    { label: "< GTR — LC/A histology (always high-risk)", value: "subgtr_lca" }
+  ]
+};
+
+// ─────────────────────────────────────────────
+// RESULT MAP
+// ─────────────────────────────────────────────
+function getResult(answers) {
+  const { age, stage, resection, histo, molecular, exactAge } = answers;
+
+  // ── INFANT < 36 months ──────────────────────────────────────────
+  if (age === "infant") {
+    const isSHH = molecular === "shh";
+    const isDN_MBEN = histo === "dn_mben";
+    const isClassicDN = histo === "dn_mben" || histo === "classic";
+    const isLCA = histo === "lca";
+    const isNonWNT_nonSHH = molecular === "non_wnt_non_shh";
+
+    if (stage === "localized" && resection === "gtr") {
+      if (isDN_MBEN || isSHH) {
+        return {
+          scenario: "Infant · Localized · GTR · DN/MBEN or SHH",
+          chemo: "HIT 2000 SKK vtr MTX",
+          rt: "None (1st line) — Salvage CSI or tumor site RT if progression",
+          alt: ["HIT 2000 SKK LP MTX (No HDMTX)", "Baroni"],
+          notes: ["RT not given upfront in infants.", "Risk of encephalopathy if MTX given post-radiotherapy.", "If Ommaya reservoir unavailable: intrathecal MTX 1×/cycle as substitute."]
+        };
+      } else {
+        // Classic or LC/A, non-WNT/non-SHH
+        return {
+          scenario: "Infant · Localized · GTR · Classic/LC/A · Non-WNT/Non-SHH",
+          chemo: "HIT 2000 SKK vtr MTX",
+          rt: "None (1st line) — Salvage CSI or tumor site RT if progression",
+          alt: ["HIT 2000 SKK LP MTX (No HDMTX)", "ACNS0334 (ASCT available)", "Baroni"],
+          notes: ["ACNS0334 available as ASCT is assumed available.", "Non-WNT/non-SHH: 5-year PFS ~37% with SKK. ACNS0334 may improve outcomes.", "Risk of encephalopathy if MTX given post-radiotherapy."]
+        };
+      }
+    }
+
+    if (stage === "localized" && resection === "subgtr") {
+      if (isDN_MBEN || isSHH) {
+        return {
+          scenario: "Infant · Localized · < GTR · DN/MBEN or SHH",
+          chemo: "HIT 2000 SKK vtr MTX",
+          rt: "None (1st line) — Salvage CSI or tumor site RT if progression",
+          alt: ["HIT 2000 SKK LP MTX (HDMTX)", "Baroni"],
+          notes: ["HDMTX included in alternate given incomplete resection.", "Ommaya reservoir required for standard vtr MTX approach.", "Risk of encephalopathy if MTX given post-radiotherapy."]
+        };
+      } else {
+        return {
+          scenario: "Infant · Localized · < GTR · Classic/LC/A · Non-WNT/Non-SHH",
+          chemo: "HIT 2000 SKK vtr MTX",
+          rt: "None (1st line) — Salvage CSI or tumor site RT if progression",
+          alt: ["HIT 2000 SKK LP MTX (HDMTX)", "ACNS0334 (ASCT available)", "Baroni"],
+          notes: ["ACNS0334 with HDMTX arm showed higher response rate in Group 3 (non-WNT/non-SHH).", "Risk of encephalopathy if MTX given post-radiotherapy."]
+        };
+      }
+    }
+
+    if (stage === "metastatic") {
+      if (isDN_MBEN || isSHH) {
+        return {
+          scenario: "Infant · Metastatic · DN/MBEN or SHH",
+          chemo: "HIT 2000 SKK vtr MTX",
+          rt: "None (1st line) — Salvage CSI or tumor site RT if progression",
+          alt: ["HIT 2000 SKK LP MTX (HDMTX)", "Baroni"],
+          notes: ["Metastatic DMB/MBEN: outcome not significantly impacted vs localized (SKK 2000 data).", "SHH metastatic: less clear — SJYC07 SHH-I M+ had 5-year PFS = 25%.", "Risk of encephalopathy if MTX given post-radiotherapy."]
+        };
+      } else {
+        return {
+          scenario: "Infant · Metastatic · Classic/LC/A · Non-WNT/Non-SHH",
+          chemo: "HIT 2000 SKK vtr MTX",
+          rt: "No standard recommendation — Option: no chemotherapy OR palliative CSI vs metronomic chemotherapy",
+          alt: ["HIT 2000 SKK LP MTX (HDMTX)", "ACNS0334 (ASCT available)", "Baroni"],
+          notes: ["⚠️ Dismal prognosis: 5-year CSI-free survival ~8% in non-WNT/non-SHH metastatic (review of 74 patients).", "MYC-amplified Group 3 or iso17q: no survivors reported in ACNS0334.", "Palliation is appropriate and should be discussed with family.", "Baby POG or MEMMAT metronomic protocols are options.", "Risk of encephalopathy if MTX given post-radiotherapy."]
+        };
+      }
+    }
+  }
+
+  // ── ≥ 36 months ─────────────────────────────────────────────────
+  if (age === "older") {
+    const isWNT_u16 = molecular === "wnt" && exactAge === "lt16";
+    const isWNT_o16 = molecular === "wnt" && exactAge === "gte16";
+    const isSHH = molecular === "shh";
+    const isNonWNT_nonSHH = molecular === "non_wnt_non_shh";
+    const isLCA = histo === "lca";
+
+    // LC/A always high-dose regardless
+    if (isLCA) {
+      return {
+        scenario: "≥36 months · LC/A histology (any stage, any resection)",
+        chemo: "ACNS0332",
+        rt: "High-dose CSI (36 Gy / 1.8 Gy + boost 55.8 Gy)",
+        alt: ["A9961 (CCG9961)", "SIOP ATR Regimen 2", "SIOP ATR Regimen 3"],
+        notes: ["LC/A always classified as high-risk regardless of stage or resection.", "Concurrent carboplatin radiosensitization during RT (ACNS0332).", "5-year OS = 73.4% (ACNS0332 high-risk data)."]
+      };
+    }
+
+    // Metastatic ≥36 months
+    if (stage === "metastatic") {
+      return {
+        scenario: "≥36 months · Metastatic · Any histology",
+        chemo: "ACNS0332",
+        rt: "High-dose CSI (36 Gy / 1.8 Gy + boost 55.8 Gy)",
+        alt: ["A9961 (CCG9961)", "SIOP ATR Regimen 2", "SIOP ATR Regimen 3"],
+        notes: ["All metastatic ≥36 months = high-dose CSI mandatory.", "5-year OS = 73.4% (ACNS0332).", "Concurrent carboplatin + vincristine during RT."]
+      };
+    }
+
+    // Localized, GTR
+    if (stage === "localized" && resection === "gtr") {
+      if (isWNT_u16) {
+        return {
+          scenario: "≥36 months · Localized · GTR · Classic · WNT <16 years",
+          chemo: "SIOP ATR Regimen 2",
+          rt: "Standard-dose CSI (23.4 Gy / 1.8 Gy + boost 55.8 Gy)",
+          alt: ["ACNS0331", "A9961 (CCG9961)", "SIOP ATR Regimen 3"],
+          notes: ["WNT MB: best prognosis group (~95% 5-year EFS in HIC).", "Investigations ongoing for CSI dose reduction (18 or 15 Gy) in WNT average risk.", "WNT peaks age 7–14 yrs (slight female predominance). CSI alone + chemotherapy inadequate in pilot studies."]
+        };
+      }
+      if (isSHH || isNonWNT_nonSHH || isWNT_o16) {
+        // Is it classic or DN?
+        if (!isLCA) {
+          return {
+            scenario: "≥36 months · Localized · GTR · Classic or DN · Non-LC/A",
+            chemo: "SIOP ATR Regimen 2",
+            rt: "Standard-dose CSI (23.4 Gy / 1.8 Gy + boost 55.8 Gy)",
+            alt: ["ACNS0331", "A9961 (CCG9961)", "SIOP ATR Regimen 3"],
+            notes: ["Standard-dose CSI for average-risk (localized, GTR, non-LC/A).", "RT must start within 4–6 weeks post-surgery; no later than week 7.", "If RT delayed >7 weeks: upgrade to high-dose CSI (36 Gy) regardless of risk features.", "If MYC amplification data unavailable: consider high-dose CSI (36 Gy) as precaution."]
+          };
+        }
+      }
+    }
+
+    // Localized, <GTR, no risk factors
+    if (stage === "localized" && resection === "subgtr_low") {
+      if (isWNT_u16) {
+        return {
+          scenario: "≥36 months · Localized · <GTR · No extra risk factors · Classic · WNT <16 yrs",
+          chemo: "SIOP ATR Regimen 2",
+          rt: "Standard-dose CSI (23.4 Gy / 1.8 Gy + boost 55.8 Gy)",
+          alt: ["ACNS0331", "A9961 (CCG9961)", "SIOP ATR Regimen 3"],
+          notes: ["<GTR without additional risk factor: standard-dose CSI remains appropriate for WNT.", "Evidence suggests >75% subtotal resection alone should not change risk allocation."]
+        };
+      }
+      return {
+        scenario: "≥36 months · Localized · <GTR · No extra risk factors · Non-LC/A",
+        chemo: "SIOP ATR Regimen 2",
+        rt: "Standard-dose CSI (23.4 Gy / 1.8 Gy + boost 55.8 Gy)",
+        alt: ["ACNS0331", "A9961 (CCG9961)", "SIOP ATR Regimen 3"],
+        notes: ["<GTR as isolated finding: standard-dose CSI remains appropriate.", "If MYC amplification data unavailable: consider high-dose CSI (36 Gy) as precaution.", "RT must start ≤ 7 weeks post-surgery."]
+      };
+    }
+
+    // Localized, <GTR, with risk factors
+    if (stage === "localized" && (resection === "subgtr_high" || resection === "subgtr_lca")) {
+      if (isWNT_u16) {
+        return {
+          scenario: "≥36 months · Localized · <GTR + risk factor(s) · Classic · WNT <16 yrs",
+          chemo: "SIOP ATR Regimen 2",
+          rt: "High-dose CSI (36 Gy / 1.8 Gy + boost 55.8 Gy)",
+          alt: ["ACNS0331", "A9961 (CCG9961)", "SIOP ATR Regimen 3"],
+          notes: ["Even WNT requires high-dose CSI when <GTR + risk factor present.", "Risk factors include: MYC amplification, other molecular markers of poor prognosis."]
+        };
+      }
+      return {
+        scenario: "≥36 months · Localized · <GTR + risk factor(s) · Non-LC/A",
+        chemo: "SIOP ATR Regimen 2",
+        rt: "High-dose CSI (36 Gy / 1.8 Gy + boost 55.8 Gy)",
+        alt: ["A9961 (CCG9961)", "SIOP ATR Regimen 3"],
+        notes: ["High-dose CSI mandatory when <GTR + risk factor present.", "Risk factors: MYC amplification, iso17q, etc.", "ACNS0332 chemo if LC/A component present."]
+      };
+    }
+  }
+
+  // fallback
+  return null;
+}
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let answers = {};
+let stepHistory = [];
+
+// ─────────────────────────────────────────────
+// RENDER ENGINE
+// ─────────────────────────────────────────────
+function totalSteps() {
+  return answers.age === "older" ? 5 : 4;
+}
+
+function renderProgress(currentStep) {
+  const total = totalSteps();
+  const dots = document.getElementById("progressDots");
+  const label = document.getElementById("progressLabel");
+  dots.innerHTML = "";
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement("div");
+    d.className = "step-dot" + (i < currentStep ? " done" : "") + (i === currentStep ? " active" : "");
+    dots.appendChild(d);
+  }
+  label.textContent = `Step ${currentStep + 1} of ${total}`;
+}
+
+function renderTrail() {
+  const trail = document.getElementById("trail");
+  const labels = {
+    age: { infant: "< 36 mos", older: "≥ 36 mos" },
+    stage: { localized: "Localized (M0)", metastatic: "Metastatic (M1–M3)" },
+    resection: { gtr: "GTR", subgtr_low: "<GTR (no RF)", subgtr_high: "<GTR + RF", subgtr_lca: "<GTR LC/A" },
+    histo: { dn_mben: "DN/MBEN", classic: "Classic", lca: "LC/A" },
+    molecular: { wnt: "WNT", shh: "SHH", non_wnt_non_shh: "Non-WNT/Non-SHH" },
+    exactAge: { lt16: "<16 yrs", gte16: "≥16 yrs" }
+  };
+  const order = ["age", "exactAge", "stage", "resection", "histo", "molecular"];
+  trail.innerHTML = "";
+  let first = true;
+  order.forEach(k => {
+    if (answers[k]) {
+      if (!first) { const a = document.createElement("span"); a.className = "trail-arrow"; a.textContent = "›"; trail.appendChild(a); }
+      const item = document.createElement("span");
+      item.className = "trail-item";
+      item.textContent = labels[k][answers[k]] || answers[k];
+      trail.appendChild(item);
+      first = false;
+    }
+  });
+  trail.style.display = first ? "none" : "flex";
+}
+
+function nextStep() {
+  const { age, stage, resection, histo, molecular } = answers;
+
+  if (!answers.age) return showStep("age", 0);
+  if (answers.age === "older" && !answers.exactAge) return showExactAge(1);
+  if (!answers.stage) return showStep("stage", answers.age === "older" ? 2 : 1);
+  if (answers.age === "older" && answers.stage === "localized" && !answers.resection) return showResection(answers.age === "older" ? 3 : 2);
+  if (!answers.histo) return showHisto(answers.age === "older" && answers.stage === "localized" ? 4 : (answers.age === "older" ? 3 : 2));
+  if (!answers.molecular) return showMolecular(answers.age === "older" && answers.stage === "localized" ? 5 : (answers.age === "older" ? 4 : 3));
+  return showResult();
+}
+
+function showStep(stepId, stepIdx) {
+  renderProgress(stepIdx);
+  renderTrail();
+
+  const step = STEPS.find(s => s.id === stepId);
+  document.getElementById("mainArea").innerHTML = buildCard(step.label, step.question, step.hint, step.options, stepId);
+}
+
+function showExactAge(stepIdx) {
+  renderProgress(stepIdx);
+  renderTrail();
+  const opts = [
+    { label: "< 16 years", value: "lt16" },
+    { label: "≥ 16 years", value: "gte16" }
+  ];
+  document.getElementById("mainArea").innerHTML = buildCard(
+    "Step 2 / 5",
+    "More precisely, is the patient younger or older than 16 years?",
+    "WNT subgroup peaks age 7–14 yrs; SHH peaks in infants and again in adults (>16 yrs). This sub-stratification affects molecular group interpretation.",
+    opts, "exactAge"
+  );
+}
+
+function showResection(stepIdx) {
+  renderProgress(stepIdx);
+  renderTrail();
+  document.getElementById("mainArea").innerHTML = buildCard(
+    `Step ${stepIdx + 1} / ${totalSteps()}`,
+    RESECTION_STEP.question, RESECTION_STEP.hint, RESECTION_STEP.options, "resection"
+  );
+}
+
+function showHisto(stepIdx) {
+  renderProgress(stepIdx - 1);
+  renderTrail();
+  let opts;
+  if (answers.age === "infant") {
+    opts = [
+      { label: "Desmoplastic/Nodular (DN) or MBEN", value: "dn_mben" },
+      { label: "Classic", value: "classic" },
+      { label: "Large-Cell/Anaplastic (LC/A)", value: "lca" }
+    ];
+  } else {
+    opts = [
+      { label: "Classic (standard)", value: "classic" },
+      { label: "Desmoplastic/Nodular (DN) or MBEN", value: "dn_mben" },
+      { label: "Large-Cell/Anaplastic (LC/A) — ≥50% anaplasia", value: "lca" }
+    ];
+  }
+  const label = `Step ${stepIdx} / ${totalSteps()}`;
+  document.getElementById("mainArea").innerHTML = buildCard(
+    label,
+    "What is the histomorphology?",
+    "LC/A = large-cell/anaplastic (>50% significant anaplasia). IHC for molecular markers essential in Stratum C.",
+    opts, "histo"
+  );
+}
+
+function showMolecular(stepIdx) {
+  renderProgress(stepIdx - 1);
+  renderTrail();
+  const opts = [
+    { label: "WNT (Wingless) — β-catenin nuclear +", value: "wnt" },
+    { label: "SHH (Sonic Hedgehog) — GLI2/YAP/SFRP1 +", value: "shh" },
+    { label: "Non-WNT / Non-SHH (Group 3 or Group 4)", value: "non_wnt_non_shh" }
+  ];
+  const label = `Step ${stepIdx} / ${totalSteps()}`;
+  document.getElementById("mainArea").innerHTML = buildCard(
+    label,
+    "What is the molecular subgroup?",
+    "WNT ~10–15% of MB. SHH ~30% of MB (peaks: infants + >16 yrs). Non-WNT/Non-SHH = Groups 3 & 4 (majority).",
+    opts, "molecular"
+  );
+}
+
+function buildCard(stepLabel, question, hint, options, key) {
+  const keys = ["A","B","C","D"];
+  const opts = options.map((o, i) => `
+    <button class="opt-btn" onclick="choose('${key}','${o.value}')">
+      <span class="opt-key">${keys[i]}</span>
+      ${o.label}
+    </button>
+  `).join("");
+
+  return `
+    <div class="q-card">
+      <div class="q-step-label">${stepLabel}</div>
+      <div class="q-text">${question}</div>
+      <div class="q-hint">${hint}</div>
+      <div class="options">${opts}</div>
+      ${stepHistory.length > 0 ? `<div style="margin-top:18px"><button class="btn btn-ghost" onclick="goBack()">← Back</button></div>` : ""}
+    </div>
+  `;
+}
+
+function choose(key, value) {
+  stepHistory.push({ key, answers: { ...answers } });
+  answers[key] = value;
+
+  // If LC/A selected for ≥36 months resection step, just advance
+  if (key === "resection" && value === "subgtr_lca") {
+    answers.histo = "lca";
+  }
+
+  nextStep();
+}
+
+function goBack() {
+  const prev = stepHistory.pop();
+  if (prev) {
+    answers = prev.answers;
+    nextStep();
+  }
+}
+
+function showResult() {
+  document.getElementById("progressWrap").style.display = "none";
+  renderTrail();
+
+  const result = getResult(answers);
+  if (!result) {
+    document.getElementById("mainArea").innerHTML = `<div class="q-card"><div class="q-text">Scenario not found</div><p style="color:var(--text3);margin-top:10px;">Please check the original Table 10 in the ARIA Guide v1.1.</p></div>`;
+    return;
+  }
+
+  // Build protocol accordions
+  const allProtos = [result.chemo, result.rt.includes("Standard-dose") ? "Standard-dose CSI" : result.rt.includes("High-dose") ? "High-dose CSI" : null, ...result.alt].filter(Boolean);
+  const uniqueProtos = [...new Set(allProtos)];
+
+  const protoHTML = uniqueProtos.map((name, i) => {
+    const p = PROTOCOLS[name];
+    if (!p) return "";
+    const isMain = name === result.chemo;
+    const isRT = name === "Standard-dose CSI" || name === "High-dose CSI";
+    const isAlt = result.alt.includes(name);
+
+    // Color indicator
+    const color = isRT ? "var(--rt-color)" : isAlt ? "var(--alt-color)" : "var(--chemo-color)";
+    const roleLabel = isRT ? "Radiotherapy" : isAlt ? "Alternate Chemo" : "Principal Chemo";
+
+    return `
+      <div class="proto-accordion" id="proto_${i}">
+        <div class="proto-header" onclick="toggleProto('proto_${i}')">
+          <span class="proto-name">${name}</span>
+          <span class="proto-short">${p.full}</span>
+          <span style="font-family:'DM Mono',monospace;font-size:0.6rem;padding:2px 8px;border-radius:3px;background:rgba(0,0,0,0.3);border:1px solid ${color};color:${color};flex-shrink:0;">${roleLabel}</span>
+          <span class="proto-chevron">›</span>
+        </div>
+        <div class="proto-body">
+          <div class="proto-row">
+            <div class="proto-row-label">Category</div><div class="proto-row-val">${p.category}</div>
+            <div class="proto-row-label">N (trials)</div><div class="proto-row-val">${p.n}</div>
+            <div class="proto-row-label">RT used</div><div class="proto-row-val">${p.rt}</div>
+            <div class="proto-row-label">Regimen</div><div class="proto-row-val">${p.regimen}</div>
+          </div>
+          <div style="margin-top:12px">
+            <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Outcomes (from Appendix X)</div>
+            <div class="proto-outcome">DMB/MBEN · SHH: ${p.outcome_dmb}</div>
+            ${p.outcome_other !== p.outcome_dmb ? `<div class="proto-outcome" style="background:rgba(88,166,255,0.07);border-color:rgba(88,166,255,0.2);color:var(--accent);margin-top:5px;">Other / Classic: ${p.outcome_other}</div>` : ""}
+          </div>
+          ${p.doseSection || ""}
+          ${isRT ? `<button class="oar-btn" onclick="document.getElementById('oarModal').classList.add('open')">⊕ Appendix IX — OAR Dose Constraints (PENTEC)</button>` : ""}
+          ${p.note ? `<div class="proto-ref" style="margin-top:10px;color:var(--text2)">⚠ ${p.note}</div>` : ""}
+          <div class="proto-ref">${p.ref}</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  const notesHTML = result.notes && result.notes.length ? `
+    <div class="notes-box">
+      <strong>Clinical notes & footnotes</strong>
+      <ul>${result.notes.map(n => `<li>${n}</li>`).join("")}</ul>
+    </div>
+  ` : "";
+
+  // RT display
+  const rtText = result.rt;
+  const isHighCSI = rtText.includes("36 Gy") || rtText.includes("High-dose");
+  const isStdCSI = rtText.includes("23.4") || rtText.includes("Standard-dose");
+  const isNoRT = rtText.includes("None");
+
+  document.getElementById("mainArea").innerHTML = `
+    <div class="result-wrap">
+      <div class="result-header">
+        <div class="result-title">Treatment Recommendation</div>
+        <div class="result-subtitle">${result.scenario}</div>
+      </div>
+
+      <div class="treatment-grid">
+        <div class="treatment-card chemo">
+          <div class="tc-label chemo"><span class="tc-dot"></span>Principal Chemotherapy</div>
+          <div class="tc-value">${result.chemo}</div>
+          <div class="tc-detail">${PROTOCOLS[result.chemo] ? PROTOCOLS[result.chemo].full : ""}</div>
+        </div>
+
+        <div class="treatment-card rt">
+          <div class="tc-label rt"><span class="tc-dot"></span>Radiotherapy</div>
+          <div class="tc-value">${isHighCSI ? "High-dose CSI · 36 Gy" : isStdCSI ? "Standard-dose CSI · 23.4 Gy" : isNoRT ? "Not indicated (1st line)" : "See notes"}</div>
+          <div class="tc-detail">${rtText}</div>
+        </div>
+
+        <div class="treatment-card alt full">
+          <div class="tc-label alt"><span class="tc-dot"></span>Alternate Chemotherapy Option(s)</div>
+          <div class="tc-value">${result.alt.join(" · ")}</div>
+          <div class="tc-detail">Available when principal regimen not accessible or as per MDT decision</div>
+        </div>
+      </div>
+
+      ${notesHTML}
+
+      <div class="protocols-section">
+        <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">Protocol Details + Outcomes (Appendix X)</div>
+        ${protoHTML}
+      </div>
+
+      <div class="action-bar">
+        <button class="btn btn-primary" onclick="restart()">New patient</button>
+        <button class="btn btn-ghost" onclick="goBack()">← Modify last answer</button>
+      </div>
+    </div>
+  `;
+}
+
+function toggleProto(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle("open");
+}
+
+function restart() {
+  answers = {};
+  stepHistory = [];
+  document.getElementById("progressWrap").style.display = "block";
+  document.getElementById("trail").style.display = "none";
+  nextStep();
+}
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+nextStep();
+</script>
+</body>
+</html>
