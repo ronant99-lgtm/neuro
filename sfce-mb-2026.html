@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SFCE 2026 · Médulloblastomes — Algorithme décisionnel</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2330;
+    --surface3: #21262d;
+    --border: #2a3441;
+    --border2: #30363d;
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --text3: #6e7681;
+    --blue: #388bfd;
+    --green: #3fb950;
+    --amber: #d29922;
+    --red: #f85149;
+    --purple: #a371f7;
+    --cyan: #39c5cf;
+    --orange: #f0883e;
+    --low: #3fb950;
+    --sr: #388bfd;
+    --hr: #f85149;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ── HEADER ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,17,23,0.94);
+    backdrop-filter: blur(12px);
+  }
+  .logo-mark {
+    width: 34px; height: 34px;
+    border: 1.5px solid var(--blue);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; font-weight: 500;
+    color: var(--blue);
+    flex-shrink: 0;
+  }
+  .header-info { flex: 1; }
+  .header-title { font-family: 'DM Serif Display', serif; font-size: 16px; color: var(--text); }
+  .header-sub { font-size: 10.5px; color: var(--text3); font-family: 'DM Mono', monospace; letter-spacing: 0.3px; margin-top: 1px; }
+  .header-right { display: flex; gap: 8px; align-items: center; }
+  .badge {
+    background: rgba(56,139,253,0.12);
+    border: 1px solid rgba(56,139,253,0.28);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 9.5px;
+    font-family: 'DM Mono', monospace;
+    color: var(--blue);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge.sfce {
+    background: rgba(163,113,247,0.12);
+    border-color: rgba(163,113,247,0.28);
+    color: var(--purple);
+  }
+  .btn-reset {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    color: var(--text3);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .btn-reset:hover { color: var(--text2); border-color: var(--border2); }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 840px; margin: 0 auto; padding: 36px 24px 80px; }
+
+  /* ── PROGRESS ── */
+  .progress-wrap { margin-bottom: 32px; }
+  .progress-steps { display: flex; gap: 4px; align-items: center; margin-bottom: 6px; }
+  .step-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.3s, transform 0.2s;
+  }
+  .step-dot.active { background: var(--blue); transform: scale(1.35); }
+  .step-dot.done { background: var(--green); }
+  .progress-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    color: var(--text3);
+    letter-spacing: 0.3px;
+  }
+
+  /* ── BREADCRUMB ── */
+  .breadcrumb {
+    display: flex; flex-wrap: wrap; gap: 4px; align-items: center;
+    margin-bottom: 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+  }
+  .bc-item { color: var(--text2); }
+  .bc-sep { color: var(--border2); }
+  .bc-current { color: var(--blue); }
+
+  /* ── STEP CARD ── */
+  .step-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 20px;
+    animation: fadeSlide 0.3s ease;
+  }
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .step-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    color: var(--text3);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .step-question {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: var(--text);
+    margin-bottom: 20px;
+    line-height: 1.35;
+  }
+  .step-note {
+    font-size: 11.5px;
+    color: var(--text2);
+    background: rgba(56,139,253,0.07);
+    border-left: 2px solid rgba(56,139,253,0.4);
+    border-radius: 0 6px 6px 0;
+    padding: 8px 12px;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .step-note.warn {
+    background: rgba(240,136,62,0.07);
+    border-left-color: rgba(240,136,62,0.4);
+  }
+  .step-note.danger {
+    background: rgba(248,81,73,0.07);
+    border-left-color: rgba(248,81,73,0.4);
+  }
+
+  /* ── CHOICE BUTTONS ── */
+  .choices { display: flex; flex-direction: column; gap: 8px; }
+  .choice-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .choice-btn:hover {
+    border-color: var(--blue);
+    background: rgba(56,139,253,0.07);
+    transform: translateX(3px);
+  }
+  .choice-icon {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .choice-icon.yes { background: rgba(63,185,80,0.15); }
+  .choice-icon.no  { background: rgba(248,81,73,0.15); }
+  .choice-icon.mol { background: rgba(163,113,247,0.15); }
+  .choice-icon.age { background: rgba(57,197,207,0.15); }
+  .choice-icon.neutral { background: rgba(139,148,158,0.12); }
+  .choice-label {
+    font-size: 13.5px;
+    color: var(--text);
+    font-weight: 400;
+  }
+  .choice-sub {
+    font-size: 11px;
+    color: var(--text2);
+    margin-top: 2px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ── RESULT CARD ── */
+  .result-card {
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 20px;
+    animation: fadeSlide 0.35s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .result-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .result-card.low    { background: rgba(63,185,80,0.07);  border: 1px solid rgba(63,185,80,0.25);  }
+  .result-card.low::before  { background: var(--green); }
+  .result-card.sr     { background: rgba(56,139,253,0.07); border: 1px solid rgba(56,139,253,0.25); }
+  .result-card.sr::before   { background: var(--blue); }
+  .result-card.hr     { background: rgba(248,81,73,0.07);  border: 1px solid rgba(248,81,73,0.25);  }
+  .result-card.hr::before   { background: var(--red); }
+  .result-card.special{ background: rgba(163,113,247,0.07);border: 1px solid rgba(163,113,247,0.25);}
+  .result-card.special::before { background: var(--purple); }
+
+  .result-risk-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .result-risk-label.low    { color: var(--green); }
+  .result-risk-label.sr     { color: var(--blue); }
+  .result-risk-label.hr     { color: var(--red); }
+  .result-risk-label.special{ color: var(--purple); }
+
+  .result-protocol {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: var(--text);
+    margin-bottom: 18px;
+    line-height: 1.2;
+  }
+
+  /* ── TREATMENT SECTIONS ── */
+  .tx-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 580px) { .tx-grid { grid-template-columns: 1fr; } }
+
+  .tx-block {
+    background: var(--surface3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+  }
+  .tx-block-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .tx-block-label span {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .tx-block-label span.rt   { background: var(--blue); }
+  .tx-block-label span.chemo{ background: var(--orange); }
+  .tx-block-label span.hd   { background: var(--purple); }
+  .tx-block-label span.surg { background: var(--cyan); }
+
+  .tx-item {
+    font-size: 12.5px;
+    color: var(--text2);
+    padding: 3px 0;
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    gap: 8px;
+  }
+  .tx-item:last-child { border-bottom: none; }
+  .tx-item-name { color: var(--text); font-weight: 400; }
+  .tx-item-val  { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--blue); text-align: right; }
+  .tx-item-val.chemo { color: var(--orange); }
+  .tx-item-val.hd    { color: var(--purple); }
+
+  /* ── FULL-WIDTH BLOCK ── */
+  .tx-block-full {
+    background: var(--surface3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+
+  /* ── RT DOSE TABLE ── */
+  .rt-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11.5px;
+    margin-top: 8px;
+  }
+  .rt-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.5px;
+    color: var(--text3);
+    text-align: left;
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 500;
+  }
+  .rt-table td {
+    padding: 5px 8px;
+    color: var(--text2);
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+  .rt-table td:first-child { color: var(--text); }
+  .rt-table td.dose { font-family: 'DM Mono', monospace; color: var(--blue); font-size: 11px; }
+  .rt-table tr:last-child td { border-bottom: none; }
+
+  /* ── WARNINGS ── */
+  .alert {
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 12px;
+    display: flex; gap: 10px; align-items: flex-start;
+    line-height: 1.5;
+  }
+  .alert.warn  { background: rgba(210,153,34,0.08); border: 1px solid rgba(210,153,34,0.25); }
+  .alert.info  { background: rgba(56,139,253,0.07); border: 1px solid rgba(56,139,253,0.2); }
+  .alert.danger{ background: rgba(248,81,73,0.07);  border: 1px solid rgba(248,81,73,0.22); }
+  .alert-icon  { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── BACK BUTTON ── */
+  .btn-back {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-bottom: 20px;
+  }
+  .btn-back:hover { color: var(--text2); border-color: var(--border2); }
+
+  /* ── DISCLAIMER ── */
+  .disclaimer {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    text-align: center;
+    padding: 24px 0 0;
+    border-top: 1px solid var(--border);
+    line-height: 1.6;
+    margin-top: 20px;
+  }
+
+  /* ── SECTION DIVIDER ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 16px 0;
+  }
+
+  /* ── FORMULAIRE MULTI-CRITÈRES (style SIOP) ── */
+  .criteria-form { display: flex; flex-direction: column; gap: 18px; }
+
+  .criteria-group {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .criteria-group-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 8px 14px;
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .criteria-group-title .dot {
+    width: 5px; height: 5px; border-radius: 50%; display: inline-block;
+  }
+  .criteria-group-title .dot.mol  { background: var(--purple); }
+  .criteria-group-title .dot.histo{ background: var(--cyan); }
+  .criteria-group-title .dot.meta { background: var(--red); }
+  .criteria-group-title .dot.resid{ background: var(--amber); }
+  .criteria-group-title .dot.myc  { background: var(--orange); }
+  .criteria-group-title .dot.age  { background: var(--green); }
+
+  .radio-group { display: flex; flex-direction: column; gap: 0; }
+  .radio-opt {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.15s;
+    font-size: 13px;
+    color: var(--text2);
+  }
+  .radio-opt:last-child { border-bottom: none; }
+  .radio-opt:hover { background: rgba(56,139,253,0.06); color: var(--text); }
+  .radio-opt input[type=radio] { display: none; }
+  .radio-custom {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border2);
+    flex-shrink: 0;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .radio-opt input[type=radio]:checked ~ .radio-custom {
+    border-color: var(--blue);
+    background: var(--blue);
+    box-shadow: 0 0 0 3px rgba(56,139,253,0.2);
+  }
+  .radio-opt input[type=radio]:checked ~ .radio-custom::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: white;
+  }
+  .radio-opt input[type=radio]:checked ~ .opt-label { color: var(--text); }
+  .opt-label { flex: 1; line-height: 1.4; }
+  .opt-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    display: block;
+    margin-top: 1px;
+  }
+
+  .btn-compute {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    color: var(--bg);
+    background: var(--blue);
+    border: none;
+    border-radius: 8px;
+    padding: 12px 22px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 4px;
+    align-self: flex-start;
+  }
+  .btn-compute:hover { background: #58a6ff; transform: translateY(-1px); }
+  .btn-compute:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+  /* ── CHIP TAG ── */
+  .chip {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+  }
+  .chip.wnt    { background: rgba(63,185,80,0.15);  color: var(--green);  border: 1px solid rgba(63,185,80,0.3); }
+  .chip.shh    { background: rgba(163,113,247,0.15);color: var(--purple); border: 1px solid rgba(163,113,247,0.3); }
+  .chip.non    { background: rgba(57,197,207,0.15); color: var(--cyan);   border: 1px solid rgba(57,197,207,0.3); }
+  .chip.lca    { background: rgba(248,81,73,0.15);  color: var(--red);    border: 1px solid rgba(248,81,73,0.3); }
+  .chip.m0     { background: rgba(56,139,253,0.12); color: var(--blue);   border: 1px solid rgba(56,139,253,0.28); }
+  .chip.mplus  { background: rgba(248,81,73,0.12);  color: var(--red);    border: 1px solid rgba(248,81,73,0.28); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-mark">MB</div>
+  <div class="header-info">
+    <div class="header-title">Médulloblastomes — Algorithme SFCE 2026</div>
+    <div class="header-sub">Recommandations SFCE · Groupe tumeurs embryonnaires · Janvier 2026</div>
+  </div>
+  <div class="header-right">
+    <span class="badge sfce">SFCE</span>
+    <span class="badge">RCPPI</span>
+    <button class="btn-reset" onclick="reset()">↺ Réinitialiser</button>
+  </div>
+</header>
+
+<div class="container">
+  <div class="progress-wrap">
+    <div class="progress-steps" id="progressDots"></div>
+    <div class="progress-label" id="progressLabel">Étape 1 sur —</div>
+  </div>
+  <div id="breadcrumb" class="breadcrumb"></div>
+  <div id="app"></div>
+  <div class="disclaimer">
+    Ces recommandations émanent du groupe SFCE « tumeurs embryonnaires du SNC » (janvier 2026).<br>
+    Elles ne peuvent se substituer aux décisions personnalisées prises en RCP/RCPPI.<br>
+    Validée par relecture RENOCLIP systématique. Protonthérapie à privilégier si disponible dans les délais.
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let history = [];
+let breadcrumbs = [];
+const maxSteps = 8;
+
+function reset() {
+  history = [];
+  breadcrumbs = [];
+  render('start');
+}
+
+function go(step, label) {
+  if (label) breadcrumbs.push(label);
+  history.push(step);
+  render(step);
+}
+
+function back() {
+  if (history.length > 1) {
+    history.pop();
+    breadcrumbs.pop();
+    render(history[history.length - 1]);
+  } else {
+    reset();
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDER ENGINE
+// ═══════════════════════════════════════════════════════
+function render(step) {
+  updateProgress(step);
+  updateBreadcrumb();
+  const app = document.getElementById('app');
+  const s = steps[step];
+  if (!s) { app.innerHTML = '<p style="color:var(--text2)">Étape inconnue.</p>'; return; }
+
+  let html = '';
+
+  if (history.length > 1) {
+    html += `<button class="btn-back" onclick="back()">← Retour</button>`;
+  }
+
+  if (s.type === 'question') {
+    html += `
+      <div class="step-card">
+        <div class="step-label">Étape ${history.length} · ${s.category || 'Évaluation'}</div>
+        <div class="step-question">${s.question}</div>
+        ${s.note ? `<div class="step-note ${s.noteType||''}">${s.note}</div>` : ''}
+        <div class="choices">
+          ${s.choices.map(c => `
+            <button class="choice-btn" onclick="go('${c.next}', '${escQ(c.label)}')">
+              <div class="choice-icon ${c.icon||'neutral'}">${c.emoji||'→'}</div>
+              <div>
+                <div class="choice-label">${c.label}</div>
+                ${c.sub ? `<div class="choice-sub">${c.sub}</div>` : ''}
+              </div>
+            </button>
+          `).join('')}
+        </div>
+      </div>`;
+  } else if (s.type === 'form') {
+    html += renderForm(s);
+  } else if (s.type === 'result') {
+    html += renderResult(s);
+  }
+
+  app.innerHTML = html;
+}
+
+function escQ(s) { return s.replace(/'/g, "\\'"); }
+
+function updateProgress(step) {
+  const dots = document.getElementById('progressDots');
+  const label = document.getElementById('progressLabel');
+  const n = history.length;
+  const isResult = steps[step]?.type === 'result';
+  const total = maxSteps;
+
+  let dotsHtml = '';
+  for (let i = 0; i < total; i++) {
+    let cls = '';
+    if (i < n - 1) cls = 'done';
+    else if (i === n - 1) cls = 'active';
+    dotsHtml += `<div class="step-dot ${cls}"></div>`;
+  }
+  dots.innerHTML = dotsHtml;
+  label.textContent = isResult ? '✓ Résultat' : `Étape ${n} sur ${total}`;
+}
+
+function updateBreadcrumb() {
+  const el = document.getElementById('breadcrumb');
+  if (breadcrumbs.length === 0) { el.innerHTML = ''; return; }
+  let html = breadcrumbs.map((b, i) =>
+    i < breadcrumbs.length - 1
+      ? `<span class="bc-item">${b}</span><span class="bc-sep">›</span>`
+      : `<span class="bc-current">${b}</span>`
+  ).join('');
+  el.innerHTML = html;
+}
+
+function renderForm(s) {
+  let html = `<div class="step-card">
+    <div class="step-label">Étape ${history.length} · ${s.category || 'Évaluation'}</div>
+    <div class="step-question">${s.question}</div>
+    ${s.note ? `<div class="step-note ${s.noteType||''}">${s.note}</div>` : ''}
+    <div class="criteria-form">`;
+
+  s.groups.forEach(g => {
+    html += `<div class="criteria-group">
+      <div class="criteria-group-title"><span class="dot ${g.dotCls||'mol'}"></span>${g.title}</div>
+      <div class="radio-group">`;
+    g.options.forEach(opt => {
+      html += `<label class="radio-opt">
+        <input type="radio" name="${g.name}" value="${opt.value}">
+        <div class="radio-custom"></div>
+        <span class="opt-label">${opt.label}${opt.sub ? `<span class="opt-sub">${opt.sub}</span>` : ''}</span>
+      </label>`;
+    });
+    html += `</div></div>`;
+  });
+
+  html += `</div>
+    <br>
+    <button class="btn-compute" onclick="${s.onCompute}()">Calculer le groupe de risque →</button>
+  </div>`;
+  return html;
+}
+
+// ═══════════════════════════════════════════════════════
+// CALCUL < 5 ANS
+// ═══════════════════════════════════════════════════════
+function computeLt5() {
+  const mol   = val('lt5_mol');
+  const hist  = val('lt5_hist');
+  const meta  = val('lt5_meta');
+  const resid = val('lt5_resid');
+  const myc   = val('lt5_myc');
+  const age2  = val('lt5_age2');
+
+  if (!mol || !hist || !meta || !resid || !myc || !age2) {
+    alert('Veuillez renseigner tous les critères avant de calculer.');
+    return;
+  }
+
+  // ── Critères de HAUT RISQUE ──
+  const isHR =
+    mol === 'shh_tp53mut' ||
+    myc === 'pos' ||
+    hist === 'lca' ||
+    (meta === 'mplus' && hist !== 'dmb_mben') ||    // M+ non-MBEN
+    (meta === 'mplus' && mol === 'cmb_nonshh') ||   // CMB M+
+    (resid === 'rplus' && meta === 'mplus');          // R+ M+
+
+  // ── Critères de BAS RISQUE ──
+  const isLR =
+    mol === 'shh_tp53wt' &&
+    hist === 'dmb_mben' &&
+    myc === 'neg' &&
+    meta === 'm0';
+
+  // ── Orientation ──
+  if (isHR) {
+    // < 2 ans M+ → option Head Start
+    if (age2 === 'lt2' && meta === 'mplus') {
+      go('result_headstart_hr', 'Haut risque < 2 ans M+');
+    } else {
+      go('result_pnet_hr5_lt5', 'Haut risque PNET HR+5 adapté');
+    }
+  } else if (isLR) {
+    // Bas risque SHH-TP53wt DMB/MBEN M0 → vérifier SUFU
+    go('lt5_lr_sufu', 'Bas risque SHH M0 DMB/MBEN');
+  } else {
+    // Risque standard
+    if (age2 === 'lt3') {
+      go('result_headstart', 'Risque standard < 3 ans');
+    } else {
+      // ≥ 3 ans SR → algorithme ≥ 5 ans
+      go('ge5_mol', 'Risque standard ≥ 3 ans → algo ≥ 5 ans');
+    }
+  }
+}
+
+function val(name) {
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? el.value : null;
+}
+
+// ═══════════════════════════════════════════════════════
+// RESULT RENDERER
+// ═══════════════════════════════════════════════════════
+function renderResult(s) {
+  let html = `<div class="result-card ${s.risk}">
+    <div class="result-risk-label ${s.risk}">${s.riskLabel}</div>
+    <div class="result-protocol">${s.protocol}</div>`;
+
+  if (s.chips) {
+    html += `<div style="margin-bottom:14px">${s.chips.map(c=>`<span class="chip ${c.cls}">${c.label}</span>`).join('')}</div>`;
+  }
+
+  if (s.alerts) {
+    s.alerts.forEach(a => {
+      html += `<div class="alert ${a.type}"><span class="alert-icon">${a.icon}</span><span>${a.text}</span></div>`;
+    });
+  }
+
+  // RT block
+  if (s.rt) {
+    html += `<div class="tx-grid">`;
+    // RT column
+    html += `<div class="tx-block">
+      <div class="tx-block-label"><span class="rt"></span>Radiothérapie</div>`;
+    s.rt.forEach(item => {
+      html += `<div class="tx-item">
+        <span class="tx-item-name">${item.name}</span>
+        <span class="tx-item-val">${item.val}</span>
+      </div>`;
+    });
+    html += `</div>`;
+
+    // Chemo column
+    if (s.chemo) {
+      html += `<div class="tx-block">
+        <div class="tx-block-label"><span class="chemo"></span>Chimiothérapie</div>`;
+      s.chemo.forEach(item => {
+        html += `<div class="tx-item">
+          <span class="tx-item-name">${item.name}</span>
+          <span class="tx-item-val chemo">${item.val}</span>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+    html += `</div>`;
+  }
+
+  // HD block
+  if (s.hd) {
+    html += `<div class="tx-block-full">
+      <div class="tx-block-label"><span class="hd"></span>Chimiothérapie haute dose</div>`;
+    s.hd.forEach(item => {
+      html += `<div class="tx-item">
+        <span class="tx-item-name">${item.name}</span>
+        <span class="tx-item-val hd">${item.val}</span>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  // RT dose table (age-stratified)
+  if (s.rtTable) {
+    html += `<div class="tx-block-full">
+      <div class="tx-block-label"><span class="rt"></span>Doses de radiothérapie selon l'âge</div>
+      <table class="rt-table">
+        <thead><tr>
+          <th>Âge</th><th>CSI (Gy)</th><th>Lit tumoral (Gy)</th><th>Résidu tumoral* (Gy)</th><th>Site méta (Gy)</th>
+        </tr></thead>
+        <tbody>`;
+    s.rtTable.forEach(row => {
+      html += `<tr><td>${row.age}</td><td class="dose">${row.csi}</td><td class="dose">${row.lt}</td><td class="dose">${row.res||'—'}</td><td class="dose">${row.meta||'—'}</td></tr>`;
+    });
+    html += `</tbody></table>
+      <div style="font-size:10.5px;color:var(--text3);margin-top:8px">* Surimpressions délivrées uniquement si lésions mesurables persistant après chimiothérapie haute dose</div>
+    </div>`;
+  }
+
+  // Notes
+  if (s.notes) {
+    html += `<hr class="divider">`;
+    s.notes.forEach(n => {
+      html += `<div class="alert ${n.type||'info'}"><span class="alert-icon">${n.icon||'ℹ'}</span><span>${n.text}</span></div>`;
+    });
+  }
+
+  html += `</div>`;
+
+  // restart
+  html += `<div style="text-align:center;margin-top:16px">
+    <button class="btn-back" onclick="reset()" style="font-size:11px">← Nouvel algorithme</button>
+  </div>`;
+
+  return html;
+}
+
+// ═══════════════════════════════════════════════════════
+// STEP DEFINITIONS
+// ═══════════════════════════════════════════════════════
+const steps = {
+
+  // ─────────────────────────────────────────────
+  // START : âge
+  // ─────────────────────────────────────────────
+  start: {
+    type: 'question',
+    category: 'Critère clinique',
+    question: 'Quel est l\'âge du patient au diagnostic ?',
+    note: 'Le seuil de 5 ans conditionne deux arbres décisionnels distincts (SFCE 2026).',
+    choices: [
+      { label: '< 5 ans', sub: 'Moins de 5 ans au diagnostic', icon: 'age', emoji: '👶', next: 'lt5_stage' },
+      { label: '≥ 5 ans', sub: '5 ans et plus au diagnostic', icon: 'age', emoji: '🧒', next: 'ge5_mol' },
+    ]
+  },
+
+  // ═══════════════════════════════════════════════
+  // BRANCHE < 5 ANS — FORMULAIRE MULTI-CRITÈRES
+  // ═══════════════════════════════════════════════
+
+  lt5_stage: {
+    type: 'form',
+    category: '< 5 ans · Critères de stratification',
+    question: 'Renseignez les critères clinico-biologiques',
+    note: 'Complétez tous les critères. Le groupe de risque sera calculé selon l\'arbre SFCE 2026.',
+    onCompute: 'computeLt5',
+    groups: [
+      {
+        name: 'lt5_mol', title: 'Sous-groupe moléculaire', dotCls: 'mol',
+        options: [
+          { value: 'shh_tp53wt',  label: 'SHH activé — TP53 sauvage',
+            sub: 'IHC : filamine A+, GAB1+, YAP1+ ; TP53 non muté' },
+          { value: 'shh_tp53mut', label: 'SHH activé — TP53 muté',
+            sub: 'Haut risque systématique · Li-Fraumeni à exclure' },
+          { value: 'wnt',         label: 'WNT activé',
+            sub: 'β-caténine nucléaire + CTNNB1 muté (+ conf. supplémentaire)' },
+          { value: 'cmb_nonshh',  label: 'Non-WNT / Non-SHH (Groupe 3 & 4)',
+            sub: 'CMB, histologie non desmoplasique' },
+        ]
+      },
+      {
+        name: 'lt5_hist', title: 'Histologie', dotCls: 'histo',
+        options: [
+          { value: 'dmb_mben', label: 'DMB / MBEN',
+            sub: 'Desmoplasique nodulaire ou à nodularité extensive' },
+          { value: 'cmb',      label: 'CMB — Médulloblastome classique' },
+          { value: 'lca',      label: 'LCA — Grandes cellules / Anaplasique',
+            sub: 'Facteur de haut risque systématique' },
+        ]
+      },
+      {
+        name: 'lt5_meta', title: 'Stade métastatique (Chang)', dotCls: 'meta',
+        options: [
+          { value: 'm0',    label: 'M0 — Localisé' },
+          { value: 'mplus', label: 'M+ — Métastatique (M1 à M4)',
+            sub: 'Dissémination méningée, ventriculaire ou spinale' },
+        ]
+      },
+      {
+        name: 'lt5_resid', title: 'Résidu post-opératoire (IRM < 72h)', dotCls: 'resid',
+        options: [
+          { value: 'r0',    label: 'R0 — Résidu < 1,5 cm²' },
+          { value: 'rplus', label: 'R+ — Résidu ≥ 1,5 cm²',
+            sub: 'Résidu isolé sans autre FR : peut rester risque standard' },
+        ]
+      },
+      {
+        name: 'lt5_myc', title: 'Amplification MYC / MYCN (FISH ou NGS)', dotCls: 'myc',
+        options: [
+          { value: 'neg', label: 'Non amplifié — MYC et MYCN négatifs' },
+          { value: 'pos', label: 'Amplifié — MYC et/ou MYCN positif',
+            sub: 'Haut risque systématique' },
+        ]
+      },
+      {
+        name: 'lt5_age2', title: 'Âge précis', dotCls: 'age',
+        options: [
+          { value: 'lt2',  label: '< 2 ans' },
+          { value: 'lt3',  label: '2 ans – < 3 ans' },
+          { value: 'ge3',  label: '3 ans – < 5 ans',
+            sub: 'Si risque standard : protocole MB ≥ 5 ans applicable' },
+        ]
+      },
+    ]
+  },
+
+  // ── BAS RISQUE M0 SHH : vérification SUFU ──
+  lt5_lr_sufu: {
+    type: 'question',
+    category: '< 5 ans · Bas risque · Moléculaire',
+    question: 'Mutation somatique de SUFU présente ?',
+    note: 'Doit être recherchée systématiquement chez tous les < 5 ans SHH-TP53wt, en particulier si : perte d\'hétérozygotie 10q, délétion chr9, histologie DMB/MBEN. En cas de positivité : consultation oncogénétique + dépistage syndrome de Gorlin.',
+    noteType: 'warn',
+    choices: [
+      { label: 'Absence de mutation SUFU', sub: 'ou résultat en attente → HIT SKK', icon: 'yes', emoji: '−', next: 'result_hitskk' },
+      { label: 'Mutation SUFU présente', sub: 'Redirection risque standard → Head Start II/IV', icon: 'mol', emoji: '⚠', next: 'result_headstart_sufu' },
+    ]
+  },
+
+  // ═══════════════════════════════════════════════
+  // BRANCHE ≥ 5 ANS
+  // ═══════════════════════════════════════════════
+
+  ge5_mol: {
+    type: 'question',
+    category: '≥ 5 ans · Sous-groupe moléculaire',
+    question: 'Sous-groupe moléculaire (classification OMS 2021) ?',
+    note: 'Identification requise : IHC (β-caténine, LEF1, p75, FilamineA, YAP1, OTX2, GAB1) + FISH MYC/NMYC + statut TP53 somatique.',
+    choices: [
+      { label: 'WNT-activated', sub: 'Mutation CTNNB1 + confirmations moléculaires supplémentaires', icon: 'mol', emoji: 'W', next: 'ge5_wnt_criteria' },
+      { label: 'SHH-activated TP53 sauvage', sub: 'MYC non amplifié', icon: 'mol', emoji: 'S', next: 'ge5_shh_wt_m' },
+      { label: 'SHH-activated TP53 muté', sub: 'ou MYCN-amplifié', icon: 'no', emoji: '⚠', next: 'result_pnet_hr5_ge5' },
+      { label: 'Non-WNT / Non-SHH (Gr. 3 & 4)', sub: 'Voir sous-critères cliniques', icon: 'neutral', emoji: 'N', next: 'ge5_nonwnt_m' },
+    ]
+  },
+
+  // WNT ≥ 5 ANS
+  ge5_wnt_criteria: {
+    type: 'question',
+    category: '≥ 5 ans · WNT',
+    question: 'Critères complets du bras LR PNET5 MB tous réunis ?',
+    note: '✓ Age < 16 ans · ✓ R0 (résidu ≤ 1,5 cm²) · ✓ M0 · ✓ Histologie classique ou desmoplasique · ✓ Mutation CTNNB1 ET ≥ 1 caractéristique WNT supplémentaire (monosomie 6 et/ou profil méthylation/ARN accrédité) · Absence de paramètre biologique incompatible. <br><br><strong style="color:var(--amber)">Attention :</strong> β-caténine nucléaire seule est insuffisante pour définir le statut WNT.',
+    noteType: 'warn',
+    choices: [
+      { label: 'Tous les critères réunis', sub: 'PNET5 MB Low Risk', icon: 'yes', emoji: '✓', next: 'result_pnet5_lr' },
+      { label: 'Critères incomplets / mutation APC constitutionnelle', sub: 'Discussion collégiale d\'experts requise', icon: 'no', emoji: '⚠', next: 'result_wnt_discussion' },
+    ]
+  },
+
+  // SHH TP53wt ≥ 5 ANS
+  ge5_shh_wt_m: {
+    type: 'question',
+    category: '≥ 5 ans · SHH-TP53wt',
+    question: 'Statut métastatique et résidu tumoral ?',
+    choices: [
+      { label: 'M0 + R0 + MYC non amplifié', sub: 'Risque standard → PNET5 MB SR', icon: 'yes', emoji: '✓', next: 'result_pnet5_sr' },
+      { label: 'M0 + R+ sans autre facteur de risque histo-biologique', sub: 'Résidu isolé → démarche VP-Carboplatine', icon: 'neutral', emoji: '△', next: 'ge5_rplus_vp' },
+      { label: 'M+ ou MYC-amplifié', sub: 'Haut risque → PNET HR+5', icon: 'no', emoji: '⚠', next: 'result_pnet_hr5_ge5' },
+    ]
+  },
+
+  // Non-WNT/Non-SHH ≥ 5 ANS
+  ge5_nonwnt_m: {
+    type: 'question',
+    category: '≥ 5 ans · Non-WNT/Non-SHH',
+    question: 'Facteurs de haut risque présents ?',
+    note: 'Haut risque si : M+, LCA, MYC-amplifié, MYCN-amplifié.',
+    choices: [
+      { label: 'Aucun facteur HR — M0, R0, non-LCA, MYC/MYCN négatif', sub: 'Risque standard → PNET5 MB SR', icon: 'yes', emoji: '✓', next: 'result_pnet5_sr' },
+      { label: 'M0 + R+ sans autre facteur de risque histo-biologique', sub: 'Résidu isolé → démarche VP-Carboplatine', icon: 'neutral', emoji: '△', next: 'ge5_rplus_vp' },
+      { label: 'M+ ou LCA ou MYC-amplifié', sub: 'Haut risque → PNET HR+5', icon: 'no', emoji: '⚠', next: 'result_pnet_hr5_ge5' },
+    ]
+  },
+
+  // ── R+ M0 SANS FR HISTO-BIOLOGIQUE ≥ 5 ANS ──
+  ge5_rplus_vp: {
+    type: 'question',
+    category: '≥ 5 ans · R+ M0 sans FR · 2 VP-Carboplatine',
+    question: 'Statut après chimiothérapie (2 VP-Carboplatine) ± chirurgie ?',
+    note: 'Démarche : 2 VP-Carboplatine néoadjuvants → évaluation IRM → chirurgie complémentaire si possible → orientation selon résultat final. La dose de CSI reste à 23,4 Gy dans ce contexte R+ M0 sans FR histo-biologique.',
+    choices: [
+      { label: 'Rémission complète', sub: 'Après chimiothérapie +/− chirurgie → PNET5 MB SR', icon: 'yes', emoji: '✓', next: 'result_rplus_pnetsr' },
+      { label: 'Résidu tumoral persistant', sub: 'Non réséquable en fin de séquence → PNET HR+5', icon: 'no', emoji: '✗', next: 'result_rplus_pnethr' },
+    ]
+  },
+
+  // ═══════════════════════════════════════════════
+  // RESULTS
+  // ═══════════════════════════════════════════════
+
+  result_hitskk: {
+    type: 'result',
+    risk: 'low',
+    riskLabel: 'Bas risque · < 5 ans · M0',
+    protocol: 'HIT SKK',
+    chips: [
+      { cls: 'shh', label: 'SHH-TP53wt' },
+      { cls: 'wnt', label: 'DMB / MBEN' },
+      { cls: 'm0', label: 'M0' },
+      { cls: 'm0', label: 'MYC/MYCN négatif' },
+    ],
+    alerts: [
+      { type: 'info', icon: 'ℹ', text: '3 cycles complets (2 mois chacun). Évaluation radiologique après chaque cycle. En rémission complète après 3 cycles : fin de traitement.' },
+      { type: 'warn', icon: '⚠', text: 'Patients avec dérivation intraventriculaire : orienter vers Head Start II/IV (pas d\'injections intraventriculaires possibles).' },
+    ],
+    chemo: [
+      { name: 'Cycle CPM/VCR', val: '3 cycles' },
+      { name: 'Cyclophosphamide', val: '800 mg/m²/j J1–3' },
+      { name: 'MTX HD IV', val: '5 g/m² 24h' },
+      { name: 'MTX intraventriculaire', val: '2 mg/j J1–4' },
+      { name: 'VP16-Carboplatine', val: 'CBDCA 200 mg/m²/j' },
+      { name: 'Vincristine', val: '1,5 mg/m² (max 2 mg)' },
+    ],
+    notes: [
+      { type: 'warn', icon: '⚠', text: 'En l\'absence de rémission complète : chirurgie du résidu. Si résidu viable ou non RC après 5 cycles : 2 cycles sans MTX systémique ni intraventriculaire.' },
+      { type: 'info', icon: '📉', text: 'Réduction de dose selon l\'âge : < 6 mois → 2/3 de dose (MTX-IV 1 mg/j) ; 7–12 mois → 4/5 de dose ; > 13 mois → dose pleine.' },
+      { type: 'danger', icon: '☢', text: 'Radiothérapie focale (54 Gy) réservée aux patients CMB/LCA ou DMB/MBEN avec résidu tumoral — non utilisée en première ligne systématique.' },
+    ]
+  },
+
+  result_headstart_sufu: {
+    type: 'result',
+    risk: 'sr',
+    riskLabel: 'Bas risque reclassé Risque standard · SUFU muté',
+    protocol: 'Head Start II/IV',
+    chips: [
+      { cls: 'shh', label: 'SHH-TP53wt' },
+      { cls: 'shh', label: 'SUFU muté' },
+      { cls: 'wnt', label: 'DMB / MBEN' },
+      { cls: 'm0',  label: 'M0' },
+    ],
+    alerts: [
+      { type: 'warn', icon: '⚠', text: 'Initialement classé bas risque (SHH-TP53wt DMB/MBEN M0 MYC/MYCN nég), mais la mutation SUFU reclasse le patient en <strong>risque standard</strong>. Les données pronostiques sont contradictoires (petites cohortes) ; dans l\'attente de séries plus larges, le traitement de risque standard est recommandé.' },
+      { type: 'danger', icon: '🧬', text: '<strong>Consultation oncogénétique obligatoire.</strong> Recherche d\'un syndrome de Gorlin (mutation constitutionnelle SUFU ou PTCH1). <strong>La radiothérapie doit être évitée en première ligne en cas de syndrome de Gorlin confirmé</strong> (risque accru de tumeurs secondaires). Head Start II/IV permet de différer ou éviter la RT.' },
+    ],
+    chemo: [
+      { name: 'Induction Head Start II/IV', val: '3–5 cycles' },
+      { name: 'Début', val: '≤ J28 post-op' },
+      { name: 'Cisplatine', val: '3,5 mg/kg/j J1' },
+      { name: 'Cyclophosphamide', val: '65 mg/kg/j J2–3' },
+      { name: 'Étoposide', val: '4 mg/kg/j J2–3' },
+      { name: 'Vincristine', val: '0,05 mg/kg/j (cycles 1–3)' },
+    ],
+    hd: [
+      { name: 'Cytaphérèse', val: 'Post-cycle 1 ou 2 induction' },
+      { name: 'Carboplatine / Thiotepa / Étoposide', val: 'Consolidation HD' },
+      { name: 'Réinjection CSP', val: 'J0 (≥3×10⁶ CD34/kg)' },
+    ],
+    notes: [
+      { type: 'info', icon: 'ℹ', text: 'Pour éviter tout retard thérapeutique en attente des résultats SUFU constitutionnels, une cure d\'attente VP16-Carboplatine peut être administrée.' },
+      { type: 'info', icon: '☢', text: 'Radiothérapie à discuter après chimiothérapie haute dose selon réponse et contexte génétique (éviter si Gorlin confirmé).' },
+    ]
+  },
+
+  result_headstart: {
+    type: 'result',
+    risk: 'sr',
+    riskLabel: 'Risque standard / Bas risque M+ · < 5 ans',
+    protocol: 'Head Start II/IV',
+    chips: [
+      { cls: 'm0', label: '< 3 ans' },
+      { cls: 'mplus', label: 'M+ ou SR <3 ans' },
+    ],
+    alerts: [
+      { type: 'info', icon: 'ℹ', text: 'Chimiothérapie d\'induction à débuter avant J28 post-opératoire. 3 cycles d\'induction tous les 21–28 jours. En absence de rémission complète après 3 cycles : 2 cycles supplémentaires sans vincristine.' },
+    ],
+    chemo: [
+      { name: 'Induction (cycles impairs)', val: '5 cycles max' },
+      { name: 'Cisplatine', val: '3,5 mg/kg/j J1' },
+      { name: 'Cyclophosphamide', val: '65 mg/kg/j J2–3' },
+      { name: 'Étoposide', val: '4 mg/kg/j J2–3' },
+      { name: 'MTX HD', val: '400 mg/kg/j J4' },
+      { name: 'Vincristine', val: '0,05 mg/kg/j (max 2 mg)' },
+    ],
+    hd: [
+      { name: 'Cytaphérèse', val: 'Post-cycle 1 ou 2 induction' },
+      { name: 'Carboplatine', val: '16,7 mg/kg/j J-8 à J-6' },
+      { name: 'Thiotepa', val: '10 mg/kg/j J-5 à J-3' },
+      { name: 'Étoposide', val: '8,3 mg/kg/j J-5 à J-3' },
+      { name: 'Réinjection CSP', val: 'J0 (≥3×10⁶ CD34/kg)' },
+    ],
+    notes: [
+      { type: 'warn', icon: '⚠', text: 'Chirurgie du résidu avant consolidation si résidu tumoral présent. Évaluation radiologique après cure 3, puis après cure 5 si nécessaire, puis après chimiothérapie haute dose.' },
+      { type: 'info', icon: '☢', text: 'Radiothérapie discutée après chimiothérapie haute dose selon : pathologie, âge, caractère métastatique, résidu en fin de traitement et réponse à la chimiothérapie (cf protocole spécifique).' },
+    ]
+  },
+
+  result_headstart_hr: {
+    type: 'result',
+    risk: 'hr',
+    riskLabel: 'Haut risque · < 2 ans · M+',
+    protocol: 'Head Start II/IV (option HR < 2 ans M+)',
+    chips: [
+      { cls: 'mplus', label: 'M+' },
+      { cls: 'm0', label: '< 2 ans' },
+      { cls: 'lca', label: 'Haut risque' },
+    ],
+    alerts: [
+      { type: 'warn', icon: '⚠', text: 'Option Head Start II/IV pour les patients de haut risque de moins de 2 ans présentant un médulloblastome métastatique. Décision en RCP/RCPPI.' },
+      { type: 'info', icon: 'ℹ', text: 'Protocole identique Head Start II = Head Start IV pour la phase d\'induction. La chimiothérapie d\'induction doit débuter avant J28 post-opératoire.' },
+    ],
+    chemo: [
+      { name: 'Induction', val: '3–5 cycles' },
+      { name: 'Cisplatine', val: '3,5 mg/kg/j' },
+      { name: 'Cyclophosphamide', val: '65 mg/kg/j + Uromitexan' },
+      { name: 'Vincristine', val: '0,05 mg/kg/j (cycles 1–3)' },
+    ],
+    hd: [
+      { name: 'Carboplatine / Thiotepa / Étoposide', val: 'Consolidation HD' },
+      { name: 'Réinjection CSP', val: 'J0 (≥3×10⁶ CD34/kg)' },
+    ],
+    notes: [
+      { type: 'info', icon: '☢', text: 'Radiothérapie à discuter après chimiothérapie haute dose selon pathologie, âge et réponse thérapeutique.' },
+    ]
+  },
+
+  result_pnet_hr5_lt5: {
+    type: 'result',
+    risk: 'hr',
+    riskLabel: 'Haut risque · < 5 ans · PNET HR+5 adapté',
+    protocol: 'PNET HR+5 (doses adaptées à l\'âge)',
+    chips: [
+      { cls: 'lca', label: 'Haut risque' },
+      { cls: 'm0', label: '< 5 ans' },
+    ],
+    alerts: [
+      { type: 'warn', icon: '⚠', text: 'En attendant l\'ouverture des futures études, le protocole PNET HR+5 est appliqué avec adaptation des doses de RT craniospinale à l\'âge (cf schémas thérapeutiques et webconf nationale RT).' },
+      { type: 'danger', icon: '🧬', text: 'Les doses d\'irradiation chez les < 5 ans doivent être validées en webconf nationale de radiothérapie.' },
+    ],
+    chemo: [
+      { name: '2 cures néoadjuvantes VP16-Carboplatine', val: 'à 3 sem.' },
+      { name: 'Carboplatine', val: '160 mg/m²/j J1–5' },
+      { name: 'Étoposide', val: '100 mg/m²/j J1–5' },
+      { name: 'Cytaphérèse', val: 'En aplasie cure 1 ou 2' },
+    ],
+    hd: [
+      { name: 'Thiotepa HD ×2', val: '200 mg/m²/j J-3 à J-1' },
+      { name: 'Dose totale Thiotepa', val: '600 mg/m² par cure' },
+      { name: 'Délai 2e cure HD', val: '≤ 110 j après diagnostic' },
+      { name: 'Réinjection CSP', val: 'J0 (≥3×10⁶ CD34/kg)' },
+    ],
+    rtTable: [
+      { age: '< 3 ans', csi: '18', lt: '50,4', res: '54', meta: '30,6 / 50,4' },
+      { age: '3 < age < 5 ans', csi: '23,4', lt: '54', res: '59,4', meta: '36 / 54' },
+    ],
+    notes: [
+      { type: 'info', icon: 'ℹ', text: 'RT à débuter au plus tard 45 jours après la dernière cure de HD et 150 jours après le diagnostic. Fractionnement conventionnel 1,8 Gy/j.' },
+      { type: 'info', icon: '💊', text: 'Témozolomide d\'entretien : 150 mg/m²/j × 5j tous les 28j (6 cycles), à débuter 1 à 3 mois après la fin de l\'ICS.' },
+    ]
+  },
+
+  result_pnet5_lr: {
+    type: 'result',
+    risk: 'low',
+    riskLabel: 'Bas risque · ≥ 5 ans · WNT',
+    protocol: 'PNET5 MB Low Risk',
+    chips: [
+      { cls: 'wnt', label: 'WNT-activated' },
+      { cls: 'm0', label: 'M0' },
+      { cls: 'm0', label: 'R0' },
+      { cls: 'm0', label: '< 16 ans' },
+    ],
+    alerts: [
+      { type: 'info', icon: 'ℹ', text: 'Basé sur les premiers résultats positifs du bras LR de PNET5 MB. RT à débuter dans les 28 jours suivant la chirurgie (maximum 40 jours).' },
+    ],
+    rt: [
+      { name: 'CSI', val: '18 Gy' },
+      { name: 'Boost tumeur primitive', val: '36 Gy' },
+      { name: 'Dose totale', val: '54 Gy' },
+      { name: 'Délai post-op', val: '≤ 28 j (max 40 j)' },
+    ],
+    chemo: [
+      { name: '6 cures B-A (3 cycles)', val: '6 cures' },
+      { name: 'Cisplatine', val: '70 mg/m² J1' },
+      { name: 'CCNU (per os)', val: '75 mg/m² J1' },
+      { name: 'Cyclophosphamide', val: '1000 mg/m² J1–2' },
+      { name: 'Vincristine', val: '1,5 mg/m² J1,8,15' },
+    ],
+    notes: [
+      { type: 'info', icon: '☢', text: 'Protonthérapie à privilégier si disponible dans les délais. En photonthérapie : IMRT recommandée.' },
+      { type: 'warn', icon: '⚠', text: 'Mutation constitutionnelle APC : critère de non-inclusion dans le bras LR. Discussion collégiale d\'experts requise.' },
+    ]
+  },
+
+  result_pnet5_sr: {
+    type: 'result',
+    risk: 'sr',
+    riskLabel: 'Risque standard · ≥ 5 ans',
+    protocol: 'PNET5 MB Standard Risk',
+    chips: [
+      { cls: 'wnt', label: 'WNT < 16 ans SR' },
+      { cls: 'shh', label: 'SHH-TP53wt M0R0' },
+      { cls: 'non', label: 'Non-WNT/non-SHH M0' },
+    ],
+    alerts: [
+      { type: 'info', icon: 'ℹ', text: 'RT à débuter dans les 28 jours suivant la chirurgie (maximum 40 jours). Chimiothérapie concomitante puis adjuvante.' },
+    ],
+    rt: [
+      { name: 'CSI', val: '23,4 Gy' },
+      { name: 'Boost lit tumoral', val: '54 Gy (total)' },
+      { name: 'CTV', val: 'GTV + 1 cm (0,5 cm post. si protons)' },
+      { name: 'Fractionnement', val: '1,8 ou 2 Gy/séance' },
+      { name: 'Délai post-op', val: '≤ 28 j (max 40 j)' },
+    ],
+    chemo: [
+      { name: '8 cures B-A (4 cycles)', val: '8 cures' },
+      { name: 'Cisplatine', val: '70 mg/m² J1' },
+      { name: 'CCNU (per os)', val: '75 mg/m² J1' },
+      { name: 'Cyclophosphamide', val: '1000 mg/m²/j J1–2' },
+      { name: 'Vincristine', val: '1,5 mg/m² J1,8,15' },
+    ],
+    notes: [
+      { type: 'info', icon: '☢', text: 'Protonthérapie à privilégier si disponible dans les délais. En photonthérapie : IMRT recommandée.' },
+      { type: 'warn', icon: '⚠', text: 'Le bifractionnement (MSFOP) n\'est pas recommandé pour les MB non-WNT (EFS inférieure). Il peut se discuter uniquement chez les patients WNT R0M0 ou en cas de refus de chimiothérapie.' },
+    ]
+  },
+
+  result_pnet_hr5_ge5: {
+    type: 'result',
+    risk: 'hr',
+    riskLabel: 'Haut risque · ≥ 5 ans',
+    protocol: 'PNET HR+5',
+    chips: [
+      { cls: 'mplus', label: 'M+' },
+      { cls: 'lca', label: 'LCA' },
+      { cls: 'shh', label: 'SHH-TP53 muté' },
+      { cls: 'shh', label: 'MYCN-amplifié' },
+      { cls: 'lca', label: 'MYC-amplifié' },
+    ],
+    alerts: [
+      { type: 'danger', icon: '⚠', text: 'La chimiothérapie doit débuter le plus rapidement possible après le diagnostic histologique. La 2e cure HD ne doit pas être débutée > 110 jours après le diagnostic. Si ce délai ne peut être respecté : passer directement à la radiothérapie.' },
+    ],
+    chemo: [
+      { name: '2 cures néoadjuvantes VP16-Carboplatine', val: 'à 3 sem.' },
+      { name: 'Carboplatine', val: '160 mg/m²/j J1–5' },
+      { name: 'Étoposide', val: '100 mg/m²/j J1–5' },
+      { name: 'Cytaphérèse', val: 'En aplasie cure 1 ou 2' },
+    ],
+    hd: [
+      { name: 'Thiotepa HD ×2 (21 j d\'intervalle)', val: '600 mg/m²/cure' },
+      { name: 'Thiotepa par jour', val: '200 mg/m²/j J-3 à J-1' },
+      { name: 'Délai maximum 2e HD', val: '≤ 110 j post-diagnostic' },
+      { name: 'Réinjection CSP', val: 'J0 (≥3×10⁶ CD34/kg)' },
+    ],
+    rt: [
+      { name: 'CSI', val: '36 Gy' },
+      { name: 'Boost lit tumoral', val: '54 Gy (total)' },
+      { name: 'Délai post-HD', val: '≤ 45 jours' },
+      { name: 'Délai post-diagnostic', val: '≤ 150 jours' },
+      { name: 'Fractionnement', val: '1,8 Gy/j' },
+    ],
+    notes: [
+      { type: 'info', icon: '💊', text: 'Témozolomide d\'entretien : 150 mg/m²/j × 5j/28j (6 cycles), à débuter 1 à 3 mois après fin de l\'ICS. Adaptation possible à 120 mg/m²/j selon tolérance hématologique.' },
+      { type: 'warn', icon: '⚠', text: 'Surimpression résidu tumoral (59,4 Gy) et sites métastatiques uniquement si lésions mesurables persistant après les 2 cures de thiotepa HD.' },
+      { type: 'info', icon: '☢', text: 'Protonthérapie à privilégier si disponible. RT R+ M0 sans facteur de risque histo-biologique : dose CSI peut être réduite à 23,4 Gy.' },
+    ],
+    rtTable: [
+      { age: '≥ 5 ans', csi: '36', lt: '54', res: '59,4', meta: '39,6 / 54' },
+    ]
+  },
+
+  // ── RÉSULTATS R+ M0 ──
+  result_rplus_pnetsr: {
+    type: 'result',
+    risk: 'sr',
+    riskLabel: 'R+ M0 sans FR · RC obtenue → Risque standard',
+    protocol: 'PNET5 MB Standard Risk',
+    chips: [
+      { cls: 'm0', label: 'R+ initial' },
+      { cls: 'm0', label: 'M0' },
+      { cls: 'wnt', label: 'RC après VP-Carboplatine' },
+    ],
+    alerts: [
+      { type: 'info', icon: 'ℹ', text: 'Après 2 VP-Carboplatine et chirurgie permettant la rémission complète, le traitement rejoint le protocole risque standard. La dose de CSI peut être réduite à 23,4 Gy (au lieu de 36 Gy du haut risque) dans ce contexte R+ M0 sans autre facteur histo-biologique.' },
+    ],
+    rt: [
+      { name: 'CSI', val: '23,4 Gy' },
+      { name: 'Boost lit tumoral', val: '54 Gy (total)' },
+      { name: 'Fractionnement', val: '1,8 ou 2 Gy/séance' },
+    ],
+    chemo: [
+      { name: '8 cures B-A (4 cycles)', val: '8 cures' },
+      { name: 'Cisplatine', val: '70 mg/m² J1' },
+      { name: 'CCNU (per os)', val: '75 mg/m² J1' },
+      { name: 'Cyclophosphamide', val: '1000 mg/m²/j J1–2' },
+      { name: 'Vincristine', val: '1,5 mg/m² J1,8,15' },
+    ],
+    notes: [
+      { type: 'info', icon: '☢', text: 'Protonthérapie à privilégier si disponible. RT à organiser dans les 40 jours suivant la dernière chirurgie.' },
+    ]
+  },
+
+  result_rplus_pnethr: {
+    type: 'result',
+    risk: 'hr',
+    riskLabel: 'R+ M0 sans FR · Résidu non réséquable → PNET HR+5',
+    protocol: 'PNET HR+5',
+    chips: [
+      { cls: 'm0', label: 'R+ persistant' },
+      { cls: 'm0', label: 'M0' },
+      { cls: 'lca', label: 'Chirurgie RC impossible' },
+    ],
+    alerts: [
+      { type: 'warn', icon: '⚠', text: 'Résidu tumoral persistant non réséquable après 2 VP-Carboplatine. La nature tumorale du résidu doit être validée collégialement avant toute décision. Une biopsie peut être discutée pour évaluer la réponse histologique.' },
+      { type: 'info', icon: 'ℹ', text: 'La dose de CSI reste à 23,4 Gy dans ce contexte R+ M0 sans autre facteur histo-biologique (non 36 Gy). Le boost sur le résidu tumoral atteint 59,4 Gy.' },
+    ],
+    rt: [
+      { name: 'CSI', val: '23,4 Gy' },
+      { name: 'Boost lit tumoral', val: '54 Gy (total)' },
+      { name: 'Surimpression résidu', val: '59,4 Gy' },
+      { name: 'Fractionnement', val: '1,8 Gy/j' },
+    ],
+    chemo: [
+      { name: 'Voir schéma PNET HR+5', val: 'HD Thiotepa ×2' },
+      { name: 'Témozolomide entretien', val: '6 cycles post-RT' },
+    ],
+    notes: [
+      { type: 'info', icon: 'ℹ', text: 'La surimpression sur le résidu tumoral n\'est délivrée que s\'il persiste des lésions mesurables après les 2 cures de Thiotepa HD.' },
+      { type: 'info', icon: '☢', text: 'Protonthérapie à privilégier si disponible dans les délais.' },
+    ]
+  },
+
+  result_wnt_discussion: {
+    type: 'result',
+    risk: 'special',
+    riskLabel: 'Discussion collégiale d\'experts',
+    protocol: 'MB WNT — Critères incomplets / APC constitutionnel',
+    chips: [
+      { cls: 'wnt', label: 'WNT-activated' },
+    ],
+    alerts: [
+      { type: 'danger', icon: '⚠', text: 'Une mutation constitutionnelle d\'APC est un critère de non-inclusion dans le bras LR de PNET5 MB. La prise en charge de ces patients nécessite une discussion collégiale d\'experts (tumeurs de Turcot, risque de second cancer colorectal).' },
+      { type: 'warn', icon: '🧬', text: 'Si les critères WNT ne sont pas tous réunis (notamment absence de mutation CTNNB1 confirmée + caractéristique moléculaire supplémentaire accréditée), orienter vers <span onclick="go(\'result_pnet5_sr\',\'WNT critères incomplets → PNET5 MB SR\')" style="color:var(--blue);text-decoration:underline;text-underline-offset:2px;cursor:pointer">PNET5 MB SR par défaut →</span>' },
+    ],
+    notes: [
+      { type: 'info', icon: 'ℹ', text: 'β-caténine nucléaire seule est insuffisante pour définir le statut WNT et ne justifie pas le bras LR. Profilage de méthylation ou profil ARN accrédité requis.' },
+      { type: 'info', icon: 'ℹ', text: 'En cas de doute sur le sous-groupe : consulter le laboratoire de génétique moléculaire pour compléments d\'analyse (NanoString, RNAseq, panel DRAGON, profil méthylation nanopore).' },
+    ]
+  },
+
+};
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+reset();
+</script>
+</body>
+</html>
