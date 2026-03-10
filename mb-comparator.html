@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Médulloblastomes · Comparateur ARIA / SIOP / SFCE</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e14;
+  --surface: #111620;
+  --surface2: #171d28;
+  --surface3: #1c2332;
+  --border: #252e3d;
+  --border2: #2e3a4e;
+  --text: #dde5f0;
+  --text2: #8494ab;
+  --text3: #4e5f75;
+  --aria:  #f0883e;
+  --siop:  #39c5cf;
+  --sfce:  #a371f7;
+  --green: #3fb950;
+  --red:   #f85149;
+  --amber: #d29922;
+  --blue:  #388bfd;
+  --agree: rgba(63,185,80,0.08);
+  --agree-border: rgba(63,185,80,0.25);
+  --diff:  rgba(248,81,73,0.07);
+  --diff-border: rgba(248,81,73,0.22);
+  --partial: rgba(210,153,34,0.07);
+  --partial-border: rgba(210,153,34,0.22);
+  --radius: 10px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* ── HEADER ── */
+header {
+  border-bottom: 1px solid var(--border);
+  padding: 16px 28px;
+  display: flex; align-items: center; gap: 14px;
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10,14,20,0.95);
+  backdrop-filter: blur(14px);
+}
+.logo-mark {
+  width: 34px; height: 34px;
+  border: 1.5px solid var(--blue);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; font-weight: 500; color: var(--blue);
+  flex-shrink: 0;
+}
+.header-info { flex: 1; }
+.header-title { font-family: 'DM Serif Display', serif; font-size: 16px; }
+.header-sub { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; margin-top: 1px; }
+.header-badges { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.badge {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  padding: 3px 9px; border-radius: 20px; letter-spacing: 0.4px;
+}
+.badge.aria  { background: rgba(240,136,62,0.12); border: 1px solid rgba(240,136,62,0.3); color: var(--aria); }
+.badge.siop  { background: rgba(57,197,207,0.12); border: 1px solid rgba(57,197,207,0.3); color: var(--siop); }
+.badge.sfce  { background: rgba(163,113,247,0.12); border: 1px solid rgba(163,113,247,0.3); color: var(--sfce); }
+.btn-reset {
+  font-family: 'DM Mono', monospace; font-size: 9.5px;
+  color: var(--text3); background: none;
+  border: 1px solid var(--border); border-radius: 6px;
+  padding: 4px 10px; cursor: pointer; transition: all 0.2s;
+}
+.btn-reset:hover { color: var(--text2); border-color: var(--border2); }
+
+/* ── LAYOUT ── */
+.container { max-width: 1100px; margin: 0 auto; padding: 32px 20px 80px; }
+
+/* ── PROGRESS ── */
+.progress-wrap { margin-bottom: 28px; }
+.progress-steps { display: flex; gap: 4px; margin-bottom: 5px; }
+.step-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); transition: all 0.25s; }
+.step-dot.done   { background: var(--green); }
+.step-dot.active { background: var(--blue); transform: scale(1.4); }
+.progress-label { font-family: 'DM Mono', monospace; font-size: 9.5px; color: var(--text3); }
+
+/* ── BREADCRUMB ── */
+.breadcrumb {
+  display: flex; flex-wrap: wrap; gap: 4px; align-items: center;
+  margin-bottom: 22px;
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3);
+}
+.bc-item { color: var(--text2); }
+.bc-sep  { color: var(--border2); }
+.bc-cur  { color: var(--blue); }
+
+/* ── QUESTION CARD ── */
+.q-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 26px 28px;
+  margin-bottom: 18px;
+  animation: fadeUp 0.28s ease;
+}
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(10px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.q-label {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  color: var(--text3); letter-spacing: 0.7px;
+  text-transform: uppercase; margin-bottom: 10px;
+}
+.q-text {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.28rem; color: var(--text);
+  margin-bottom: 18px; line-height: 1.35;
+}
+.q-hint {
+  font-size: 11.5px; color: var(--text2);
+  background: rgba(56,139,253,0.06);
+  border-left: 2px solid rgba(56,139,253,0.35);
+  border-radius: 0 6px 6px 0;
+  padding: 8px 12px; margin-bottom: 18px; line-height: 1.5;
+}
+.choices { display: flex; flex-direction: column; gap: 7px; }
+.choice-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 13px 16px;
+  cursor: pointer; text-align: left;
+  transition: all 0.18s;
+  display: flex; align-items: center; gap: 12px;
+}
+.choice-btn:hover { border-color: var(--blue); background: rgba(56,139,253,0.07); transform: translateX(3px); }
+.choice-icon {
+  width: 26px; height: 26px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; flex-shrink: 0;
+}
+.ci-age  { background: rgba(57,197,207,0.13); }
+.ci-mol  { background: rgba(163,113,247,0.13); }
+.ci-yes  { background: rgba(63,185,80,0.13); }
+.ci-no   { background: rgba(248,81,73,0.13); }
+.ci-neut { background: rgba(139,148,158,0.1); }
+.choice-label { font-size: 13px; color: var(--text); font-weight: 400; }
+.choice-sub   { font-size: 10.5px; color: var(--text2); font-family: 'DM Mono', monospace; margin-top: 2px; }
+
+/* ── BACK ── */
+.btn-back {
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  color: var(--text3); background: none;
+  border: 1px solid var(--border); border-radius: 6px;
+  padding: 5px 13px; cursor: pointer; transition: all 0.2s;
+  display: inline-flex; align-items: center; gap: 5px;
+  margin-bottom: 18px;
+}
+.btn-back:hover { color: var(--text2); border-color: var(--border2); }
+
+/* ── RESULT LAYOUT ── */
+.result-summary {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-bottom: 22px;
+  animation: fadeUp 0.3s ease;
+}
+.summary-label {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  color: var(--text3); letter-spacing: 0.7px;
+  text-transform: uppercase; margin-bottom: 8px;
+}
+.summary-profile {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.1rem; color: var(--text);
+  line-height: 1.4; margin-bottom: 12px;
+}
+.chips-row { display: flex; flex-wrap: wrap; gap: 5px; }
+.chip {
+  display: inline-block; font-family: 'DM Mono', monospace;
+  font-size: 9px; padding: 2px 8px; border-radius: 4px;
+}
+.chip.mol  { background: rgba(163,113,247,0.13); color: var(--sfce); border: 1px solid rgba(163,113,247,0.28); }
+.chip.age  { background: rgba(57,197,207,0.13);  color: var(--siop); border: 1px solid rgba(57,197,207,0.28); }
+.chip.m0   { background: rgba(56,139,253,0.12);  color: var(--blue);  border: 1px solid rgba(56,139,253,0.25); }
+.chip.hr   { background: rgba(248,81,73,0.12);   color: var(--red);   border: 1px solid rgba(248,81,73,0.25); }
+.chip.histo{ background: rgba(240,136,62,0.12);  color: var(--aria);  border: 1px solid rgba(240,136,62,0.25); }
+
+/* ── CONSENSUS BAR ── */
+.consensus-bar {
+  display: flex; gap: 10px; align-items: center;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px; margin-bottom: 22px;
+  font-size: 12px; color: var(--text2);
+  animation: fadeUp 0.35s ease;
+}
+.consensus-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.consensus-dot.agree   { background: var(--green); box-shadow: 0 0 6px rgba(63,185,80,0.5); }
+.consensus-dot.partial { background: var(--amber); box-shadow: 0 0 6px rgba(210,153,34,0.5); }
+.consensus-dot.differ  { background: var(--red);   box-shadow: 0 0 6px rgba(248,81,73,0.5); }
+.consensus-text strong { color: var(--text); }
+
+/* ── 3-COL GRID ── */
+.col-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 22px;
+  animation: fadeUp 0.4s ease;
+}
+@media (max-width: 760px) { .col-grid { grid-template-columns: 1fr; } }
+
+.inst-col {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.inst-col-header {
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+}
+.inst-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+}
+.inst-dot.aria { background: var(--aria); }
+.inst-dot.siop { background: var(--siop); }
+.inst-dot.sfce { background: var(--sfce); }
+.inst-name {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase;
+}
+.inst-name.aria { color: var(--aria); }
+.inst-name.siop { color: var(--siop); }
+.inst-name.sfce { color: var(--sfce); }
+.inst-sub {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  color: var(--text3); margin-left: auto;
+}
+.inst-body { padding: 14px 16px; }
+
+/* ── COMPARISON ROWS ── */
+.cmp-section { margin-bottom: 20px; }
+.cmp-section-title {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 0.6px; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+}
+.cmp-section-title::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+.cmp-row {
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.cmp-row-label {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  color: var(--text3); padding: 6px 12px 5px;
+  background: rgba(255,255,255,0.02);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 6px;
+}
+.cmp-cells {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+}
+@media (max-width: 760px) { .cmp-cells { grid-template-columns: 1fr; } }
+
+.cmp-cell {
+  padding: 10px 12px;
+  border-right: 1px solid var(--border);
+  font-size: 12px; line-height: 1.5;
+}
+.cmp-cell:last-child { border-right: none; }
+.cmp-cell-inst {
+  font-family: 'DM Mono', monospace; font-size: 8.5px;
+  letter-spacing: 0.4px; margin-bottom: 4px;
+}
+.cmp-cell-inst.aria { color: var(--aria); }
+.cmp-cell-inst.siop { color: var(--siop); }
+.cmp-cell-inst.sfce { color: var(--sfce); }
+.cmp-cell-val { color: var(--text); font-weight: 400; font-size: 12.5px; }
+.cmp-cell-sub { color: var(--text2); font-size: 11px; margin-top: 2px; font-family: 'DM Mono', monospace; }
+
+/* Couleurs de concordance */
+.cmp-row.agree   { background: var(--agree);   border-color: var(--agree-border); }
+.cmp-row.partial { background: var(--partial);  border-color: var(--partial-border); }
+.cmp-row.differ  { background: var(--diff);     border-color: var(--diff-border); }
+
+.cmp-row.agree   .cmp-row-label { background: rgba(63,185,80,0.06);  color: var(--green); }
+.cmp-row.partial .cmp-row-label { background: rgba(210,153,34,0.06); color: var(--amber); }
+.cmp-row.differ  .cmp-row-label { background: rgba(248,81,73,0.06);  color: var(--red); }
+
+/* ── ALERT ── */
+.alert {
+  border-radius: 8px; padding: 11px 13px;
+  font-size: 12px; color: var(--text2);
+  margin-bottom: 10px;
+  display: flex; gap: 9px; align-items: flex-start;
+  line-height: 1.5;
+}
+.alert.info   { background: rgba(56,139,253,0.07); border: 1px solid rgba(56,139,253,0.2); }
+.alert.warn   { background: rgba(210,153,34,0.07); border: 1px solid rgba(210,153,34,0.22); }
+.alert.danger { background: rgba(248,81,73,0.07);  border: 1px solid rgba(248,81,73,0.22); }
+.alert-icon   { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+
+/* ── LEGEND ── */
+.legend {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  margin-bottom: 22px;
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3);
+}
+.legend-item { display: flex; align-items: center; gap: 5px; }
+.legend-swatch {
+  width: 10px; height: 10px; border-radius: 2px;
+}
+.legend-swatch.agree   { background: var(--green); opacity: 0.7; }
+.legend-swatch.partial { background: var(--amber); opacity: 0.7; }
+.legend-swatch.differ  { background: var(--red);   opacity: 0.7; }
+
+/* ── DISCLAIMER ── */
+.disclaimer {
+  font-family: 'DM Mono', monospace; font-size: 9.5px;
+  color: var(--text3); text-align: center;
+  padding: 20px 0 0; border-top: 1px solid var(--border);
+  line-height: 1.7; margin-top: 12px;
+}
+
+/* ── NO RESULT ── */
+.no-result {
+  background: var(--surface); border: 1px solid var(--diff-border);
+  border-radius: var(--radius); padding: 18px;
+  color: var(--text2); font-size: 13px;
+  font-style: italic; text-align: center;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-mark">≡</div>
+  <div class="header-info">
+    <div class="header-title">Comparateur — Médulloblastomes</div>
+    <div class="header-sub">ARIA (SJCRH/COG) · SIOP-Europe · SFCE 2026 · Analyse en parallèle</div>
+  </div>
+  <div class="header-badges">
+    <span class="badge aria">ARIA</span>
+    <span class="badge siop">SIOP</span>
+    <span class="badge sfce">SFCE</span>
+    <button class="btn-reset" onclick="reset()">↺ Réinitialiser</button>
+  </div>
+</header>
+
+<div class="container">
+  <div class="progress-wrap">
+    <div class="progress-steps" id="progressDots"></div>
+    <div class="progress-label" id="progressLabel">Étape 1</div>
+  </div>
+  <div id="breadcrumb" class="breadcrumb"></div>
+  <div id="app"></div>
+  <div class="disclaimer">
+    Outil comparatif à visée pédagogique · ARIA Stratum C (SJCRH/COG) · SIOP-Europe MB 2024 · SFCE Janvier 2026<br>
+    Ne se substitue pas aux décisions personnalisées en RCP/RCPPI. Contraintes OAR et techniques RT communes aux trois référentiels.
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// ÉTAT
+// ═══════════════════════════════════════════════════════
+let answers = {};
+let history = [];
+let crumbs  = [];
+const TOTAL_STEPS = 7;
+
+function reset() {
+  answers = {}; history = []; crumbs = [];
+  render('age');
+}
+function go(step, ans_key, ans_val, label) {
+  if (ans_key) answers[ans_key] = ans_val;
+  if (label)   crumbs.push(label);
+  history.push(step);
+  render(step);
+}
+function back() {
+  if (history.length > 1) {
+    const prev = history[history.length - 2];
+    history.pop(); crumbs.pop();
+    // retirer la dernière réponse associée à l'étape qu'on quitte
+    const leaving = STEP_KEYS[history[history.length - 1]];
+    if (leaving) delete answers[leaving];
+    render(history[history.length - 1]);
+  } else { reset(); }
+}
+
+// Clé de réponse associée à chaque étape
+const STEP_KEYS = {
+  age: null, exact_age: 'exact_age', stage: 'stage',
+  resid: 'resid', histo: 'histo', mol: 'mol', myc: 'myc'
+};
+
+// ═══════════════════════════════════════════════════════
+// QUESTIONS
+// ═══════════════════════════════════════════════════════
+const STEPS = {
+
+  age: {
+    label: 'Étape 1 · Âge',
+    q: 'Quel est l\'âge du patient au diagnostic ?',
+    hint: 'Le seuil d\'âge est le premier filtre de stratification dans les trois référentiels, mais il diffère : 36 mois (ARIA/SIOP) vs 60 mois (SFCE).',
+    choices: [
+      { label: '< 36 mois',  sub: 'Nourrisson / très jeune enfant',     icon: 'ci-age',  val: 'lt36',  next: 'histo',      key: 'age' },
+      { label: '36–59 mois', sub: 'Jeune enfant (divergence SFCE < 5 ans)', icon: 'ci-age',  val: 'bt36_60', next: 'histo',   key: 'age' },
+      { label: '≥ 60 mois',  sub: '5 ans et plus',                      icon: 'ci-age',  val: 'gte60', next: 'exact_age', key: 'age' },
+    ]
+  },
+
+  exact_age: {
+    label: 'Étape 2 · Âge précis',
+    q: 'Age exact — sous-stratification WNT ?',
+    hint: 'La limite 16 ans est spécifique au sous-groupe WNT : au-delà, le pronostic favorable WNT ne s\'applique plus (ARIA et SIOP). La SFCE intègre aussi cette limite.',
+    choices: [
+      { label: '5–15 ans',  sub: '< 16 ans — WNT favorable si M0R0', icon: 'ci-age', val: 'lt16', next: 'stage', key: 'exact_age' },
+      { label: '≥ 16 ans',  sub: '≥ 16 ans — WNT perd son pronostic favorable', icon: 'ci-age', val: 'gte16', next: 'stage', key: 'exact_age' },
+    ]
+  },
+
+  stage: {
+    label: 'Étape · Stade métastatique',
+    q: 'Stade métastatique (classification de Chang) ?',
+    choices: [
+      { label: 'M0 — Localisé',            icon: 'ci-yes', val: 'm0',    next: 'resid', key: 'stage' },
+      { label: 'M+ — Métastatique (M1–M4)', sub: 'Dissémination méningée, ventriculaire ou spinale', icon: 'ci-no', val: 'mplus', next: 'histo', key: 'stage' },
+    ]
+  },
+
+  resid: {
+    label: 'Étape · Résidu post-opératoire',
+    q: 'Résidu tumoral sur IRM post-opératoire (< 72h) ?',
+    hint: 'Seuil universel : 1,5 cm² en coupe axiale. La signification pronostique du résidu isolé est nuancée différemment selon les référentiels.',
+    choices: [
+      { label: 'R0 — Résidu < 1,5 cm²',  sub: 'Résection totale ou quasi-totale', icon: 'ci-yes', val: 'r0',    next: 'histo', key: 'resid' },
+      { label: 'R+ — Résidu ≥ 1,5 cm²',  sub: 'Résidu macroscopique résiduel',     icon: 'ci-no',  val: 'rplus', next: 'histo', key: 'resid' },
+    ]
+  },
+
+  histo: {
+    label: 'Étape · Histologie',
+    q: 'Sous-type histologique (WHO 2021) ?',
+    choices: [
+      { label: 'CMB — Médulloblastome classique',         icon: 'ci-neut', val: 'cmb',      next: 'mol', key: 'histo' },
+      { label: 'DMB / MBEN — Desmoplasique / nodulaire', sub: 'Pronostic favorable chez le nourrisson', icon: 'ci-yes', val: 'dmb_mben', next: 'mol', key: 'histo' },
+      { label: 'LCA — Grandes cellules / Anaplasique',   sub: 'Facteur de haut risque systématique (tous référentiels)', icon: 'ci-no', val: 'lca', next: 'mol', key: 'histo' },
+    ]
+  },
+
+  mol: {
+    label: 'Étape · Sous-groupe moléculaire',
+    q: 'Sous-groupe moléculaire (WHO 2021) ?',
+    hint: 'Identification requise : IHC (β-caténine, GAB1, YAP1, filamine A...) + FISH MYC/NMYC + statut TP53 somatique. La β-caténine nucléaire seule est insuffisante pour WNT (SFCE).',
+    choices: [
+      { label: 'WNT-activated',               sub: 'Mutation CTNNB1 confirmée',      icon: 'ci-mol', val: 'wnt',     next: 'myc', key: 'mol' },
+      { label: 'SHH-activated · TP53 sauvage', sub: 'Filamine A+, GAB1+',             icon: 'ci-mol', val: 'shh_wt',  next: 'myc', key: 'mol' },
+      { label: 'SHH-activated · TP53 muté',   sub: 'Haut risque tous référentiels',   icon: 'ci-no',  val: 'shh_mut', next: 'myc', key: 'mol' },
+      { label: 'Non-WNT / Non-SHH',           sub: 'Groupe 3 & 4',                    icon: 'ci-neut', val: 'non',    next: 'myc', key: 'mol' },
+    ]
+  },
+
+  myc: {
+    label: 'Étape · Amplification MYC/MYCN',
+    q: 'Amplification MYC et/ou MYCN (FISH ou NGS) ?',
+    choices: [
+      { label: 'Non amplifié',      sub: 'MYC et MYCN négatifs',  icon: 'ci-yes', val: 'neg', next: 'RESULT', key: 'myc' },
+      { label: 'MYC amplifié',      sub: 'Haut risque systématique — tous référentiels', icon: 'ci-no', val: 'myc_pos',  next: 'RESULT', key: 'myc' },
+      { label: 'MYCN amplifié',     sub: 'Haut risque (SHH principalement)',              icon: 'ci-no', val: 'mycn_pos', next: 'RESULT', key: 'myc' },
+    ]
+  },
+};
+
+// ═══════════════════════════════════════════════════════
+// MOTEUR DE RENDU
+// ═══════════════════════════════════════════════════════
+function render(step) {
+  updateProgress(step);
+  updateBreadcrumb();
+  const app = document.getElementById('app');
+  let html = history.length > 1 ? `<button class="btn-back" onclick="back()">← Retour</button>` : '';
+
+  if (step === 'RESULT') {
+    html += renderResult();
+  } else {
+    html += renderStep(step);
+  }
+  app.innerHTML = html;
+}
+
+function renderStep(step) {
+  const s = STEPS[step];
+  if (!s) return '';
+  return `<div class="q-card">
+    <div class="q-label">${s.label}</div>
+    <div class="q-text">${s.q}</div>
+    ${s.hint ? `<div class="q-hint">${s.hint}</div>` : ''}
+    <div class="choices">
+      ${s.choices.map(c => `
+        <button class="choice-btn" onclick="go('${c.next === 'RESULT' ? 'RESULT' : c.next}','${c.key}','${c.val}','${escQ(c.label)}')">
+          <div class="choice-icon ${c.icon}">→</div>
+          <div>
+            <div class="choice-label">${c.label}</div>
+            ${c.sub ? `<div class="choice-sub">${c.sub}</div>` : ''}
+          </div>
+        </button>
+      `).join('')}
+    </div>
+  </div>`;
+}
+
+function escQ(s) { return s.replace(/'/g,"&#39;"); }
+
+function updateProgress(step) {
+  const dots = document.getElementById('progressDots');
+  const label = document.getElementById('progressLabel');
+  const n = history.length;
+  const done = step === 'RESULT';
+  let h = '';
+  for (let i = 0; i < TOTAL_STEPS; i++) {
+    let cls = i < n-1 ? 'done' : i === n-1 ? 'active' : '';
+    h += `<div class="step-dot ${cls}"></div>`;
+  }
+  dots.innerHTML = h;
+  label.textContent = done ? '✓ Comparaison' : `Étape ${n} sur ${TOTAL_STEPS}`;
+}
+
+function updateBreadcrumb() {
+  const el = document.getElementById('breadcrumb');
+  if (!crumbs.length) { el.innerHTML=''; return; }
+  el.innerHTML = crumbs.map((b,i) =>
+    i < crumbs.length-1
+      ? `<span class="bc-item">${b}</span><span class="bc-sep">›</span>`
+      : `<span class="bc-cur">${b}</span>`
+  ).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// LOGIQUE DÉCISIONNELLE — 3 RÉFÉRENTIELS
+// ═══════════════════════════════════════════════════════
+function computeAll() {
+  const a = answers;
+  return {
+    aria: computeARIA(a),
+    siop: computeSIOP(a),
+    sfce: computeSFCE(a),
+  };
+}
+
+// ── ARIA (SJCRH / COG Stratum C) ──
+function computeARIA(a) {
+  const isInfant   = a.age === 'lt36';
+  const isMid      = a.age === 'bt36_60';
+  const isOlder    = a.age === 'gte60' || isMid;
+  const isWNT_u16  = a.mol === 'wnt' && (a.exact_age === 'lt16' || isMid);
+  const isWNT_o16  = a.mol === 'wnt' && a.exact_age === 'gte16';
+  const isSHH      = a.mol === 'shh_wt' || a.mol === 'shh_mut';
+  const isNon      = a.mol === 'non';
+  const isDN       = a.histo === 'dmb_mben';
+  const isLCA      = a.histo === 'lca';
+  const isMeta     = a.stage === 'mplus';
+  const isR0       = a.resid === 'r0' || isInfant; // résidu non discriminant chez nourrisson
+  const isRplus    = a.resid === 'rplus';
+  const isMYC      = a.myc === 'myc_pos' || a.myc === 'mycn_pos';
+  const isTP53mut  = a.mol === 'shh_mut';
+
+  if (isInfant) {
+    if ((isDN || isSHH) && !isMeta)
+      return { risk:'LR', protocol:'HIT-SKK', csi:'Aucune (1re ligne)', boost:'—', chemo:'HIT-SKK ± MTX IVT', notes:['RT de rattrapage à la progression uniquement','PFS 5 ans DN/MBEN M0 : 93 %'] };
+    if ((isDN || isSHH) && isMeta)
+      return { risk:'SR', protocol:'HIT-SKK LP MTX / Head Start', csi:'Aucune (1re ligne)', boost:'—', chemo:'HIT-SKK + HDMTX ou Head Start', notes:['M+ SHH : résultats variables selon sous-groupe','Réservoir Ommaya requis pour MTX IVT'] };
+    return { risk:'HR', protocol:'ACNS0334 / Head Start', csi:'Aucune (1re ligne)', boost:'RT focale si résidu', chemo:'ACNS0334 (± HDMTX) ou Head Start', notes:['Non-WNT/Non-SHH M+ : pronostic très sombre','PFS 5 ans ~8 % (non-WNT/non-SHH M+)','Discussion soins palliatifs si MYC-amplifié M+'] };
+  }
+
+  // ≥ 36 mois
+  if (isLCA)
+    return { risk:'HR', protocol:'High-dose CSI + ACNS0332', csi:'36 Gy / 20 fr', boost:'55,8 Gy (FP)', chemo:'Carboplatine concomitant RT + CPM/CDDP/VCR post-RT', notes:['LCA = haut risque systématique quel que soit stade/résidu','EFS 5 ans ~73 % (ACNS0332)'] };
+  if (isMeta)
+    return { risk:'HR', protocol:'High-dose CSI + ACNS0332', csi:'36 Gy / 20 fr', boost:'55,8 Gy (FP)', chemo:'Carboplatine concomitant RT + VCR/CPM/CDDP', notes:['Boost spinal diffus : +3,6 Gy → 39,6 Gy total','Boost métastases cérébrales : +9 Gy → 45 Gy'] };
+  if (isMYC)
+    return { risk:'HR', protocol:'High-dose CSI + ACNS0332', csi:'36 Gy / 20 fr', boost:'55,8 Gy (FP)', chemo:'Carboplatine RT + CPM/CDDP/VCR', notes:['Amplification MYC/MYCN = facteur HR systématique'] };
+  if (isTP53mut)
+    return { risk:'HR', protocol:'High-dose CSI', csi:'36 Gy / 20 fr', boost:'55,8 Gy', chemo:'À discuter (alkylants déconseillés si Li-Fraumeni)', notes:['Exclure Li-Fraumeni (57 % de mutations germinales TP53)','EFS 5 ans : 16 % — pas de consensus thérapeutique établi'] };
+
+  if (isWNT_u16 && !isMeta && isR0)
+    return { risk:'LR', protocol:'Standard-dose CSI', csi:'23,4 Gy / 13 fr', boost:'55,8 Gy (lit tumoral)', chemo:'VCR hebdo RT + CDDP/CCNU/VCR × 8 cycles', notes:['WNT < 16 ans : meilleur pronostic (~95 % EFS 5 ans)','Réduction CSI à 18 Gy en cours d\'investigation (PNET5-MB)','Boost lit tumoral préféré au boost FP (ototoxicité)'] };
+  if (isWNT_o16)
+    return { risk:'HR', protocol:'High-dose CSI', csi:'36 Gy / 20 fr', boost:'55,8 Gy', chemo:'ACNS0332', notes:['WNT ≥ 16 ans : pronostic favorable pédiatrique ne s\'applique plus'] };
+
+  if (!isMeta && isR0 && !isRplus)
+    return { risk:'SR', protocol:'Standard-dose CSI + A9961/ACNS0331', csi:'23,4 Gy / 13 fr', boost:'55,8 Gy (lit tumoral)', chemo:'VCR hebdo RT + CDDP/CCNU/VCR × 8 cycles', notes:['Délai RT : ≤ 6 sem post-op (max 7 sem)','Dépassement 7 sem → upgrade 36 Gy systématique','Boost lit tumoral préféré au boost FP'] };
+  if (!isMeta && isRplus)
+    return { risk:'SR→HR', protocol:'Standard-dose CSI (si pas de FR)', csi:'23,4 Gy si pas de FR · 36 Gy si FR associé', boost:'55,8 Gy', chemo:'VCR hebdo RT + chimiothérapie adjuvante', notes:['R+ sans autre FR : risque standard discutable','R+ + FR (MYC, etc.) → haut risque'] };
+
+  return { risk:'SR', protocol:'Standard-dose CSI', csi:'23,4 Gy', boost:'55,8 Gy', chemo:'CDDP/CCNU/VCR × 8', notes:[] };
+}
+
+// ── SIOP-Europe ──
+function computeSIOP(a) {
+  const isInfant  = a.age === 'lt36';
+  const isMid     = a.age === 'bt36_60';
+  const isOlder   = a.age === 'gte60' || isMid;
+  const isWNT_u16 = a.mol === 'wnt' && (a.exact_age === 'lt16' || isMid);
+  const isWNT_o16 = a.mol === 'wnt' && a.exact_age === 'gte16';
+  const isDN      = a.histo === 'dmb_mben';
+  const isLCA     = a.histo === 'lca';
+  const isMeta    = a.stage === 'mplus';
+  const isR0      = a.resid === 'r0' || isInfant;
+  const isRplus   = a.resid === 'rplus';
+  const isMYC     = a.myc === 'myc_pos' || a.myc === 'mycn_pos';
+  const isTP53mut = a.mol === 'shh_mut';
+
+  if (isInfant) {
+    if (isDN && !isMeta && a.mol === 'shh_wt')
+      return { risk:'LR', protocol:'HIT-SKK 2000', csi:'Aucune', boost:'RT focale 54 Gy si résidu/progression', chemo:'HIT-SKK avec MTX intraventriculaire', notes:['PFS 5 ans DN/MBEN M0 : 93 %','Ne pas combiner RT + MTX IVT (encéphalopathie)','Head Start comme alternative si pas d\'Ommaya'] };
+    if (isMeta || isLCA || isMYC || isTP53mut)
+      return { risk:'HR', protocol:'Head Start II (Régime A2)', csi:'Aucune (1re ligne)', boost:'RT locale si > 18 mois', chemo:'Head Start II/IV induction + ASCR', notes:['Non-WNT/Non-SHH M+ : intensification HDC recommandée','Pas de consensus établi pour SHH-TP53muté'] };
+    return { risk:'SR', protocol:'Head Start II / HIT-SKK adapté', csi:'Aucune', boost:'RT locale si résidu à > 18 mois', chemo:'Head Start II ou HIT-SKK selon histologie/résidu', notes:['CMB non-SHH : résultats défavorables chimio seule (EFS 10–30 %)','HDC recommandée pour les non-WNT/non-SHH'] };
+  }
+
+  // ≥ 36 mois
+  if (isLCA)
+    return { risk:'HR', protocol:'PNET5-HR / PNET HR+5', csi:'36 Gy / 20 fr', boost:'54 Gy (lit tumoral)', chemo:'CBDCA/VP16 × 2 + Thiotépa HD × 2 + TMZ entretien', notes:['Essai SIOP-HR-MB ouvert (3 bras randomisés post-induction)','Inclure dans essai si disponible'] };
+  if (isMeta || isMYC || isTP53mut || isWNT_o16)
+    return { risk:'HR', protocol:'PNET5-HR / PNET HR+5', csi:'36 Gy / 20 fr', boost:'54 Gy (lit tumoral)', chemo:'CBDCA/VP16 × 2 + Thiotépa HD × 2 + TMZ entretien', notes:['WNT ≥ 16 ans : pronostic pédiatrique ne s\'applique plus','Essai SIOP-HR-MB si disponible'] };
+
+  if (isWNT_u16 && !isMeta && isR0)
+    return { risk:'LR', protocol:'PNET5-MB (bras LR)', csi:'18 Gy / 10 fr', boost:'36 Gy → 54 Gy total (lit tumoral)', chemo:'CDDP/CCNU/VCR × 8 cures B-A', notes:['Confirmation PNET5-MB : réduction 23,4 → 18 Gy validée','Ne pas descendre à 15 Gy hors essai (SJMB12)','Protonthérapie recommandée si disponible'] };
+
+  if (isRplus && !isMeta && !isLCA && !isMYC)
+    return { risk:'SR', protocol:'PNET5-MB SR (résidu isolé)', csi:'23,4 Gy', boost:'54 Gy', chemo:'CDDP/CCNU/VCR × 8 cures', notes:['Résidu isolé sans autre FR : risque standard (étude 1110 pts)','Résidu ≥ 1,5 cm² ne modifie plus la stratification si isolé'] };
+
+  return { risk:'SR', protocol:'PNET5-MB (bras SR)', csi:'23,4 Gy / 13 fr', boost:'54 Gy (lit tumoral)', chemo:'CDDP/CCNU/VCR × 8 cures B-A', notes:['Protonthérapie recommandée si disponible','Bifractionnement (MSFOP) non recommandé hors WNT'] };
+}
+
+// ── SFCE 2026 ──
+function computeSFCE(a) {
+  const isLt5     = a.age === 'lt36' || a.age === 'bt36_60';
+  const isLt36    = a.age === 'lt36';
+  const isMid     = a.age === 'bt36_60';
+  const isOlder   = a.age === 'gte60';
+  const isWNT_u16 = a.mol === 'wnt' && (a.exact_age === 'lt16' || isOlder);
+  const isWNT_o16 = a.mol === 'wnt' && a.exact_age === 'gte16';
+  const isDN      = a.histo === 'dmb_mben';
+  const isLCA     = a.histo === 'lca';
+  const isMeta    = a.stage === 'mplus';
+  const isR0      = a.resid === 'r0' || isLt5;
+  const isRplus   = a.resid === 'rplus';
+  const isMYC     = a.myc === 'myc_pos' || a.myc === 'mycn_pos';
+  const isTP53mut = a.mol === 'shh_mut';
+  const isSHH_wt  = a.mol === 'shh_wt';
+  const isNon     = a.mol === 'non';
+
+  // < 5 ans
+  if (isLt5) {
+    const isHR = isTP53mut || isMYC || isLCA || (isMeta && !isDN) || (isMeta && isNon);
+    const isLR = isSHH_wt && isDN && !isMYC && !isMeta;
+
+    if (isHR) {
+      if (isLt36 && isMeta)
+        return { risk:'HR', protocol:'PNET HR+5 adapté OU Head Start II/IV', csi:'18–23,4 Gy selon âge', boost:'50,4–54 Gy', chemo:'VP16-CBP × 2 + Thiotépa HD × 2 + TMZ entretien', notes:['< 2 ans M+ : option Head Start II/IV','Doses RT à valider en webconf nationale','Délai : ≤ 110 j pour 2e HD, ≤ 150 j diagnostic-RT'] };
+      return { risk:'HR', protocol:'PNET HR+5 adapté à l\'âge', csi:'18–23,4 Gy selon âge (webconf)', boost:'50,4–54 Gy', chemo:'VP16-CBP × 2 + Thiotépa HD × 2 + TMZ entretien', notes:['Doses RT < 5 ans : validation webconf nationale obligatoire','SHH-TP53muté : exclure Li-Fraumeni / syndrome de Gorlin'] };
+    }
+    if (isLR)
+      return { risk:'LR', protocol:'HIT-SKK', csi:'Aucune (1re ligne)', boost:'RT focale 54 Gy si CMB/LCA ou résidu', chemo:'HIT-SKK avec MTX IVT (3 cycles)', notes:['SUFU muté : reclasser SR → Head Start II/IV','Dérivation IVT → Head Start II/IV','PFS 5 ans DN/MBEN M0 : 93 %'] };
+
+    // SR
+    if (isMid)
+      return { risk:'SR', protocol:'PNET5-MB SR (cf algo ≥ 5 ans)', csi:'23,4 Gy', boost:'54 Gy', chemo:'CDDP/CCNU/VCR × 8 cures B-A', notes:['3–4 ans SR : algorithme ≥ 5 ans applicable (SFCE 2026)'] };
+    return { risk:'SR', protocol:'Head Start II/IV', csi:'Aucune', boost:'RT locale si résidu > 18 mois', chemo:'Head Start II/IV induction + ASCR', notes:['< 3 ans SR : Head Start II/IV','Début ≤ J28 post-opératoire'] };
+  }
+
+  // ≥ 5 ans
+  if (isLCA || isMYC)
+    return { risk:'HR', protocol:'PNET HR+5', csi:'36 Gy', boost:'54 Gy (+ 59,4 Gy si résidu)', chemo:'VP16-CBP × 2 + Thiotépa HD 600 mg/m² × 2 + TMZ × 6', notes:['LCA et MYC/MYCN-amp : HR systématique','Délai 2e HD ≤ 110 j · Délai RT ≤ 150 j post-diagnostic'] };
+  if (isMeta || isTP53mut || isWNT_o16)
+    return { risk:'HR', protocol:'PNET HR+5', csi:'36 Gy', boost:'54 Gy (+ 59,4 Gy si résidu)', chemo:'VP16-CBP × 2 + Thiotépa HD × 2 + TMZ × 6', notes:['WNT ≥ 16 ans : haut risque (SFCE suit SIOP/ARIA)','SHH-TP53muté : consultation oncogénétique Li-Fraumeni'] };
+
+  if (isWNT_u16 && !isMeta && isR0)
+    return { risk:'LR', protocol:'PNET5-MB LR', csi:'18 Gy', boost:'36 Gy → 54 Gy (lit tumoral)', chemo:'CDDP/CCNU/VCR × 6 cures B-A', notes:['Critères stricts SFCE : CTNNB1 muté + ≥ 1 caractéristique WNT supplémentaire accréditée','β-caténine nucléaire seule insuffisante','APC constitutionnel : discussion collégiale experts','Délai RT ≤ 28 j (max 40 j)'] };
+
+  if (isRplus && !isMeta && !isLCA && !isMYC)
+    return { risk:'SR→spécifique', protocol:'2 VP-CBP → PNET MB SR ou PNET HR+5', csi:'23,4 Gy dans les deux cas', boost:'54 Gy (SR) ou 54 + surimpression 59,4 Gy (HR)', chemo:'2 VP-CBP néoadjuvants puis selon réponse', notes:['Spécificité SFCE : séquence VP-CBP dédiée pour R+ M0 sans FR','RC après chimio ± chir → PNET MB SR','Résidu persistant inopérable → PNET HR+5 + surimpression 59,4 Gy'] };
+
+  return { risk:'SR', protocol:'PNET5-MB SR', csi:'23,4 Gy', boost:'54 Gy (lit tumoral GTV+1 cm)', chemo:'CDDP/CCNU/VCR × 8 cures B-A', notes:['Protonthérapie à privilégier','Bifractionnement MSFOP non recommandé sauf WNT R0M0','Délai RT ≤ 28 j (max 40 j)'] };
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDU DES RÉSULTATS
+// ═══════════════════════════════════════════════════════
+function renderResult() {
+  const res = computeAll();
+  const a = answers;
+
+  // Profil patient
+  const profileParts = [
+    a.age === 'lt36' ? '< 36 mois' : a.age === 'bt36_60' ? '36–59 mois' : `≥ 5 ans${a.exact_age === 'gte16' ? ' (≥ 16 ans)' : ''}`,
+    a.stage === 'mplus' ? 'M+' : 'M0',
+    a.resid ? (a.resid === 'r0' ? 'R0' : 'R+') : '',
+    a.histo === 'cmb' ? 'CMB' : a.histo === 'dmb_mben' ? 'DMB/MBEN' : 'LCA',
+    a.mol === 'wnt' ? 'WNT' : a.mol === 'shh_wt' ? 'SHH-TP53wt' : a.mol === 'shh_mut' ? 'SHH-TP53muté' : 'Non-WNT/Non-SHH',
+    a.myc === 'neg' ? 'MYC/MYCN−' : a.myc === 'myc_pos' ? 'MYC amplifié' : 'MYCN amplifié',
+  ].filter(Boolean);
+
+  // Chips
+  const chipDefs = [
+    { label: profileParts[0], cls: 'age' },
+    { label: profileParts[1], cls: profileParts[1] === 'M+' ? 'hr' : 'm0' },
+    profileParts[2] ? { label: profileParts[2], cls: profileParts[2] === 'R+' ? 'hr' : 'm0' } : null,
+    { label: profileParts[3]||'', cls: 'histo' },
+    { label: profileParts[4]||'', cls: 'mol' },
+    { label: profileParts[5]||'', cls: a.myc === 'neg' ? 'm0' : 'hr' },
+  ].filter(Boolean);
+
+  // Calcul concordance par domaine
+  const domains = buildDomains(res);
+  const diffCount  = domains.filter(d => d.status === 'differ').length;
+  const partCount  = domains.filter(d => d.status === 'partial').length;
+  const agreeCount = domains.filter(d => d.status === 'agree').length;
+
+  let consensusText, consensusCls;
+  if (diffCount === 0 && partCount === 0) {
+    consensusCls = 'agree';
+    consensusText = `<strong>Consensus complet</strong> — Les trois référentiels convergent sur l\'ensemble des domaines pour ce profil.`;
+  } else if (diffCount >= 2) {
+    consensusCls = 'differ';
+    consensusText = `<strong>${diffCount} divergence${diffCount>1?'s':''} majeure${diffCount>1?'s':''}</strong> identifiée${diffCount>1?'s':''} · ${partCount} divergence${partCount>1?'s':''} partielle${partCount>1?'s':''} · ${agreeCount} point${agreeCount>1?'s':''} de consensus.`;
+  } else {
+    consensusCls = 'partial';
+    consensusText = `<strong>Consensus partiel</strong> — ${agreeCount} point${agreeCount>1?'s':''} de consensus · ${diffCount} divergence${diffCount>1?'s':''} · ${partCount} divergence${partCount>1?'s':''} partielle${partCount>1?'s':''}.`;
+  }
+
+  let html = `
+  <div class="result-summary">
+    <div class="summary-label">Profil patient</div>
+    <div class="summary-profile">${profileParts.join(' · ')}</div>
+    <div class="chips-row">${chipDefs.map(c=>`<span class="chip ${c.cls}">${c.label}</span>`).join('')}</div>
+  </div>
+
+  <div class="consensus-bar">
+    <div class="consensus-dot ${consensusCls}"></div>
+    <span class="consensus-text">${consensusText}</span>
+  </div>
+
+  <div class="legend">
+    <span class="legend-item"><span class="legend-swatch agree"></span>Consensus</span>
+    <span class="legend-item"><span class="legend-swatch partial"></span>Divergence partielle</span>
+    <span class="legend-item"><span class="legend-swatch differ"></span>Divergence majeure</span>
+  </div>`;
+
+  // Tableau comparatif par domaine
+  html += `<div class="cmp-section">
+    <div class="cmp-section-title">Comparaison par domaine</div>`;
+
+  domains.forEach(d => {
+    html += `<div class="cmp-row ${d.status}">
+      <div class="cmp-row-label">${statusIcon(d.status)} ${d.label}</div>
+      <div class="cmp-cells">
+        <div class="cmp-cell">
+          <div class="cmp-cell-inst aria">ARIA · SJCRH/COG</div>
+          <div class="cmp-cell-val">${d.aria}</div>
+          ${d.aria_sub ? `<div class="cmp-cell-sub">${d.aria_sub}</div>` : ''}
+        </div>
+        <div class="cmp-cell">
+          <div class="cmp-cell-inst siop">SIOP-Europe</div>
+          <div class="cmp-cell-val">${d.siop}</div>
+          ${d.siop_sub ? `<div class="cmp-cell-sub">${d.siop_sub}</div>` : ''}
+        </div>
+        <div class="cmp-cell">
+          <div class="cmp-cell-inst sfce">SFCE 2026</div>
+          <div class="cmp-cell-val">${d.sfce}</div>
+          ${d.sfce_sub ? `<div class="cmp-cell-sub">${d.sfce_sub}</div>` : ''}
+        </div>
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // Notes spécifiques par institution
+  html += `<div class="col-grid">`;
+  [
+    { key:'aria', label:'ARIA · SJCRH/COG', cls:'aria', src:'COG / Stratum C Dec 2025', r: res.aria },
+    { key:'siop', label:'SIOP-Europe',      cls:'siop', src:'SIOP-Europe MB 2024',     r: res.siop },
+    { key:'sfce', label:'SFCE 2026',        cls:'sfce', src:'SFCE Jan 2026 · RENOCLIP', r: res.sfce },
+  ].forEach(inst => {
+    html += `<div class="inst-col">
+      <div class="inst-col-header">
+        <div class="inst-dot ${inst.cls}"></div>
+        <div class="inst-name ${inst.cls}">${inst.label}</div>
+        <div class="inst-sub">${inst.src}</div>
+      </div>
+      <div class="inst-body">`;
+    if (inst.r.notes && inst.r.notes.length) {
+      inst.r.notes.forEach(n => {
+        html += `<div class="alert info"><span class="alert-icon">ℹ</span><span>${n}</span></div>`;
+      });
+    } else {
+      html += `<div style="color:var(--text3);font-size:12px;font-style:italic">Aucune note spécifique pour ce profil.</div>`;
+    }
+    html += `</div></div>`;
+  });
+  html += `</div>`;
+
+  html += `<div style="text-align:center;margin-top:8px">
+    <button class="btn-back" onclick="reset()">← Nouvelle comparaison</button>
+  </div>`;
+
+  return html;
+}
+
+function statusIcon(s) {
+  if (s === 'agree')   return '✓';
+  if (s === 'partial') return '≈';
+  return '≠';
+}
+
+// ═══════════════════════════════════════════════════════
+// CONSTRUCTION DES DOMAINES COMPARATIFS
+// ═══════════════════════════════════════════════════════
+function buildDomains(res) {
+  const { aria, siop, sfce } = res;
+
+  function status(vals) {
+    const unique = [...new Set(vals.map(v => v.trim().toLowerCase()))];
+    if (unique.length === 1) return 'agree';
+    // Vérifier si les valeurs sont "proches" (ex : même dose avec formulations différentes)
+    const normalized = vals.map(v => v.replace(/\s+/g,'').toLowerCase());
+    if (new Set(normalized).size === 1) return 'agree';
+    // Partiel si au moins 2 sur 3 concordent
+    if (normalized[0]===normalized[1] || normalized[1]===normalized[2] || normalized[0]===normalized[2]) return 'partial';
+    return 'differ';
+  }
+
+  const domains = [];
+
+  // 1. Groupe de risque
+  domains.push({
+    label: 'Groupe de risque',
+    aria: riskLabel(aria.risk), siop: riskLabel(siop.risk), sfce: riskLabel(sfce.risk),
+    aria_sub: aria.protocol, siop_sub: siop.protocol, sfce_sub: sfce.protocol,
+    status: status([cleanRisk(aria.risk), cleanRisk(siop.risk), cleanRisk(sfce.risk)])
+  });
+
+  // 2. Dose CSI
+  domains.push({
+    label: 'Dose CSI',
+    aria: aria.csi, siop: siop.csi, sfce: sfce.csi,
+    status: status([csiKey(aria.csi), csiKey(siop.csi), csiKey(sfce.csi)])
+  });
+
+  // 3. Boost / dose totale
+  domains.push({
+    label: 'Dose boost (lit tumoral)',
+    aria: aria.boost, siop: siop.boost, sfce: sfce.boost,
+    status: status([boostKey(aria.boost), boostKey(siop.boost), boostKey(sfce.boost)])
+  });
+
+  // 4. Chimiothérapie
+  domains.push({
+    label: 'Protocole chimiothérapie',
+    aria: aria.chemo, siop: siop.chemo, sfce: sfce.chemo,
+    aria_sub: '', siop_sub: '', sfce_sub: '',
+    status: chemoStatus(aria.chemo, siop.chemo, sfce.chemo)
+  });
+
+  // 5. Seuil d'âge appliqué
+  const a = answers;
+  const ariaAge = a.age === 'lt36' ? '< 36 mois' : '≥ 36 mois';
+  const siopAge = a.age === 'lt36' ? '< 36 mois' : '≥ 36 mois';
+  const sfceAge = (a.age === 'lt36' || a.age === 'bt36_60') ? '< 5 ans' : '≥ 5 ans';
+  if (a.age === 'bt36_60') {
+    domains.push({
+      label: 'Seuil d\'âge appliqué',
+      aria: ariaAge, siop: siopAge, sfce: sfceAge,
+      aria_sub: 'Traité comme ≥ 36 mois', siop_sub: 'Traité comme ≥ 36 mois', sfce_sub: 'Traité comme < 5 ans → arbre spécifique',
+      status: 'differ'
+    });
+  }
+
+  return domains;
+}
+
+function cleanRisk(r) {
+  return r.replace(/→.*/,'').replace(/\s+/g,'').toLowerCase();
+}
+function riskLabel(r) {
+  if (r === 'LR') return '🟢 Bas risque';
+  if (r === 'SR') return '🔵 Risque standard';
+  if (r === 'HR') return '🔴 Haut risque';
+  if (r === 'SR→HR') return '🟡 Standard → Haut risque';
+  if (r === 'SR→spécifique') return '🟡 Standard (séquence spécifique)';
+  return r;
+}
+function csiKey(v) {
+  if (!v || v === 'Aucune' || v.includes('Aucune') || v.includes('None')) return 'none';
+  if (v.includes('18')) return '18gy';
+  if (v.includes('23')) return '23.4gy';
+  if (v.includes('36')) return '36gy';
+  return v.toLowerCase().replace(/\s+/g,'');
+}
+function boostKey(v) {
+  if (!v || v === '—') return 'none';
+  if (v.includes('55,8') || v.includes('55.8')) return '55.8gy';
+  if (v.includes('54')) return '54gy';
+  return v.toLowerCase().replace(/\s+/g,'');
+}
+function chemoStatus(a, s, f) {
+  // Chercher backbone commun
+  const hasHD_a = a.includes('Thiotépa') || a.includes('ASCR') || a.includes('HDMTX');
+  const hasHD_s = s.includes('Thiotépa') || s.includes('ASCR') || s.includes('HDMTX');
+  const hasHD_f = f.includes('Thiotépa') || f.includes('ASCR') || f.includes('Head Start');
+  const hdCount = [hasHD_a, hasHD_s, hasHD_f].filter(Boolean).length;
+
+  const hasCCNU_a = a.includes('CCNU');
+  const hasCCNU_s = s.includes('CCNU');
+  const hasCCNU_f = f.includes('CCNU');
+  const ccnuCount = [hasCCNU_a, hasCCNU_s, hasCCNU_f].filter(Boolean).length;
+
+  if (ccnuCount === 3 || hdCount === 3) return 'agree';
+  if (ccnuCount >= 2 || hdCount >= 2) return 'partial';
+  return 'differ';
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+reset();
+</script>
+</body>
+</html>
