@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIOP-Europe · Médulloblastome — Stratification & Traitement</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2330;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #7d8590;
+    --text-dim: #484f58;
+    --accent-blue: #388bfd;
+    --accent-green: #3fb950;
+    --accent-amber: #d29922;
+    --accent-red: #f85149;
+    --accent-purple: #a371f7;
+    --accent-cyan: #39c5cf;
+    --low: #3fb950;
+    --standard: #388bfd;
+    --high: #f85149;
+    --radius: 10px;
+    --transition: 0.2s ease;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ── HEADER ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,17,23,0.92);
+    backdrop-filter: blur(12px);
+  }
+  .logo-mark {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--accent-blue);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px; font-weight: 500;
+    color: var(--accent-blue);
+    letter-spacing: -0.5px;
+    flex-shrink: 0;
+  }
+  .header-title { font-family: 'DM Serif Display', serif; font-size: 17px; color: var(--text); }
+  .header-sub { font-size: 11px; color: var(--text-muted); font-family: 'DM Mono', monospace; letter-spacing: 0.5px; }
+  .header-badge {
+    margin-left: auto;
+    background: rgba(56,139,253,0.12);
+    border: 1px solid rgba(56,139,253,0.3);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    color: var(--accent-blue);
+    letter-spacing: 0.5px;
+  }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* ── SECTION TITLE ── */
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  /* ── AGE SELECTOR ── */
+  .age-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .age-btn {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+  }
+  .age-btn::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--accent-blue);
+    transform: scaleX(0);
+    transition: transform 0.2s ease;
+  }
+  .age-btn:hover { border-color: var(--accent-blue); background: var(--surface2); }
+  .age-btn:hover::before { transform: scaleX(1); }
+  .age-btn.active {
+    border-color: var(--accent-blue);
+    background: rgba(56,139,253,0.08);
+  }
+  .age-btn.active::before { transform: scaleX(1); }
+  .age-btn-label { font-size: 11px; color: var(--text-muted); font-family: 'DM Mono', monospace; letter-spacing: 1px; margin-bottom: 6px; }
+  .age-btn-value { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text); }
+  .age-btn-note { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+  /* ── FORM GRID ── */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+
+  .field {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    transition: border-color var(--transition);
+  }
+  .field:focus-within { border-color: var(--accent-blue); }
+  .field-label {
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .field-label .dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--accent-blue);
+    flex-shrink: 0;
+  }
+
+  .radio-group { display: flex; flex-direction: column; gap: 6px; }
+  .radio-opt {
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer;
+    padding: 7px 10px;
+    border-radius: 6px;
+    transition: background var(--transition);
+    font-size: 13px;
+  }
+  .radio-opt:hover { background: var(--surface2); }
+  .radio-opt input[type="radio"] { display: none; }
+  .radio-custom {
+    width: 14px; height: 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: border-color var(--transition);
+  }
+  .radio-opt input:checked ~ .radio-custom {
+    border-color: var(--accent-blue);
+  }
+  .radio-opt input:checked ~ .radio-custom::after {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent-blue);
+    border-radius: 50%;
+  }
+  .radio-opt input:checked ~ span { color: var(--text); font-weight: 500; }
+  .radio-opt span { color: var(--text-muted); font-size: 13px; }
+  .radio-opt input:checked ~ .radio-custom + span { color: var(--text); }
+
+  /* fix: the label text is the last span */
+  .radio-opt .opt-label { color: var(--text-muted); }
+  .radio-opt input:checked + .radio-custom + .opt-label { color: var(--text); font-weight: 500; }
+
+  /* ── SUBMIT ── */
+  .btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent-blue);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity var(--transition), transform var(--transition);
+    letter-spacing: 0.3px;
+    margin-bottom: 32px;
+  }
+  .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+
+  /* ── RESULT ── */
+  #result { display: none; }
+  #result.visible { display: block; animation: fadeUp 0.4s ease; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-header {
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    border: 1px solid;
+    position: relative;
+    overflow: hidden;
+  }
+  .result-header::before {
+    content: '';
+    position: absolute; top: 0; left: 0; width: 4px; bottom: 0;
+  }
+  .result-header.low    { border-color: rgba(63,185,80,0.3); background: rgba(63,185,80,0.06); }
+  .result-header.low::before  { background: var(--low); }
+  .result-header.standard { border-color: rgba(56,139,253,0.3); background: rgba(56,139,253,0.06); }
+  .result-header.standard::before { background: var(--standard); }
+  .result-header.high   { border-color: rgba(248,81,73,0.3); background: rgba(248,81,73,0.06); }
+  .result-header.high::before  { background: var(--high); }
+
+  .result-risk-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .low .result-risk-label    { color: var(--low); }
+  .standard .result-risk-label { color: var(--standard); }
+  .high .result-risk-label   { color: var(--high); }
+
+  .result-risk-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  .result-justif {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    line-height: 1.7;
+  }
+
+  /* ── CARDS ── */
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+  @media (max-width: 600px) { .cards { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .card-icon { font-size: 18px; margin-bottom: 10px; }
+  .card-title {
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  .card-body { font-size: 13px; line-height: 1.7; color: var(--text-muted); }
+  .card-body strong { color: var(--text); font-weight: 500; }
+  .card-body .val {
+    display: inline-block;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 7px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+    margin: 2px 0;
+  }
+
+  /* ── ALERT ── */
+  .alert {
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    font-size: 12.5px;
+    margin-bottom: 14px;
+    display: flex; gap: 12px; align-items: flex-start;
+    border: 1px solid;
+    line-height: 1.6;
+  }
+  .alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .alert.warning { background: rgba(210,153,34,0.08); border-color: rgba(210,153,34,0.3); color: var(--accent-amber); }
+  .alert.info    { background: rgba(56,139,253,0.08); border-color: rgba(56,139,253,0.3); color: var(--accent-blue); }
+  .alert.danger  { background: rgba(248,81,73,0.08); border-color: rgba(248,81,73,0.3); color: var(--accent-red); }
+
+  /* ── TIMING BAR ── */
+  .timing-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 14px;
+  }
+  .timing-title { font-size: 10px; font-family: 'DM Mono', monospace; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+  .timing-items { display: flex; gap: 0; }
+  .timing-item {
+    flex: 1;
+    text-align: center;
+    padding: 8px 4px;
+    border-right: 1px solid var(--border);
+    font-size: 11px;
+  }
+  .timing-item:last-child { border-right: none; }
+  .timing-item .t-label { color: var(--text-muted); font-size: 10px; font-family: 'DM Mono', monospace; }
+  .timing-item .t-val { color: var(--text); font-weight: 500; font-size: 12px; margin-top: 3px; }
+
+  /* ── RESET ── */
+  .btn-reset {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 20px;
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-family: 'DM Sans', sans-serif;
+    margin-top: 8px;
+  }
+  .btn-reset:hover { border-color: var(--text-muted); color: var(--text); }
+
+  /* ── DIVIDER ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 20px 32px;
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+    display: flex; gap: 24px; flex-wrap: wrap;
+  }
+  footer a { color: var(--text-muted); text-decoration: none; }
+  footer a:hover { color: var(--text); }
+
+  /* responsive */
+  @media(max-width:520px){
+    header { padding: 14px 16px; }
+    .container { padding: 24px 14px 60px; }
+    .age-selector { grid-template-columns: 1fr; }
+    .timing-items { flex-wrap: wrap; }
+    .timing-item { min-width: 50%; border-bottom: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-mark">MB</div>
+  <div>
+    <div class="header-title">Médulloblastome — Stratification SIOP-Europe</div>
+    <div class="header-sub">Bailey et al. · EJC Paediatric Oncology 2025</div>
+  </div>
+  <div class="header-badge">v1.0 · 2025</div>
+</header>
+
+<div class="container">
+
+  <!-- STEP 1: Age -->
+  <div class="section-label">01 — Groupe d'âge</div>
+  <div class="age-selector">
+    <button class="age-btn" id="btn-older" onclick="selectAge('older')">
+      <div class="age-btn-label">GROUPE A</div>
+      <div class="age-btn-value">≥ 3–5 ans</div>
+      <div class="age-btn-note">Traitement standard par CSI + CT</div>
+    </button>
+    <button class="age-btn" id="btn-infant" onclick="selectAge('infant')">
+      <div class="age-btn-label">GROUPE B</div>
+      <div class="age-btn-value">&lt; 3–5 ans</div>
+      <div class="age-btn-note">Approche d'épargne de la RT (iMB)</div>
+    </button>
+  </div>
+
+  <!-- STEP 2: Criteria -->
+  <div id="form-older" style="display:none">
+    <div class="section-label">02 — Paramètres clinico-biologiques (≥ 3–5 ans)</div>
+    <div class="form-grid">
+
+      <div class="field">
+        <div class="field-label"><span class="dot"></span>Groupe moléculaire</div>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="mol_o" value="wnt"><div class="radio-custom"></div><span class="opt-label">WNT activé</span></label>
+          <label class="radio-opt"><input type="radio" name="mol_o" value="shh_wt"><div class="radio-custom"></div><span class="opt-label">SHH activé, TP53 wt</span></label>
+          <label class="radio-opt"><input type="radio" name="mol_o" value="shh_mut"><div class="radio-custom"></div><span class="opt-label">SHH activé, TP53 muté</span></label>
+          <label class="radio-opt"><input type="radio" name="mol_o" value="non_wnt"><div class="radio-custom"></div><span class="opt-label">Non-WNT / Non-SHH</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label"><span class="dot"></span>Histologie</div>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="histo_o" value="classic"><div class="radio-custom"></div><span class="opt-label">Classique</span></label>
+          <label class="radio-opt"><input type="radio" name="histo_o" value="dn"><div class="radio-custom"></div><span class="opt-label">Desmoplastique / nodulaire</span></label>
+          <label class="radio-opt"><input type="radio" name="histo_o" value="lca"><div class="radio-custom"></div><span class="opt-label">Grande cellule / anaplasique (LC/A)</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label"><span class="dot"></span>Amplification MYC / MYCN</div>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="myc_o" value="none"><div class="radio-custom"></div><span class="opt-label">Non amplifié</span></label>
+          <label class="radio-opt"><input type="radio" name="myc_o" value="myc"><div class="radio-custom"></div><span class="opt-label">MYC amplifié</span></label>
+          <label class="radio-opt"><input type="radio" name="myc_o" value="mycn_shh"><div class="radio-custom"></div><span class="opt-label">MYCN amplifié (SHH ou Gp3)</span></label>
+          <label class="radio-opt"><input type="radio" name="myc_o" value="mycn_gp4"><div class="radio-custom"></div><span class="opt-label">MYCN amplifié (Groupe 4)</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label"><span class="dot"></span>Statut métastatique</div>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="meta_o" value="m0"><div class="radio-custom"></div><span class="opt-label">M0</span></label>
+          <label class="radio-opt"><input type="radio" name="meta_o" value="m1"><div class="radio-custom"></div><span class="opt-label">M1 (cytologie LCR +)</span></label>
+          <label class="radio-opt"><input type="radio" name="meta_o" value="m2m3"><div class="radio-custom"></div><span class="opt-label">M2–M3 (métastases nodulaires)</span></label>
+          <label class="radio-opt"><input type="radio" name="meta_o" value="m4"><div class="radio-custom"></div><span class="opt-label">M4 (extra-CNS)</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label"><span class="dot"></span>Résidu post-opératoire</div>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="res_o" value="none"><div class="radio-custom"></div><span class="opt-label">Résection totale (GTR)</span></label>
+          <label class="radio-opt"><input type="radio" name="res_o" value="ntr"><div class="radio-custom"></div><span class="opt-label">Résidu &lt; 1,5 cm² (NTR)</span></label>
+          <label class="radio-opt"><input type="radio" name="res_o" value="str"><div class="radio-custom"></div><span class="opt-label">Résidu ≥ 1,5 cm² (STR)</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label"><span class="dot"></span>Âge au diagnostic</div>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="age_o" value="u16"><div class="radio-custom"></div><span class="opt-label">< 16 ans</span></label>
+          <label class="radio-opt"><input type="radio" name="age_o" value="o16"><div class="radio-custom"></div><span class="opt-label">≥ 16 ans</span></label>
+        </div>
+      </div>
+
+    </div>
+    <button class="btn-primary" onclick="computeOlder()">Calculer le groupe de risque →</button>
+  </div>
+
+  <div id="form-infant" style="display:none">
+    <div class="section-label">02 — Paramètres clinico-biologiques (iMB &lt; 3–5 ans)</div>
+    <div class="form-grid">
+
+      <div class="field">
+        <div class="field-label"><span class="dot"></span>Groupe moléculaire</div>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="mol_i" value="shh_wt"><div class="radio-custom"></div><span class="opt-label">SHH activé, TP53 wt</span></label>
+          <label class="radio-opt"><input type="radio" name="mol_i" value="shh_mut"><div class="radio-custom"></div><span class="opt-label">SHH activé, TP53 muté</span></label>
+          <label class="radio-opt"><input type="radio" name="mol_i" value="non_shh"><div class="radio-custom"></div><span class="opt-label">Non-SHH / Non-WNT</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label"><span class="dot"></span>Histologie</div>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="histo_i" value="dn_mben"><div class="radio-custom"></div><span class="opt-label">DN / MBEN</span></label>
+          <label class="radio-opt"><input type="radio" name="histo_i" value="classic"><div class="radio-custom"></div><span class="opt-label">Classique</span></label>
+          <label class="radio-opt"><input type="radio" name="histo_i" value="lca"><div class="radio-custom"></div><span class="opt-label">Grande cellule / anaplasique (LC/A)</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label"><span class="dot"></span>Amplification MYC / MYCN</div>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="myc_i" value="no"><div class="radio-custom"></div><span class="opt-label">Non amplifié</span></label>
+          <label class="radio-opt"><input type="radio" name="myc_i" value="yes"><div class="radio-custom"></div><span class="opt-label">MYC ou MYCN amplifié</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label"><span class="dot"></span>Statut métastatique</div>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="meta_i" value="m0"><div class="radio-custom"></div><span class="opt-label">M0</span></label>
+          <label class="radio-opt"><input type="radio" name="meta_i" value="m_plus"><div class="radio-custom"></div><span class="opt-label">M+ (M1–M3)</span></label>
+        </div>
+      </div>
+
+    </div>
+    <button class="btn-primary" onclick="computeInfant()">Calculer le groupe de risque →</button>
+  </div>
+
+  <!-- RESULT PANEL -->
+  <div id="result">
+    <hr class="divider">
+    <div class="section-label">03 — Résultat de stratification</div>
+    <div id="result-header" class="result-header">
+      <div class="result-risk-label" id="r-label"></div>
+      <div class="result-risk-name" id="r-name"></div>
+      <div class="result-justif" id="r-justif"></div>
+    </div>
+    <div id="result-alerts"></div>
+    <div class="section-label" style="margin-top:20px">04 — Recommandations thérapeutiques</div>
+    <div class="cards" id="result-cards"></div>
+    <div id="result-timing"></div>
+    <div id="result-extra"></div>
+    <button class="btn-reset" onclick="resetTool()">← Nouvelle évaluation</button>
+  </div>
+
+</div>
+
+<footer>
+  <span>Source : Bailey S et al., <em>EJC Paediatric Oncology</em> 5 (2025) 100205</span>
+  <span>·</span>
+  <span>SIOP-Europe / ERN PaedCan</span>
+  <span>·</span>
+  <span>Outil d'aide à la décision — ne se substitue pas au jugement clinique</span>
+</footer>
+
+<script>
+let selectedAge = null;
+
+function selectAge(age) {
+  selectedAge = age;
+  document.getElementById('btn-older').classList.toggle('active', age === 'older');
+  document.getElementById('btn-infant').classList.toggle('active', age === 'infant');
+  document.getElementById('form-older').style.display = age === 'older' ? 'block' : 'none';
+  document.getElementById('form-infant').style.display = age === 'infant' ? 'block' : 'none';
+  document.getElementById('result').classList.remove('visible');
+  document.getElementById('result').style.display = 'none';
+}
+
+function getRadio(name) {
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? el.value : null;
+}
+
+function showResult(riskClass, riskName, justif, alerts, cards, timing, extra) {
+  const rh = document.getElementById('result-header');
+  rh.className = 'result-header ' + riskClass;
+  document.getElementById('r-label').textContent = riskClass === 'low' ? 'RISQUE BAS' : riskClass === 'standard' ? 'RISQUE STANDARD' : 'RISQUE ÉLEVÉ';
+  document.getElementById('r-name').textContent = riskName;
+  document.getElementById('r-justif').innerHTML = justif;
+
+  document.getElementById('result-alerts').innerHTML = alerts;
+  document.getElementById('result-cards').innerHTML = cards;
+  document.getElementById('result-timing').innerHTML = timing;
+  document.getElementById('result-extra').innerHTML = extra;
+
+  const resultEl = document.getElementById('result');
+  resultEl.style.display = 'block';
+  resultEl.classList.add('visible');
+  resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function card(icon, title, body) {
+  return `<div class="card"><div class="card-icon">${icon}</div><div class="card-title">${title}</div><div class="card-body">${body}</div></div>`;
+}
+function alert_(type, icon, text) {
+  return `<div class="alert ${type}"><span class="alert-icon">${icon}</span><span>${text}</span></div>`;
+}
+function timingBar(items) {
+  const cells = items.map(i => `<div class="timing-item"><div class="t-label">${i.label}</div><div class="t-val">${i.val}</div></div>`).join('');
+  return `<div class="timing-bar"><div class="timing-title">Calendrier thérapeutique recommandé</div><div class="timing-items">${cells}</div></div>`;
+}
+
+function computeOlder() {
+  var mol  = getRadio('mol_o');
+  var hist = getRadio('histo_o');
+  var myc  = getRadio('myc_o');
+  var meta = getRadio('meta_o');
+  var res  = getRadio('res_o');
+  var ageG = getRadio('age_o');
+
+  if (!mol || !hist || !myc || !meta || !res || !ageG) {
+    window.alert('Veuillez renseigner tous les paramètres avant de calculer.');
+    return;
+  }
+
+  var risk, name, justif, alertsHtml='', cards='', timing='', extra='';
+  var isMplus = (meta !== 'm0');
+  var tp53mut   = (mol === 'shh_mut');
+  var mycAmp    = (myc === 'myc');
+  var mycnAmpHR = (myc === 'mycn_shh');
+  var lcaHisto  = (hist === 'lca');
+  var wntOlder  = (mol === 'wnt' && ageG === 'o16');
+  var nonWntMet = (mol !== 'wnt' && isMplus);
+  var wntM      = (mol === 'wnt' && ageG === 'u16' && isMplus);
+
+  if (tp53mut || mycAmp || mycnAmpHR || lcaHisto || wntOlder || nonWntMet || wntM) {
+    risk = 'high';
+    var reasons = [];
+    if (tp53mut)    reasons.push('SHH TP53 muté');
+    if (mycAmp)     reasons.push('amplification MYC');
+    if (mycnAmpHR)  reasons.push('amplification MYCN (contexte SHH/Gp3)');
+    if (lcaHisto)   reasons.push('histologie LC/A');
+    if (wntOlder)   reasons.push('WNT ≥ 16 ans');
+    if (nonWntMet)  reasons.push('maladie métastatique non-WNT');
+    if (wntM)       reasons.push('WNT &lt; 16 ans M+');
+    name = 'Haut Risque';
+    justif = 'Facteur(s) de haut risque : <strong>' + reasons.join(' · ') + '</strong>';
+
+    if (tp53mut) alertsHtml += alert_('danger','⚠️','<strong>SHH TP53 muté — Li-Fraumeni à exclure :</strong> Mutation germinale dans 57 % des cas. Risque élevé de toxicité aux alkylants et de néoplasies secondaires. Conseil génétique impératif. Pronostic très sombre (EFS 5 ans : 16 %). Pas de consensus thérapeutique établi.');
+    if (wntOlder)  alertsHtml += alert_('warning','ℹ️','<strong>WNT ≥ 16 ans :</strong> Le pronostic favorable du WNT pédiatrique ne s\'applique pas après 16 ans. Traitement haut risque recommandé.');
+
+    cards = card('☢️','Radiothérapie — CSI',
+      '<strong>CSI :</strong> <span class="val">36 Gy / 20 fr</span><br>' +
+      '<strong>Boost lit tumoral :</strong> <span class="val">+18 Gy / 10 fr — Total 54 Gy</span><br>' +
+      '<strong>Boost métastases M2–M3 :</strong> <span class="val">45–50,4 Gy</span><br>' +
+      '<strong>Délai post-op :</strong> démarrer &lt; 40 j (cible &lt; 28 j)'
+    ) + card('💊','Chimiothérapie',
+      'Protocoles de référence (au choix) :<br>' +
+      '<strong>SJMB12 :</strong> Cyclophosphamide + Cisplatine + Vincristine × 4<br>' +
+      '<strong>POG 9031 :</strong> Induction Cisplatine/Étoposide × 2 + consolidation<br>' +
+      '<strong>PNET5-HR :</strong> standard SIOP<br>' +
+      '<strong>PNET HR+5 :</strong> Carboplatine/Étoposide × 2 + Thiotépa HD × 2 + Témozolomide'
+    );
+    timing = timingBar([
+      { label:'Chirurgie', val:'J0' }, { label:'IRM post-op', val:'≤ 72 h' },
+      { label:'LCR (PL)', val:'J14' }, { label:'Début RT', val:'&lt; 28 j' },
+      { label:'RT max', val:'40 j' }, { label:'CT maintien', val:'post-RT' }
+    ]);
+    extra = alert_('info','🔬','<strong>Essai ouvert — SIOP-HR-MB :</strong> Essai européen multicentrique randomisé comparant 3 bras après induction carboplatine/étoposide : (1) CSI standard, (2) HART, (3) Thiotépa tandem HD + CSI. Inclure si possible.');
+
+  } else {
+    var wntLow = (mol === 'wnt' && ageG === 'u16' && meta === 'm0' && !lcaHisto && myc === 'none');
+    if (wntLow) {
+      risk = 'low';
+      name = 'Risque Bas (WNT favorable)';
+      justif = 'WNT activé · &lt; 16 ans · M0 · TP53 wt · MYC/N non amplifié · Histologie non LC/A';
+      cards = card('☢️','Radiothérapie — CSI réduite',
+        '<strong>CSI :</strong> <span class="val">18 Gy</span> (protocole PNET5-MB)<br>' +
+        '<strong>Boost lit tumoral :</strong> <span class="val">+36 Gy — Total 54 Gy</span><br>' +
+        '<em>Réduction confirmée dans PNET5-MB, COG ACNS1422 (18 Gy) et SJMB12 (15 Gy)</em>'
+      ) + card('💊','Chimiothérapie',
+        'Protocole <strong>PNET5</strong> :<br>' +
+        '8 cycles alternés :<br>' +
+        'Cyclophosphamide 1000 mg/m² × 2 + Vincristine 1,5 mg/m²<br>' +
+        'Cisplatine 70 mg/m² + CCNU 75 mg/m² + Vincristine 1,5 mg/m²<br>' +
+        '<em>Pas de vincristine concomitant à la RT</em>'
+      );
+      timing = timingBar([
+        { label:'Chirurgie', val:'J0' }, { label:'IRM post-op', val:'≤ 72 h' },
+        { label:'LCR (PL)', val:'J14' }, { label:'Début RT', val:'&lt; 28 j' },
+        { label:'CT maintien', val:'après RT' }, { label:'Durée CT', val:'8 cycles' }
+      ]);
+      extra = alert_('warning','⚠️','En attente des résultats définitifs de SIOP-PNET5-MB et SJMB12 avant de recommander en routine la réduction de dose CSI en dessous de 18 Gy. Ne pas adopter le bras expérimental (15 Gy) hors essai.');
+
+    } else {
+      risk = 'standard';
+      var residualOnly = (res === 'str');
+      name = 'Risque Standard';
+      var jParts = [mol === 'wnt' ? 'WNT' : mol === 'shh_wt' ? 'SHH TP53 wt' : 'Non-WNT/Non-SHH'];
+      if (meta === 'm0') jParts.push('M0');
+      jParts.push('TP53 wt · MYC/N non amplifié (ou Gp4 MYCN)');
+      if (residualOnly) jParts.push('Résidu ≥ 1,5 cm² (facteur isolé = risque standard)');
+      justif = jParts.join(' · ');
+
+      if (residualOnly) alertsHtml += alert_('info','ℹ️','<strong>Résidu post-chirurgical isolé :</strong> En l\'absence d\'autres facteurs de haut risque, le résidu ≥ 1,5 cm² n\'est plus considéré comme un facteur pronostique indépendant (étude de 1 110 patients). Traitement standard recommandé.');
+
+      cards = card('☢️','Radiothérapie — CSI standard',
+        '<strong>Phase 1 — CSI :</strong> <span class="val">23,4 Gy / 13 fr</span><br>' +
+        '<strong>Phase 2 — Boost lit tumoral :</strong> <span class="val">+30,6 Gy / 17 fr — Total 54 Gy</span><br>' +
+        '<strong>Technique :</strong> 3D / VMAT / Protonthérapie<br>' +
+        '<strong>Délai post-op :</strong> démarrer &lt; 40 j (cible &lt; 28 j)'
+      ) + card('💊','Chimiothérapie',
+        'Protocole <strong>PNET5</strong> (recommandé SIOP-Europe) :<br>' +
+        '8 cycles alternés :<br>' +
+        'Cyclophosphamide 1000 mg/m² × 2 + Vincristine 1,5 mg/m²<br>' +
+        'Cisplatine 70 mg/m² + CCNU 75 mg/m² + Vincristine 1,5 mg/m²<br>' +
+        '<em>Carboplatine concomitant (35 mg/m² × 5/sem) testé dans bras expérimental PNET5-MB</em>'
+      );
+      timing = timingBar([
+        { label:'Chirurgie', val:'J0' }, { label:'IRM post-op', val:'≤ 72 h' },
+        { label:'LCR (PL)', val:'J14' }, { label:'Début RT', val:'&lt; 28 j' },
+        { label:'CT maintien', val:'post-RT' }, { label:'Durée CT', val:'8 cycles' }
+      ]);
+    }
+  }
+
+  alertsHtml += alert_('info','⚡','<strong>Protonthérapie :</strong> Recommandée si disponible. Contrôle tumoral équivalent aux photons (étude cas-appariés 2016). Données de toxicité à long terme en cours d\'accumulation.');
+  showResult(risk, name, justif, alertsHtml, cards, timing, extra);
+}
+
+function computeInfant() {
+  var mol  = getRadio('mol_i');
+  var hist = getRadio('histo_i');
+  var myc  = getRadio('myc_i');
+  var meta = getRadio('meta_i');
+
+  if (!mol || !hist || !myc || !meta) {
+    window.alert('Veuillez renseigner tous les paramètres avant de calculer.');
+    return;
+  }
+
+  var risk, name, justif, alertsHtml='', cards='', timing='', extra='';
+  var tp53mut   = (mol === 'shh_mut');
+  var mycAmp    = (myc === 'yes');
+  var lcaHisto  = (hist === 'lca');
+  var nonSHHmet = (mol === 'non_shh' && meta === 'm_plus');
+
+  if (tp53mut || mycAmp || lcaHisto || nonSHHmet) {
+    risk = 'high';
+    name = 'Haut Risque (iMB)';
+    var reasons = [];
+    if (tp53mut)   reasons.push('SHH TP53 muté');
+    if (mycAmp)    reasons.push('amplification MYC/MYCN');
+    if (lcaHisto)  reasons.push('histologie LC/A');
+    if (nonSHHmet) reasons.push('Non-SHH M+');
+    justif = 'Facteur(s) de haut risque : <strong>' + reasons.join(' · ') + '</strong>';
+
+    if (tp53mut) alertsHtml += alert_('danger','⚠️','<strong>SHH TP53 muté :</strong> Résultat très défavorable. Exclure mutation germinale (Li-Fraumeni). Pas de standard établi. Chimiothérapie conventionnelle discutée mais résistance possible.');
+
+    cards = card('💊','Induction — Head Start II Régime A2',
+      '5 cycles de chimiothérapie intensive (toutes les 21–28 j) :<br>' +
+      'Cisplatine · Cyclophosphamide · Étoposide · Vincristine · MTX IV haute dose<br>' +
+      '<strong>Réévaluation après cycle 2, puis après cycle 5</strong><br>' +
+      'Collection de cellules souches à envisager après cycle 5'
+    ) + card('🔬','Consolidation — Chimiothérapie haute dose',
+      '<strong>Si réponse complète :</strong> Thiotépa + Carboplatine + Étoposide + Autogreffe (ASCR)<br>' +
+      '<strong>Si résidu :</strong> Chirurgie de 2e intention, puis HDC<br>' +
+      '<strong>Si progression :</strong> Discussion Groupe Tumeurs Embryonnaires<br>' +
+      'RT à discuter post-ASCR : LCA, Groupe 3, M+'
+    );
+    timing = timingBar([
+      { label:'Chirurgie', val:'J0' }, { label:'Début CT', val:'≤ 28 j' },
+      { label:'Rééval.', val:'Cycle 2 & 5' }, { label:'Collection SC', val:'Après C5' },
+      { label:'HDC + ASCR', val:'3–4 sem post C5' }, { label:'RT si indiquée', val:'Post-ASCR' }
+    ]);
+    extra = alert_('warning','🧬','<strong>Prédisposition germinale :</strong> Tester PTCH1, SUFU (Syndrome de Gorlin) chez tous les nourrissons SHH. Implications majeures pour l\'usage futur de la radiothérapie.');
+
+  } else if (mol === 'shh_wt' && hist === 'dn_mben' && myc === 'no' && meta === 'm0') {
+    risk = 'low';
+    name = 'Risque Bas (iMB) — DN/MBEN favorable';
+    justif = 'SHH TP53 wt · DN/MBEN · MYC/N non amplifié · M0 · Approche d\'épargne de la RT';
+
+    cards = card('💊','Traitement — HIT SKK (recommandation européenne)',
+      'Protocole <strong>HIT SKK 2000</strong> avec méthotrexate intraventriculaire :<br>' +
+      '<strong>3 cycles</strong> (5 si résidu après 3) comprenant MTX systémique + intraventriculaire<br>' +
+      'Cycles 1–3 : HIT SKK <em>avec</em> MTX intraventriculaire<br>' +
+      'Cycles 4–5 : HIT SKK <em>sans</em> MTX intraventriculaire<br>' +
+      '<strong>Réservoir Ommaya/Rickham</strong> à implanter (ne pas retarder la CT pour sa pose)'
+    ) + card('🏥','Alternative — Head Start',
+      'Protocole <strong>Head Start</strong> (résultats comparables) :<br>' +
+      'Alternative acceptée — base de l\'essai transatlantique en cours<br>' +
+      '<strong>Pour les formes M+ SHH :</strong> Head Start recommandé<br>' +
+      '<strong>5 ans PFS HIT 2000 (DN/MBEN M0) :</strong> 93 %'
+    );
+    timing = timingBar([
+      { label:'Chirurgie', val:'J0' }, { label:'Début CT', val:'≤ 28 j' },
+      { label:'Cycles 1–3', val:'+MTX iv' }, { label:'Cycles 4–5', val:'−MTX iv' },
+      { label:'Si résidu', val:'5 cycles' }, { label:'Pas de RT', val:'si RC' }
+    ]);
+    alertsHtml = alert_('warning','⚠️','<strong>Mise en garde RT :</strong> L\'association RT + MTX intraventriculaire est associée à des séquelles neurocognitives sévères. Ne pas combiner. La RT n\'est envisagée qu\'à la progression.')
+      + alert_('info','🧬','<strong>Syndrome de Gorlin :</strong> Tester PTCH1/SUFU. En cas de mutation germinale, la RT est contre-indiquée ou à éviter impérativement.');
+    extra = alert_('info','📋','<strong>SIOPE ne recommande pas</strong> le méthotrexate intrathécal par ponction lombaire ou port-a-cath pour les iMB. Seule la voie intraventriculaire (Ommaya) est validée dans ce contexte.');
+
+  } else {
+    risk = 'standard';
+    name = 'Risque Standard (iMB)';
+    var jBits = [];
+    if (mol === 'shh_wt' && hist === 'dn_mben') jBits.push('SHH TP53 wt · DN/MBEN · M+');
+    else if (hist === 'classic') jBits.push('Histologie classique · M0');
+    else jBits.push('Non-SHH / Non-WNT · Histologie classique');
+    justif = jBits.join(' / ');
+
+    alertsHtml = alert_('warning','⚠️','<strong>Groupe à pronostic intermédiaire :</strong> L\'histologie classique non-SHH présente des résultats très défavorables avec la chimiothérapie seule (EFS 5 ans 10–30 %). L\'intensification par HDC est recommandée.');
+
+    cards = card('💊','Induction — Head Start II Régime A2',
+      '5 cycles de chimiothérapie intensive (toutes les 21–28 j) :<br>' +
+      'Cisplatine · Cyclophosphamide · Étoposide · Vincristine · MTX HD<br>' +
+      '<strong>Réévaluation après cycle 2, puis après cycle 5</strong>'
+    ) + card('🔬','Consolidation',
+      '<strong>Réponse complète :</strong> Thiotépa + Carboplatine + Étoposide + ASCR<br>' +
+      '<strong>Résidu :</strong> 2e chirurgie + HDC<br>' +
+      '<strong>RT locale :</strong> à considérer post-ASCR si &gt; 18 mois et LC/A'
+    );
+    timing = timingBar([
+      { label:'Chirurgie', val:'J0' }, { label:'Début CT', val:'≤ 28 j' },
+      { label:'Rééval.', val:'C2 & C5' }, { label:'HDC + ASCR', val:'Post C5' },
+      { label:'RT locale', val:'Si &gt; 18 mois' }, { label:'CSI', val:'Non standard' }
+    ]);
+    extra = alert_('info','🔬','<strong>Note :</strong> La stratification moléculaire prospective des iMB dans les essais cliniques n\'a pas encore été formellement évaluée. Des études transcontinentales moléculairement informées sont en cours d\'élaboration (SIOPE).');
+  }
+
+  showResult(risk, name, justif, alertsHtml, cards, timing, extra);
+}
+
+function resetTool() {
+  selectedAge = null;
+  document.getElementById('btn-older').classList.remove('active');
+  document.getElementById('btn-infant').classList.remove('active');
+  document.getElementById('form-older').style.display = 'none';
+  document.getElementById('form-infant').style.display = 'none';
+  document.getElementById('result').classList.remove('visible');
+  document.getElementById('result').style.display = 'none';
+  // Reset all radios
+  document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
