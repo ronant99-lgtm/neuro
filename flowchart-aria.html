@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Logigramme ARIA Stratum C — Médulloblastomes</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
+:root {
+  --bg:#f5f0e8; --surf:#ede8dc; --border:#c8bfaa;
+  --text:#1a1208; --text2:#5a4f3a; --text3:#9a8f7a;
+  --green:#2d7a3a; --red:#c0392b; --amber:#a0720a;
+  --blue:#1a5fa8; --purple:#6b3fa0; --orange:#c45a10;
+}
+body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; height:100vh; overflow:hidden; display:flex; flex-direction:column; }
+header { flex-shrink:0; border-bottom:1px solid var(--border); padding:10px 18px; display:flex; align-items:center; gap:12px; background:rgba(245,240,232,0.97); backdrop-filter:blur(10px); }
+.logo { font-family:'DM Mono',monospace; font-size:9px; color:var(--text3); border:1px solid var(--border); border-radius:5px; padding:3px 7px; }
+.hdr-title { font-family:'DM Serif Display',serif; font-size:15px; }
+.hdr-sub { font-size:10px; color:var(--text3); font-family:'DM Mono',monospace; }
+.hdr-badge { font-family:'DM Mono',monospace; font-size:9px; padding:2px 8px; border-radius:20px; background:rgba(196,90,16,0.1); border:1px solid rgba(196,90,16,0.35); color:var(--orange); margin-left:auto; }
+.btn-reset-zoom { font-family:'DM Mono',monospace; font-size:9px; color:var(--text3); background:none; border:1px solid var(--border); border-radius:5px; padding:3px 9px; cursor:pointer; }
+.btn-reset-zoom:hover { color:var(--text2); }
+.legend { flex-shrink:0; display:flex; gap:18px; flex-wrap:wrap; padding:7px 18px; border-bottom:1px solid var(--border); background:rgba(237,232,220,0.9); }
+.leg-item { display:flex; align-items:center; gap:5px; font-family:'DM Mono',monospace; font-size:9px; color:var(--text3); }
+.leg-swatch { width:12px; height:12px; border-radius:2px; flex-shrink:0; }
+.leg-hint { font-size:9px; color:var(--text3); font-family:'DM Mono',monospace; margin-left:auto; }
+#chart { flex:1; overflow:hidden; cursor:grab; }
+#chart:active { cursor:grabbing; }
+.tooltip { position:fixed; background:#faf7f0; border:1px solid var(--border); border-radius:8px; padding:12px 15px; font-size:12px; max-width:310px; pointer-events:none; z-index:100; opacity:0; transition:opacity 0.15s; line-height:1.5; }
+.tooltip.visible { opacity:1; }
+.tt-title { font-family:'DM Mono',monospace; font-size:9.5px; color:var(--text3); margin-bottom:5px; }
+.tt-q { font-weight:500; color:var(--text); margin-bottom:6px; font-size:12px; }
+.tt-row { display:flex; justify-content:space-between; gap:12px; border-top:1px solid var(--border); padding-top:4px; margin-top:4px; }
+.tt-label { color:var(--text2); font-size:11px; }
+.tt-val { color:var(--text); font-family:'DM Mono',monospace; font-size:11px; font-weight:500; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">ARIA</div>
+  <div>
+    <div class="hdr-title">Logigramme ARIA Stratum C — Médulloblastomes</div>
+    <div class="hdr-sub">SJCRH / COG · Stratum C · Dec 2025 · Pincer pour zoomer · Glisser pour naviguer</div>
+  </div>
+  <span class="hdr-badge">ARIA · SJCRH/COG</span>
+  <button class="btn-reset-zoom" id="btnReset">⊙ Recentrer</button>
+</header>
+<div class="legend">
+  <div class="leg-item"><div class="leg-swatch" style="background:#1a5fa8;border-radius:50%"></div>Décision</div>
+  <div class="leg-item"><div class="leg-swatch" style="background:#2d7a3a"></div>Bas risque · LR</div>
+  <div class="leg-item"><div class="leg-swatch" style="background:#1a5fa8;opacity:0.6"></div>Risque standard · SR</div>
+  <div class="leg-item"><div class="leg-swatch" style="background:#c0392b"></div>Haut risque · HR</div>
+  <div class="leg-item"><div class="leg-swatch" style="background:#a0720a"></div>Palliatif / Discussion</div>
+  <span class="leg-hint">Survoler pour les détails · Données d'outcome incluses</span>
+</div>
+<div id="chart"></div>
+<div class="tooltip" id="tooltip"></div>
+<script>
+const NODE_STYLE = {
+  decision:      { fill:'#dce8f5', stroke:'#1a5fa8', text:'#0a1020' },
+  form:          { fill:'#ece0f5', stroke:'#6b3fa0', text:'#0a1020' },
+  result_lr:     { fill:'#d5edd8', stroke:'#2d7a3a', text:'#0a1a0a' },
+  result_sr:     { fill:'#d5e4f5', stroke:'#1a5fa8', text:'#0a1020' },
+  result_hr:     { fill:'#f5d8d5', stroke:'#c0392b', text:'#200505' },
+  result_special:{ fill:'#f5ead5', stroke:'#a0720a', text:'#201000' },
+};
+
+const TREE = {
+  id:'start', label:'Âge au\ndiagnostic ?', type:'decision',
+  children:[
+    {
+      id:'infant', label:'< 36 mois', edgeLabel:'< 36 mois', type:'decision',
+      detail:{ title:'Nourrisson < 36 mois', q:'Stade M → Histologie → Sous-groupe moléculaire' },
+      children:[
+        {
+          id:'inf_loc', label:'Localisé\nM0', edgeLabel:'M0\nLocalisé', type:'decision',
+          children:[
+            { id:'r_inf_skk_gtr', label:'HIT-SKK\nvtr MTX', edgeLabel:'DN/MBEN\nou SHH · GTR', type:'result_lr',
+              detail:{ title:'Nourrisson · M0 · GTR · DN/MBEN ou SHH', protocol:'HIT 2000 SKK vtr MTX', csi:'Aucune', boost:'Salvage CSI si progression', chemo:'SKK + MTX intraventriculaire · Si pas Ommaya : MTX IT 1×/cycle · PFS 5 ans DN/MBEN M0 : 93 %' }},
+            { id:'r_inf_skk_subgtr', label:'HIT-SKK\n(< GTR)', edgeLabel:'DN/MBEN\nou SHH · <GTR', type:'result_lr',
+              detail:{ title:'Nourrisson · M0 · <GTR · DN/MBEN ou SHH', protocol:'HIT 2000 SKK LP MTX (+ HDMTX)', csi:'Aucune', boost:'Salvage si progression', chemo:'SKK + HDMTX (inclus pour résidu) · Ommaya requis pour MTX IVT standard' }},
+            { id:'r_inf_acns_gtr', label:'HIT-SKK\nou ACNS0334', edgeLabel:'CMB / LCA\nNon-WNT/Non-SHH · GTR', type:'result_sr',
+              detail:{ title:'Nourrisson · M0 · GTR · CMB/LCA/Non-WNT', protocol:'HIT 2000 SKK vtr MTX ou ACNS0334', csi:'Aucune', boost:'Salvage RT si progression', chemo:'ACNS0334 si ASCT disponible · Non-WNT/non-SHH PFS 5 ans ~37 % avec SKK' }},
+            { id:'r_inf_acns_subgtr', label:'HIT-SKK\nou ACNS0334', edgeLabel:'CMB / LCA\nNon-WNT/Non-SHH · <GTR', type:'result_sr',
+              detail:{ title:'Nourrisson · M0 · <GTR · CMB/LCA', protocol:'HIT 2000 SKK LP MTX (HDMTX) ou ACNS0334', csi:'Aucune', boost:'Salvage RT si progression', chemo:'ACNS0334 bras HDMTX supérieur pour Groupe 3 (non-WNT/non-SHH)' }},
+          ]
+        },
+        {
+          id:'inf_meta', label:'Métastatique\nM+', edgeLabel:'M+\nMétastatique', type:'decision',
+          children:[
+            { id:'r_inf_meta_dn', label:'HIT-SKK\n(M+ DN/SHH)', edgeLabel:'DN/MBEN ou SHH', type:'result_sr',
+              detail:{ title:'Nourrisson · M+ · DN/MBEN ou SHH', protocol:'HIT 2000 SKK + HDMTX', csi:'Aucune', boost:'Option: salvage CSI si progression', chemo:'M+ DMB/MBEN: outcome comparable au M0 (SKK 2000) · SHH M+: PFS 5 ans ~25 % (SJYC07)' }},
+            { id:'r_inf_meta_non', label:'Palliatif\n/ Métronomique', edgeLabel:'CMB/LCA\nNon-WNT/Non-SHH', type:'result_special',
+              detail:{ title:'Nourrisson · M+ · Non-WNT/Non-SHH · Pronostic très sombre', protocol:'Baby POG / MEMMAT métronomique', csi:'Pas de standard · Palliatif approprié', boost:'—', chemo:'PFS 5 ans CSI-free ~8 % · MYC-amplifié Gr.3 M+ : aucun survivant dans ACNS0334 · Discussion soins palliatifs avec famille' }},
+          ]
+        }
+      ]
+    },
+    {
+      id:'older', label:'≥ 36 mois', edgeLabel:'≥ 36 mois', type:'decision',
+      children:[
+        {
+          id:'lca_hr', label:'LCA\n(HR systématique)', edgeLabel:'LCA\ntout stade', type:'result_hr',
+          detail:{ title:'Haut risque systématique — LCA', protocol:'High-dose CSI + ACNS0332', csi:'36 Gy / 20 fr · 1,8 Gy/fr', boost:'55,8 Gy (FP ou lit tumoral)', chemo:'Carboplatine concomitant RT + CPM/CDDP/VCR · OS 5 ans : 73,4 % (ACNS0332)' }
+        },
+        {
+          id:'meta_hr', label:'M+\n(HR systématique)', edgeLabel:'M+\ntout mol.', type:'result_hr',
+          detail:{ title:'Haut risque — Métastatique ≥ 36 mois', protocol:'High-dose CSI + ACNS0332', csi:'36 Gy / 20 fr', boost:'55,8 Gy + boost spine 3,6 Gy + boost méta cérébrales 9 Gy', chemo:'Carboplatine RT + CPM/CDDP/VCR · OS 5 ans : 73,4 %' }
+        },
+        {
+          id:'wnt', label:'WNT\nActivated', edgeLabel:'WNT', type:'decision',
+          children:[
+            {
+              id:'wnt_u16', label:'WNT\n< 16 ans', edgeLabel:'< 16 ans', type:'decision',
+              children:[
+                { id:'r_wnt_lr_gtr', label:'Standard-dose CSI\n(WNT LR)', edgeLabel:'GTR\nsans FR', type:'result_lr',
+                  detail:{ title:'Bas risque WNT · < 16 ans · GTR', protocol:'Standard-dose CSI + SIOP ATR Regimen 2', csi:'23,4 Gy / 13 fr · 1,8 Gy', boost:'55,8 Gy (lit tumoral)', chemo:'VCR hebdo RT + CDDP/CCNU/VCR × 8 · EFS 5 ans WNT : ~95 % · Dose 18 Gy en investigation' }},
+                { id:'r_wnt_sr_subgtr', label:'Standard-dose CSI', edgeLabel:'<GTR\nsans FR additionnel', type:'result_lr',
+                  detail:{ title:'WNT · < 16 ans · <GTR · sans FR', protocol:'Standard-dose CSI + SIOP ATR Regimen 2', csi:'23,4 Gy / 13 fr', boost:'55,8 Gy', chemo:'<GTR sans FR additionnel = même traitement que GTR pour WNT' }},
+                { id:'r_wnt_hr_subgtr', label:'High-dose CSI\n(WNT + FR)', edgeLabel:'<GTR\n+ facteur HR', type:'result_hr',
+                  detail:{ title:'WNT · < 16 ans · <GTR + FR', protocol:'High-dose CSI + SIOP ATR Regimen 2', csi:'36 Gy / 20 fr', boost:'55,8 Gy', chemo:'Même WNT nécessite 36 Gy si <GTR + FR · FR : amplification MYC, autres marqueurs moléculaires HR' }},
+              ]
+            },
+            { id:'r_wnt_o16', label:'High-dose CSI\n(WNT ≥ 16 ans)', edgeLabel:'≥ 16 ans', type:'result_hr',
+              detail:{ title:'Haut risque — WNT ≥ 16 ans', protocol:'High-dose CSI + ACNS0332', csi:'36 Gy / 20 fr', boost:'55,8 Gy', chemo:'Pronostic favorable WNT pédiatrique ne s\'applique plus après 16 ans' }},
+          ]
+        },
+        {
+          id:'non_wnt', label:'SHH ou\nNon-WNT/Non-SHH', edgeLabel:'SHH\nou Non-WNT', type:'decision',
+          children:[
+            {
+              id:'loc_gtr_sr', label:'M0 · GTR\nou <GTR sans FR', edgeLabel:'M0 · GTR\nou <GTR sans FR', type:'decision',
+              children:[
+                { id:'r_sr_classic', label:'Standard-dose CSI\n(Risque standard)', edgeLabel:'CMB ou DN\nnon-LCA', type:'result_sr',
+                  detail:{ title:'Risque standard · M0 · GTR · non-LCA', protocol:'Standard-dose CSI + SIOP ATR Regimen 2', csi:'23,4 Gy / 13 fr · 1,8 Gy', boost:'55,8 Gy (lit tumoral préféré)', chemo:'VCR hebdo RT + CDDP/CCNU/VCR × 8 · Délai RT ≤ 7 sem · PFS 5 ans : 80–83 %' }},
+              ]
+            },
+            {
+              id:'loc_subgtr_hr', label:'<GTR\n+ facteur(s) HR', edgeLabel:'<GTR + FR\nou MYC amp.', type:'result_hr',
+              detail:{ title:'Haut risque · M0 · <GTR + FR', protocol:'High-dose CSI + ACNS0332', csi:'36 Gy / 20 fr', boost:'55,8 Gy', chemo:'FR : amplification MYC, iso17q, etc. · ACNS0332 si composante LCA' }
+            },
+          ]
+        },
+      ]
+    }
+  ]
+};
+
+// ── D3 RENDER ──
+const W=window.innerWidth, H=window.innerHeight-90;
+const NW=130, NH=52, DX=82, DY=195;
+const svg=d3.select('#chart').append('svg').attr('width',W).attr('height',H);
+const defs=svg.append('defs');
+Object.entries(NODE_STYLE).forEach(([type,s]) => {
+  defs.append('marker').attr('id','arrow-'+type).attr('viewBox','0 -5 10 10')
+    .attr('refX',8).attr('refY',0).attr('markerWidth',6).attr('markerHeight',6).attr('orient','auto')
+    .append('path').attr('d','M0,-5L10,0L0,5').attr('fill',s.stroke).attr('opacity',0.7);
+});
+const g=svg.append('g');
+const zoom=d3.zoom().scaleExtent([0.1,3]).on('zoom',e=>g.attr('transform',e.transform));
+svg.call(zoom);
+const root=d3.hierarchy(TREE);
+const layout=d3.tree().nodeSize([DX,DY]).separation((a,b)=>a.parent===b.parent?1.1:1.5);
+layout(root);
+const linkG=g.append('g');
+root.links().forEach(link => {
+  const s=NODE_STYLE[link.target.data.type]||NODE_STYLE.decision;
+  linkG.append('path').attr('fill','none').attr('stroke',s.stroke).attr('stroke-opacity',0.4)
+    .attr('stroke-width',1.5).attr('marker-end','url(#arrow-'+link.target.data.type+')')
+    .attr('d',d3.linkHorizontal().x(d=>d.y).y(d=>d.x)({source:link.source,target:link.target}));
+  const el=link.target.data.edgeLabel;
+  if (el) {
+    const mx=(link.source.y+link.target.y)/2, my=(link.source.x+link.target.x)/2;
+    const lines=el.split('\n');
+    const lg=linkG.append('g').attr('transform',`translate(${mx},${my})`);
+    lg.append('rect').attr('x',-36).attr('y',-9*lines.length/2-2).attr('width',72).attr('height',9*lines.length+4)
+      .attr('rx',3).attr('fill','#f5f0e8').attr('opacity',0.88);
+    lines.forEach((ln,i)=>lg.append('text').attr('text-anchor','middle')
+      .attr('y',(i-(lines.length-1)/2)*10+1).attr('font-family','DM Mono,monospace')
+      .attr('font-size',8).attr('fill',s.stroke).attr('opacity',0.9).text(ln));
+  }
+});
+const tooltip=document.getElementById('tooltip');
+const nodeG=g.append('g');
+root.descendants().forEach(d=>{
+  const data=d.data, s=NODE_STYLE[data.type]||NODE_STYLE.decision;
+  const isR=data.type.startsWith('result');
+  const nw=isR?140:NW, nh=NH;
+  const ng=nodeG.append('g').attr('transform',`translate(${d.y},${d.x})`).attr('cursor',data.detail?'pointer':'default');
+  ng.append('rect').attr('x',-nw/2+2).attr('y',-nh/2+2).attr('width',nw).attr('height',nh)
+    .attr('rx',isR?8:4).attr('fill','rgba(0,0,0,0.06)');
+  ng.append('rect').attr('x',-nw/2).attr('y',-nh/2).attr('width',nw).attr('height',nh)
+    .attr('rx',isR?8:4).attr('fill',s.fill).attr('stroke',s.stroke).attr('stroke-width',isR?1.5:1);
+  if (!isR) ng.append('rect').attr('x',-nw/2).attr('y',-nh/2).attr('width',nw).attr('height',3)
+    .attr('rx',4).attr('fill',s.stroke).attr('opacity',0.5);
+  const lines=data.label.split('\n'), lh=13, sy=-(lines.length-1)*lh/2;
+  lines.forEach((ln,i)=>ng.append('text').attr('text-anchor','middle')
+    .attr('y',sy+i*lh+4).attr('font-family',isR?'DM Mono,monospace':'DM Sans,sans-serif')
+    .attr('font-size',isR?9.5:10.5).attr('font-weight',isR?500:400).attr('fill',s.text).text(ln));
+  if (isR) {
+    const badge=data.type==='result_lr'?'LR':data.type==='result_sr'?'SR':data.type==='result_hr'?'HR':'~';
+    ng.append('rect').attr('x',nw/2-24).attr('y',-nh/2-1).attr('width',22).attr('height',14)
+      .attr('rx',3).attr('fill',s.stroke).attr('opacity',0.9);
+    ng.append('text').attr('x',nw/2-13).attr('y',-nh/2+10).attr('text-anchor','middle')
+      .attr('font-family','DM Mono,monospace').attr('font-size',8).attr('font-weight',500)
+      .attr('fill','#ffffff').text(badge);
+  }
+  if (data.detail) {
+    ng.on('mouseenter',function(event){
+      d3.select(this).select('rect:nth-child(2)').attr('stroke-width',2.5).attr('filter','brightness(0.93)');
+      const det=data.detail;
+      let html=`<div class="tt-title">${det.title}</div>`;
+      if (det.q) html+=`<div class="tt-q">${det.q}</div>`;
+      if (det.protocol) html+=`<div class="tt-row"><span class="tt-label">Protocole</span><span class="tt-val">${det.protocol}</span></div>`;
+      if (det.csi) html+=`<div class="tt-row"><span class="tt-label">CSI</span><span class="tt-val">${det.csi}</span></div>`;
+      if (det.boost) html+=`<div class="tt-row"><span class="tt-label">Boost</span><span class="tt-val">${det.boost}</span></div>`;
+      if (det.chemo) html+=`<div class="tt-row"><span class="tt-label">Chimio / Notes</span><span class="tt-val">${det.chemo}</span></div>`;
+      tooltip.innerHTML=html; tooltip.classList.add('visible'); posTooltip(event);
+    }).on('mousemove',posTooltip).on('mouseleave',function(){
+      d3.select(this).select('rect:nth-child(2)').attr('stroke-width',isR?1.5:1).attr('filter',null);
+      tooltip.classList.remove('visible');
+    });
+  }
+});
+function posTooltip(event){
+  const x=event.clientX+14, y=event.clientY-20, tw=310;
+  tooltip.style.left=(x+tw>window.innerWidth?x-tw-28:x)+'px';
+  tooltip.style.top=Math.max(10,Math.min(y,window.innerHeight-200))+'px';
+}
+const bounds=root.descendants().reduce((acc,d)=>({
+  minX:Math.min(acc.minX,d.y),maxX:Math.max(acc.maxX,d.y),
+  minY:Math.min(acc.minY,d.x),maxY:Math.max(acc.maxY,d.x)
+}),{minX:Infinity,maxX:-Infinity,minY:Infinity,maxY:-Infinity});
+const tW=bounds.maxX-bounds.minX+NW*2, tH=bounds.maxY-bounds.minY+NH*2;
+const scale=Math.min(0.85,W/tW,H/tH)*0.88;
+const tx=60-bounds.minX*scale, ty=H/2-(bounds.minY+tH/2)*scale;
+const initialTransform=d3.zoomIdentity.translate(tx,ty).scale(scale);
+svg.call(zoom.transform,initialTransform);
+document.getElementById('btnReset').addEventListener('click',()=>{
+  svg.transition().duration(500).call(zoom.transform,initialTransform);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neuro-Oncologie Pédiatrique · Outils d'aide à la décision</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --text:    #1a1f2e;
+    --text2:   #4a5568;
+    --text3:   #8a9ab5;
+    --border:  #d8e0eb;
+    --bg:      #f8fafc;
+    --white:   #ffffff;
+    --aria:    #c25a12;
+    --siop:    #0e7490;
+    --sfce:    #6d28d9;
+    --cmp:     #166534;
+    --flow:    #92400e;
+    --radius:  10px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 40px 20px 60px;
+  }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    max-width: 760px;
+    margin: 0 auto 40px;
+    border-bottom: 2px solid var(--text);
+    padding-bottom: 20px;
+  }
+  .page-header-top {
+    display: flex; align-items: flex-end;
+    justify-content: space-between; gap: 16px;
+    flex-wrap: wrap;
+  }
+  .page-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.9rem;
+    line-height: 1.15;
+    color: var(--text);
+  }
+  .page-title span {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--text2);
+    margin-top: 5px;
+    letter-spacing: 0.2px;
+  }
+  .page-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    max-width: 760px;
+    margin: 0 auto 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text3);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-label::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  /* ── TOOL CARDS ── */
+  .cards {
+    max-width: 760px;
+    margin: 0 auto 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: stretch;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .card:hover { box-shadow: 0 3px 16px rgba(0,0,0,0.07); }
+
+  .card-accent {
+    width: 4px;
+    flex-shrink: 0;
+  }
+  .card-accent.aria { background: var(--aria); }
+  .card-accent.siop { background: var(--siop); }
+  .card-accent.sfce { background: var(--sfce); }
+  .card-accent.cmp  { background: var(--cmp); }
+
+  .card-body {
+    flex: 1;
+    padding: 16px 20px;
+    min-width: 0;
+  }
+  .card-header {
+    display: flex; align-items: baseline; gap: 10px;
+    margin-bottom: 5px; flex-wrap: wrap;
+  }
+  .card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.05rem;
+    color: var(--text);
+  }
+  .card-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.5px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+  .card-badge.aria { color: var(--aria); border-color: rgba(194,90,18,0.3); background: rgba(194,90,18,0.06); }
+  .card-badge.siop { color: var(--siop); border-color: rgba(14,116,144,0.3); background: rgba(14,116,144,0.06); }
+  .card-badge.sfce { color: var(--sfce); border-color: rgba(109,40,217,0.3); background: rgba(109,40,217,0.06); }
+  .card-badge.cmp  { color: var(--cmp);  border-color: rgba(22,101,52,0.3);  background: rgba(22,101,52,0.06); }
+  .card-badge.flow { color: var(--flow); border-color: rgba(146,64,14,0.3);  background: rgba(146,64,14,0.06); }
+  .card-accent.flow { background: var(--flow); }
+
+  .card-desc {
+    font-size: 12.5px;
+    color: var(--text2);
+    line-height: 1.55;
+    margin-bottom: 10px;
+  }
+  .card-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--border);
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .card-link:hover { color: var(--text2); border-color: var(--text3); }
+
+  .card-qr {
+    flex-shrink: 0;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border-left: 1px solid var(--border);
+    background: #fafbfc;
+  }
+  .card-qr img {
+    width: 80px; height: 80px;
+    display: block;
+    border-radius: 4px;
+  }
+  .card-qr-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    color: var(--text3);
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    max-width: 760px;
+    margin: 0 auto;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    color: var(--text3);
+    line-height: 1.8;
+  }
+  .footer strong { color: var(--text2); }
+
+  /* ── PRINT ── */
+  @media print {
+    body { background: white; padding: 20px; }
+    .card { break-inside: avoid; box-shadow: none !important; }
+    .card-link { color: var(--text3) !important; }
+    @page { margin: 1.5cm; }
+  }
+
+  @media (max-width: 540px) {
+    .card-qr { display: none; }
+    .page-header-top { flex-direction: column; align-items: flex-start; }
+    .page-meta { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="page-header-top">
+    <div class="page-title">
+      Neuro-Oncologie Pédiatrique
+      <span>Outils cliniques d'aide à la décision en radiothérapie</span>
+    </div>
+    <div class="page-meta">
+      ronant99-lgtm.github.io/neuro<br>
+      Médulloblastomes · 7 outils<br>
+      Mise à jour : Mars 2026
+    </div>
+  </div>
+</div>
+
+<div class="section-label">Algorithmes de stratification thérapeutique</div>
+
+<div class="cards">
+
+  <!-- ARIA -->
+  <div class="card">
+    <div class="card-accent aria"></div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-title">ARIA Stratum C</div>
+        <span class="card-badge aria">SJCRH / COG</span>
+      </div>
+      <div class="card-desc">
+        Algorithme décisionnel séquentiel pour les médulloblastomes de l'enfant (Stratum C). 
+        Intègre la stratification par âge (36 mois), sous-groupe moléculaire, stade et résidu. 
+        Inclut les protocoles LMIC-adaptés, les contraintes OAR détaillées (PENTEC) 
+        et les données d'outcomes par protocole.
+      </div>
+      <a class="card-link" href="https://ronant99-lgtm.github.io/neuro/aria-stratum-c.html" target="_blank">
+        ronant99-lgtm.github.io/neuro/aria-stratum-c.html
+      </a>
+    </div>
+    <div class="card-qr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://ronant99-lgtm.github.io/neuro/aria-stratum-c.html&color=000000&bgcolor=fafbfc&qzone=1" alt="QR ARIA">
+      <div class="card-qr-label">Scanner<br>pour accès</div>
+    </div>
+  </div>
+
+  <!-- SIOP -->
+  <div class="card">
+    <div class="card-accent siop"></div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-title">Stratification SIOP-Europe</div>
+        <span class="card-badge siop">SIOP-Europe · PNET5-MB</span>
+      </div>
+      <div class="card-desc">
+        Outil multi-critères simultanés selon le référentiel européen SIOP-Europe 
+        (PNET5-MB). Couvre nourrissons et enfants ≥ 36 mois. 
+        Intègre les recommandations WNT (18 Gy), la réduction de dose CSI 
+        et les critères d'inclusion dans les essais ouverts (SIOP-HR-MB).
+      </div>
+      <a class="card-link" href="https://ronant99-lgtm.github.io/neuro/siop-mb-stratification.html" target="_blank">
+        ronant99-lgtm.github.io/neuro/siop-mb-stratification.html
+      </a>
+    </div>
+    <div class="card-qr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://ronant99-lgtm.github.io/neuro/siop-mb-stratification.html&color=000000&bgcolor=fafbfc&qzone=1" alt="QR SIOP">
+      <div class="card-qr-label">Scanner<br>pour accès</div>
+    </div>
+  </div>
+
+  <!-- SFCE -->
+  <div class="card">
+    <div class="card-accent sfce"></div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-title">Prise en charge SFCE 2026</div>
+        <span class="card-badge sfce">SFCE · RENOCLIP · Jan 2026</span>
+      </div>
+      <div class="card-desc">
+        Algorithme décisionnel selon les recommandations françaises SFCE de janvier 2026 
+        (groupe tumeurs embryonnaires). Deux arbres distincts : &lt; 5 ans (formulaire multi-critères) 
+        et ≥ 5 ans (questions séquentielles). Intègre les protocoles PNET5-MB LR/SR, 
+        PNET HR+5, HIT-SKK et Head Start II/IV, avec délais critiques et séquence R+ M0.
+      </div>
+      <a class="card-link" href="https://ronant99-lgtm.github.io/neuro/sfce-mb-2026.html" target="_blank">
+        ronant99-lgtm.github.io/neuro/sfce-mb-2026.html
+      </a>
+    </div>
+    <div class="card-qr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://ronant99-lgtm.github.io/neuro/sfce-mb-2026.html&color=000000&bgcolor=fafbfc&qzone=1" alt="QR SFCE">
+      <div class="card-qr-label">Scanner<br>pour accès</div>
+    </div>
+  </div>
+
+  <!-- COMPARATEUR -->
+  <div class="card">
+    <div class="card-accent cmp"></div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-title">Comparateur — 3 Référentiels</div>
+        <span class="card-badge cmp">ARIA · SIOP · SFCE · En parallèle</span>
+      </div>
+      <div class="card-desc">
+        À partir d'un profil patient unique (7 questions), affiche simultanément 
+        les recommandations des trois référentiels avec code couleur de concordance 
+        (consensus vert / divergence partielle orange / divergence majeure rouge). 
+        Permet d'identifier en un coup d'œil les points de convergence 
+        internationale et les décisions spécifiques à chaque institution.
+      </div>
+      <a class="card-link" href="https://ronant99-lgtm.github.io/neuro/mb-comparator.html" target="_blank">
+        ronant99-lgtm.github.io/neuro/mb-comparator.html
+      </a>
+    </div>
+    <div class="card-qr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://ronant99-lgtm.github.io/neuro/mb-comparator.html&color=000000&bgcolor=fafbfc&qzone=1" alt="QR Comparateur">
+      <div class="card-qr-label">Scanner<br>pour accès</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="section-label">Logigrammes interactifs · Consultation rapide</div>
+
+<div class="cards">
+
+  <!-- LOGIGRAMME ARIA -->
+  <div class="card">
+    <div class="card-accent flow"></div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-title">Logigramme ARIA Stratum C</div>
+        <span class="card-badge flow">SJCRH / COG · Arbre zoomable</span>
+      </div>
+      <div class="card-desc">
+        Arbre décisionnel visuel et interactif de l'algorithme ARIA Stratum C. 
+        Orientation gauche → droite (LR → SR → HR). Zoom et déplacement tactile. 
+        Survol des nœuds : protocole, dose CSI, boost et données d'outcome.
+      </div>
+      <a class="card-link" href="https://ronant99-lgtm.github.io/neuro/flowchart-aria.html" target="_blank">
+        ronant99-lgtm.github.io/neuro/flowchart-aria.html
+      </a>
+    </div>
+    <div class="card-qr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://ronant99-lgtm.github.io/neuro/flowchart-aria.html&color=000000&bgcolor=fafbfc&qzone=1" alt="QR Logigramme ARIA">
+      <div class="card-qr-label">Scanner<br>pour accès</div>
+    </div>
+  </div>
+
+  <!-- LOGIGRAMME SIOP -->
+  <div class="card">
+    <div class="card-accent flow"></div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-title">Logigramme SIOP-Europe</div>
+        <span class="card-badge flow">SIOP-Europe · PNET5-MB · Arbre zoomable</span>
+      </div>
+      <div class="card-desc">
+        Arbre décisionnel visuel de la stratification SIOP-Europe (PNET5-MB). 
+        Couvre nourrissons iMB et enfants ≥ 36 mois. Intègre la règle WNT ≥ 16 ans, 
+        le résidu isolé (SR d'après étude 1 110 pts) et l'essai SIOP-HR-MB.
+      </div>
+      <a class="card-link" href="https://ronant99-lgtm.github.io/neuro/flowchart-siop.html" target="_blank">
+        ronant99-lgtm.github.io/neuro/flowchart-siop.html
+      </a>
+    </div>
+    <div class="card-qr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://ronant99-lgtm.github.io/neuro/flowchart-siop.html&color=000000&bgcolor=fafbfc&qzone=1" alt="QR Logigramme SIOP">
+      <div class="card-qr-label">Scanner<br>pour accès</div>
+    </div>
+  </div>
+
+  <!-- LOGIGRAMME SFCE -->
+  <div class="card">
+    <div class="card-accent flow"></div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-title">Logigramme SFCE 2026</div>
+        <span class="card-badge flow">SFCE · RENOCLIP · Jan 2026 · Arbre zoomable</span>
+      </div>
+      <div class="card-desc">
+        Arbre décisionnel visuel des recommandations françaises SFCE janvier 2026. 
+        Deux branches : &lt; 5 ans (SUFU, HIT-SKK, Head Start) et ≥ 5 ans 
+        (WNT, SHH-TP53wt/muté, Non-WNT/Non-SHH). Séquence R+ M0 VP-CBP incluse.
+      </div>
+      <a class="card-link" href="https://ronant99-lgtm.github.io/neuro/flowchart-sfce.html" target="_blank">
+        ronant99-lgtm.github.io/neuro/flowchart-sfce.html
+      </a>
+    </div>
+    <div class="card-qr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://ronant99-lgtm.github.io/neuro/flowchart-sfce.html&color=000000&bgcolor=fafbfc&qzone=1" alt="QR Logigramme SFCE">
+      <div class="card-qr-label">Scanner<br>pour accès</div>
+    </div>
+  </div>
+
+
+  <strong>Avertissement :</strong> Ces outils sont destinés à un usage pédagogique et à l'aide à la préparation des RCP/RCPPI. 
+  Ils ne se substituent pas au jugement clinique individualisé ni aux décisions collégiales. 
+  Les contraintes OAR sont communes aux trois référentiels (PENTEC / recommandations institutionnelles).<br><br>
+  <strong>Sources :</strong> ARIA Stratum C (SJCRH/COG, Dec 2025) · SIOP-Europe PNET5-MB (2024) · SFCE Médulloblastomes Jan 2026 (RENOCLIP-LOC)<br>
+  <strong>Auteur :</strong> R. Tanguy · Radiothérapie pédiatrique · ronant99-lgtm.github.io/neuro
+</div>
+
+</body>
+</html>

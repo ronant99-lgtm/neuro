@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Logigramme SFCE 2026 — Médulloblastomes</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:      #f5f0e8;
+  --surface: #ede8dc;
+  --border:  #c8bfaa;
+  --text:    #1a1208;
+  --text2:   #5a4f3a;
+  --text3:   #9a8f7a;
+  --green:   #2d7a3a;
+  --red:     #c0392b;
+  --amber:   #a0720a;
+  --blue:    #1a5fa8;
+  --purple:  #6b3fa0;
+  --cyan:    #1a7a8a;
+  --orange:  #c45a10;
+}
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── HEADER ── */
+header {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
+  padding: 10px 18px;
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(245,240,232,0.97);
+  z-index: 10;
+}
+.logo { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3); border: 1px solid var(--border); border-radius: 5px; padding: 3px 7px; }
+.hdr-title { font-family: 'DM Serif Display', serif; font-size: 15px; }
+.hdr-sub { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; }
+.hdr-badge { font-family: 'DM Mono', monospace; font-size: 9px; padding: 2px 8px; border-radius: 20px; background: rgba(107,63,160,0.1); border: 1px solid rgba(107,63,160,0.4); color: var(--purple); margin-left: auto; }
+.btn-reset-zoom { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3); background: none; border: 1px solid var(--border); border-radius: 5px; padding: 3px 9px; cursor: pointer; }
+.btn-reset-zoom:hover { color: var(--text2); }
+
+/* ── LEGEND ── */
+.legend {
+  flex-shrink: 0;
+  display: flex; gap: 18px; flex-wrap: wrap;
+  padding: 7px 18px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(237,232,220,0.9);
+}
+.leg-item { display: flex; align-items: center; gap: 5px; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3); }
+.leg-swatch { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+.leg-hint { font-size: 9px; color: var(--text3); font-family: 'DM Mono', monospace; margin-left: auto; }
+
+/* ── SVG CONTAINER ── */
+#chart {
+  flex: 1;
+  overflow: hidden;
+  cursor: grab;
+}
+#chart:active { cursor: grabbing; }
+
+/* ── TOOLTIP ── */
+.tooltip {
+  position: fixed;
+  background: #faf7f0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 15px;
+  font-size: 12px;
+  max-width: 300px;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0;
+  transition: opacity 0.15s;
+  line-height: 1.5;
+}
+.tooltip.visible { opacity: 1; }
+.tt-title { font-family: 'DM Mono', monospace; font-size: 9.5px; color: var(--text3); margin-bottom: 5px; }
+.tt-q { font-weight: 500; color: var(--text); margin-bottom: 6px; font-size: 12px; }
+.tt-row { display: flex; justify-content: space-between; gap: 12px; border-top: 1px solid var(--border); padding-top: 4px; margin-top: 4px; }
+.tt-label { color: var(--text2); font-size: 11px; }
+.tt-val { color: var(--text); font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; }
+
+/* ── SVG NODES (via CSS classes applied to foreignObject / rect) ── */
+.node-decision rect { rx: 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">SFCE</div>
+  <div>
+    <div class="hdr-title">Logigramme — Médulloblastomes</div>
+    <div class="hdr-sub">SFCE Janvier 2026 · RENOCLIP-LOC · Pincer pour zoomer · Glisser pour naviguer</div>
+  </div>
+  <span class="hdr-badge">SFCE 2026</span>
+  <button class="btn-reset-zoom" id="btnReset">⊙ Recentrer</button>
+</header>
+
+<div class="legend">
+  <div class="leg-item"><div class="leg-swatch" style="background:#388bfd;border-radius:50%"></div>Décision / Question</div>
+  <div class="leg-item"><div class="leg-swatch" style="background:#3fb950"></div>Bas risque · LR</div>
+  <div class="leg-item"><div class="leg-swatch" style="background:#388bfd;opacity:0.7"></div>Risque standard · SR</div>
+  <div class="leg-item"><div class="leg-swatch" style="background:#f85149"></div>Haut risque · HR</div>
+  <div class="leg-item"><div class="leg-swatch" style="background:#d29922"></div>Discussion / Spécial</div>
+  <div class="leg-item"><div class="leg-swatch" style="background:#a371f7"></div>Formulaire (< 5 ans)</div>
+  <span class="leg-hint">Survoler un nœud pour les détails</span>
+</div>
+
+<div id="chart"></div>
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// DONNÉES DE L'ARBRE SFCE 2026
+// ═══════════════════════════════════════════════════════
+const TREE = {
+  id: 'start',
+  label: 'Âge au\ndiagnostic ?',
+  type: 'decision',
+  children: [
+    {
+      id: 'lt5',
+      label: '< 5 ans',
+      edgeLabel: '< 5 ans',
+      type: 'form',
+      detail: { title: 'Formulaire multi-critères < 5 ans', q: 'Évaluation simultanée : sous-groupe moléculaire, histologie, stade M, résidu, MYC/MYCN, âge précis', items: [] },
+      children: [
+        {
+          id: 'lt5_hr',
+          label: 'Haut\nrisque',
+          edgeLabel: 'SHH-TP53mut\nou MYC+ ou LCA\nou M+ non-MBEN',
+          type: 'decision',
+          children: [
+            {
+              id: 'r_pnethr_lt5',
+              label: 'PNET HR+5\nAdapté < 5 ans',
+              edgeLabel: '≥ 2 ans\nou M0',
+              type: 'result_hr',
+              detail: { title: 'Haut risque · < 5 ans', protocol: 'PNET HR+5 (doses adaptées à l\'âge)', csi: 'Webconf nationale\n(18–23,4 Gy selon âge)', boost: '50,4–54 Gy', chemo: 'VP16-CBP × 2 + Thiotépa HD × 2 + TMZ' }
+            },
+            {
+              id: 'r_headstart_hr',
+              label: 'Head Start II/IV\n(option HR < 2 ans M+)',
+              edgeLabel: '< 2 ans + M+',
+              type: 'result_hr',
+              detail: { title: 'Haut risque · < 2 ans M+', protocol: 'Head Start II/IV (option)', csi: 'Aucune (1re ligne)', boost: 'RT locale si résidu', chemo: 'Head Start II/IV induction + ASCR' }
+            }
+          ]
+        },
+        {
+          id: 'lt5_lr_path',
+          label: 'Bas risque\n→ SUFU ?',
+          edgeLabel: 'SHH-TP53wt\nDMB/MBEN M0 MYC−',
+          type: 'decision',
+          detail: { title: 'Bas risque < 5 ans', q: 'Mutation somatique SUFU présente ?' },
+          children: [
+            {
+              id: 'r_hitskk',
+              label: 'HIT-SKK',
+              edgeLabel: 'SUFU absent',
+              type: 'result_lr',
+              detail: { title: 'Bas risque · M0 · SUFU−', protocol: 'HIT SKK', csi: 'Aucune (1re ligne)', boost: 'RT focale 54 Gy si résidu/CMB/LCA', chemo: 'HIT-SKK MTX IVT × 3 cycles' }
+            },
+            {
+              id: 'r_headstart_sufu',
+              label: 'Head Start II/IV\n(SUFU muté)',
+              edgeLabel: 'SUFU muté\n→ reclassé SR',
+              type: 'result_sr',
+              detail: { title: 'Bas risque reclassé SR · SUFU muté', protocol: 'Head Start II/IV', csi: 'Aucune', boost: 'RT à discuter post-HDC', chemo: 'Head Start II/IV + ASCR' }
+            }
+          ]
+        },
+        {
+          id: 'lt5_sr_path',
+          label: 'Risque\nstandard',
+          edgeLabel: 'Autres\n(SR)',
+          type: 'decision',
+          detail: { title: 'Risque standard < 5 ans', q: 'Âge précis ?' },
+          children: [
+            {
+              id: 'r_headstart',
+              label: 'Head Start II/IV',
+              edgeLabel: '< 3 ans',
+              type: 'result_sr',
+              detail: { title: 'Risque standard · < 3 ans', protocol: 'Head Start II/IV', csi: 'Aucune', boost: 'RT locale si résidu > 18 mois', chemo: 'Head Start II/IV + ASCR' }
+            },
+            {
+              id: 'lt5_sr_ge3',
+              label: '→ Algo\n≥ 5 ans',
+              edgeLabel: '3–4 ans\n→ algo ≥ 5 ans',
+              type: 'decision',
+              detail: { title: 'Risque standard 3–4 ans', q: 'Le patient SR âgé de 3–4 ans suit l\'algorithme ≥ 5 ans (SFCE 2026)' },
+              children: [] // renvoi visuel uniquement
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'ge5',
+      label: '≥ 5 ans',
+      edgeLabel: '≥ 5 ans',
+      type: 'decision',
+      children: [
+        {
+          id: 'ge5_wnt',
+          label: 'WNT\nActivated',
+          edgeLabel: 'WNT',
+          type: 'decision',
+          children: [
+            {
+              id: 'r_pnet5_lr',
+              label: 'PNET5-MB\nLow Risk',
+              edgeLabel: 'Critères\ncomplets',
+              type: 'result_lr',
+              detail: { title: 'Bas risque WNT · ≥ 5 ans', protocol: 'PNET5-MB Low Risk', csi: '18 Gy / 10 fr', boost: '+36 Gy → 54 Gy total', chemo: 'CDDP/CCNU/VCR × 6 cures B-A' }
+            },
+            {
+              id: 'r_wnt_discuss',
+              label: 'Discussion\nCollégiale',
+              edgeLabel: 'Critères\nincomplets / APC',
+              type: 'result_special',
+              detail: { title: 'WNT — Critères incomplets', protocol: 'Discussion collégiale d\'experts', csi: '→ PNET5-MB SR par défaut', boost: '54 Gy', chemo: 'Selon orientation collégiale' }
+            }
+          ]
+        },
+        {
+          id: 'ge5_shh_wt',
+          label: 'SHH-TP53\nSauvage',
+          edgeLabel: 'SHH\nTP53wt',
+          type: 'decision',
+          children: [
+            {
+              id: 'r_pnet5_sr_shh',
+              label: 'PNET5-MB\nSR',
+              edgeLabel: 'M0 R0\nMYC−',
+              type: 'result_sr',
+              detail: { title: 'Risque standard · SHH-TP53wt M0R0', protocol: 'PNET5-MB Standard Risk', csi: '23,4 Gy / 13 fr', boost: '54 Gy (GTV+1 cm)', chemo: 'CDDP/CCNU/VCR × 8 cures B-A' }
+            },
+            {
+              id: 'ge5_rplus',
+              label: 'R+ M0\n2× VP-CBP\n±chir',
+              edgeLabel: 'M0 R+\nsans autre FR',
+              type: 'decision',
+              detail: { title: 'R+ M0 sans FR · séquence VP-CBP', q: 'Statut après 2 VP-Carboplatine ± chirurgie ?' },
+              children: [
+                {
+                  id: 'r_rplus_sr',
+                  label: 'PNET5-MB SR\n(RC obtenue)',
+                  edgeLabel: 'Rémission\ncomplète',
+                  type: 'result_sr',
+                  detail: { title: 'R+ M0 → RC · Risque standard', protocol: 'PNET5-MB Standard Risk', csi: '23,4 Gy', boost: '54 Gy', chemo: 'CDDP/CCNU/VCR × 8 cures' }
+                },
+                {
+                  id: 'r_rplus_hr',
+                  label: 'PNET HR+5\n(résidu persistant)',
+                  edgeLabel: 'Résidu\npersistant',
+                  type: 'result_hr',
+                  detail: { title: 'R+ M0 → Résidu persistant · HR', protocol: 'PNET HR+5', csi: '23,4 Gy', boost: '54 Gy + surimpression 59,4 Gy', chemo: 'VP16-CBP × 2 + Thiotépa HD × 2 + TMZ' }
+                }
+              ]
+            },
+            {
+              id: 'r_pnethr_shh',
+              label: 'PNET HR+5',
+              edgeLabel: 'M+ ou\nMYC amplifié',
+              type: 'result_hr',
+              detail: { title: 'Haut risque · SHH-TP53wt M+/MYC+', protocol: 'PNET HR+5', csi: '36 Gy / 20 fr', boost: '54 Gy (+ 59,4 Gy si résidu)', chemo: 'VP16-CBP × 2 + Thiotépa HD × 2 + TMZ × 6' }
+            }
+          ]
+        },
+        {
+          id: 'ge5_shh_mut',
+          label: 'SHH-TP53\nMuté',
+          edgeLabel: 'SHH\nTP53muté',
+          type: 'result_hr',
+          detail: { title: 'Haut risque · SHH-TP53 muté', protocol: 'PNET HR+5', csi: '36 Gy / 20 fr', boost: '54 Gy (+ 59,4 Gy si résidu)', chemo: 'VP16-CBP × 2 + Thiotépa HD × 2 + TMZ × 6 · Consultation Li-Fraumeni' }
+        },
+        {
+          id: 'ge5_nonwnt',
+          label: 'Non-WNT\nNon-SHH',
+          edgeLabel: 'Non-WNT\nNon-SHH',
+          type: 'decision',
+          children: [
+            {
+              id: 'r_pnet5_sr_non',
+              label: 'PNET5-MB SR',
+              edgeLabel: 'M0 R0\nnon-LCA MYC−',
+              type: 'result_sr',
+              detail: { title: 'Risque standard · Non-WNT/Non-SHH', protocol: 'PNET5-MB Standard Risk', csi: '23,4 Gy / 13 fr', boost: '54 Gy', chemo: 'CDDP/CCNU/VCR × 8 cures B-A' }
+            },
+            {
+              id: 'ge5_rplus_non',
+              label: 'R+ M0\n2× VP-CBP\n±chir',
+              edgeLabel: 'M0 R+\nsans autre FR',
+              type: 'decision',
+              detail: { title: 'R+ M0 sans FR · Non-WNT/Non-SHH', q: 'Statut après 2 VP-Carboplatine ± chirurgie ?' },
+              children: [
+                {
+                  id: 'r_rplus_sr_non',
+                  label: 'PNET5-MB SR\n(RC obtenue)',
+                  edgeLabel: 'Rémission\ncomplète',
+                  type: 'result_sr',
+                  detail: { title: 'R+ M0 → RC · Risque standard', protocol: 'PNET5-MB Standard Risk', csi: '23,4 Gy', boost: '54 Gy', chemo: 'CDDP/CCNU/VCR × 8 cures' }
+                },
+                {
+                  id: 'r_rplus_hr_non',
+                  label: 'PNET HR+5\n(résidu persistant)',
+                  edgeLabel: 'Résidu\npersistant',
+                  type: 'result_hr',
+                  detail: { title: 'R+ M0 → Résidu persistant · HR', protocol: 'PNET HR+5', csi: '23,4 Gy', boost: '54 Gy + surimpression 59,4 Gy', chemo: 'VP16-CBP × 2 + Thiotépa HD × 2 + TMZ' }
+                }
+              ]
+            },
+            {
+              id: 'r_pnethr_non',
+              label: 'PNET HR+5',
+              edgeLabel: 'M+ ou LCA\nou MYC amplifié',
+              type: 'result_hr',
+              detail: { title: 'Haut risque · Non-WNT/Non-SHH', protocol: 'PNET HR+5', csi: '36 Gy / 20 fr', boost: '54 Gy (+ 59,4 Gy si résidu)', chemo: 'VP16-CBP × 2 + Thiotépa HD × 2 + TMZ × 6' }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+// ═══════════════════════════════════════════════════════
+// COULEURS PAR TYPE
+// ═══════════════════════════════════════════════════════
+const NODE_STYLE = {
+  decision:      { fill: '#dce8f5', stroke: '#1a5fa8', text: '#0a1020' },
+  form:          { fill: '#ece0f5', stroke: '#6b3fa0', text: '#0a1020' },
+  result_lr:     { fill: '#d5edd8', stroke: '#2d7a3a', text: '#0a1a0a' },
+  result_sr:     { fill: '#d5e4f5', stroke: '#1a5fa8', text: '#0a1020' },
+  result_hr:     { fill: '#f5d8d5', stroke: '#c0392b', text: '#200505' },
+  result_special:{ fill: '#f5ead5', stroke: '#a0720a', text: '#201000' },
+};
+
+// ═══════════════════════════════════════════════════════
+// D3 RENDERING
+// ═══════════════════════════════════════════════════════
+const W = window.innerWidth;
+const H = window.innerHeight - 90;
+const NODE_W = 130;
+const NODE_H = 52;
+const DX = 90;    // vertical spacing (devient l'axe Y en horizontal)
+const DY = 200;   // horizontal spacing (devient l'axe X en horizontal)
+
+const svg = d3.select('#chart')
+  .append('svg')
+  .attr('width', W)
+  .attr('height', H);
+
+const defs = svg.append('defs');
+
+// Arrow markers
+Object.entries(NODE_STYLE).forEach(([type, s]) => {
+  defs.append('marker')
+    .attr('id', 'arrow-' + type)
+    .attr('viewBox', '0 -5 10 10')
+    .attr('refX', 8).attr('refY', 0)
+    .attr('markerWidth', 6).attr('markerHeight', 6)
+    .attr('orient', 'auto')
+    .append('path')
+    .attr('d', 'M0,-5L10,0L0,5')
+    .attr('fill', s.stroke)
+    .attr('opacity', 0.7);
+});
+
+// Default arrow
+defs.append('marker')
+  .attr('id', 'arrow-default')
+  .attr('viewBox', '0 -5 10 10')
+  .attr('refX', 8).attr('refY', 0)
+  .attr('markerWidth', 6).attr('markerHeight', 6)
+  .attr('orient', 'auto')
+  .append('path')
+  .attr('d', 'M0,-5L10,0L0,5')
+  .attr('fill', '#4e5f75')
+  .attr('opacity', 0.7);
+
+const g = svg.append('g');
+
+// Zoom
+const zoom = d3.zoom()
+  .scaleExtent([0.15, 3])
+  .on('zoom', e => g.attr('transform', e.transform));
+
+svg.call(zoom);
+
+document.getElementById('btnReset').addEventListener('click', () => {
+  svg.transition().duration(500)
+    .call(zoom.transform, d3.zoomIdentity.translate(W/2, 60).scale(0.55));
+});
+
+// Build D3 hierarchy
+const root = d3.hierarchy(TREE);
+const treeLayout = d3.tree()
+  .nodeSize([DX, DY])
+  .separation((a, b) => a.parent === b.parent ? 1.1 : 1.5);
+
+treeLayout(root);
+
+// ── LINKS ──
+const linkGroup = g.append('g').attr('class', 'links');
+
+root.links().forEach(link => {
+  const childType = link.target.data.type;
+  const style = NODE_STYLE[childType] || NODE_STYLE.decision;
+
+  // Curved path
+  const path = linkGroup.append('path')
+    .attr('fill', 'none')
+    .attr('stroke', style.stroke)
+    .attr('stroke-opacity', 0.4)
+    .attr('stroke-width', 1.5)
+    .attr('marker-end', `url(#arrow-${childType})`)
+    .attr('d', d3.linkHorizontal()
+      .x(d => d.y)
+      .y(d => d.x)({source: link.source, target: link.target}));
+
+  // Edge label
+  const mx = (link.source.y + link.target.y) / 2;
+  const my = (link.source.x + link.target.x) / 2;
+  const edgeLabel = link.target.data.edgeLabel;
+  if (edgeLabel) {
+    const lines = edgeLabel.split('\n');
+    const lg = linkGroup.append('g').attr('transform', `translate(${mx},${my})`);
+    lg.append('rect')
+      .attr('x', -36).attr('y', -9 * lines.length / 2 - 2)
+      .attr('width', 72).attr('height', 9 * lines.length + 4)
+      .attr('rx', 3)
+      .attr('fill', '#f5f0e8')
+      .attr('opacity', 0.8);
+    lines.forEach((line, i) => {
+      lg.append('text')
+        .attr('text-anchor', 'middle')
+        .attr('y', (i - (lines.length-1)/2) * 10 + 1)
+        .attr('font-family', 'DM Mono, monospace')
+        .attr('font-size', 8)
+        .attr('fill', style.stroke)
+        .attr('opacity', 0.9)
+        .text(line);
+    });
+  }
+});
+
+// ── NODES ──
+const nodeGroup = g.append('g').attr('class', 'nodes');
+const tooltip = document.getElementById('tooltip');
+
+root.descendants().forEach(d => {
+  const data = d.data;
+  const style = NODE_STYLE[data.type] || NODE_STYLE.decision;
+  const isResult = data.type.startsWith('result');
+  const nw = isResult ? 140 : NODE_W;
+  const nh = NODE_H;
+
+  const ng = nodeGroup.append('g')
+    .attr('transform', `translate(${d.y},${d.x})`)
+    .attr('cursor', data.detail ? 'pointer' : 'default');
+
+  // Shadow
+  ng.append('rect')
+    .attr('x', -nw/2 + 2).attr('y', -nh/2 + 2)
+    .attr('width', nw).attr('height', nh)
+    .attr('rx', isResult ? 8 : 4)
+    .attr('fill', 'rgba(0,0,0,0.08)');
+
+  // Main rect
+  const rect = ng.append('rect')
+    .attr('x', -nw/2).attr('y', -nh/2)
+    .attr('width', nw).attr('height', nh)
+    .attr('rx', isResult ? 8 : 4)
+    .attr('fill', style.fill)
+    .attr('stroke', style.stroke)
+    .attr('stroke-width', isResult ? 1.5 : 1);
+
+  // Decision diamond overlay (top border accent)
+  if (!isResult) {
+    ng.append('rect')
+      .attr('x', -nw/2).attr('y', -nh/2)
+      .attr('width', nw).attr('height', 3)
+      .attr('rx', 4).attr('fill', style.stroke).attr('opacity', 0.6);
+  }
+
+  // Text lines
+  const lines = data.label.split('\n');
+  const lineH = 13;
+  const startY = -(lines.length - 1) * lineH / 2;
+  lines.forEach((line, i) => {
+    ng.append('text')
+      .attr('text-anchor', 'middle')
+      .attr('y', startY + i * lineH + 4)
+      .attr('font-family', isResult ? 'DM Mono, monospace' : 'DM Sans, sans-serif')
+      .attr('font-size', isResult ? 9.5 : 10.5)
+      .attr('font-weight', isResult ? 500 : 400)
+      .attr('fill', style.text)
+      .text(line);
+  });
+
+  // Risk badge for results
+  if (isResult) {
+    const badgeY = nh/2 - 8;
+    const badgeText = data.type === 'result_lr' ? 'LR' : data.type === 'result_sr' ? 'SR' : data.type === 'result_hr' ? 'HR' : '~';
+    ng.append('rect')
+      .attr('x', nw/2 - 24).attr('y', -nh/2 - 1)
+      .attr('width', 22).attr('height', 14)
+      .attr('rx', 3)
+      .attr('fill', style.stroke).attr('opacity', 0.9);
+    ng.append('text')
+      .attr('x', nw/2 - 13).attr('y', -nh/2 + 10)
+      .attr('text-anchor', 'middle')
+      .attr('font-family', 'DM Mono, monospace')
+      .attr('font-size', 8).attr('font-weight', 500)
+      .attr('fill', '#0a0e14')
+      .text(badgeText);
+  }
+
+  // Hover interactions
+  if (data.detail) {
+    ng.on('mouseenter', function(event) {
+      d3.select(this).select('rect:nth-child(2)')
+        .attr('stroke-width', 2.5)
+        .attr('filter', 'brightness(1.3)');
+
+      const det = data.detail;
+      let html = `<div class="tt-title">${det.title}</div>`;
+      if (det.q) html += `<div class="tt-q">${det.q}</div>`;
+      if (det.protocol) {
+        html += `<div class="tt-row"><span class="tt-label">Protocole</span><span class="tt-val">${det.protocol}</span></div>`;
+      }
+      if (det.csi) {
+        html += `<div class="tt-row"><span class="tt-label">CSI</span><span class="tt-val">${det.csi}</span></div>`;
+      }
+      if (det.boost) {
+        html += `<div class="tt-row"><span class="tt-label">Boost</span><span class="tt-val">${det.boost}</span></div>`;
+      }
+      if (det.chemo) {
+        html += `<div class="tt-row"><span class="tt-label">Chimio</span><span class="tt-val">${det.chemo}</span></div>`;
+      }
+
+      tooltip.innerHTML = html;
+      tooltip.classList.add('visible');
+      posTooltip(event);
+    })
+    .on('mousemove', posTooltip)
+    .on('mouseleave', function() {
+      d3.select(this).select('rect:nth-child(2)')
+        .attr('stroke-width', isResult ? 1.5 : 1)
+        .attr('filter', null);
+      tooltip.classList.remove('visible');
+    });
+  }
+});
+
+function posTooltip(event) {
+  const x = event.clientX + 14;
+  const y = event.clientY - 20;
+  const tw = 300;
+  tooltip.style.left = (x + tw > window.innerWidth ? x - tw - 28 : x) + 'px';
+  tooltip.style.top = Math.max(10, Math.min(y, window.innerHeight - 200)) + 'px';
+}
+
+// Initial zoom to fit
+const bounds = root.descendants().reduce((acc, d) => ({
+  minX: Math.min(acc.minX, d.y), maxX: Math.max(acc.maxX, d.y),
+  minY: Math.min(acc.minY, d.x), maxY: Math.max(acc.maxY, d.x)
+}), { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity });
+
+const treeW = bounds.maxX - bounds.minX + NODE_W * 2;
+const treeH = bounds.maxY - bounds.minY + NODE_H * 2;
+const scale = Math.min(0.85, W / treeW, H / treeH) * 0.88;
+const tx = 60 - bounds.minX * scale;
+const ty = H/2 - (bounds.minY + treeH/2) * scale;
+
+svg.call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale));
+</script>
+</body>
+</html>
