@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pediatric Neuro-Oncology — RT & Trials Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:       #0d1117;
+      --surface:  #161b22;
+      --surface2: #1e2530;
+      --border:   #2a3340;
+      --accent:   #58a6ff;
+      --accent2:  #3fb950;
+      --accent4:  #d2a8ff;
+      --accent5:  #ffa657;
+      --text:     #e6edf3;
+      --muted:    #7d8590;
+      --tag-bg:   #1c2a3a;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ──────────────────────────────────── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 32px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-top { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+    .header-title { font-family: 'DM Serif Display', serif; font-size: 22px; }
+    .header-sub { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
+    .header-meta { margin-top: 8px; display: flex; gap: 20px; font-size: 11px; color: var(--muted); flex-wrap: wrap; }
+    .header-meta span { display: flex; align-items: center; gap: 5px; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+    .dot-blue { background: var(--accent); }
+    .dot-green { background: var(--accent2); }
+    .disclaimer { margin-top: 8px; font-size: 10.5px; color: #5a6370; font-style: italic; }
+
+    /* ── MAIN ────────────────────────────────────── */
+    main { padding: 32px 32px 80px; max-width: 1240px; margin: 0 auto; }
+
+    /* ── LANDING GRID ────────────────────────────── */
+    #landing { display: block; }
+    .landing-intro {
+      font-family: 'DM Serif Display', serif;
+      font-size: 15px;
+      color: var(--muted);
+      margin-bottom: 24px;
+      letter-spacing: 0.2px;
+    }
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .nav-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 18px;
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.12s, box-shadow 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .nav-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 10px 10px 0 0;
+    }
+    .nav-card.c1::before { background: var(--accent); }
+    .nav-card.c2::before { background: var(--accent2); }
+    .nav-card.c3::before { background: var(--accent4); }
+    .nav-card.c4::before { background: #f78166; }
+    .nav-card.c5::before { background: var(--accent5); }
+    .nav-card:hover {
+      border-color: #3a4a5a;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    }
+    .nav-card-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .nav-card-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    .nav-card-dose {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .nav-card-trials {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .nav-card-tag {
+      display: inline-block;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+    .tag-green { background: #0d2a1a; color: var(--accent2); border: 1px solid #1a4a2a; }
+    .tag-blue  { background: #1a2a40; color: var(--accent);  border: 1px solid #2a4060; }
+    .tag-purp  { background: #2a1a40; color: var(--accent4); border: 1px solid #4a2a60; }
+
+    /* ── COMPARE TABLE ───────────────────────────── */
+    .compare-wrap { margin-bottom: 8px; }
+    .compare-wrap h2 {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .compare-wrap h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .ct { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    .ct th { background: var(--surface2); color: var(--muted); font-weight: 500; font-size: 11px;
+              padding: 8px 12px; text-align: left; border: 1px solid var(--border); }
+    .ct td { padding: 9px 12px; border: 1px solid var(--border); vertical-align: top; }
+    .ct tr:nth-child(odd) td  { background: var(--surface); }
+    .ct tr:nth-child(even) td { background: var(--surface2); }
+    .ct tr:hover td { background: #1e2a38; }
+    .mono { font-family: 'DM Mono', monospace; color: var(--accent); font-size: 12px; }
+    .mono-o { font-family: 'DM Mono', monospace; color: var(--accent5); font-size: 12px; }
+
+    /* ── PANELS ──────────────────────────────────── */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 24px;
+      padding: 6px 12px 6px 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      transition: color 0.15s, border-color 0.15s;
+      user-select: none;
+    }
+    .back-btn:hover { color: var(--text); border-color: var(--accent); }
+
+    .panel-header { margin-bottom: 24px; }
+    .panel-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 30px;
+      margin-bottom: 4px;
+    }
+    .panel-subtitle { font-size: 12px; color: var(--muted); }
+
+    /* ── SECTION LABEL ───────────────────────────── */
+    .slabel {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 28px 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .slabel::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* ── RT TABLE ────────────────────────────────── */
+    .rt-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .rt-table th { background: var(--surface2); color: var(--muted); font-weight: 500;
+                   font-size: 11px; padding: 8px 12px; text-align: left; border: 1px solid var(--border); }
+    .rt-table td { padding: 9px 12px; border: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+    .rt-table tr:nth-child(odd)  td { background: var(--surface); }
+    .rt-table tr:nth-child(even) td { background: var(--surface2); }
+    .rt-table tr:hover td { background: #1e2a38; }
+    .val  { font-family: 'DM Mono', monospace; color: var(--accent);  font-size: 12.5px; }
+    .val2 { font-family: 'DM Mono', monospace; color: var(--accent2); font-size: 12.5px; }
+    .val3 { font-family: 'DM Mono', monospace; color: var(--accent5); font-size: 12.5px; }
+    .nt   { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+
+    /* ── TRIAL CARDS ─────────────────────────────── */
+    .trials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 14px;
+    }
+    .trial-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      transition: border-color 0.15s, transform 0.1s;
+    }
+    .trial-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+    .tc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+    .nct-id { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); text-decoration: none; }
+    .nct-id:hover { text-decoration: underline; }
+    .sbadge { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+    .s-r  { background: #0d2a1a; color: var(--accent2); border: 1px solid #1a4a2a; }
+    .s-a  { background: #1a1a2e; color: var(--accent4); border: 1px solid #2a2a4e; }
+    .s-ny { background: #2a1a0a; color: var(--accent5); border: 1px solid #4a2a0a; }
+    .tc-title { font-size: 13px; font-weight: 500; line-height: 1.4; margin-bottom: 10px; }
+    .tc-meta  { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+    .ttag { font-size: 10.5px; background: var(--tag-bg); border: 1px solid var(--border);
+            border-radius: 4px; padding: 2px 7px; color: var(--muted); font-family: 'DM Mono', monospace; }
+    .th-rt   { font-size: 10.5px; border-radius: 4px; padding: 2px 7px; font-family: 'DM Mono', monospace;
+               background: #1a2030; color: #79b4ff; border: 1px solid #2a3a5a; }
+    .th-tg   { font-size: 10.5px; border-radius: 4px; padding: 2px 7px; font-family: 'DM Mono', monospace;
+               background: #1a2a1a; color: #7dcc7d; border: 1px solid #2a4a2a; }
+    .th-im   { font-size: 10.5px; border-radius: 4px; padding: 2px 7px; font-family: 'DM Mono', monospace;
+               background: #2a1a2a; color: #cc99ff; border: 1px solid #4a2a4a; }
+    .th-ct   { font-size: 10.5px; border-radius: 4px; padding: 2px 7px; font-family: 'DM Mono', monospace;
+               background: #2a2a1a; color: #ffcc55; border: 1px solid #4a4a1a; }
+    .th-ch   { font-size: 10.5px; border-radius: 4px; padding: 2px 7px; font-family: 'DM Mono', monospace;
+               background: #2a1a1a; color: #ff9980; border: 1px solid #4a2a2a; }
+    .tc-sponsor { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .tc-sponsor strong { color: #a0b0c0; }
+
+    /* ── SIGNAL BOX ──────────────────────────────── */
+    .signal-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 6px;
+      padding: 16px 20px;
+      font-size: 13.5px;
+      line-height: 1.7;
+      color: #c9d8e8;
+    }
+    .signal-box p { margin-bottom: 8px; }
+    .signal-box p:last-child { margin-bottom: 0; }
+    .signal-box strong { color: var(--text); }
+    .signal-hl { color: var(--accent2); font-weight: 600; }
+
+    /* ── REFERENCES ──────────────────────────────── */
+    .refs-list { display: flex; flex-direction: column; gap: 8px; }
+    .ref-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 14px;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    .ref-num {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--accent);
+      background: var(--tag-bg);
+      border-radius: 4px;
+      padding: 1px 6px;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    .ref-authors { color: var(--muted); }
+    .ref-title   { color: var(--text); font-weight: 500; margin: 3px 0 1px; }
+    .ref-journal { color: #79b4ff; font-style: italic; }
+    .ref-doi a   { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); text-decoration: none; }
+    .ref-doi a:hover { text-decoration: underline; }
+    .ref-note    { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+
+    @media (max-width: 700px) {
+      header, main { padding-left: 16px; padding-right: 16px; }
+      .trials-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <span class="header-title">Pediatric Neuro-Oncology</span>
+    <span class="header-sub">RT Protocols &amp; Active Clinical Trials — St. Jude Observership 2026</span>
+  </div>
+  <div class="header-meta">
+    <span><span class="dot dot-blue"></span>Sources: Scholar Gateway · ClinicalTrials.gov · PubMed</span>
+    <span><span class="dot dot-green"></span>Updated: March 2026</span>
+    <span>5 tumor entities · 30+ active trials</span>
+  </div>
+  <div class="disclaimer">For personal educational use only. Not a substitute for institutional protocols or clinical judgment.</div>
+</header>
+
+<main>
+
+<!-- ═══════════════ LANDING ═══════════════ -->
+<div id="landing">
+  <p class="landing-intro">Select a tumor entity to view RT protocols, active trials, clinical signal, and references.</p>
+
+  <div class="nav-grid">
+    <div class="nav-card c1" onclick="show('cranio')">
+      <div class="nav-card-num">01</div>
+      <div class="nav-card-name">Craniopharyngioma</div>
+      <div class="nav-card-dose">54 Gy / 30 fx</div>
+      <div class="nav-card-trials">5 active trials</div>
+      <span class="nav-card-tag tag-green">BRAF V600E targeted</span>
+    </div>
+    <div class="nav-card c2" onclick="show('lgg')">
+      <div class="nav-card-num">02</div>
+      <div class="nav-card-name">LGG</div>
+      <div class="nav-card-dose">54 Gy / 30 fx</div>
+      <div class="nav-card-trials">6 active trials</div>
+      <span class="nav-card-tag tag-green">LOGGIC/FIREFLY-2 pivot</span>
+    </div>
+    <div class="nav-card c3" onclick="show('hgg')">
+      <div class="nav-card-num">03</div>
+      <div class="nav-card-name">HGG</div>
+      <div class="nav-card-dose">54–60 Gy / 30–33 fx</div>
+      <div class="nav-card-trials">6 active trials</div>
+      <span class="nav-card-tag tag-purp">RT + DDR inhibitor</span>
+    </div>
+    <div class="nav-card c4" onclick="show('dipg')">
+      <div class="nav-card-num">04</div>
+      <div class="nav-card-name">DIPG / DMG</div>
+      <div class="nav-card-dose">54 Gy / 30 fx</div>
+      <div class="nav-card-trials">8 active trials</div>
+      <span class="nav-card-tag tag-green">ONC201 FDA approved 2025</span>
+    </div>
+    <div class="nav-card c5" onclick="show('medullo')">
+      <div class="nav-card-num">05</div>
+      <div class="nav-card-name">Medulloblastoma</div>
+      <div class="nav-card-dose">23.4–36 Gy CSI</div>
+      <div class="nav-card-trials">7 active trials</div>
+      <span class="nav-card-tag tag-blue">Molecular stratification</span>
+    </div>
+  </div>
+
+  <div class="compare-wrap">
+    <h2>Comparative overview</h2>
+    <table class="ct">
+      <thead>
+        <tr>
+          <th>Tumor</th><th>CSI dose</th><th>Focal dose</th><th>Protons?</th>
+          <th>Key molecular target</th><th>Dominant trial theme 2025–26</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Craniopharyngioma</strong></td>
+          <td>—</td><td><span class="mono">54 Gy / 30 fx</span></td>
+          <td>Yes (COG data)</td><td>BRAF V600E (papillary)</td>
+          <td>Neoadjuvant BRAF/MEK inhibitors</td>
+        </tr>
+        <tr>
+          <td><strong>LGG</strong></td>
+          <td>—</td><td><span class="mono">54 Gy / 30 fx</span></td>
+          <td>Yes (neuro-cog)</td><td>BRAF fusion / KIAA1549, V600E</td>
+          <td>Tovorafenib 1st-line (LOGGIC/FIREFLY-2)</td>
+        </tr>
+        <tr>
+          <td><strong>HGG</strong></td>
+          <td>—</td><td><span class="mono">54–60 Gy / 30–33 fx</span></td>
+          <td>No clear advantage</td><td>BRAF V600E, H3 G34, IDH</td>
+          <td>RT + AZD1390 (ATM inhibitor, COG)</td>
+        </tr>
+        <tr>
+          <td><strong>DIPG / DMG</strong></td>
+          <td><span class="mono">54 Gy / 30 fx</span></td><td>—</td>
+          <td>Not established</td><td>H3 K27M, ACVR1, PDGFRA</td>
+          <td>ONC201 post-RT · CAR-T GD2</td>
+        </tr>
+        <tr>
+          <td><strong>Medulloblastoma</strong></td>
+          <td><span class="mono">23.4 Gy (SR) · 36 Gy (HR)</span></td>
+          <td><span class="mono">55.8 Gy tumor bed</span></td>
+          <td>Yes (late effects)</td><td>WNT, SHH, MYC amplif.</td>
+          <td>CSI dose reduction WNT · CAR-T GPC2</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════ PANEL: CRANIOPHARYNGIOMA ═══════════════ -->
+<div id="cranio" class="panel">
+  <div class="back-btn" onclick="back()">← Back</div>
+  <div class="panel-header">
+    <div class="panel-title">Craniopharyngioma</div>
+    <div class="panel-subtitle">Pediatric — RT protocols, active trials, clinical signal &amp; references</div>
+  </div>
+
+  <div class="slabel">RT Protocols</div>
+  <table class="rt-table">
+    <thead><tr><th>Parameter</th><th>Standard</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Indication</td><td>After subtotal resection</td><td class="nt">Limited surgery + RT is current paradigm — vs radical resection with endocrine morbidity</td></tr>
+      <tr><td>Dose</td><td><span class="val">54 Gy / 30 fx</span></td><td class="nt">1.8 Gy/fx — COG/SIOP reference standard <sup>[1,2]</sup></td></tr>
+      <tr><td>GTV</td><td>Macroscopic residual + cystic components</td><td class="nt">MRI T1+Gd + T2/FLAIR fusion required</td></tr>
+      <tr><td>CTV</td><td>GTV + 5–10 mm</td><td class="nt">Reduced near chiasm and hypothalamus</td></tr>
+      <tr><td>PTV</td><td>CTV + 3–5 mm</td><td class="nt">Reducible to 2–3 mm with daily IGRT <sup>[2]</sup></td></tr>
+      <tr><td>Modality</td><td>Protons preferred</td><td class="nt">51% IMRT/VMAT vs 38% protons in COG IGRT survey <sup>[2]</sup> — equivalent local control; proton advantage on off-target dose</td></tr>
+      <tr><td>Mid-course imaging</td><td>Volumetric MRI recommended</td><td class="nt">Risk of rapid cystic expansion during treatment</td></tr>
+      <tr><td>SMN — protons</td><td><span class="val">0.8% at 5y · 3.1% at 10y</span></td><td class="nt">Cohort n=1713 <sup>[3]</sup> — risk concentrated in age &lt;5y and predisposing syndromes</td></tr>
+    </tbody>
+  </table>
+
+  <div class="slabel">Active Clinical Trials</div>
+  <div class="trials-grid">
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT01419067" target="_blank">NCT01419067</a><span class="sbadge s-a">ACTIVE · NR</span></div>
+      <div class="tc-title">Limited Surgery + Proton Therapy for Craniopharyngioma</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">112 pts</span><span class="ttag">2011–2026</span><span class="th-rt">RT</span></div>
+      <div class="tc-sponsor"><strong>St. Jude Children's Research Hospital</strong> — Proton RT paradigm, results expected 2026</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT02792582" target="_blank">NCT02792582</a><span class="sbadge s-a">ACTIVE · NR</span></div>
+      <div class="tc-title">IMPT for Incompletely Resected Craniopharyngioma</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">160 pts</span><span class="ttag">2016–2026</span><span class="th-rt">RT</span></div>
+      <div class="tc-sponsor"><strong>St. Jude</strong> — Final data expected during observership</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT05525273" target="_blank">NCT05525273</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">Dabrafenib + Trametinib (neo)adjuvant — BRAF V600E Papillary</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="th-tg">Targeted</span></div>
+      <div class="tc-sponsor">Papillary BRAF V600E — MAPK double-blockade</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT05286788" target="_blank">NCT05286788</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">Binimetinib (MEKi) — Adamantinomatous Pediatric</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">10 sites</span><span class="th-tg">Targeted</span></div>
+      <div class="tc-sponsor"><strong>Nationwide Children's</strong></div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT05465174" target="_blank">NCT05465174</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">Tovorafenib — New/Relapsed Pediatric Craniopharyngioma</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">19 sites</span><span class="th-tg">Targeted</span></div>
+      <div class="tc-sponsor">Pan-RAF type II inhibitor</div>
+    </div>
+  </div>
+
+  <div class="slabel">Clinical Signal 2025–2026</div>
+  <div class="signal-box">
+    <p>The paradigm of <strong>limited surgery + conformal RT (protons preferred)</strong> is now firmly established, with both SJCRH trials approaching final data in 2026. For <strong>papillary BRAF V600E+ craniopharyngiomas</strong>, integration of dabrafenib/trametinib before or after RT is the leading edge — potentially replacing or deferring RT in selected cases. Adamantinomatous tumors are now being targeted via MEK inhibition (binimetinib) and pan-RAF inhibition (tovorafenib).</p>
+    <p>The central open question: <span class="signal-hl">can targeted therapy defer or spare RT</span> in biologically defined subgroups while preserving hypothalamic function long-term?</p>
+  </div>
+
+  <div class="slabel">References</div>
+  <div class="refs-list">
+    <div class="ref-item">
+      <span class="ref-num">1</span>
+      <span class="ref-authors">Leary SE, Onar-Thomas A, Fangusaro J, et al.</span>
+      <div class="ref-title">Children's Oncology Group's 2023 Blueprint for Research: Central Nervous System Tumors</div>
+      <div class="ref-journal">Pediatric Blood &amp; Cancer, 2023; 70(S6)</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1002/pbc.30600" target="_blank">https://doi.org/10.1002/pbc.30600</a></div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">2</span>
+      <span class="ref-authors">Baliga S, Gandola L, Timmermann B, et al.</span>
+      <div class="ref-title">Brain tumors: Medulloblastoma, ATRT, ependymoma [RT protocols incl. craniopharyngioma]</div>
+      <div class="ref-journal">Pediatric Blood &amp; Cancer, 2021; 68(S2)</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1002/pbc.28395" target="_blank">https://doi.org/10.1002/pbc.28395</a></div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">3</span>
+      <span class="ref-authors">Paulino AC, Ludmir EB, Grosshans DR, et al.</span>
+      <div class="ref-title">Overall survival and secondary malignant neoplasms in children receiving passively scattered proton or photon craniospinal irradiation for medulloblastoma — SMN cohort data also relevant for craniopharyngioma (n=1713)</div>
+      <div class="ref-journal">Cancer, 2021; 127(20):3865–3871</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1002/cncr.33783" target="_blank">https://doi.org/10.1002/cncr.33783</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PANEL: LGG ═══════════════ -->
+<div id="lgg" class="panel">
+  <div class="back-btn" onclick="back()">← Back</div>
+  <div class="panel-header">
+    <div class="panel-title">Low-Grade Glioma (LGG)</div>
+    <div class="panel-subtitle">Pediatric — RT protocols, active trials, clinical signal &amp; references</div>
+  </div>
+
+  <div class="slabel">RT Protocols</div>
+  <table class="rt-table">
+    <thead><tr><th>Parameter</th><th>Standard</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Indication</td><td>Unresectable / progressive post-chemotherapy</td><td class="nt">RT increasingly deferred by targeted therapy; role shifting to 2nd/3rd line</td></tr>
+      <tr><td>Dose</td><td><span class="val">54 Gy / 30 fx</span></td><td class="nt">COG ACNS0221 <sup>[1]</sup> — PFS 5y 71%, OS 5y 93%</td></tr>
+      <tr><td>GTV</td><td>T2/FLAIR + enhancing components</td><td></td></tr>
+      <tr><td>CTV</td><td>GTV + 5 mm</td><td class="nt">Reduced near optic apparatus</td></tr>
+      <tr><td>Modality</td><td>Protons preferred</td><td class="nt">MD Anderson: IQ loss 1.57 pts/yr photons vs no change protons (p=0.004 / p=0.026) <sup>[2]</sup></td></tr>
+      <tr><td>Optic pathway exception</td><td>Case-by-case comparison</td><td class="nt">Some OPG: IMRT photons dosimetrically superior for optic structures — planning comparison mandatory (2024 data) <sup>[2]</sup></td></tr>
+      <tr><td>Spinal LGG — protons</td><td><span class="val">45–50.4 CGE</span></td><td class="nt">Brisson et al. Ped Blood Cancer 2024 <sup>[3]</sup> — first published series (n=8): LC 10y 85%, freedom from metastases 88%, PFS 73%, no visceral/MSK toxicity</td></tr>
+    </tbody>
+  </table>
+
+  <div class="slabel">Active Clinical Trials</div>
+  <div class="trials-grid">
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT04775485" target="_blank">NCT04775485</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">FIREFLY-1 — Tovorafenib for Relapsed RAF-Altered LGG</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">35 sites</span><span class="th-tg">Targeted</span></div>
+      <div class="tc-sponsor">FDA approved 2024 — pan-RAF type II inhibitor</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT05566795" target="_blank">NCT05566795</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">LOGGIC/FIREFLY-2 — Tovorafenib vs Chemo 1st-line ⭐</div>
+      <div class="tc-meta"><span class="ttag">Phase III</span><span class="ttag">138 sites</span><span class="ttag">400 pts</span><span class="th-tg">Targeted</span></div>
+      <div class="tc-sponsor"><strong>PIVOT TRIAL</strong> — potential to redefine 1st-line standard</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT05180825" target="_blank">NCT05180825</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">Trametinib vs Vinblastine — Non-NF1 BRAF WT Newly Diagnosed</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">25 sites</span><span class="th-tg">Targeted</span></div>
+      <div class="tc-sponsor"><strong>Strasbourg 🇫🇷</strong> — Franco-European network trial</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT03363217" target="_blank">NCT03363217</a><span class="sbadge s-a">ACTIVE · NR</span></div>
+      <div class="tc-title">Trametinib for MAPK/ERK-Activated Pediatric Gliomas</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="th-tg">Targeted</span></div>
+      <div class="tc-sponsor"><strong>Hôpital Sainte-Justine, Montréal 🇨🇦</strong></div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT06666348" target="_blank">NCT06666348</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">Mirdametinib + Vinblastine — MAPK-Activated LGG Newly Diagnosed</div>
+      <div class="tc-meta"><span class="ttag">Phase I/II</span><span class="ttag">5 sites</span><span class="th-tg">Targeted</span></div>
+      <div class="tc-sponsor"><strong>Sainte-Justine, Montréal 🇨🇦</strong></div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT07004075" target="_blank">NCT07004075</a><span class="sbadge s-ny">NOT YET RECRUITING</span></div>
+      <div class="tc-title">Luvometinib (FCN-159) vs COG Chemo — KIAA1549-BRAF or V600E</div>
+      <div class="tc-meta"><span class="ttag">Phase III</span><span class="th-tg">Targeted</span></div>
+      <div class="tc-sponsor">Second Phase III MEKi trial coming</div>
+    </div>
+  </div>
+
+  <div class="slabel">Clinical Signal 2025–2026</div>
+  <div class="signal-box">
+    <p>The LGG landscape is undergoing a <strong>paradigm shift</strong>: MAPK-targeted therapies are rapidly replacing chemotherapy as primary medical treatment and increasingly positioned to defer or spare RT. The <span class="signal-hl">LOGGIC/FIREFLY-2 Phase III trial</span> (138 sites, 400 patients) comparing tovorafenib to standard chemotherapy in 1st-line is the most consequential trial currently open in pediatric neuro-oncology.</p>
+    <p>The Strasbourg trametinib trial and the Sainte-Justine mirdametinib trial signal important francophone network collaboration opportunities. RT remains standard for progressive/unresectable disease post-targeted therapy — its role is shifting to 2nd or 3rd line.</p>
+  </div>
+
+  <div class="slabel">References</div>
+  <div class="refs-list">
+    <div class="ref-item">
+      <span class="ref-num">1</span>
+      <span class="ref-authors">Leary SE, Onar-Thomas A, Fangusaro J, et al.</span>
+      <div class="ref-title">Children's Oncology Group's 2023 Blueprint for Research: CNS Tumors (LGG section incl. COG ACNS0221 — PFS 5y 71%, OS 93%)</div>
+      <div class="ref-journal">Pediatric Blood &amp; Cancer, 2023; 70(S6)</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1002/pbc.30600" target="_blank">https://doi.org/10.1002/pbc.30600</a></div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">2</span>
+      <span class="ref-authors">MD Anderson retrospective series (Scholar Gateway retrieval)</span>
+      <div class="ref-title">Proton vs photon RT in pediatric gliomas: IQ trajectory comparison (n=28)</div>
+      <div class="ref-journal">IQ loss 1.57 pts/yr with photons (p=0.004) vs no significant change with protons (p=0.026). Optic pathway exception: planning comparison mandatory on case-by-case basis (2024 data)</div>
+      <div class="ref-note">Retrieved via Scholar Gateway semantic search — verify DOI via PubMed/MD Anderson publications</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">3</span>
+      <span class="ref-authors">Brisson et al.</span>
+      <div class="ref-title">Proton therapy for pediatric spinal low-grade gliomas — first published series</div>
+      <div class="ref-journal">Pediatric Blood &amp; Cancer, 2024</div>
+      <div class="ref-note">n=8; doses 45–50.4 CGE; LC 10y 85%; freedom from metastases 88%; PFS 73%; no pulmonary, digestive or musculoskeletal toxicity</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PANEL: HGG ═══════════════ -->
+<div id="hgg" class="panel">
+  <div class="back-btn" onclick="back()">← Back</div>
+  <div class="panel-header">
+    <div class="panel-title">High-Grade Glioma (HGG)</div>
+    <div class="panel-subtitle">Pediatric — RT protocols, active trials, clinical signal &amp; references</div>
+  </div>
+
+  <div class="slabel">RT Protocols</div>
+  <table class="rt-table">
+    <thead><tr><th>Parameter</th><th>Standard</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Dose</td><td><span class="val">54–60 Gy / 30–33 fx</span></td><td class="nt">1.8–2 Gy/fx; temozolomide concurrent + adjuvant by adult analogy</td></tr>
+      <tr><td>Volumes</td><td>3D conformal / IMRT on T1+Gd ± T2 signal</td><td></td></tr>
+      <tr><td>Protons</td><td>No established survival advantage</td><td class="nt">NCDB 2023 (n=498) <sup>[1]</sup>: neither RT dose nor proton/photon modality significantly associated with survival — molecular stratification is the key lever</td></tr>
+      <tr><td>Re-irradiation</td><td><span class="val">30–54 Gy</span></td><td class="nt">Tsang et al. 2019 (n=40) <sup>[2]</sup>: median OS 6.5m, clinical benefit 80%; interval ≥12m between RT1 and RT2 associated with better OS (p=0.009)</td></tr>
+      <tr><td>BRAF V600E — systemic</td><td>Dabrafenib + Trametinib post-RT</td><td class="nt">FDA accelerated approval June 2022 for solid tumors BRAF V600E ≥6y (ROAR study) <sup>[3]</sup></td></tr>
+    </tbody>
+  </table>
+
+  <div class="slabel">Active Clinical Trials</div>
+  <div class="trials-grid">
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT06894979" target="_blank">NCT06894979</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">RT + AZD1390 (ATM Inhibitor) — Radiosensitization via DDR ⭐</div>
+      <div class="tc-meta"><span class="ttag">Phase I</span><span class="ttag">17 sites</span><span class="ttag">COG</span><span class="th-rt">RT + DDR</span></div>
+      <div class="tc-sponsor"><strong>COG</strong> — Also covers DIPG/DMG · Launch June 2025</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT05843253" target="_blank">NCT05843253</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">Ribociclib ± Everolimus or TMZ Post-RT — Molecular Profile</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">21 sites</span><span class="th-tg">Targeted</span></div>
+      <div class="tc-sponsor"><strong>Nationwide Children's</strong> — H3 G34, cell cycle, PI3K/mTOR stratification</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT07223034" target="_blank">NCT07223034</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">LU-TARGET — Lu-177-PSMA-617 Adjuvant Post-RT (IDH WT + PSMA+)</div>
+      <div class="tc-meta"><span class="ttag">Phase I</span><span class="ttag">7 sites</span><span class="th-rt">Radioligand</span></div>
+      <div class="tc-sponsor"><strong>MSK</strong> — Also covers DMG H3 K27-altered PSMA+</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT04573140" target="_blank">NCT04573140</a><span class="sbadge s-a">ACTIVE · NR</span></div>
+      <div class="tc-title">Autologous RNA Nanoliposome Vaccine Post-RT</div>
+      <div class="tc-meta"><span class="ttag">Phase I</span><span class="th-im">Vaccine</span></div>
+      <div class="tc-sponsor"><strong>Univ. Florida</strong></div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT06946680" target="_blank">NCT06946680</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">CAR-T CD70 CXCR2-Modified</div>
+      <div class="tc-meta"><span class="ttag">Phase I</span><span class="th-ct">CAR-T</span></div>
+      <div class="tc-sponsor"><strong>Univ. Florida</strong></div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT07061626" target="_blank">NCT07061626</a><span class="sbadge s-ny">NOT YET RECRUITING</span></div>
+      <div class="tc-title">Re-186 NanoLiposome by CED — HGG/Ependymoma Recurrent</div>
+      <div class="tc-meta"><span class="ttag">Phase I/II</span><span class="th-rt">Intratumoral RT</span></div>
+      <div class="tc-sponsor">Convection-enhanced delivery of radioisotope</div>
+    </div>
+  </div>
+
+  <div class="slabel">Clinical Signal 2025–2026</div>
+  <div class="signal-box">
+    <p>RT remains the indispensable platform — but the data confirm that <strong>dose and modality are not the primary outcome levers</strong>. The revolution lies in molecular stratification: H3 G34, H3 K27M, IDH, BRAF V600E now drive the choice of concurrent/adjuvant agent <sup>[1]</sup>.</p>
+    <p>The <span class="signal-hl">COG AZD1390 trial</span> (RT + ATM inhibitor, DDR radiosensitization) is the most structurally important new trial. LU-TARGET (radioligand post-RT) and CAR-T CD70 represent the most novel platforms entering Phase I.</p>
+  </div>
+
+  <div class="slabel">References</div>
+  <div class="refs-list">
+    <div class="ref-item">
+      <span class="ref-num">1</span>
+      <span class="ref-authors">NCDB analysis, 2023 (Scholar Gateway retrieval)</span>
+      <div class="ref-title">Pediatric HGG — RT dose and modality vs survival in 498 patients</div>
+      <div class="ref-journal">National Cancer Database 2023; n=498: OS 1y 78.4%, OS 3y 40.4% — neither RT dose nor proton/photon modality significantly associated with survival</div>
+      <div class="ref-note">Retrieved via Scholar Gateway — verify via NCDB/ASTRO publications</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">2</span>
+      <span class="ref-authors">Tsang DS, et al.</span>
+      <div class="ref-title">Re-irradiation for recurrent pediatric high-grade glioma</div>
+      <div class="ref-journal">2019; n=40 — doses 30–54 Gy; median OS 6.5 months; clinical benefit 80%; interval ≥12m between RT1 and RT2 associated with better survival (p=0.009)</div>
+      <div class="ref-note">Retrieved via Scholar Gateway — verify DOI via PubMed (Tsang DS[Author] AND glioma AND reirradiation)</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">3</span>
+      <span class="ref-authors">Wen PY, et al. (ROAR study)</span>
+      <div class="ref-title">Dabrafenib + trametinib in BRAF V600E-mutant solid tumors including pediatric HGG (ROAR basket trial)</div>
+      <div class="ref-journal">FDA accelerated approval June 2022 for BRAF V600E solid tumors ≥6 years progressing after prior treatment</div>
+      <div class="ref-note">See FDA label and ROAR trial publications</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">4</span>
+      <span class="ref-authors">Leary SE, Onar-Thomas A, Fangusaro J, et al.</span>
+      <div class="ref-title">Children's Oncology Group's 2023 Blueprint for Research: CNS Tumors (HGG section)</div>
+      <div class="ref-journal">Pediatric Blood &amp; Cancer, 2023; 70(S6)</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1002/pbc.30600" target="_blank">https://doi.org/10.1002/pbc.30600</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PANEL: DIPG ═══════════════ -->
+<div id="dipg" class="panel">
+  <div class="back-btn" onclick="back()">← Back</div>
+  <div class="panel-header">
+    <div class="panel-title">DIPG / DMG H3 K27-Altered</div>
+    <div class="panel-subtitle">WHO 2021 Grade IV — RT protocols, active trials, clinical signal &amp; references</div>
+  </div>
+
+  <div class="slabel">RT Protocols</div>
+  <table class="rt-table">
+    <thead><tr><th>Parameter</th><th>Standard</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>WHO 2021 nomenclature</td><td>DMG H3 K27-altered — Grade IV</td><td class="nt">4 subtypes: H3.3 p.K28M · H3.1/3.2 p.K28M · H3 WT + EZHIP overexpression · EGFR-mutant <sup>[1]</sup></td></tr>
+      <tr><td>RT1 standard</td><td><span class="val">54 Gy / 30 fx</span></td><td class="nt">1 cm margin on GTV. Only proven treatment — median survival &lt;12m without additional therapy <sup>[1,2]</sup></td></tr>
+      <tr><td>Post-RT ONC201</td><td>Dordaviprone (Modeyso™)</td><td class="nt"><span style="color:var(--accent2);font-weight:600">FDA accelerated approval August 2025</span> for DMG H3 K27M-mutant post-RT. First approved agent in this indication. Conditional on Phase III ACTION results <sup>[3]</sup></td></tr>
+      <tr><td>RT2 (re-irradiation)</td><td><span class="val">~20–24 Gy</span></td><td class="nt">SIOP DIPG Working Group <sup>[4]</sup>: OS 13.7 vs 10.4m (p=0.04), clinical benefit 77%, no grade ≥3 toxicity. Benefit amplified if initial PFS &gt;6m</td></tr>
+      <tr><td>RT3/RT4 (palliation)</td><td><span class="val">18–21.6 Gy / 10–12 fx</span></td><td class="nt">Shariff et al. Ped Blood Cancer Apr 2025 (Toronto, n=5) <sup>[5]</sup>: median OS from RT1=26m; neurological improvement 80%; brainstem radiological necrosis 40%. Cumulative brainstem D0.03cc médiane 104 Gy — selected cases only</td></tr>
+    </tbody>
+  </table>
+
+  <div class="slabel">Active Clinical Trials</div>
+  <div class="trials-grid">
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT06894979" target="_blank">NCT06894979</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">RT + AZD1390 (ATM Inhibitor) — DIPG/DMG incl. ⭐</div>
+      <div class="tc-meta"><span class="ttag">Phase I</span><span class="ttag">17 sites</span><span class="ttag">COG</span><span class="th-rt">RT + DDR</span></div>
+      <div class="tc-sponsor"><strong>COG</strong> — Launch June 2025</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT05077735" target="_blank">NCT05077735</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">SPORT-DMG — Hypofractionated Split-Course RT + Stereotactic Biopsy</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="th-rt">RT</span></div>
+      <div class="tc-sponsor"><strong>Mayo Clinic</strong></div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT06624371" target="_blank">NCT06624371</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">RT + Atovaquone — Mitochondrial OXPHOS Inhibitor</div>
+      <div class="tc-meta"><span class="ttag">Phase I</span><span class="th-rt">RT + metabolic</span></div>
+      <div class="tc-sponsor"><strong>Emory</strong> — Targeting hypoxic radioresistance</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT05630209" target="_blank">NCT05630209</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">Focused Ultrasound BBB Opening + Doxorubicin</div>
+      <div class="tc-meta"><span class="ttag">Phase I/II</span><span class="ttag">3 sites</span><span class="th-ch">MRI-guided FUS</span></div>
+      <div class="tc-sponsor"><strong>InSightec</strong></div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT05278208" target="_blank">NCT05278208</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">Lu-177-DOTATATE (Lutathera) — Relapsed DIPG DOTATATE PET+</div>
+      <div class="tc-meta"><span class="ttag">Phase I/II</span><span class="ttag">4 sites</span><span class="th-rt">Radioligand</span></div>
+      <div class="tc-sponsor"><strong>Nationwide Children's</strong></div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT06333899" target="_blank">NCT06333899</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">Lorlatinib — ROS1/ALK Fusion DIPG</div>
+      <div class="tc-meta"><span class="ttag">Early Phase I</span><span class="ttag">18 sites</span><span class="th-tg">Targeted</span></div>
+      <div class="tc-sponsor"><strong>Nationwide Children's</strong></div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT05843253" target="_blank">NCT05843253</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">Ribociclib + Everolimus Post-RT — Cell Cycle / PI3K/mTOR</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">21 sites</span><span class="th-tg">Targeted</span></div>
+      <div class="tc-sponsor"><strong>Nationwide Children's</strong></div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT03101813" target="_blank">NCT03101813</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">International DIPG/DMG Registry</div>
+      <div class="tc-meta"><span class="ttag">Observational</span><span class="ttag">1500 pts</span><span class="th-im">Registry</span></div>
+      <div class="tc-sponsor"><strong>Cincinnati Children's</strong></div>
+    </div>
+  </div>
+
+  <div class="slabel">Clinical Signal 2025–2026</div>
+  <div class="signal-box">
+    <p><strong>Most rapidly evolving landscape of all five entities.</strong> RT 54 Gy remains the mandatory initial platform — now clearly positioned as the foundation for combination strategies rather than standalone treatment.</p>
+    <p><span class="signal-hl">ONC201 (dordaviprone, Modeyso™): FDA accelerated approval August 2025</span> — first agent ever approved post-RT for DMG H3 K27M-mutant. Conditional on the ongoing Phase III ACTION trial <sup>[3]</sup>.</p>
+    <p><strong>CAR-T GD2 Phase I results (November 2024, n=11): median OS 20.6m, 4 major radiographic responses, 1 complete response &gt;30 months</strong> — a paradigm-shifting signal. These two developments make DIPG/DMG the most-discussed topic expected at SJCRH observership 2026.</p>
+  </div>
+
+  <div class="slabel">References</div>
+  <div class="refs-list">
+    <div class="ref-item">
+      <span class="ref-num">1</span>
+      <span class="ref-authors">Louis DN, Perry A, Wesseling P, et al.</span>
+      <div class="ref-title">The 2021 WHO Classification of Tumors of the Central Nervous System: a summary</div>
+      <div class="ref-journal">Neuro-Oncology, 2021; 23(8):1231–1251</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1093/neuonc/noab106" target="_blank">https://doi.org/10.1093/neuonc/noab106</a></div>
+      <div class="ref-note">DMG H3 K27-altered, Grade IV — 4 subtypes including EZHIP and EGFR-mutant</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">2</span>
+      <span class="ref-authors">Leary SE, Onar-Thomas A, Fangusaro J, et al.</span>
+      <div class="ref-title">Children's Oncology Group's 2023 Blueprint for Research: CNS Tumors (DIPG section)</div>
+      <div class="ref-journal">Pediatric Blood &amp; Cancer, 2023; 70(S6)</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1002/pbc.30600" target="_blank">https://doi.org/10.1002/pbc.30600</a></div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">3</span>
+      <span class="ref-authors">Dordaviprone (ONC201) — FDA approval documentation</span>
+      <div class="ref-title">Modeyso™ (dordaviprone) — FDA accelerated approval August 2025 for DMG H3 K27M-mutant post-RT</div>
+      <div class="ref-journal">First approved agent in this indication — conditional on Phase III ACTION trial results</div>
+      <div class="ref-doi"><a href="https://www.fda.gov/drugs/resources-information-approved-drugs" target="_blank">FDA Drugs Database</a></div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">4</span>
+      <span class="ref-authors">SIOP DIPG Working Group (pooled international analysis)</span>
+      <div class="ref-title">Re-irradiation (RT2) for DIPG — survival and safety outcomes</div>
+      <div class="ref-journal">OS 13.7 vs 10.4m (p=0.04) · Clinical benefit 77% · No grade ≥3 toxicity · Benefit amplified when initial PFS &gt;6m</div>
+      <div class="ref-note">Retrieved via Scholar Gateway — verify via SIOP DIPG Consortium publications</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">5</span>
+      <span class="ref-authors">Shariff et al. — The Hospital for Sick Children / Princess Margaret, Toronto</span>
+      <div class="ref-title">Third and fourth course re-irradiation (RT3/RT4) for DIPG — palliative intent</div>
+      <div class="ref-journal">Pediatric Blood &amp; Cancer, April 2025</div>
+      <div class="ref-note">n=5; 18–21.6 Gy / 10–12 fx; cumulative brainstem D0.03cc median 104 Gy; median OS from RT1=26m; neurological improvement 80%; brainstem radiological necrosis 40% — highly selected patients</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">6</span>
+      <span class="ref-authors">Majzner RG, et al. (CAR-T GD2 Phase I)</span>
+      <div class="ref-title">GD2-CAR T cell therapy for H3K27M-mutant diffuse midline gliomas</div>
+      <div class="ref-journal">Published November 2024 — Phase I, n=11; median OS 20.6m; 4 major radiographic responses; 1 complete response &gt;30m</div>
+      <div class="ref-note">Stanford / Parker Institute — see Nature Medicine / NEJM Evidence publications Nov 2024</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PANEL: MEDULLOBLASTOMA ═══════════════ -->
+<div id="medullo" class="panel">
+  <div class="back-btn" onclick="back()">← Back</div>
+  <div class="panel-header">
+    <div class="panel-title">Medulloblastoma</div>
+    <div class="panel-subtitle">Pediatric — RT protocols, active trials, clinical signal &amp; references</div>
+  </div>
+
+  <div class="slabel">RT Protocols</div>
+  <table class="rt-table">
+    <thead><tr><th>Parameter</th><th>Standard Risk</th><th>High Risk</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>CSI dose</td>
+        <td><span class="val">23.4 Gy</span></td>
+        <td><span class="val3">36 Gy</span></td>
+        <td class="nt">SR: residual &lt;1.5 cm², non-metastatic · HR: residual or M+ <sup>[1]</sup></td>
+      </tr>
+      <tr>
+        <td>Tumor bed boost</td>
+        <td><span class="val">55.8 Gy total</span></td>
+        <td><span class="val">55.8 Gy total</span></td>
+        <td class="nt">Tumor bed = whole posterior fossa — equivalent outcomes (COG ACNS0331) <sup>[2]</sup></td>
+      </tr>
+      <tr>
+        <td>Outcomes</td>
+        <td><span class="val2">OS 5y ~80–85%</span></td>
+        <td><span class="val3">OS 5y ~70%</span></td>
+        <td class="nt">With alkylating + platinum (SR) / platinum-based chemo (HR) <sup>[1]</sup></td>
+      </tr>
+      <tr>
+        <td>WNT — dose reduction (investigational)</td>
+        <td><span class="val">18 Gy CSI</span></td>
+        <td>—</td>
+        <td class="nt">COG ACNS1422: β-catenin+, CTNNB1 mut, no MYC/MYCN amplification, no residual <sup>[2]</sup>. SIOP PNET-5 (NCT02066220): same question in European context</td>
+      </tr>
+      <tr>
+        <td>⚠ Caution: 18 Gy</td>
+        <td>+10% relapse risk (non-selected)</td>
+        <td>—</td>
+        <td class="nt">COG ACNS0331: 18 Gy in non-selected SR pts age 3–7y → excess events <sup>[2]</sup>. Dose reduction must be molecularly guided — not by age alone</td>
+      </tr>
+      <tr>
+        <td>Protons</td>
+        <td colspan="2">Preferred for late effects</td>
+        <td class="nt">GH deficiency 33.3% vs 57% · Hypothyroidism 20.1% vs 69% (protons vs photons) <sup>[3]</sup>. OS and SMN equivalent at 10y (Paulino et al. 2021 <sup>[4]</sup>, n=115)</td>
+      </tr>
+      <tr>
+        <td>RT duration</td>
+        <td colspan="2"><span class="val">&lt;46 days</span></td>
+        <td class="nt">Duration inversely correlated with outcomes — compress RT schedule as much as possible <sup>[2]</sup></td>
+      </tr>
+      <tr>
+        <td>Infants (&lt;3y)</td>
+        <td colspan="2">RT-sparing chemotherapy first</td>
+        <td class="nt">SJYC07 post-hoc <sup>[5]</sup>: SHH-II benefit from chemo-only (75% spared CSI); SHH-I requires RT (only 25% spared). Molecular class drives the decision.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="slabel">Active Clinical Trials</div>
+  <div class="trials-grid">
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT01878617" target="_blank">NCT01878617</a><span class="sbadge s-a">ACTIVE · NR</span></div>
+      <div class="tc-title">SJMB13 — Molecular &amp; Clinical Risk-Directed Therapy (newly diagnosed) ⭐</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">23 sites</span><span class="ttag">660 pts</span><span class="th-rt">RT + Targeted</span></div>
+      <div class="tc-sponsor"><strong>St. Jude</strong> — Founding molecular stratification trial · Results in progress</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT05535166" target="_blank">NCT05535166</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">SJiMB21 — Risk-Directed Therapy for Infants &amp; Young Children ⭐</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">10 sites</span><span class="ttag">130 pts</span><span class="th-rt">RT-sparing</span></div>
+      <div class="tc-sponsor"><strong>St. Jude</strong> — SJYC07 successor · Active recruitment</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT05382338" target="_blank">NCT05382338</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">Sodium Thiosulfate + CSI Dose Reduction (Low-Risk Molecular)</div>
+      <div class="tc-meta"><span class="ttag">Phase III</span><span class="ttag">103 sites</span><span class="ttag">225 pts</span><span class="th-rt">RT + Otoprotection</span></div>
+      <div class="tc-sponsor"><strong>COG</strong> — Largest active COG medulloblastoma trial</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT07087002" target="_blank">NCT07087002</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">GPC2-CAR T — Relapsed/Refractory Medulloblastoma &amp; ETMR</div>
+      <div class="tc-meta"><span class="ttag">Phase I</span><span class="ttag">2025–2027</span><span class="th-ct">CAR-T</span></div>
+      <div class="tc-sponsor"><strong>Stanford</strong> — GPC2 highly expressed in embryonal tumors</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT07390539" target="_blank">NCT07390539</a><span class="sbadge s-ny">NOT YET RECRUITING (Jul 2026)</span></div>
+      <div class="tc-title">B7-H3 CAR-T — CNS Embryonal Tumors incl. Leptomeningeal Disease</div>
+      <div class="tc-meta"><span class="ttag">Phase I</span><span class="ttag">2 sites</span><span class="th-ct">CAR-T</span></div>
+      <div class="tc-sponsor"><strong>Stanford / MSK</strong> — Opens July 2026</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT04743661" target="_blank">NCT04743661</a><span class="sbadge s-a">ACTIVE · NR</span></div>
+      <div class="tc-title">Omburtamab I-131 Intraventricular — Recurrent Medulloblastoma/Ependymoma</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">3 sites</span><span class="th-rt">Radioimmunotherapy</span></div>
+      <div class="tc-sponsor"><strong>PBTC</strong> — Anti-B7-H3 radiolabeled Ab, intracerebroventricular, bypasses BBB</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT06485908" target="_blank">NCT06485908</a><span class="sbadge s-ny">NOT YET RECRUITING</span></div>
+      <div class="tc-title">MEPENDAX — Axitinib + Metronomic Etoposide (Relapsed)</div>
+      <div class="tc-meta"><span class="ttag">Phase I/II</span><span class="ttag">40 pts</span><span class="th-ch">Anti-angio + Chemo</span></div>
+      <div class="tc-sponsor"><strong>AP-HM Marseille 🇫🇷</strong> — Also covers ependymoma</div>
+    </div>
+  </div>
+
+  <div class="slabel">Clinical Signal 2025–2026</div>
+  <div class="signal-box">
+    <p>Medulloblastoma has the most mature molecular stratification framework directly integrated into RT decision-making. The central open question is <span class="signal-hl">how far CSI dose can be reduced in WNT-activated tumors</span> — with the critical caveat that non-molecularly-selected dose reduction carries a 10% excess relapse risk <sup>[2]</sup>.</p>
+    <p><strong>SJMB13 and SJiMB21 (St. Jude)</strong> will be the central discussion points during the observership. On the immunotherapy front, <strong>GPC2-CAR T</strong> (Stanford, recruiting) and <strong>B7-H3 CAR-T</strong> (Stanford/MSK, opening July 2026) represent the next cellular therapy wave — extending the DIPG CAR-T logic to embryonal tumor biology. <strong>MEPENDAX (AP-HM Marseille)</strong> is the principal French network opportunity for relapsed disease.</p>
+  </div>
+
+  <div class="slabel">References</div>
+  <div class="refs-list">
+    <div class="ref-item">
+      <span class="ref-num">1</span>
+      <span class="ref-authors">Leary SE, Onar-Thomas A, Fangusaro J, et al.</span>
+      <div class="ref-title">Children's Oncology Group's 2023 Blueprint for Research: CNS Tumors — medulloblastoma section (SR/HR dose schema, outcomes)</div>
+      <div class="ref-journal">Pediatric Blood &amp; Cancer, 2023; 70(S6)</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1002/pbc.30600" target="_blank">https://doi.org/10.1002/pbc.30600</a></div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">2</span>
+      <span class="ref-authors">Baliga S, Gandola L, Timmermann B, Padovani L, Janssens GO, Yock TI</span>
+      <div class="ref-title">Brain tumors: Medulloblastoma, ATRT, ependymoma — RT dose schema, COG ACNS0331 results, WNT dose reduction rationale, RT duration rule</div>
+      <div class="ref-journal">Pediatric Blood &amp; Cancer, 2021; 68(S2)</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1002/pbc.28395" target="_blank">https://doi.org/10.1002/pbc.28395</a></div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">3</span>
+      <span class="ref-authors">Vatner RE, et al. (MGH cohort)</span>
+      <div class="ref-title">Proton RT for pediatric medulloblastoma — endocrine outcomes (GH deficiency 33.3% vs 57%, hypothyroidism 20.1% vs 69% — protons vs photons historical cohort)</div>
+      <div class="ref-journal">Cited via Baliga et al. 2021 — Vatner RE et al., original publication in Int J Radiat Oncol Biol Phys</div>
+      <div class="ref-note">Also: Eaton BR et al. (photon reference cohort for endocrine comparison)</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">4</span>
+      <span class="ref-authors">Paulino AC, Ludmir EB, Grosshans DR, Su JM, McGovern SL, Okcu MF, et al.</span>
+      <div class="ref-title">Overall survival and secondary malignant neoplasms in children receiving passively scattered proton or photon CSI for medulloblastoma</div>
+      <div class="ref-journal">Cancer, 2021; 127(20):3865–3871</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1002/cncr.33783" target="_blank">https://doi.org/10.1002/cncr.33783</a></div>
+      <div class="ref-note">n=115; follow-up 12.8y photons / 8.7y protons; OS/SMN equivalent at 10y; SMN 6.9% at 10y both groups</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">5</span>
+      <span class="ref-authors">Leary S, et al. (SJYC07 post-hoc molecular analysis)</span>
+      <div class="ref-title">SJYC07 trial — molecular stratification of infant medulloblastoma: SHH subgroup analysis (SHH-I vs SHH-II and RT-sparing)</div>
+      <div class="ref-journal">Pediatric Blood &amp; Cancer — SJYC07 trial publications; see also Robinson GW et al.</div>
+      <div class="ref-note">75% of SHH-II avoided CSI vs only 25% of SHH-I. 5y EFS full cohort 31%.</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">6</span>
+      <span class="ref-authors">Izurieta-Pacheco AC, Ramaswamy V, Tsang DS, Rutka J, et al.</span>
+      <div class="ref-title">Late Effects in Survivors of Pediatric Medulloblastoma: A Comprehensive Review</div>
+      <div class="ref-journal">Pediatric Blood &amp; Cancer, 2025; 73(1)</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1002/pbc.32132" target="_blank">https://doi.org/10.1002/pbc.32132</a></div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">7</span>
+      <span class="ref-authors">Williamson D, Schwalbe EC, Bailey S, Clifford SC</span>
+      <div class="ref-title">Timing is everything: A connection between medulloblastoma prognosis and foetal cerebellar development — Group 3/4 transcriptional continuum and continuous risk predictor</div>
+      <div class="ref-journal">Neuropathology and Applied Neurobiology, 2023; 49(3)</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1111/nan.12903" target="_blank">https://doi.org/10.1111/nan.12903</a></div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+  function show(id) {
+    document.getElementById('landing').style.display = 'none';
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function back() {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('landing').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
