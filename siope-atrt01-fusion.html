@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>SIOPE ATRT01 · ATRT — Stratification &amp; Logigramme</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+/* ── RESET ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+button{cursor:pointer}
+a{color:inherit}
+
+/* ── THÈME ── */
+:root{
+  --bg:#0d1117;
+  --surface:#161b22;
+  --surface2:#1c2330;
+  --surface3:#21262d;
+  --border:#2a3441;
+  --border2:#30363d;
+  --text:#e6edf3;
+  --text2:#8b949e;
+  --text3:#6e7681;
+  --green:#3fb950;
+  --blue:#388bfd;
+  --red:#f85149;
+  --yellow:#d29922;
+  --purple:#a371f7;
+  --orange:#f0883e;
+  --cyan:#39c5cf;
+  --accent:#a371f7;
+  --accent-rgb:163,113,247;
+  --radius:10px;
+}
+body.light{
+  --bg:#f5f0e8;
+  --surface:#ffffff;
+  --surface2:#ede8dc;
+  --surface3:#e6e0d2;
+  --border:#c8bfaa;
+  --border2:#d4ccba;
+  --text:#1a1208;
+  --text2:#5a4f3a;
+  --text3:#9a8f7a;
+  --green:#2d7a3a;
+  --blue:#1a5fa8;
+  --red:#c0392b;
+  --yellow:#a0720a;
+  --purple:#6b3fa0;
+  --orange:#c45a10;
+  --cyan:#1a7a8a;
+  --accent:#6b3fa0;
+  --accent-rgb:107,63,160;
+}
+
+/* ── BASE ── */
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  min-height:100vh;
+  transition:background .25s,color .25s;
+}
+
+/* ── HEADER ── */
+header{
+  position:sticky;top:0;z-index:200;
+  background:rgba(13,17,23,0.96);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:12px 20px;
+  display:flex;align-items:center;gap:12px;flex-wrap:nowrap;
+}
+body.light header{background:rgba(245,240,232,0.97);backdrop-filter:blur(10px);}
+.hdr-logo{
+  width:32px;height:32px;
+  border:1.5px solid var(--accent);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:8px;
+  color:var(--accent);font-weight:500;flex-shrink:0;
+  line-height:1.1;text-align:center;
+}
+.hdr-texts{flex:1;min-width:0;}
+.hdr-title{font-family:'DM Serif Display',serif;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hdr-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);margin-top:2px;}
+.hdr-badge{
+  font-family:'DM Mono',monospace;font-size:9px;
+  padding:3px 10px;border-radius:20px;
+  background:rgba(163,113,247,.1);border:1px solid rgba(163,113,247,.3);
+  color:var(--accent);margin-left:auto;flex-shrink:0;white-space:nowrap;
+}
+.btn-theme{
+  width:30px;height:30px;border-radius:6px;
+  border:1px solid var(--border2);background:transparent;
+  color:var(--text2);font-size:14px;cursor:pointer;
+  transition:all .18s;display:flex;align-items:center;justify-content:center;
+  margin-left:8px;flex-shrink:0;
+}
+.btn-theme:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ── TAB NAV ── */
+.tab-nav{
+  display:flex;border-bottom:1px solid var(--border);
+  background:var(--surface);position:sticky;z-index:150;
+}
+body.light .tab-nav{background:var(--surface2);}
+.tab-btn{
+  flex:1;padding:11px 16px;border:none;background:none;
+  color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;
+  font-weight:500;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;
+}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+body.light .tab-btn:hover{background:rgba(0,0,0,.04);}
+
+/* ── PANELS ── */
+.panel{display:none;}
+.panel.active{display:block;}
+#panel-flow{overflow:hidden;position:relative;}
+#chart{width:100%;height:100%;cursor:grab;}
+#chart:active{cursor:grabbing;}
+
+/* ── WIZARD LAYOUT ── */
+.container{max-width:860px;margin:0 auto;padding:32px 20px 80px;}
+.progress-wrap{margin-bottom:28px;}
+.progress-header{
+  display:flex;justify-content:space-between;
+  font-family:'DM Mono',monospace;font-size:10px;
+  color:var(--text3);margin-bottom:8px;
+}
+.progress-bar-bg{height:3px;background:var(--surface3);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .4s ease;}
+
+/* ── CARDS QUESTIONS ── */
+.step-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:24px;margin-bottom:14px;
+  position:relative;animation:fadeSlide .3s ease;overflow:hidden;
+}
+body.light .step-card{box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.step-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;
+  height:3px;background:var(--accent);
+}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.q-title{font-family:'DM Serif Display',serif;font-size:19px;margin-bottom:6px;line-height:1.4;}
+.q-sub{font-size:12px;color:var(--text2);margin-bottom:20px;line-height:1.55;}
+.opts-grid{display:flex;flex-direction:column;gap:8px;}
+.opt-btn{
+  background:var(--surface2);border:1px solid var(--border2);
+  border-radius:8px;padding:13px 16px;
+  color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;
+  cursor:pointer;text-align:left;transition:all .2s;
+  position:relative;overflow:hidden;width:100%;
+}
+.opt-btn::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:3px;background:var(--accent);
+  transform:scaleY(0);transition:transform .2s;
+}
+.opt-btn:hover{border-color:var(--accent);background:rgba(163,113,247,.06);}
+.opt-btn:hover::before{transform:scaleY(1);}
+.opt-btn strong{display:block;margin-bottom:3px;font-weight:600;}
+.opt-desc{font-size:11px;color:var(--text3);margin-top:3px;}
+.btn-back{
+  background:none;border:1px solid var(--border2);color:var(--text2);
+  padding:7px 14px;border-radius:6px;font-family:'DM Mono',monospace;
+  font-size:11px;margin-bottom:14px;transition:all .2s;
+}
+.btn-back:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ── RESULT CARD ── */
+.result-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;animation:fadeSlide .3s ease;
+}
+body.light .result-card{box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.result-header{
+  padding:20px 24px 16px;display:flex;align-items:flex-start;
+  justify-content:space-between;gap:12px;
+  border-bottom:1px solid var(--border);
+}
+.result-title{font-family:'DM Serif Display',serif;font-size:20px;line-height:1.35;}
+.risk-badge{
+  font-family:'DM Mono',monospace;font-size:10px;font-weight:500;
+  padding:4px 11px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:3px;
+}
+.risk-badge.lr{background:rgba(63,185,80,.15);color:var(--green);border:1px solid rgba(63,185,80,.3);}
+.risk-badge.sr{background:rgba(56,139,253,.15);color:var(--blue);border:1px solid rgba(56,139,253,.3);}
+.risk-badge.hr{background:rgba(248,81,73,.15);color:var(--red);border:1px solid rgba(248,81,73,.3);}
+.risk-badge.sp{background:rgba(210,153,34,.15);color:var(--yellow);border:1px solid rgba(210,153,34,.3);}
+.risk-badge.hdct{background:rgba(163,113,247,.15);color:var(--purple);border:1px solid rgba(163,113,247,.3);}
+.r-body{padding:20px 24px;}
+.r-row{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:8px;padding:14px 16px;margin-bottom:10px;
+}
+body.light .r-row{box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.r-label{
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;
+  color:var(--text3);text-transform:uppercase;margin-bottom:8px;
+}
+.r-val{font-size:13px;color:var(--text);line-height:1.6;}
+
+/* ── OUTCOMES ── */
+.outcomes-block{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:8px;padding:14px 16px;margin-bottom:10px;
+}
+.outcome-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.outcome-row:last-child{margin-bottom:0;}
+.outcome-label{font-size:12px;color:var(--text2);}
+.outcome-val{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;}
+.ov-good{color:var(--green);}
+.ov-mid{color:var(--yellow);}
+.ov-bad{color:var(--red);}
+.ov-neu{color:var(--text2);}
+
+/* ── RT BLOCK ── */
+.rt-block{
+  background:var(--surface2);border:1px solid var(--border);
+  border-left:3px solid var(--blue);border-radius:8px;
+  padding:16px;margin-bottom:10px;
+}
+.rt-block-title{
+  font-family:'DM Mono',monospace;font-size:10px;
+  letter-spacing:1.5px;color:var(--blue);
+  text-transform:uppercase;margin-bottom:12px;
+}
+.rt-section{margin-bottom:11px;padding-bottom:11px;border-bottom:1px solid var(--border);}
+.rt-section:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none;}
+.rt-section-hdr{
+  font-size:12px;font-weight:500;color:var(--text);
+  margin-bottom:7px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;
+}
+.rt-tag{
+  font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;
+  border-radius:4px;background:rgba(56,139,253,.12);color:var(--blue);flex-shrink:0;
+}
+.rt-tag.yellow{background:rgba(210,153,34,.12);color:var(--yellow);}
+.rt-tag.alert{background:rgba(248,81,73,.12);color:var(--red);}
+.rt-tag.purple{background:rgba(163,113,247,.12);color:var(--purple);}
+.rt-2col{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+@media(max-width:560px){.rt-2col{grid-template-columns:1fr;}}
+.rt-box{background:var(--surface3);border:1px solid var(--border);border-radius:6px;padding:9px 11px;margin-bottom:6px;}
+.rt-box-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.rt-box-val{font-size:12px;color:var(--text);line-height:1.5;}
+.rt-sub{font-size:11px;color:var(--text2);margin-top:3px;line-height:1.4;}
+.rt-note{font-size:11px;color:var(--text2);margin-top:5px;line-height:1.5;}
+.rt-dose{color:var(--blue);font-family:'DM Mono',monospace;font-size:13px;font-weight:500;}
+.rt-dose.esc{color:var(--yellow);}
+.rt-dose.highesc{color:var(--red);}
+.no-rt-box{
+  background:var(--surface2);border:1px solid var(--border);
+  border-left:3px solid var(--text3);border-radius:8px;
+  padding:12px 16px;font-size:13px;color:var(--text3);margin-bottom:10px;
+}
+.hdct-block{
+  background:var(--surface2);border:1px solid var(--border);
+  border-left:3px solid var(--purple);border-radius:8px;
+  padding:16px;margin-bottom:10px;
+}
+.hdct-block-title{
+  font-family:'DM Mono',monospace;font-size:10px;
+  letter-spacing:1.5px;color:var(--purple);
+  text-transform:uppercase;margin-bottom:12px;
+}
+
+/* ── RÉSULT ACTIONS ── */
+.result-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.btn-restart,.btn-pdf{
+  padding:10px 18px;border-radius:7px;font-family:'DM Mono',monospace;font-size:11px;
+  border:1px solid var(--border2);background:var(--surface2);color:var(--text2);
+  transition:all .2s;
+}
+.btn-restart:hover{border-color:var(--accent);color:var(--accent);}
+.btn-pdf:hover{border-color:var(--blue);color:var(--blue);}
+
+/* ── REFS ── */
+.refs-section{margin-top:24px;border-top:1px solid var(--border);padding-top:20px;}
+.refs-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:14px;}
+.ref-item{display:flex;gap:12px;margin-bottom:12px;}
+.ref-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);min-width:18px;flex-shrink:0;padding-top:1px;}
+.ref-body{font-size:11px;color:var(--text2);line-height:1.6;}
+.ref-authors{color:var(--text3);}
+.ref-title-text{color:var(--text);margin:2px 0;}
+.ref-journal{color:var(--text3);font-style:italic;}
+.ref-doi a{color:var(--blue);text-decoration:none;}
+.ref-doi a:hover{text-decoration:underline;}
+
+/* ── D3 FLOWCHART ── */
+.btn-reset-zoom{
+  position:absolute;top:14px;right:14px;
+  background:var(--surface);border:1px solid var(--border2);color:var(--text2);
+  padding:7px 14px;border-radius:6px;
+  font-family:'DM Mono',monospace;font-size:11px;
+  cursor:pointer;z-index:10;transition:all .2s;
+}
+.btn-reset-zoom:hover{border-color:var(--accent);color:var(--accent);}
+body.light .btn-reset-zoom{background:var(--surface);}
+.flow-legend{
+  position:absolute;bottom:14px;left:14px;
+  display:flex;flex-wrap:wrap;gap:8px;z-index:10;pointer-events:none;
+}
+.leg-it{display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:9px;color:var(--text2);}
+.leg-dot{width:9px;height:9px;border-radius:50%;}
+
+/* ── TOOLTIP D3 ── */
+.tt-body{
+  position:fixed;pointer-events:none;z-index:300;
+  background:rgba(13,17,23,.97);
+  border-radius:10px;padding:14px 16px;width:300px;
+  box-shadow:0 6px 28px rgba(0,0,0,.35);
+  border:1px solid rgba(163,113,247,.2);
+  display:none;
+}
+.tt-title{font-family:'DM Mono',monospace;font-size:9px;color:#6e7681;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:7px;}
+.tt-q{font-size:13px;font-weight:500;color:#e6edf3;margin-bottom:10px;line-height:1.4;}
+.tt-section{margin-bottom:9px;padding-bottom:9px;border-bottom:1px solid #2a3441;}
+.tt-section:last-of-type{margin-bottom:0;padding-bottom:0;border-bottom:none;}
+.tt-section-lbl{font-family:'DM Mono',monospace;font-size:9px;color:#6e7681;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
+.tt-val{font-size:11px;color:#8b949e;line-height:1.5;}
+.tt-outcome-line{margin-top:8px;font-family:'DM Mono',monospace;font-size:11px;}
+.efs-good{color:#3fb950;}
+.efs-mid{color:#d29922;}
+.efs-bad{color:#f85149;}
+.efs-neu{color:#8b949e;}
+
+/* ── PRINT ── */
+.print-footer{display:none;font-size:8pt;color:#999;margin-top:22px;border-top:1px solid #ddd;padding-top:8px;}
+@media print{
+  body,body.light{background:#fff !important;color:#000 !important;}
+  header,body.light header{position:static !important;background:#fff !important;border-bottom:1px solid #ccc !important;}
+  .tab-nav,.btn-pdf,.btn-restart,.progress-wrap,.btn-back,#panel-flow,.btn-theme{display:none !important;}
+  .panel{display:block !important;}
+  .result-card{border:1.5px solid #333 !important;background:#fff !important;break-inside:avoid;}
+  .rt-block{border-left:3px solid #1a5fa8 !important;background:#f5f5f5 !important;}
+  .rt-dose{color:#1a5fa8 !important;}
+  .rt-dose.esc{color:#a0720a !important;}
+  .rt-dose.highesc{color:#c0392b !important;}
+  .print-footer{display:block;}
+  :root,body.light{--text:#000;--text2:#444;--text3:#888;--surface:#fff;--surface2:#f5f5f5;--surface3:#eee;--border:#ddd;--border2:#eee;--blue:#1a5fa8;}
+}
+
+/* ── DISCLAIMER ── */
+.disclaimer-bar{
+  background:rgba(210,153,34,.08);border-bottom:1px solid rgba(210,153,34,.2);
+  padding:6px 20px;font-family:'DM Mono',monospace;font-size:9px;
+  color:var(--yellow);text-align:center;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-logo">AT<br>RT</div>
+  <div class="hdr-texts">
+    <div class="hdr-title">ATRT — Stratification &amp; Logigramme SIOPE ATRT01</div>
+    <div class="hdr-sub">SIOPE ATRT01 · GPOH · EudraCT 2018-003335-29 · QUARTET RTQA</div>
+  </div>
+  <span class="hdr-badge">SIOPE · 2023</span>
+  <button class="btn-theme" id="btn-theme" onclick="toggleTheme()" title="Passer en mode clair">◑</button>
+</header>
+
+<div class="disclaimer-bar">
+  ⚠ Outil d'aide à la décision — Ne se substitue pas au jugement clinique ni au protocole officiel SIOPE ATRT01
+</div>
+
+<nav class="tab-nav" id="tabNav">
+  <button class="tab-btn active" id="tab-wizard" onclick="switchTab('wizard')">⬡ Stratification pas-à-pas</button>
+  <button class="tab-btn" id="tab-flow" onclick="switchTab('flow')">⬡ Logigramme interactif</button>
+</nav>
+
+<!-- ═══════════ PANEL WIZARD ═══════════ -->
+<div class="panel active" id="panel-wizard">
+<div class="container">
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-header">
+      <span id="progLabel">Étape 1 / 4</span>
+      <span id="progName">Âge à la consolidation</span>
+    </div>
+    <div class="progress-bar-bg"><div class="progress-fill" id="progFill" style="width:25%"></div></div>
+  </div>
+  <div id="app"></div>
+  <div class="refs-section" id="refsSection" style="display:none">
+    <div class="refs-title">Références</div>
+    <div class="ref-item">
+      <span class="ref-num">1</span>
+      <div class="ref-body">
+        <div class="ref-authors">Timmermann B, et al. — SIOPE ATRT01 Protocol.</div>
+        <div class="ref-title-text">SIOPE ATRT01 — An international prospective umbrella trial for children with atypical teratoid/rhabdoid tumours (ATRT)</div>
+        <div class="ref-journal">GPOH / SIOPE, 2023. Protocol version 1.5.</div>
+        <div class="ref-doi"><a href="https://clinicaltrials.gov/study/NCT05058443" target="_blank">NCT05058443</a> · EudraCT 2018-003335-29</div>
+      </div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">2</span>
+      <div class="ref-body">
+        <div class="ref-authors">QUARTET RTQA Guidelines — SIOPE ATRT01</div>
+        <div class="ref-title-text">SIOPE ATRT01 QUARTET Radiotherapy Quality Assurance Guidelines, Version 1.3</div>
+        <div class="ref-journal">SIOPE / EORTC / QUARTET, 28/09/2023</div>
+        <div class="ref-doi"><a href="https://www.siope.eu/quartet" target="_blank">www.siope.eu/quartet</a></div>
+      </div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">3</span>
+      <div class="ref-body">
+        <div class="ref-authors">Frühwald MC, et al.</div>
+        <div class="ref-title-text">Atypical teratoid rhabdoid tumours — Current concepts, advances in biology, and potential future therapies</div>
+        <div class="ref-journal">Neuro-Oncology, 2020; 22(9): 1236–1250</div>
+        <div class="ref-doi"><a href="https://doi.org/10.1093/neuonc/noaa033" target="_blank">doi:10.1093/neuonc/noaa033</a></div>
+      </div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">4</span>
+      <div class="ref-body">
+        <div class="ref-authors">Nicolaides T, et al.</div>
+        <div class="ref-title-text">SMARCB1-deficient tumours — Outcomes and treatment strategies</div>
+        <div class="ref-journal">Lancet Oncology, 2021; historical cohort data.</div>
+        <div class="ref-doi"><a href="https://doi.org/10.1016/S1470-2045(21)00073-3" target="_blank">doi:10.1016/S1470-2045(21)00073-3</a></div>
+      </div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">5</span>
+      <div class="ref-body">
+        <div class="ref-authors">Hoeben BA, et al. — SIOPE RT Working Group</div>
+        <div class="ref-title-text">Management of vertebral radiotherapy dose in paediatric patients with cancer: consensus recommendations</div>
+        <div class="ref-journal">Lancet Oncology, 2019; 20: e155–166</div>
+        <div class="ref-doi"><a href="https://doi.org/10.1016/S1470-2045(19)30034-8" target="_blank">doi:10.1016/S1470-2045(19)30034-8</a></div>
+      </div>
+    </div>
+  </div>
+  <div class="print-footer">Outil d'aide à la décision SIOPE ATRT01 — Ne se substitue pas au protocole officiel ni au jugement clinique. Généré le <script>document.write(new Date().toLocaleDateString('fr-FR'))</script>.</div>
+</div>
+</div>
+
+<!-- ═══════════ PANEL FLOWCHART ═══════════ -->
+<div class="panel" id="panel-flow">
+  <button class="btn-reset-zoom" id="btnReset">⊙ Recentrer</button>
+  <svg id="chart"></svg>
+  <div class="flow-legend">
+    <div class="leg-it"><div class="leg-dot" style="background:#8b9cf0"></div>Décision</div>
+    <div class="leg-it"><div class="leg-dot" style="background:#2d7a3a"></div>Focal RT</div>
+    <div class="leg-it"><div class="leg-dot" style="background:#6b3fa0"></div>HDCT (bras comparateur)</div>
+    <div class="leg-it"><div class="leg-dot" style="background:#c0392b"></div>CSI + boost</div>
+    <div class="leg-it"><div class="leg-dot" style="background:#a0720a"></div>RT ≥ 36 mois M0</div>
+    <div class="leg-it"><div class="leg-dot" style="background:#555"></div>Hors protocole</div>
+  </div>
+  <div class="tt-body" id="tt"></div>
+</div>
+
+<script>
+// ═══ THÈME ═══
+var THEME_KEY = 'theme-siope-atrt01';
+function initTheme() {
+  try { if (localStorage.getItem(THEME_KEY) === 'light') applyTheme('light'); } catch(e) {}
+}
+function toggleTheme() {
+  applyTheme(document.body.classList.contains('light') ? 'dark' : 'light');
+}
+function applyTheme(mode) {
+  var btn = document.getElementById('btn-theme');
+  if (mode === 'light') {
+    document.body.classList.add('light');
+    btn.textContent = '☀';
+    btn.title = 'Passer en mode sombre';
+    try { localStorage.setItem(THEME_KEY, 'light'); } catch(e) {}
+  } else {
+    document.body.classList.remove('light');
+    btn.textContent = '◑';
+    btn.title = 'Passer en mode clair';
+    try { localStorage.setItem(THEME_KEY, 'dark'); } catch(e) {}
+  }
+}
+
+// ═══ TABS ═══
+function switchTab(tab) {
+  document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('panel-' + tab).classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (tab === 'flow' && !window._flowBuilt) {
+    buildFlow();
+    window._flowBuilt = true;
+  }
+  if (tab === 'wizard') fixLayout();
+}
+
+// ═══ LAYOUT ═══
+function fixLayout() {
+  var hh = document.querySelector('header').offsetHeight;
+  var disc = document.querySelector('.disclaimer-bar').offsetHeight;
+  var navH = document.querySelector('.tab-nav').offsetHeight;
+  document.getElementById('panel-flow').style.height = (window.innerHeight - hh - disc - navH) + 'px';
+  // fix top of tab-nav
+  document.querySelector('.tab-nav').style.top = (hh + disc) + 'px';
+}
+fixLayout();
+window.addEventListener('resize', function() { fixLayout(); });
+
+// ═══ DONNÉES WIZARD ═══
+var STEPS = {
+  age: {
+    label: 'Âge à la consolidation', num: 1, total: 4,
+    q: 'Quel est l\'âge de l\'enfant au moment de la consolidation ?',
+    sub: 'L\'âge détermine l\'éligibilité à la randomisation et les options thérapeutiques disponibles.',
+    opts: [
+      { val: 'lt12', label: '< 12 mois', desc: 'Nourrisson — RT non réalisable, traitement par HDCT seul si chimiosensible' },
+      { val: 'r12_35', label: '12–35 mois, SYNC–, M0', desc: 'Éligible à la randomisation Part A : Focal RT vs HDCT' },
+      { val: 'r12_35_meta', label: '12–35 mois, dissémination (M+)', desc: 'Hors protocole si M+, contact centre référent' },
+      { val: 'gte36', label: '≥ 36 mois', desc: 'RT systématique — Part C, pas de HDCT possible' }
+    ],
+    next: function(val) {
+      if (val === 'lt12') return '_result_lt12_hdct';
+      if (val === 'r12_35') return 'residue';
+      if (val === 'r12_35_meta') return '_result_r12_meta_off';
+      if (val === 'gte36') return 'meta_status';
+      return 'age';
+    }
+  },
+  meta_status: {
+    label: 'Statut métastatique (≥ 36 mois)', num: 2, total: 4,
+    q: 'Quel est le statut métastatique ?',
+    sub: 'Bilan d\'extension : IRM cérébrale et médullaire complète avant consolidation.',
+    opts: [
+      { val: 'm0', label: 'M0 — Pas de dissémination détectée', desc: 'RT focale sur lit tumoral uniquement' },
+      { val: 'mplus', label: 'M1–M3 — Dissémination cérébrale et/ou spinale', desc: 'Irradiation crânio-spinale (CSI) + boost local ± boost méta' }
+    ],
+    next: function(val) {
+      if (val === 'm0') return 'residue_gte36';
+      return 'residue_csi';
+    }
+  },
+  residue: {
+    label: 'Résidu tumoral (12–35 mois)', num: 2, total: 4,
+    q: 'Y a-t-il un résidu tumoral macroscopique avant simulation ?',
+    sub: 'Évaluation par IRM cérébrale (T1+Gd, T2, FLAIR) avant planification RT.',
+    opts: [
+      { val: 'no_res', label: 'Pas de résidu macroscopique', desc: 'RT 54 Gy sur lit tumoral — pas de boost' },
+      { val: 'res', label: 'Résidu macroscopique présent', desc: 'RT 54 Gy + boost optionnel 5,4 Gy si persistance à 45 Gy — décision individuelle' }
+    ],
+    next: function(val) { return 'arm'; }
+  },
+  arm: {
+    label: 'Bras de traitement (12–35 mois)', num: 3, total: 4,
+    q: 'Quel est le bras de traitement (après randomisation) ?',
+    sub: 'Randomisation Part A : Focal RT + EU-RHAB (Arm RT) vs 3 cours HDCT (Arm HDCT). SYNC–, M0 requis.',
+    opts: [
+      { val: 'arm_rt', label: 'Bras RT — Focal RT + 9 cours EU-RHAB', desc: 'Arm RT : RT focale 54 Gy (± boost 5,4 Gy) + 9 cycles EU-RHAB standard' },
+      { val: 'arm_hdct', label: 'Bras HDCT — 3 cours HDCT × 3', desc: 'Arm HDCT : 1–2(3) cours EU-RHAB + SCA puis 3 × HDCT. Pas de RT.' }
+    ],
+    next: function(val) {
+      if (val === 'arm_rt') {
+        if (wState['residue'] === 'res') return '_result_r12_rt_res';
+        return '_result_r12_rt_nores';
+      }
+      return '_result_r12_hdct';
+    }
+  },
+  residue_gte36: {
+    label: 'Résidu tumoral (≥ 36 mois, M0)', num: 3, total: 4,
+    q: 'Y a-t-il un résidu tumoral macroscopique ?',
+    sub: 'IRM cérébrale pré-RT obligatoire. Fusion CT-IRM pour planification.',
+    opts: [
+      { val: 'no_res', label: 'Pas de résidu — RT 54 Gy lit tumoral', desc: 'Pas de boost planifié' },
+      { val: 'res', label: 'Résidu présent — RT 54 Gy ± boost 5,4 Gy', desc: 'IRM à 45 Gy recommandée pour décision de boost individuelle' }
+    ],
+    next: function(val) {
+      if (val === 'no_res') return '_result_gte36_m0_nores';
+      return '_result_gte36_m0_res';
+    }
+  },
+  residue_csi: {
+    label: 'Résidu tumoral (≥ 36 mois, M+)', num: 3, total: 4,
+    q: 'Y a-t-il un résidu primaire macroscopique et/ou des métastases bulky ?',
+    sub: 'Impact sur les doses de boost. Les métastases bulky > 5 mm reçoivent un boost spécifique.',
+    opts: [
+      { val: 'no_res', label: 'Pas de résidu primaire, pas de méta bulky', desc: 'CSI 36 Gy + boost lit tumoral 18 Gy (total 54 Gy)' },
+      { val: 'res_only', label: 'Résidu primaire seul (sans méta bulky)', desc: 'CSI 36 Gy + boost lit 18 Gy + boost résidu primaire optionnel 5,4 Gy' },
+      { val: 'meta_bulky', label: 'Métastases bulky (crâniennes et/ou spinales)', desc: 'CSI + boosts lit primaire + boosts méta selon site et taille' }
+    ],
+    next: function(val) {
+      if (val === 'no_res') return '_result_gte36_csi_nores';
+      if (val === 'res_only') return '_result_gte36_csi_res';
+      return '_result_gte36_csi_meta';
+    }
+  }
+};
+
+// ═══ RÉSULTATS ═══
+var RES = {
+  lt12_hdct: {
+    cls: 'hr', badge: '< 12 MOIS', badgeCls: 'sp',
+    title: 'Nourrisson < 12 mois — HDCT selon chimiosensibilité (Part B)',
+    chemo: '<strong>Induction :</strong> 3 cours DOX / ICE / VCA. <strong>Si chimiosensible (SD ou mieux) :</strong> 1–2(3) cours EU-RHAB + SCA → HDCT × 3 (busulfan-thiotepa). <strong>Si résistance chimio :</strong> hors protocole.',
+    rt: null,
+    rtText: 'PAS DE RT — Âge &lt; 12 mois : la RT est contre-indiquée dans cette tranche d\'âge en raison de la toxicité neurocognitive inacceptable chez le nourrisson. La HDCT est l\'option de consolidation.',
+    os: '~30–40 %', efs: '~25–35 %', n: 'n limité (< 12 mois)', refs: '[1,3]',
+    note: 'Discussion multidisciplinaire obligatoire. Suivi neurodéveloppemental intensif. Si progression sous HDCT : options expérimentales (iniparib, tazémétostat — essais en cours).'
+  },
+  r12_rt_nores: {
+    cls: 'sr', badge: 'BRAS RT · M0', badgeCls: 'sr',
+    title: '12–35 mois · Bras RT · Pas de résidu — RT focale 54 Gy',
+    chemo: '<strong>Pré-RT :</strong> 1–2(3) cours EU-RHAB + SCA. <strong>Post-RT :</strong> 9 cours EU-RHAB (vincristine, actinomycine-D, carboplatine, étoposide, cyclophosphamide). Pas de chimio concomitante pendant la RT.',
+    rt: {
+      timing: 'Après 1–2(3) cours EU-RHAB + SCA. Attente récupération hématologique : ANC > 500/µL, Hb > 8 g/dL, plaquettes > 50 000/µL.',
+      volumes: '<strong>GTVtb</strong> : lit opératoire post-chimio sur IRM (T1+Gd, T2, FLAIR). <strong>GTVtb+res</strong> : GTVtb (pas de résidu). <strong>CTVtb</strong> : GTVtb+res + 10 mm isotrope (3 mm max dans tronc cérébral, respecter calvarium/tentorium). <strong>PTVtb_5400</strong> : CTVtb + 3–5 mm selon technique.',
+      doses: '<span class="rt-dose">54,0 Gy / 30 fr / 1,8 Gy/fr · 5 fr/sem</span><div class="rt-sub">Photons 4–6 MV ou protons (PBS/PBS recommandés si disponibles). IMRT/VMAT acceptable. Pas de cobalt.</div><div class="rt-sub">IRM de réévaluation à 45 Gy : si pas de résidu persistant → pas de boost.</div>'
+    },
+    os: '~50–60 %', efs: '~40–50 %', n: 'cohorte Part A ATRT01 (en cours)', refs: '[1,2,3]',
+    note: 'RTQA QUARTET obligatoire avant début RT (≥ 5 jours ouvrés avant). Protons fortement encouragés si disponibles. Immobilisation/anesthésie systématique chez le jeune enfant. Vérification portale J1–J3 puis 2×/sem.'
+  },
+  r12_rt_res: {
+    cls: 'sr', badge: 'BRAS RT · M0 · RÉSIDU', badgeCls: 'sr',
+    title: '12–35 mois · Bras RT · Résidu macroscopique — RT 54 Gy ± boost 5,4 Gy',
+    chemo: '<strong>Pré-RT :</strong> 1–2(3) cours EU-RHAB + SCA. <strong>Post-RT :</strong> 9 cours EU-RHAB. Pas de chimio concomitante pendant la RT.',
+    rt: {
+      timing: 'Après 1–2(3) cours EU-RHAB + SCA. Récupération hématologique requise avant RT.',
+      volumes: '<strong>GTVtb</strong> : lit tumoral préop/post-chimio. <strong>GTVres_a (GTV2)</strong> : résidu macroscopique sur IRM simulation (T1+Gd, T2). <strong>GTVtb+res_a</strong> : union. <strong>CTVtb</strong> : GTVtb+res_a + 10 mm (3 mm tronc). <strong>PTVtb_5400</strong> : CTVtb + 3–5 mm.<br><br>Si résidu persistant à IRM 45 Gy : <strong>GTVres_b</strong> → CTVres_b = GTVres_b (pas de marge CTV) → <strong>PTVres_b_0540</strong> : CTVres_b + 3–5 mm.',
+      doses: '<span class="rt-dose">Phase 1 : 54,0 Gy / 30 fr / 1,8 Gy/fr</span><div class="rt-sub">IRM de réévaluation à 45 Gy. Si résidu &gt; 5 mm persistent dans tous les plans :</div><span class="rt-dose esc">Boost optionnel : +5,4 Gy / 3 fr / 1,8 Gy/fr → total 59,4 Gy</span><div class="rt-sub">Décision de boost : analyse risque individuel (site, âge, statut neuro, nb chirurgies). Discussion board national et radio-oncologue référent ATRT01.</div>'
+    },
+    os: '~50–60 %', efs: '~40–50 %', n: 'cohorte Part A ATRT01', refs: '[1,2,3]',
+    note: 'Décision de boost strictement individuelle après IRM 45 Gy. Le PTVres_b_0540 peut être réduit aux OAR si nécessaire (fournir PTVres_b_0540 standard + PTVres_Eval-OAR). RTQA QUARTET obligatoire.'
+  },
+  r12_hdct: {
+    cls: 'hdct', badge: 'BRAS HDCT · M0', badgeCls: 'hdct',
+    title: '12–35 mois · Bras HDCT — 3 cours haute dose (bras comparateur)',
+    chemo: '<strong>Induction :</strong> 3 cours DOX / ICE / VCA. <strong>Consolidation si chimiosensible :</strong> 1–2(3) cours EU-RHAB + SCA puis <strong>3 × HDCT</strong> (busulfan-thiotepa ou melphalan-thiotepa selon protocole centre). Rescue autogreffe CSH après chaque HDCT.',
+    rt: null,
+    rtText: 'PAS DE RT dans le bras HDCT — C\'est le bras comparateur de la randomisation Part A. La question scientifique est la non-infériorité de la HDCT par rapport à la RT focale pour les enfants de 12–35 mois. En cas de rechute locale, la RT sera discutée.',
+    os: 'En cours (non mature)', efs: 'En cours (non mature)', n: 'randomisation Part A ATRT01', refs: '[1,3]',
+    note: 'Essai randomisé NCT05058443 — Données de survie non matures. Suivi neuropsychologique intensif. En cas d\'échec HDCT : discussion centre référent — pas de RT de rattrapage standardisée dans le protocole.'
+  },
+  r12_meta_off: {
+    cls: 'hr', badge: 'HORS PROTOCOLE', badgeCls: 'sp',
+    title: '12–35 mois · M+ — Hors protocole ATRT01 (Part A)',
+    chemo: 'La Part A est réservée aux patients SYNC–, M0. Pour les patients 12–35 mois avec dissémination : contacter le centre coordinateur et la commission thérapeutique nationale. Des solutions thérapeutiques individualisées sont discutées au cas par cas.',
+    rt: null,
+    rtText: 'RT non standardisée dans cette configuration — Discussion pluridisciplinaire nationale requise. La CSI peut être envisagée dans certains cas (< 36 mois) mais le bénéfice est mal documenté à cet âge.',
+    os: 'Pronostic très réservé (M+, < 36 mois)', efs: 'Données limitées', n: 'cas isolés', refs: '[1,3]',
+    note: 'Contact obligatoire avec le SIOPE ATRT01 Trial Office (k.waack@forschung-paediatrie.de) avant toute décision thérapeutique dans cette configuration.'
+  },
+  gte36_m0_nores: {
+    cls: 'sr', badge: '≥ 36 MOIS · M0', badgeCls: 'sr',
+    title: '≥ 36 mois · M0 · Pas de résidu — RT focale 54 Gy (Part C)',
+    chemo: '<strong>Post-RT :</strong> 9 cours EU-RHAB (vincristine, actinomycine-D, carboplatine, étoposide, cyclophosphamide). Pas de chimio concomitante pendant la RT crânio-spinale.',
+    rt: {
+      timing: 'Part C : RT après récupération hématologique post-induction. Si retard hématologique possible : RT lit tumoral avant CSI envisageable. Coordination avec EU-RHAB post-RT.',
+      volumes: '<strong>GTVtb</strong> : lit tumoral post-op/post-chimio sur IRM. <strong>CTVtb</strong> : GTVtb + 10 mm (3 mm tronc cérébral). <strong>PTVtb_5400</strong> : CTVtb + 3–5 mm selon technique et IGRT.',
+      doses: '<span class="rt-dose">54,0 Gy / 30 fr / 1,8 Gy/fr · 5 fr/sem</span><div class="rt-sub">Photons 4–6 MV ou protons. IRM à 45 Gy recommandée. Pas de boost si pas de résidu persistant.</div>'
+    },
+    os: '~55–65 %', efs: '~45–55 %', n: 'cohorte Part C ATRT01', refs: '[1,2,3]',
+    note: 'Protons fortement encouragés ≥ 36 mois. RTQA QUARTET obligatoire. Fusion CT-IRM préop et préRT obligatoire pour délinéation. OAR prioritaires : tronc cérébral (Dmax D1% ≤ 59 Gy, surface ≤ 63 Gy), moelle épinière (D1% ≤ 54 Gy), nerfs optiques et chiasma (≤ 54 Gy).'
+  },
+  gte36_m0_res: {
+    cls: 'sr', badge: '≥ 36 MOIS · M0 · RÉSIDU', badgeCls: 'sr',
+    title: '≥ 36 mois · M0 · Résidu présent — RT 54 Gy ± boost 5,4 Gy',
+    chemo: '<strong>Post-RT :</strong> 9 cours EU-RHAB. Pas de chimio concomitante pendant RT.',
+    rt: {
+      timing: 'Part C, après récupération hématologique. IRM de réévaluation à 45 Gy obligatoire avant décision de boost.',
+      volumes: '<strong>Phase 1 :</strong> GTVtb+res_a → CTVtb (+10 mm, 3 mm tronc) → PTVtb_5400 (CTVtb +3–5 mm).<br><strong>Phase 2 (si boost) :</strong> GTVres_b (résidu sur IRM 45 Gy) → CTVres_b = GTVres_b → PTVres_b_0540 (CTVres_b +3–5 mm). OAR : crop PTV si nécessaire → PTVres_Eval-OAR.',
+      doses: '<span class="rt-dose">Phase 1 : 54,0 Gy / 30 fr / 1,8 Gy/fr</span><br><span class="rt-dose esc">Boost optionnel : +5,4 Gy / 3 fr / 1,8 Gy/fr → total 59,4 Gy</span><div class="rt-sub">Boost si résidu persistant &gt; 5 mm dans tous les plans à IRM 45 Gy. Décision individuelle pluridisciplinaire.</div>'
+    },
+    os: '~55–65 %', efs: '~45–55 %', n: 'cohorte Part C ATRT01', refs: '[1,2,3]',
+    note: 'Décision boost après IRM 45 Gy. Discussion board national + radio-oncologue référent ATRT01 recommandée. RTQA QUARTET obligatoire. Protons encouragés.'
+  },
+  gte36_csi_nores: {
+    cls: 'hr', badge: '≥ 36 MOIS · M1–3', badgeCls: 'hr',
+    title: '≥ 36 mois · M1–3 · Pas de résidu ni méta bulky — CSI + boost lit tumoral',
+    chemo: '<strong>Post-RT :</strong> 9 cours EU-RHAB. Pas de chimio concomitante pendant CSI.',
+    rt: {
+      timing: 'CSI après récupération hématologique. Si hématologie incomplète : commencer par boost local avant CSI. IRM cérébrale + IRM médullaire entière requise dans les 2 semaines avant simulation.',
+      volumes: '<strong>CTV_Brain</strong> : espace sous-arachnoïdien cérébral entier (plaque criblée, lobes temporaux inférieurs, fosse hypophysaire, méninges craniotomie). <strong>CTV_Spine</strong> : canal rachidien + extensions foraminales jusqu\'au sac thecal (limite caudal S1). <strong>PTV_Brain_3600</strong> : CTV_Brain + 3–5 mm. <strong>PTV_Spine_3600</strong> : CTV_Spine + 3–5 mm (ou 5–10 mm si pas d\'IGRT quotidien) + 10 mm en caudal.<br><br><strong>Boost :</strong> GTVtb → CTVtb (+10 mm, 3 mm tronc) → <strong>PTVtb_1800</strong> (CTVtb +3–5 mm).',
+      doses: '<span class="rt-dose">CSI : 36,0 Gy / 20 fr / 1,8 Gy/fr · 5 fr/sem</span><br><span class="rt-dose esc">Boost lit tumoral : +18,0 Gy / 10 fr / 1,8 Gy/fr → total 54,0 Gy</span><div class="rt-sub">Photons 4–6 MV (4–6 MV crâne, identique rachis ou électrons énergie adaptée). Pas de cobalt. Protons (PBS) encouragés si disponibles.</div><div class="rt-sub">Vertèbres en croissance : couverture homogène bilatérale ≥ 20 Gy (éviter asymétrie gradient A/P et D/G — cf. recommandations SIOPE RWG <sup>[5]</sup>).</div>'
+    },
+    os: '~30–45 %', efs: '~25–35 %', n: 'cohorte historique M+ ATRT', refs: '[1,2,3,4]',
+    note: 'Pronostic M+ très réservé. Concertation nationale avant RT. OAR absolus : moelle épinière (D1% ≤ 54 Gy), tronc (D1% ≤ 59–63 Gy), nerfs optiques/chiasma (≤ 54–56 Gy). Cochlées : Dmean ≤ 30 Gy (≤ 25 Gy si chimiothérapie ototoxique).'
+  },
+  gte36_csi_res: {
+    cls: 'hr', badge: '≥ 36 MOIS · M1–3 · RÉSIDU', badgeCls: 'hr',
+    title: '≥ 36 mois · M1–3 · Résidu primaire — CSI + boost lit + boost résidu',
+    chemo: '<strong>Post-RT :</strong> 9 cours EU-RHAB. Pas de chimio concomitante pendant CSI.',
+    rt: {
+      timing: 'CSI après récupération hématologique. IRM cérébrale + médullaire ≤ 2 sem avant simulation. IRM réévaluation à 45 Gy si résidu primaire.',
+      volumes: '<strong>CTV_Brain</strong> + <strong>CTV_Spine</strong> → PTVs CSI (voir configuration sans résidu).<br><br><strong>Boost lit :</strong> GTVtb → CTVtb (+10 mm, 3 mm tronc) → PTVtb_1800.<br><br><strong>Boost résidu primaire (optionnel) :</strong> GTVres_b (IRM 45 Gy) → CTVres_b = GTVres_b → PTVres_b_0540 (+3–5 mm).',
+      doses: '<span class="rt-dose">CSI : 36,0 Gy / 20 fr / 1,8 Gy/fr</span><br><span class="rt-dose esc">Boost lit tumoral : +18,0 Gy / 10 fr → total 54,0 Gy</span><br><span class="rt-dose highesc">Boost résidu primaire optionnel : +5,4 Gy / 3 fr → total 59,4 Gy</span><div class="rt-sub">Décision boost résidu : analyse risque individuel après IRM 45 Gy. Discussion nationale recommandée.</div>'
+    },
+    os: '~25–40 %', efs: '~20–30 %', n: 'cohorte historique M+ ATRT', refs: '[1,2,3,4]',
+    note: 'Boost résidu optionnel — décision strictement individuelle. Les plans seront scorés "justified deviation" si PTV cropé aux OAR. RTQA QUARTET obligatoire pour toute irradiation crânio-spinale.'
+  },
+  gte36_csi_meta: {
+    cls: 'hr', badge: '≥ 36 MOIS · M1–3 · MÉTA BULKY', badgeCls: 'hr',
+    title: '≥ 36 mois · M1–3 · Métastases bulky — CSI + boosts multisites',
+    chemo: '<strong>Post-RT :</strong> 9 cours EU-RHAB. Pas de chimio concomitante pendant CSI.',
+    rt: {
+      timing: 'CSI complète. Boosts sur lit primaire + méta bulky. IRM médullaire pré-RT pour cartographie méta. IRM cérébrale pour méta intracrâniennes.',
+      volumes: '<strong>CSI :</strong> CTV_Brain + CTV_Spine → PTVs (cf. standard).<br><strong>Boosts méta spinales :</strong> GTVm_s (lésions &gt; 5 mm sur IRM) → CTVm_s (GTVm_s +10 mm crânio-caudal, canal + foramens) → PTVm_s_1440 ou PTVm_s_0900 (+3–5 mm).<br><strong>Boosts méta cérébrales :</strong> GTVm_b (lésions &gt; 5 mm IRM cérébrale) → CTVm_b (+5 mm, barrières anatomiques) → PTVm_Brain_1440 (+3–5 mm).<br><strong>Boost lit primaire :</strong> GTVtb → CTVtb (+10 mm) → PTVtb_1800.',
+      doses: '<span class="rt-dose">CSI : 36,0 Gy / 20 fr / 1,8 Gy/fr</span><br><span class="rt-dose esc">Boost lit primaire : +18,0 Gy → total 54,0 Gy</span><br><span class="rt-dose esc">Boost méta spinales ≥ 5 cm : +9,0 Gy / 5 fr → total 45,0 Gy</span><br><span class="rt-dose esc">Boost méta spinales &lt; 5 cm : +14,4 Gy / 8 fr → total 50,4 Gy</span><br><span class="rt-dose highesc">Boost méta cérébrales : +14,4 Gy / 8 fr → total 50,4 Gy</span><div class="rt-sub">Boost résidu primaire optionnel : +5,4 Gy → total 59,4 Gy (décision individuelle).</div>'
+    },
+    os: '~20–35 %', efs: '~15–25 %', n: 'très limité — M3 ATRT', refs: '[1,2,3,4]',
+    note: 'Configuration la plus complexe. Concertation multidisciplinaire nationale impérative avant toute décision. Volumes boosts à définir précisément avec les images IRM pré-RT. Soumettre plans RTQA ≥ 5 jours ouvrés avant début RT. Robustesse proton requise si PBS.'
+  }
+};
+
+// ═══ ÉTAT NAVIGATION ═══
+var wState = {};
+var navStack = [];
+var currentStep = 'age';
+
+// ═══ RENDU WIZARD ═══
+function renderStep(sid) {
+  document.getElementById('refsSection').style.display = 'none';
+  var s = STEPS[sid];
+  var pct = Math.round((s.num / s.total) * 100);
+  document.getElementById('progLabel').textContent = 'Étape ' + s.num + ' / ' + s.total;
+  document.getElementById('progName').textContent = s.label;
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progressWrap').style.display = 'block';
+  var back = navStack.length > 0 ? '<button class="btn-back" onclick="goBack()">← Retour</button>' : '';
+  var opts = s.opts.map(function(o) {
+    var desc = o.desc ? '<div class="opt-desc">' + o.desc + '</div>' : '';
+    return '<button class="opt-btn" onclick="navigate(\'' + sid + '\',\'' + o.val + '\')">'
+      + '<strong>' + o.label + '</strong>' + desc + '</button>';
+  }).join('');
+  document.getElementById('app').innerHTML = back
+    + '<div class="step-card">'
+    + '<div class="q-title">' + s.q + '</div>'
+    + '<div class="q-sub">' + s.sub + '</div>'
+    + '<div class="opts-grid">' + opts + '</div>'
+    + '</div>';
+}
+
+function navigate(sid, val) {
+  navStack.push({ step: currentStep, state: JSON.parse(JSON.stringify(wState)) });
+  wState[sid] = val;
+  var nxt = STEPS[sid].next(val);
+  if (nxt.startsWith('_result_')) {
+    renderResult(nxt.slice(8));
+  } else {
+    currentStep = nxt;
+    renderStep(nxt);
+  }
+}
+
+function goBack() {
+  if (!navStack.length) return;
+  var prev = navStack.pop();
+  wState = prev.state;
+  currentStep = prev.step;
+  renderStep(prev.step);
+}
+
+function restart() {
+  wState = {}; navStack = []; currentStep = 'age';
+  document.getElementById('refsSection').style.display = 'none';
+  renderStep('age');
+}
+
+function renderResult(key) {
+  var r = RES[key];
+  document.getElementById('progressWrap').style.display = 'none';
+  document.getElementById('refsSection').style.display = 'block';
+  var osNum = parseFloat(r.os);
+  var osCls = isNaN(osNum) ? 'ov-neu' : (osNum >= 55 ? 'ov-good' : (osNum >= 35 ? 'ov-mid' : 'ov-bad'));
+  var efsNum = parseFloat(r.efs);
+  var efsCls = isNaN(efsNum) ? 'ov-neu' : (efsNum >= 45 ? 'ov-good' : (efsNum >= 25 ? 'ov-mid' : 'ov-bad'));
+  var rtHtml = '';
+  if (r.rt) {
+    rtHtml = '<div class="rt-block">'
+      + '<div class="rt-block-title">Radiothérapie — Timing · Volumes · Doses</div>'
+      + '<div class="rt-section"><div class="rt-section-hdr">Timing <span class="rt-tag">' + r.rt.timing + '</span></div></div>'
+      + '<div class="rt-section"><div class="rt-section-hdr">Volumes cibles</div><div class="rt-note">' + r.rt.volumes + '</div></div>'
+      + '<div class="rt-section"><div class="rt-section-hdr">Doses prescrites</div><div class="rt-note">' + r.rt.doses + '</div></div>'
+      + '</div>';
+  } else {
+    rtHtml = '<div class="no-rt-box">' + (r.rtText || 'Pas de RT indiquée') + '</div>';
+  }
+  var noteHtml = r.note ? '<div class="r-row"><div class="r-label">⚠ Note clinique</div><div class="r-val">' + r.note + '</div></div>' : '';
+  document.getElementById('app').innerHTML =
+    '<button class="btn-back" onclick="goBack()">← Retour</button>'
+    + '<div class="result-card ' + r.cls + '">'
+    + '<div class="result-header">'
+    + '<div class="result-title">' + r.title + '</div>'
+    + '<span class="risk-badge ' + r.badgeCls + '">' + r.badge + '</span>'
+    + '</div>'
+    + '<div class="r-body">'
+    + '<div class="outcomes-block">'
+    + '<div class="r-label">Données d\'efficacité <sup>[1,3]</sup></div>'
+    + '<div class="outcome-row"><span class="outcome-label">OS 3–5 ans</span><span class="outcome-val ' + osCls + '">' + r.os + '</span></div>'
+    + '<div class="outcome-row"><span class="outcome-label">EFS 3–5 ans</span><span class="outcome-val ' + efsCls + '">' + r.efs + '</span></div>'
+    + '<div class="outcome-row"><span class="outcome-label">Cohorte</span><span class="outcome-val">' + r.n + '</span></div>'
+    + '</div>'
+    + '<div class="r-row"><div class="r-label">Chimiothérapie</div><div class="r-val">' + r.chemo + '</div></div>'
+    + rtHtml
+    + noteHtml
+    + '<div class="result-actions">'
+    + '<button class="btn-restart" onclick="restart()">⟳ Nouvelle stratification</button>'
+    + '<button class="btn-pdf" onclick="printResult()">⬇ Exporter PDF</button>'
+    + '</div>'
+    + '</div></div>';
+}
+
+function printResult() {
+  document.getElementById('progressWrap').style.display = 'none';
+  document.querySelectorAll('.btn-back').forEach(function(b) { b.style.display = 'none'; });
+  window.print();
+  document.getElementById('progressWrap').style.display = 'block';
+  document.querySelectorAll('.btn-back').forEach(function(b) { b.style.display = ''; });
+}
+
+// ═══ LOGIGRAMME D3 ═══
+var TT_DATA = {
+  n_root: { title:'SIOPE ATRT01', q:'Bilan initial complet : IRM cérébrale + médullaire, biopsie SMARCB1, staging', chemo:'3 cours induction : DOX / ICE / VCA', rt:'Selon bras et âge', timing:'Post-induction', volumes:'Selon sous-groupe', efs:'Bilan staging avant consolidation', ec:'efs-neu' },
+  n_lt12: { title:'< 12 MOIS — PART B', q:'Nourrisson — RT contre-indiquée', chemo:'EU-RHAB + SCA → HDCT ×3 si chimiosensible', rt:'Aucune RT', timing:'—', volumes:'—', efs:'OS ~30–40 % · EFS ~25–35 %', ec:'efs-bad' },
+  n_r12: { title:'12–35 MOIS — PART A', q:'SYNC–, M0 : éligible randomisation', chemo:'1–2(3) EU-RHAB + SCA pré-RT ou pré-HDCT', rt:'Bras RT : 54 Gy focal ± boost', timing:'Après EU-RHAB + SCA', volumes:'CTVtb = GTVtb+res +10 mm', efs:'OS ~50–60 % · EFS ~40–50 %', ec:'efs-mid' },
+  n_r12m: { title:'12–35 MOIS — M+ · HORS PROTOCOLE', q:'Dissémination < 36 mois : hors Part A', chemo:'Discussion centre référent', rt:'Non standardisée', timing:'—', volumes:'—', efs:'Pronostic très réservé', ec:'efs-bad' },
+  n_gte36: { title:'≥ 36 MOIS — PART C', q:'RT systématique — Pas de HDCT dans ce bras', chemo:'9 cours EU-RHAB post-RT', rt:'Focale (M0) ou CSI (M+)', timing:'Après récupération hématologique', volumes:'Selon statut M', efs:'OS ~45–65 % selon M', ec:'efs-mid' },
+  n_arm_rt: { title:'BRAS RT — 54 GY FOCAL', q:'Focal RT + 9 cours EU-RHAB (ARM RT Part A)', chemo:'1–2(3) EU-RHAB + SCA → RT → 9 EU-RHAB', rt:'54 Gy /30 fr — ±boost 5,4 Gy si résidu', timing:'Post EU-RHAB/SCA', volumes:'CTVtb = GTVtb+res +10 mm (3 mm tronc)', efs:'OS ~50–60 % · EFS ~40–50 %', ec:'efs-mid' },
+  n_arm_hdct: { title:'BRAS HDCT — 3 × HDCT', q:'3 cours HDCT (busulfan-thiotepa) — PAS de RT (ARM HDCT Part A)', chemo:'1–2(3) EU-RHAB + SCA → 3 × HDCT + autogreffe', rt:'Aucune RT dans ce bras', timing:'—', volumes:'—', efs:'OS non mature · EFS non mature (essai en cours)', ec:'efs-neu' },
+  n_m0_rt: { title:'≥ 36 MOIS · M0 — RT FOCALE 54 GY', q:'Part C M0 : RT focale sur lit tumoral uniquement', chemo:'9 cours EU-RHAB post-RT', rt:'54 Gy /30 fr /1,8 Gy/fr ± boost 5,4 Gy', timing:'Post récupération hématologique', volumes:'CTVtb = GTVtb+res +10 mm (3 mm tronc)', efs:'OS ~55–65 % · EFS ~45–55 %', ec:'efs-mid' },
+  n_csi: { title:'≥ 36 MOIS · M1–3 — CSI + BOOSTS', q:'Part C M+ : Irradiation crânio-spinale + boosts multisites', chemo:'9 cours EU-RHAB post-RT', rt:'CSI 36 Gy + boost lit 18 Gy ± boosts méta', timing:'Post récupération hématologique', volumes:'CTV_Brain + CTV_Spine → boosts selon méta', efs:'OS ~20–45 % · EFS ~15–35 %', ec:'efs-bad' }
+};
+
+function buildFlow() {
+  var container = document.getElementById('panel-flow');
+  var W = container.clientWidth || window.innerWidth;
+  var H = container.clientHeight || 600;
+
+  var nodes = [
+    { id:'n_root',     x:0,    y:0,   type:'d',    label:'SIOPE ATRT01\nBilan initial' },
+    { id:'n_lt12',     x:-500, y:200, type:'off',  label:'< 12 MOIS\nPart B — HDCT' },
+    { id:'n_r12',      x:0,    y:200, type:'d',    label:'12–35 MOIS\nPart A' },
+    { id:'n_r12m',     x:220,  y:200, type:'off',  label:'12–35 MOIS\nM+ · Hors protocole' },
+    { id:'n_gte36',    x:450,  y:200, type:'d',    label:'≥ 36 MOIS\nPart C' },
+    { id:'n_arm_rt',   x:-100, y:400, type:'rt',   label:'BRAS RT\n54 Gy ± boost' },
+    { id:'n_arm_hdct', x:100,  y:400, type:'hdct', label:'BRAS HDCT\n3 × HDCT' },
+    { id:'n_m0_rt',    x:350,  y:400, type:'rt2',  label:'M0 · RT FOCALE\n54 Gy focal' },
+    { id:'n_csi',      x:550,  y:400, type:'csi',  label:'M1–3 · CSI\n36 + 18 ± boosts' }
+  ];
+
+  var edges = [
+    { s:'n_root', t:'n_lt12',     label:'< 12 mois' },
+    { s:'n_root', t:'n_r12',      label:'12–35 mois\nSYNC–, M0' },
+    { s:'n_root', t:'n_r12m',     label:'12–35 mois\nM+' },
+    { s:'n_root', t:'n_gte36',    label:'≥ 36 mois' },
+    { s:'n_r12',  t:'n_arm_rt',   label:'Bras RT\n(randomisation)' },
+    { s:'n_r12',  t:'n_arm_hdct', label:'Bras HDCT\n(randomisation)' },
+    { s:'n_gte36',t:'n_m0_rt',    label:'M0' },
+    { s:'n_gte36',t:'n_csi',      label:'M1–3' }
+  ];
+
+  var STYLE = {
+    d:    { fill:'#dce8f5', stroke:'#1a5fa8', tc:'#0a1020', r:58, ry:28 },
+    rt:   { fill:'#d5edd8', stroke:'#2d7a3a', tc:'#0a1a0a', r:68, ry:30 },
+    rt2:  { fill:'#d9e8f0', stroke:'#1a7a8a', tc:'#02151a', r:68, ry:30 },
+    hdct: { fill:'#ece0f5', stroke:'#6b3fa0', tc:'#100020', r:68, ry:30 },
+    csi:  { fill:'#f5d8d5', stroke:'#c0392b', tc:'#200505', r:68, ry:30 },
+    off:  { fill:'#e8e8e8', stroke:'#888',    tc:'#333',    r:64, ry:28 }
+  };
+
+  var svg = d3.select('#chart');
+  svg.selectAll('*').remove();
+  svg.attr('width', W).attr('height', H);
+
+  svg.append('defs').append('marker')
+    .attr('id','arr').attr('viewBox','0 -5 10 10')
+    .attr('refX',9).attr('refY',0)
+    .attr('markerWidth',7).attr('markerHeight',7)
+    .attr('orient','auto')
+    .append('path').attr('d','M0,-5L10,0L0,5').attr('fill','#2a3441');
+
+  var g = svg.append('g');
+
+  // Edges
+  var nodeMap = {};
+  nodes.forEach(function(n) { nodeMap[n.id] = n; });
+
+  edges.forEach(function(e) {
+    var src = nodeMap[e.s], tgt = nodeMap[e.t];
+    var sx = src.x, sy = src.y + (STYLE[src.type] || STYLE.d).ry;
+    var tx = tgt.x, ty = tgt.y - (STYLE[tgt.type] || STYLE.d).ry;
+    var mx = (sx + tx) / 2, my = (sy + ty) / 2;
+    g.append('path')
+      .attr('d','M'+sx+','+sy+' C'+mx+','+sy+' '+mx+','+ty+' '+tx+','+ty)
+      .attr('fill','none').attr('stroke','#2a3441').attr('stroke-width',1.5)
+      .attr('marker-end','url(#arr)');
+    if (e.label) {
+      var lines = e.label.split('\n');
+      var lt = g.append('text').attr('x',mx).attr('y',my)
+        .attr('text-anchor','middle').attr('font-size','8').attr('font-family','DM Mono, monospace')
+        .attr('fill','#6e7681');
+      lines.forEach(function(ln,i) {
+        lt.append('tspan').attr('x',mx).attr('dy', i===0 ? -3 : 11).text(ln);
+      });
+    }
+  });
+
+  // Nodes
+  var ttEl = document.getElementById('tt');
+  nodes.forEach(function(n) {
+    var st = STYLE[n.type] || STYLE.d;
+    var ng = g.append('g').attr('transform','translate('+n.x+','+n.y+')')
+      .style('cursor', TT_DATA[n.id] ? 'pointer' : 'default');
+    ng.append('ellipse').attr('rx',st.r).attr('ry',st.ry)
+      .attr('fill',st.fill).attr('stroke',st.stroke).attr('stroke-width',1.8);
+    var lines = n.label.split('\n');
+    lines.forEach(function(ln,i) {
+      ng.append('text')
+        .attr('text-anchor','middle')
+        .attr('y', (i - (lines.length-1)/2) * 13)
+        .attr('font-size', i===0 ? '9.5' : '8')
+        .attr('font-family', i===0 ? 'DM Mono, monospace' : 'DM Sans, sans-serif')
+        .attr('font-weight', i===0 ? '500' : '400')
+        .attr('fill',st.tc)
+        .text(ln);
+    });
+    if (TT_DATA[n.id]) {
+      ng.on('mousemove', function(event) { showTT(event, TT_DATA[n.id]); })
+        .on('mouseleave', function() { ttEl.style.display='none'; });
+    }
+  });
+
+  // Auto-fit
+  var xs = nodes.map(function(n){return n.x;});
+  var ys = nodes.map(function(n){return n.y;});
+  var minX=Math.min.apply(null,xs)-90, maxX=Math.max.apply(null,xs)+90;
+  var minY=Math.min.apply(null,ys)-50, maxY=Math.max.apply(null,ys)+70;
+  var sc = Math.min(W/(maxX-minX), H/(maxY-minY), 1)*0.88;
+  var tx = W/2 - (minX+maxX)/2*sc;
+  var ty = H/2 - (minY+maxY)/2*sc;
+  var initT = d3.zoomIdentity.translate(tx,ty).scale(sc);
+  var zoom = d3.zoom().scaleExtent([0.1,3])
+    .on('zoom', function(event){ g.attr('transform', event.transform); });
+  svg.call(zoom);
+  svg.call(zoom.transform, initT);
+  document.getElementById('btnReset').onclick = function() {
+    svg.transition().duration(600).call(zoom.transform, initT);
+  };
+
+  function showTT(event, d) {
+    var html = '<div class="tt-title">'+d.title+'</div>'
+      +'<div class="tt-q">'+d.q+'</div>'
+      +'<div class="tt-section"><div class="tt-section-lbl">Chimiothérapie</div><div class="tt-val">'+d.chemo+'</div></div>'
+      +'<div class="tt-section"><div class="tt-section-lbl">Radiothérapie</div><div class="tt-val">'+d.rt+'</div></div>'
+      +'<div class="tt-section"><div class="tt-section-lbl">Volumes (résumé)</div><div class="tt-val">'+d.volumes+'</div></div>'
+      +'<div class="tt-outcome-line"><span class="'+d.ec+'">'+d.efs+'</span></div>';
+    ttEl.innerHTML = html;
+    ttEl.style.display = 'block';
+    var ex = event.clientX, ey = event.clientY;
+    var tx2 = ex + 16, ty2 = ey - 10;
+    if (tx2 + 310 > window.innerWidth) tx2 = ex - 320;
+    if (ty2 + 260 > window.innerHeight) ty2 = ey - 270;
+    ttEl.style.left = tx2+'px';
+    ttEl.style.top = ty2+'px';
+  }
+}
+
+// ═══ INIT ═══
+initTheme();
+renderStep('age');
+fixLayout();
+</script>
+</body>
+</html>
