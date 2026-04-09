@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>ACNS2321 · CNS Germinoma — Clinical Review Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+button { cursor: pointer; font-family: 'DM Sans', sans-serif; }
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── THÈME (root = sombre par défaut) ── */
+:root {
+  --bg:       #0d1117;
+  --surface:  #161b22;
+  --surface2: #1c2330;
+  --surface3: #21262d;
+  --border:   #2a3441;
+  --border2:  #30363d;
+  --text:     #e6edf3;
+  --text2:    #8b949e;
+  --text3:    #6e7681;
+  --green:    #3fb950;
+  --blue:     #388bfd;
+  --red:      #f85149;
+  --yellow:   #d29922;
+  --purple:   #a371f7;
+  --orange:   #f0883e;
+  --cyan:     #39c5cf;
+  --accent:   #f0883e;
+  --accent-rgb: 240,136,62;
+  --radius:   10px;
+}
+
+body.light {
+  --bg:       #f5f0e8;
+  --surface:  #ffffff;
+  --surface2: #ede8dc;
+  --surface3: #e6e0d2;
+  --border:   #c8bfaa;
+  --border2:  #d4ccba;
+  --text:     #1a1208;
+  --text2:    #5a4f3a;
+  --text3:    #9a8f7a;
+  --green:    #2d7a3a;
+  --blue:     #1a5fa8;
+  --red:      #c0392b;
+  --yellow:   #a0720a;
+  --purple:   #6b3fa0;
+  --orange:   #c45a10;
+  --cyan:     #1a7a8a;
+  --accent:   #c45a10;
+}
+
+/* ── BASE ── */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(13,17,23,0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 12px; flex-wrap: nowrap;
+}
+body.light header {
+  background: rgba(245,240,232,0.97);
+  backdrop-filter: blur(10px);
+}
+.hdr-logo {
+  width: 32px; height: 32px;
+  border: 1.5px solid var(--accent); border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  color: var(--accent); font-weight: 500; flex-shrink: 0; letter-spacing: 0;
+}
+.hdr-texts { flex: 1; min-width: 0; }
+.hdr-title {
+  font-family: 'DM Serif Display', serif; font-size: 15px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.hdr-sub { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3); margin-top: 2px; }
+.hdr-badge {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  padding: 3px 10px; border-radius: 20px;
+  background: rgba(240,136,62,.1); border: 1px solid rgba(240,136,62,.3);
+  color: var(--accent); margin-left: auto; flex-shrink: 0; white-space: nowrap;
+}
+.hdr-disclaimer {
+  font-family: 'DM Mono', monospace; font-size: 8px; color: var(--text3);
+  flex-shrink: 0; max-width: 160px; text-align: right; line-height: 1.3;
+  display: none;
+}
+@media (min-width: 900px) { .hdr-disclaimer { display: block; } }
+.btn-theme {
+  width: 30px; height: 30px; border-radius: 6px;
+  border: 1px solid var(--border2); background: transparent;
+  color: var(--text2); font-size: 14px; cursor: pointer;
+  transition: all .18s; display: flex; align-items: center; justify-content: center;
+  margin-left: 8px; flex-shrink: 0;
+}
+.btn-theme:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── MAIN CONTAINER ── */
+.container { max-width: 960px; margin: 0 auto; padding: 32px 20px 80px; }
+
+/* ── LANDING ── */
+#landing {}
+.landing-intro {
+  margin-bottom: 28px;
+}
+.landing-intro h1 {
+  font-family: 'DM Serif Display', serif; font-size: 26px;
+  margin-bottom: 6px; line-height: 1.3;
+}
+.landing-intro p {
+  font-size: 13px; color: var(--text2); max-width: 640px; line-height: 1.6;
+}
+.landing-intro .trial-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(240,136,62,.1); border: 1px solid rgba(240,136,62,.25);
+  border-radius: 20px; padding: 4px 12px;
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent);
+  margin-top: 10px;
+}
+
+/* ── NAV CARDS GRID ── */
+.section-label {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 2px; color: var(--text3);
+  text-transform: uppercase; margin-bottom: 14px;
+}
+.nav-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 36px;
+}
+.nav-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px 18px;
+  cursor: pointer; transition: all .2s; text-align: left;
+  position: relative; overflow: hidden;
+}
+.nav-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 3px; background: var(--accent);
+}
+.nav-card:hover { border-color: var(--accent); background: var(--surface2); }
+body.light .nav-card:hover { background: #f8f4ee; }
+.nc-num {
+  font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3);
+  letter-spacing: 1px; margin-bottom: 6px;
+}
+.nc-name {
+  font-family: 'DM Serif Display', serif; font-size: 14px;
+  line-height: 1.3; margin-bottom: 8px; color: var(--text);
+}
+.nc-dose {
+  font-family: 'DM Mono', monospace; font-size: 11px; color: var(--blue);
+  margin-bottom: 6px;
+}
+.nc-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+.nc-tag {
+  font-family: 'DM Mono', monospace; font-size: 8px; padding: 2px 6px;
+  border-radius: 4px;
+}
+.nc-tag.loc { background: rgba(56,139,253,.15); color: var(--blue); }
+.nc-tag.met { background: rgba(248,81,73,.12); color: var(--red); }
+.nc-tag.bg { background: rgba(163,113,247,.12); color: var(--purple); }
+.nc-tag.cr { background: rgba(63,185,80,.12); color: var(--green); }
+.nc-tag.pr { background: rgba(210,153,34,.12); color: var(--yellow); }
+
+/* ── COMPARATIVE TABLE ── */
+.ct {
+  width: 100%; border-collapse: collapse;
+  font-size: 12px; margin-bottom: 36px;
+}
+.ct thead th {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text3); padding: 8px 10px; text-align: left;
+  border-bottom: 1px solid var(--border); background: var(--surface);
+}
+.ct tbody td {
+  padding: 9px 10px; border-bottom: 1px solid var(--border2);
+  color: var(--text); vertical-align: top; line-height: 1.5;
+}
+.ct tbody tr:hover td { background: var(--surface2); }
+body.light .ct tbody tr:hover td { background: #ede8dc; }
+.ct-badge {
+  display: inline-block; font-family: 'DM Mono', monospace; font-size: 9px;
+  padding: 2px 7px; border-radius: 4px; white-space: nowrap;
+}
+.badge-green { background: rgba(63,185,80,.12); color: var(--green); }
+.badge-yellow { background: rgba(210,153,34,.12); color: var(--yellow); }
+.badge-red { background: rgba(248,81,73,.12); color: var(--red); }
+.badge-blue { background: rgba(56,139,253,.12); color: var(--blue); }
+.badge-purple { background: rgba(163,113,247,.12); color: var(--purple); }
+.badge-orange { background: rgba(240,136,62,.12); color: var(--orange); }
+
+/* ── PANELS ── */
+.panel { display: none; }
+.panel.active { display: block; }
+.back-btn {
+  background: none; border: 1px solid var(--border2);
+  color: var(--text2); border-radius: 6px; padding: 7px 14px;
+  font-size: 12px; margin-bottom: 20px; transition: all .2s;
+}
+.back-btn:hover { border-color: var(--accent); color: var(--accent); }
+.panel-header {
+  margin-bottom: 28px;
+}
+.panel-header h2 {
+  font-family: 'DM Serif Display', serif; font-size: 22px;
+  line-height: 1.3; margin-bottom: 5px;
+}
+.panel-header .ph-sub {
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3);
+}
+
+/* ── RT TABLE ── */
+.rt-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 12px; margin-bottom: 28px;
+}
+.rt-table thead th {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text3); padding: 8px 10px; text-align: left;
+  border-bottom: 1px solid var(--border); background: var(--surface);
+}
+.rt-table tbody td {
+  padding: 10px 10px; border-bottom: 1px solid var(--border2);
+  color: var(--text); vertical-align: top; line-height: 1.55;
+}
+body.light .rt-table tbody tr:hover td { background: #ede8dc; }
+.rt-table tbody tr:hover td { background: var(--surface2); }
+.rt-dose-val {
+  font-family: 'DM Mono', monospace; font-size: 12px;
+  color: var(--blue); font-weight: 500;
+}
+.rt-dose-val.reduced { color: var(--green); }
+.rt-dose-val.standard { color: var(--blue); }
+.rt-dose-val.escalated { color: var(--yellow); }
+.rt-sub-note { font-size: 10px; color: var(--text3); margin-top: 2px; line-height: 1.4; }
+
+/* ── RT BLOCK (detail panels) ── */
+.rt-block {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-left: 3px solid var(--blue); border-radius: 8px;
+  padding: 16px; margin-bottom: 14px;
+}
+body.light .rt-block { box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+.rt-block-title {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 1.5px; color: var(--blue);
+  text-transform: uppercase; margin-bottom: 12px;
+}
+.rt-section { margin-bottom: 11px; padding-bottom: 11px; border-bottom: 1px solid var(--border); }
+.rt-section:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.rt-section-hdr {
+  font-size: 12px; font-weight: 500; color: var(--text);
+  margin-bottom: 7px; display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+}
+.rt-tag {
+  font-family: 'DM Mono', monospace; font-size: 9px; padding: 2px 7px;
+  border-radius: 4px; background: rgba(56,139,253,.12); color: var(--blue); flex-shrink: 0;
+}
+.rt-tag.yellow { background: rgba(210,153,34,.12); color: var(--yellow); }
+.rt-tag.alert { background: rgba(248,81,73,.12); color: var(--red); }
+.rt-tag.green { background: rgba(63,185,80,.12); color: var(--green); }
+.rt-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+@media (max-width: 560px) { .rt-2col { grid-template-columns: 1fr; } }
+.rt-box {
+  background: var(--surface3); border: 1px solid var(--border);
+  border-radius: 6px; padding: 9px 11px; margin-bottom: 6px;
+}
+.rt-box-label {
+  font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3);
+  letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px;
+}
+.rt-box-val { font-size: 12px; color: var(--text); line-height: 1.5; }
+.rt-sub { font-size: 11px; color: var(--text2); margin-top: 3px; line-height: 1.4; }
+.rt-note { font-size: 11px; color: var(--text2); margin-top: 5px; line-height: 1.5; }
+.rt-dose { color: var(--blue); font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; }
+.rt-dose.esc { color: var(--yellow); }
+.rt-dose.reduced { color: var(--green); }
+
+/* ── TRIAL CARDS ── */
+.trials-grid {
+  display: grid; gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  margin-bottom: 28px;
+}
+.trial-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; position: relative; overflow: hidden;
+}
+body.light .trial-card { box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+.trial-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--accent);
+}
+.tc-status {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  padding: 3px 8px; border-radius: 4px; margin-bottom: 10px;
+}
+.tc-status.recruiting { background: rgba(63,185,80,.12); color: var(--green); }
+.tc-status.recruiting::before { content: '●'; font-size: 7px; }
+.tc-status.active-nr { background: rgba(56,139,253,.12); color: var(--blue); }
+.tc-status.completed { background: rgba(110,118,129,.12); color: var(--text3); }
+.tc-nct {
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent);
+  margin-bottom: 6px;
+}
+.tc-title {
+  font-size: 13px; font-weight: 500; line-height: 1.4;
+  margin-bottom: 8px; color: var(--text);
+}
+.tc-sponsor {
+  font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3);
+  margin-bottom: 8px;
+}
+.tc-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
+.th-rt  { background: rgba(56,139,253,.12); color: var(--blue); }
+.th-ch  { background: rgba(63,185,80,.12); color: var(--green); }
+.th-sg  { background: rgba(163,113,247,.12); color: var(--purple); }
+.th-ct  { background: rgba(210,153,34,.12); color: var(--yellow); }
+.tc-tag {
+  font-family: 'DM Mono', monospace; font-size: 8px;
+  padding: 2px 6px; border-radius: 4px;
+}
+.tc-context { font-size: 11px; color: var(--text2); line-height: 1.5; }
+.tc-enroll {
+  font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3);
+  margin-top: 8px;
+}
+
+/* ── SIGNAL BOX ── */
+.signal-box {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-left: 3px solid var(--orange); border-radius: 8px;
+  padding: 16px 18px; font-size: 13px; line-height: 1.7;
+  margin-bottom: 28px; color: var(--text);
+}
+body.light .signal-box { color: #3a2e1a; }
+.signal-hl  { color: var(--orange); font-weight: 600; }
+.signal-hl2 { color: var(--blue); font-weight: 600; }
+.signal-hl3 { color: var(--green); font-weight: 600; }
+
+/* ── REFS ── */
+.refs-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+.ref-item { display: flex; gap: 12px; }
+.ref-num {
+  font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent);
+  flex-shrink: 0; width: 20px; padding-top: 1px;
+}
+.ref-body { flex: 1; }
+.ref-authors { font-size: 12px; color: var(--text2); margin-bottom: 2px; }
+.ref-title-text { font-size: 12px; color: var(--text); font-weight: 500; margin-bottom: 2px; line-height: 1.4; }
+.ref-journal { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); margin-bottom: 4px; }
+.ref-doi { font-family: 'DM Mono', monospace; font-size: 10px; }
+.ref-note { font-size: 11px; color: var(--text2); margin-top: 3px; font-style: italic; }
+
+/* ── STRATA SUMMARY BOX ── */
+.strata-summary {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; margin-bottom: 14px;
+}
+.ss-title {
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3);
+  letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px;
+}
+.ss-row {
+  display: flex; align-items: baseline; gap: 10px; padding: 7px 0;
+  border-bottom: 1px solid var(--border2); font-size: 12px;
+}
+.ss-row:last-child { border-bottom: none; }
+.ss-strat {
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent);
+  width: 70px; flex-shrink: 0;
+}
+.ss-desc { color: var(--text2); flex: 1; line-height: 1.4; }
+.ss-dose { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--blue); white-space: nowrap; }
+
+/* ── PRINT ── */
+@media print {
+  body, body.light { background: #fff !important; color: #000 !important; }
+  header, body.light header { position: static !important; background: #fff !important; border-bottom: 1px solid #ccc !important; }
+  .btn-theme, .back-btn { display: none !important; }
+  #landing { display: none !important; }
+  .panel { display: block !important; }
+  .rt-block { border: 1.5px solid #1a5fa8 !important; background: #f5f5f5 !important; break-inside: avoid; }
+  .print-footer { display: block; font-size: 8pt; color: #999; margin-top: 22px; border-top: 1px solid #ddd; padding-top: 8px; }
+  :root, body.light {
+    --text: #000; --text2: #444; --text3: #888;
+    --surface: #fff; --surface2: #f5f5f5; --surface3: #eeeeee;
+    --border: #ddd; --border2: #eee; --blue: #1a5fa8;
+  }
+}
+.print-footer { display: none; }
+
+/* ── SLABEL ── */
+.slabel {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 2px; color: var(--text3);
+  text-transform: uppercase; margin-bottom: 12px; margin-top: 28px;
+}
+.slabel:first-of-type { margin-top: 0; }
+
+/* ── ELIGIBILITY BOX ── */
+.elig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 28px; }
+@media (max-width: 600px) { .elig-grid { grid-template-columns: 1fr; } }
+.elig-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px;
+}
+.elig-box-title {
+  font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+}
+.elig-item {
+  font-size: 12px; color: var(--text2); padding: 3px 0;
+  border-bottom: 1px solid var(--border2); line-height: 1.4;
+}
+.elig-item:last-child { border-bottom: none; }
+.elig-item strong { color: var(--text); }
+
+/* ── COMPARISON BLOCK ── */
+.cmp-block {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden; margin-bottom: 28px;
+}
+.cmp-row {
+  display: grid; grid-template-columns: 140px 1fr 1fr; gap: 0;
+}
+.cmp-row + .cmp-row { border-top: 1px solid var(--border2); }
+.cmp-label {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  color: var(--text3); padding: 10px 12px;
+  background: var(--surface3); text-transform: uppercase; letter-spacing: 0.5px;
+  display: flex; align-items: center; line-height: 1.4;
+  border-right: 1px solid var(--border2);
+}
+.cmp-val {
+  padding: 10px 12px; font-size: 12px; color: var(--text);
+  line-height: 1.5; border-right: 1px solid var(--border2);
+}
+.cmp-val:last-child { border-right: none; }
+.cmp-header { background: var(--surface3); }
+.cmp-header .cmp-val {
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent);
+  font-weight: 500;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-logo">GCT</div>
+  <div class="hdr-texts">
+    <div class="hdr-title">CNS Germinoma — Clinical Review Dashboard</div>
+    <div class="hdr-sub">COG ACNS2321 · NCT06368817 · Radiation Therapy Focus · 2024–</div>
+  </div>
+  <div class="hdr-disclaimer">Not a substitute for<br>institutional protocol</div>
+  <span class="hdr-badge">COG · Phase II · 2024</span>
+  <button class="btn-theme" id="btn-theme" onclick="toggleTheme()" title="Switch to light mode">◑</button>
+</header>
+
+<!-- ═══════════════════════════════════════════════════
+     LANDING
+═══════════════════════════════════════════════════ -->
+<div id="landing">
+<div class="container">
+  <div class="landing-intro">
+    <h1>ACNS2321 — Response-Stratified RT<br>for CNS Germinomas</h1>
+    <p>Interactive review of the COG ACNS2321 trial design, radiation therapy protocols, eligibility criteria, and context within the COG germinoma trial lineage. Focus on the 7-strata RT framework and dose-reduction objective for complete responders.</p>
+    <div class="trial-pill">● RECRUITING · NCT06368817 · COG Phase II · Open Oct 2024 · Target n=240</div>
+  </div>
+
+  <div class="section-label">Strata — Select for detailed RT protocol</div>
+  <div class="nav-grid">
+    <div class="nav-card" onclick="show('s1')">
+      <div class="nc-num">STRATUM I</div>
+      <div class="nc-name">Localized — Complete Response</div>
+      <div class="nc-dose">WVI 12 Gy + Boost 12 Gy</div>
+      <div class="nc-tags">
+        <span class="nc-tag loc">Localized</span>
+        <span class="nc-tag cr">CR / CCR</span>
+      </div>
+    </div>
+    <div class="nav-card" onclick="show('s2')">
+      <div class="nc-num">STRATUM II</div>
+      <div class="nc-name">Localized — Partial Response</div>
+      <div class="nc-dose">WVI 18 Gy + Boost 12 Gy</div>
+      <div class="nc-tags">
+        <span class="nc-tag loc">Localized</span>
+        <span class="nc-tag pr">PR</span>
+      </div>
+    </div>
+    <div class="nav-card" onclick="show('s3')">
+      <div class="nc-num">STRATUM III</div>
+      <div class="nc-name">Localized — Less than PR</div>
+      <div class="nc-dose">WVI 24 Gy + Boost 12 Gy</div>
+      <div class="nc-tags">
+        <span class="nc-tag loc">Localized</span>
+        <span class="nc-tag pr">&lt; PR</span>
+      </div>
+    </div>
+    <div class="nav-card" onclick="show('s4')">
+      <div class="nc-num">STRATUM IV</div>
+      <div class="nc-name">Metastatic — Complete Response</div>
+      <div class="nc-dose">CSI 18 Gy + Boost 12 Gy</div>
+      <div class="nc-tags">
+        <span class="nc-tag met">Metastatic</span>
+        <span class="nc-tag cr">CR</span>
+      </div>
+    </div>
+    <div class="nav-card" onclick="show('s5')">
+      <div class="nc-num">STRATUM V</div>
+      <div class="nc-name">Metastatic — Less than CR</div>
+      <div class="nc-dose">CSI 24 Gy + Boost 12 Gy</div>
+      <div class="nc-tags">
+        <span class="nc-tag met">Metastatic</span>
+        <span class="nc-tag pr">&lt; CR</span>
+      </div>
+    </div>
+    <div class="nav-card" onclick="show('s6')">
+      <div class="nc-num">STRATUM VI</div>
+      <div class="nc-name">Basal Ganglia / Thalamus — CR</div>
+      <div class="nc-dose">WBI 18 Gy + Boost 12 Gy</div>
+      <div class="nc-tags">
+        <span class="nc-tag bg">BG/Thalamus</span>
+        <span class="nc-tag cr">CR</span>
+      </div>
+    </div>
+    <div class="nav-card" onclick="show('s7')">
+      <div class="nc-num">STRATUM VII</div>
+      <div class="nc-name">Basal Ganglia / Thalamus — &lt; CR</div>
+      <div class="nc-dose">WBI 24 Gy + Boost 12 Gy</div>
+      <div class="nc-tags">
+        <span class="nc-tag bg">BG/Thalamus</span>
+        <span class="nc-tag pr">&lt; CR</span>
+      </div>
+    </div>
+    <div class="nav-card" onclick="show('elig')">
+      <div class="nc-num">ELIGIBILITY</div>
+      <div class="nc-name">Inclusion / Exclusion Criteria</div>
+      <div class="nc-dose">Age 3–29 · Markers · Imaging</div>
+      <div class="nc-tags">
+        <span class="nc-tag loc">Criteria</span>
+      </div>
+    </div>
+    <div class="nav-card" onclick="show('context')">
+      <div class="nc-num">CONTEXT</div>
+      <div class="nc-name">COG Trial Lineage & Signal</div>
+      <div class="nc-dose">ACNS0232 → 1123 → 2321</div>
+      <div class="nc-tags">
+        <span class="nc-tag cr">Evidence</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparative table -->
+  <div class="section-label">ACNS2321 — 7-Strata RT Summary</div>
+  <div style="overflow-x:auto; margin-bottom:40px;">
+  <table class="ct">
+    <thead>
+      <tr>
+        <th>Stratum</th>
+        <th>Disease</th>
+        <th>Chemotherapy Response</th>
+        <th>RT Volume</th>
+        <th>WVI / CSI / WBI Dose</th>
+        <th>Tumor Boost</th>
+        <th>Primary Endpoint</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="ct-badge badge-green">I</span></td>
+        <td>Localized midline (incl. bifocal)</td>
+        <td>CR or CCR (± second-look)</td>
+        <td>WVI</td>
+        <td class="rt-dose-val reduced">12 Gy</td>
+        <td>12 Gy</td>
+        <td>Primary — EFS 2 & 3y vs ACNS1123 S2</td>
+      </tr>
+      <tr>
+        <td><span class="ct-badge badge-yellow">II</span></td>
+        <td>Localized midline (incl. bifocal)</td>
+        <td>PR + normalized markers</td>
+        <td>WVI</td>
+        <td class="rt-dose-val standard">18 Gy</td>
+        <td>12 Gy</td>
+        <td>Secondary — EFS 2 & 3y</td>
+      </tr>
+      <tr>
+        <td><span class="ct-badge badge-red">III</span></td>
+        <td>Localized midline (incl. bifocal)</td>
+        <td>&lt; PR (normalized markers)</td>
+        <td>WVI</td>
+        <td class="rt-dose-val escalated">24 Gy</td>
+        <td>12 Gy</td>
+        <td>Secondary — EFS 2 & 3y</td>
+      </tr>
+      <tr>
+        <td><span class="ct-badge badge-red">IV</span></td>
+        <td>Metastatic</td>
+        <td>CR (± second-look)</td>
+        <td>CSI</td>
+        <td class="rt-dose-val standard">18 Gy</td>
+        <td>12 Gy (all sites)</td>
+        <td>Exploratory</td>
+      </tr>
+      <tr>
+        <td><span class="ct-badge badge-red">V</span></td>
+        <td>Metastatic</td>
+        <td>&lt; CR (normalized markers)</td>
+        <td>CSI</td>
+        <td class="rt-dose-val escalated">24 Gy</td>
+        <td>12 Gy (all sites)</td>
+        <td>Exploratory</td>
+      </tr>
+      <tr>
+        <td><span class="ct-badge badge-purple">VI</span></td>
+        <td>Basal ganglia / Thalamus</td>
+        <td>CR (± second-look)</td>
+        <td>WBI</td>
+        <td class="rt-dose-val standard">18 Gy</td>
+        <td>12 Gy</td>
+        <td>Exploratory</td>
+      </tr>
+      <tr>
+        <td><span class="ct-badge badge-purple">VII</span></td>
+        <td>Basal ganglia / Thalamus</td>
+        <td>&lt; CR (normalized markers)</td>
+        <td>WBI</td>
+        <td class="rt-dose-val escalated">24 Gy</td>
+        <td>12 Gy</td>
+        <td>Exploratory</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <!-- ACNS trial lineage comparison -->
+  <div class="section-label">COG Germinoma Trial Lineage — RT Dose Evolution</div>
+  <div class="cmp-block" style="margin-bottom:40px;">
+    <div class="cmp-row cmp-header">
+      <div class="cmp-label">Parameter</div>
+      <div class="cmp-val">ACNS1123 (2011–2018)</div>
+      <div class="cmp-val">ACNS2321 (2024–)</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">NCT</div>
+      <div class="cmp-val"><a href="https://clinicaltrials.gov/study/NCT01602666" target="_blank">NCT01602666</a></div>
+      <div class="cmp-val"><a href="https://clinicaltrials.gov/study/NCT06368817" target="_blank">NCT06368817</a></div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">Induction chemo</div>
+      <div class="cmp-val">Carboplatin + Etoposide × 4 cycles q21d</div>
+      <div class="cmp-val">Carboplatin + Etoposide × 4 cycles q21d (identical)</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">CR → WVI dose</div>
+      <div class="cmp-val"><strong>18 Gy</strong> WVI + 12 Gy boost</div>
+      <div class="cmp-val" style="color:var(--green);font-weight:600;"><strong>12 Gy</strong> WVI + 12 Gy boost ↓ 33%</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">PR → WVI dose</div>
+      <div class="cmp-val">Not clearly stratified</div>
+      <div class="cmp-val"><strong>18 Gy</strong> WVI + 12 Gy boost</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">Metastatic</div>
+      <div class="cmp-val">CSI 24–30 Gy (ACNS0232 data)</div>
+      <div class="cmp-val">CSI 18 Gy (CR) or 24 Gy (&lt;CR)</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">BG/Thalamus</div>
+      <div class="cmp-val">Not separately stratified</div>
+      <div class="cmp-val">WBI 18–24 Gy + boost (Strata VI–VII)</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">ACNS1123 CR result</div>
+      <div class="cmp-val">3y EFS ~94.4% ± 2.7% · n=74 CR patients <sup>[1]</sup></div>
+      <div class="cmp-val">Design benchmark for primary endpoint</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">Secondary endpoints</div>
+      <div class="cmp-val">EFS, OS, response rates</div>
+      <div class="cmp-val">EFS, OS, neuroendocrine function, cognitive processing speed (WISC-V/WAIS-IV)</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">Cognitive assessment</div>
+      <div class="cmp-val">Limited prospective neurocog data</div>
+      <div class="cmp-val">COG standardized battery at 9, 30, 60 months post-diagnosis</div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PANEL — STRATUM I
+═══════════════════════════════════════════════════ -->
+<div id="panel-s1" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>Stratum I — Localized Germinoma, Complete Response</h2>
+    <div class="ph-sub">PRIMARY ENDPOINT · Target n per stratum not disclosed · Recruiting</div>
+  </div>
+
+  <div class="slabel">Stratum Entry Criteria</div>
+  <div class="strata-summary" style="margin-bottom:28px;">
+    <div class="ss-title">Inclusion in Stratum I</div>
+    <div class="ss-row">
+      <div class="ss-strat">Location</div>
+      <div class="ss-desc">Localized midline germinoma — suprasellar and/or pineal. Includes bifocal (pineal + suprasellar). Contiguous ventricular / unifocal parenchymal extension acceptable.</div>
+    </div>
+    <div class="ss-row">
+      <div class="ss-strat">Response</div>
+      <div class="ss-desc">Complete Response (CR) after 4 cycles of induction chemotherapy with normalization of markers. Continued CR (CCR) on restaging MRI. PR with normalized markers eligible for second-look surgery → if mature teratoma or non-viable tumor → qualifies for Stratum I RT.</div>
+    </div>
+    <div class="ss-row">
+      <div class="ss-strat">Markers</div>
+      <div class="ss-desc">Normalized hCGβ and AFP at time of RT assignment.</div>
+    </div>
+  </div>
+
+  <div class="slabel">Induction Chemotherapy (all strata)</div>
+  <div class="rt-block" style="border-left-color: var(--green); margin-bottom:28px;">
+    <div class="rt-block-title" style="color:var(--green);">Chemotherapy — Induction Phase</div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Regimen <span class="rt-tag green">4 Cycles · q21d</span></div>
+      <div class="rt-2col">
+        <div class="rt-box">
+          <div class="rt-box-label">Carboplatin</div>
+          <div class="rt-box-val">IV over 15–60 min · Day 1 of each cycle</div>
+        </div>
+        <div class="rt-box">
+          <div class="rt-box-label">Etoposide</div>
+          <div class="rt-box-val">IV over 90–120 min · Days 1–3 of each cycle</div>
+        </div>
+      </div>
+      <div class="rt-note">Doses per COG institutional protocol. No ifosfamide — simpler regimen than ACNS1123 predecessors for NGGCT. Cycles repeat every 21 days × 4 cycles in absence of progression or unacceptable toxicity.</div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Response Assessment <span class="rt-tag yellow">After Cycle 4</span></div>
+      <div class="rt-note">MRI brain + spine with gadolinium. Serum and CSF tumor markers (hCGβ, AFP). Restaging determines stratum assignment. Second-look surgery offered if PR or less with normalized markers.</div>
+    </div>
+  </div>
+
+  <div class="slabel">Radiation Therapy — Stratum I</div>
+  <div class="rt-block">
+    <div class="rt-block-title">Radiothérapie — Timing · Volumes · Doses · Stratum I</div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Timing <span class="rt-tag">After Cycle 4 + Response Assessment</span> <span class="rt-tag green">PRIMARY OBJECTIVE</span></div>
+      <div class="rt-note">RT initiated after completion of 4 cycles of induction chemotherapy and confirmation of CR/CCR or eligibility via second-look surgery findings. Delivered once daily, 5 days/week.</div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Target Volumes</div>
+      <div class="rt-2col">
+        <div class="rt-box">
+          <div class="rt-box-label">WVI Volume</div>
+          <div class="rt-box-val">Whole Ventricular Irradiation (WVI) — entire ventricular system. Lateral ventricles, third ventricle, fourth ventricle, cerebral aqueduct.</div>
+          <div class="rt-sub">Based on subependymal relapse patterns seen in prior focal RT trials (SIOP-CNS-GCT-96, ACNS0232).</div>
+        </div>
+        <div class="rt-box">
+          <div class="rt-box-label">Boost Volume</div>
+          <div class="rt-box-val">Pre-treatment tumor volume (GTVpre-chemo) + margin per institutional convention → CTV/PTV. Includes original primary site(s).</div>
+          <div class="rt-sub">For bifocal tumors: boost to both primary sites.</div>
+        </div>
+        <div class="rt-box">
+          <div class="rt-box-label">Technique</div>
+          <div class="rt-box-val">3D-CRT or IMRT. 5 fractions/week. QD delivery.</div>
+        </div>
+        <div class="rt-box">
+          <div class="rt-box-label">Imaging Guidance</div>
+          <div class="rt-box-val">Pre-RT MRI with gadolinium required. MRI-based planning preferred. Post-op MRI within 72h of surgery if resection performed.</div>
+        </div>
+      </div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Doses — Stratum I <span class="rt-tag green">DOSE-REDUCED vs ACNS1123</span></div>
+      <div class="rt-box" style="margin-bottom:8px;">
+        <div class="rt-box-label">Phase 1 — WVI</div>
+        <div class="rt-box-val">
+          <span class="rt-dose reduced">12 Gy</span>
+          <span style="font-size:11px;color:var(--text2);margin-left:8px;">16 fractions · 0.75 Gy/fr · 5 fx/week · ~3.2 weeks</span>
+        </div>
+        <div class="rt-sub">↓ vs ACNS1123 Stratum 2 (18 Gy WVI). Primary endpoint: non-inferiority of EFS at 2 and 3 years.</div>
+      </div>
+      <div class="rt-box">
+        <div class="rt-box-label">Phase 2 — Boost to Primary Site</div>
+        <div class="rt-box-val">
+          <span class="rt-dose standard">12 Gy</span>
+          <span style="font-size:11px;color:var(--text2);margin-left:8px;">Sequential boost · Additional ~2.4 weeks</span>
+        </div>
+        <div class="rt-sub">Cumulative dose at primary site: <strong>24 Gy total</strong>. Boost volume = pre-treatment tumor. Same boost dose as ACNS1123.</div>
+      </div>
+      <div class="rt-note" style="margin-top:10px;">⚠️ Fractionnement exact non publié (protocole opérationnel COG non public). Les 16 fr pour 12 Gy sont déduites d'une hypothèse 0.75 Gy/fr — à vérifier sur la version COG officielle.</div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Non-normalized markers / PD</div>
+      <div class="rt-note">Patients with non-normalized tumor markers OR progressive disease AND no second-look surgery (or viable tumor at second-look) → discontinued from protocol therapy. Do not receive Stratum I RT.</div>
+    </div>
+  </div>
+
+  <div class="slabel">References</div>
+  <div class="refs-list">
+    <div class="ref-item">
+      <div class="ref-num">1</div>
+      <div class="ref-body">
+        <div class="ref-authors">Bartels U, Onar-Thomas A, Patel SK, Shaw D, Fangusaro J, Dhall G, et al.</div>
+        <div class="ref-title-text">Phase II trial of response-based radiation therapy for patients with localized germinoma: a Children's Oncology Group study (ACNS1123)</div>
+        <div class="ref-journal">Neuro-Oncology. 2022;24(6):974–83</div>
+        <div class="ref-doi"><a href="https://doi.org/10.1093/neuonc/noab291" target="_blank">doi:10.1093/neuonc/noab291</a></div>
+        <div class="ref-note">3y EFS 94.4% ± 2.7% in CR patients (n=74) receiving 18 Gy WVI + 12 Gy boost — benchmark for ACNS2321 primary endpoint</div>
+      </div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">2</div>
+      <div class="ref-body">
+        <div class="ref-authors">COG · Children's Oncology Group</div>
+        <div class="ref-title-text">ACNS2321: A Phase II Trial Evaluating Chemotherapy Followed by Response-Based Reduced Radiation Therapy for Patients With Central Nervous System Germinomas</div>
+        <div class="ref-journal">ClinicalTrials.gov · Open October 2024</div>
+        <div class="ref-doi"><a href="https://clinicaltrials.gov/study/NCT06368817" target="_blank">NCT06368817</a></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="print-footer">ACNS2321 Germinoma Review Tool · COG Phase II · NCT06368817 · For educational and RCP use only — not a substitute for institutional protocol</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PANEL — STRATUM II
+═══════════════════════════════════════════════════ -->
+<div id="panel-s2" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>Stratum II — Localized Germinoma, Partial Response</h2>
+    <div class="ph-sub">Secondary Endpoint · WVI 18 Gy + Boost 12 Gy · Recruiting</div>
+  </div>
+  <div class="slabel">Stratum Entry Criteria</div>
+  <div class="strata-summary" style="margin-bottom:28px;">
+    <div class="ss-title">Inclusion in Stratum II</div>
+    <div class="ss-row">
+      <div class="ss-strat">Location</div>
+      <div class="ss-desc">Localized midline germinoma (suprasellar ± pineal, bifocal included).</div>
+    </div>
+    <div class="ss-row">
+      <div class="ss-strat">Response</div>
+      <div class="ss-desc">Partial Response (PR) with normalized tumor markers after induction. Patient did NOT undergo second-look surgery (or second-look not indicated). PR without surgery = Stratum II.</div>
+    </div>
+  </div>
+  <div class="slabel">Radiation Therapy — Stratum II</div>
+  <div class="rt-block">
+    <div class="rt-block-title">Radiotherapy — Timing · Volumes · Doses · Stratum II</div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Timing <span class="rt-tag">After Cycle 4 · PR confirmed</span></div>
+      <div class="rt-note">RT initiated after induction chemotherapy (4 cycles) with confirmed PR and marker normalization. Once daily delivery, 5 days/week.</div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Target Volumes</div>
+      <div class="rt-2col">
+        <div class="rt-box"><div class="rt-box-label">WVI</div><div class="rt-box-val">Full ventricular system — same as Stratum I.</div></div>
+        <div class="rt-box"><div class="rt-box-label">Boost</div><div class="rt-box-val">Pre-treatment primary tumor volume → CTV/PTV boost.</div></div>
+      </div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Doses — Stratum II</div>
+      <div class="rt-box" style="margin-bottom:8px;">
+        <div class="rt-box-label">Phase 1 — WVI</div>
+        <div class="rt-box-val"><span class="rt-dose standard">18 Gy</span> <span style="font-size:11px;color:var(--text2);margin-left:8px;">20 fractions · 0.9 Gy/fr · 4 weeks</span></div>
+        <div class="rt-sub">Same as ACNS1123 Stratum 2 dose. Maintained for PR patients given residual disease.</div>
+      </div>
+      <div class="rt-box">
+        <div class="rt-box-label">Phase 2 — Tumor Boost</div>
+        <div class="rt-box-val"><span class="rt-dose standard">12 Gy</span></div>
+        <div class="rt-sub">Cumulative at primary site: <strong>30 Gy total</strong>.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slabel">References</div>
+  <div class="refs-list">
+    <div class="ref-item">
+      <div class="ref-num">1</div>
+      <div class="ref-body">
+        <div class="ref-authors">Bartels U et al.</div>
+        <div class="ref-title-text">Phase II trial of response-based radiation therapy for patients with localized germinoma (ACNS1123)</div>
+        <div class="ref-journal">Neuro-Oncology. 2022;24(6):974–83</div>
+        <div class="ref-doi"><a href="https://doi.org/10.1093/neuonc/noab291" target="_blank">doi:10.1093/neuonc/noab291</a> · <a href="https://clinicaltrials.gov/study/NCT01602666" target="_blank">NCT01602666</a></div>
+      </div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">2</div>
+      <div class="ref-body">
+        <div class="ref-authors">COG · Children's Oncology Group</div>
+        <div class="ref-title-text">ACNS2321 Protocol · NCT06368817</div>
+        <div class="ref-journal">ClinicalTrials.gov · 2024</div>
+        <div class="ref-doi"><a href="https://clinicaltrials.gov/study/NCT06368817" target="_blank">NCT06368817</a></div>
+      </div>
+    </div>
+  </div>
+  <div class="print-footer">ACNS2321 Germinoma Review Tool · COG Phase II · NCT06368817 · Educational use only</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PANEL — STRATUM III
+═══════════════════════════════════════════════════ -->
+<div id="panel-s3" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>Stratum III — Localized Germinoma, Less than PR</h2>
+    <div class="ph-sub">Secondary Endpoint · WVI 24 Gy + Boost 12 Gy · Recruiting</div>
+  </div>
+  <div class="slabel">Stratum Entry Criteria</div>
+  <div class="strata-summary" style="margin-bottom:28px;">
+    <div class="ss-title">Inclusion in Stratum III</div>
+    <div class="ss-row">
+      <div class="ss-strat">Response</div>
+      <div class="ss-desc">Less than PR (stable disease or minimal response) with normalized tumor markers. Patient did NOT undergo second-look surgery. Normalized markers required — non-normalized markers → off protocol.</div>
+    </div>
+  </div>
+  <div class="slabel">Radiation Therapy — Stratum III</div>
+  <div class="rt-block">
+    <div class="rt-block-title">Radiotherapy — Timing · Volumes · Doses · Stratum III</div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Timing <span class="rt-tag yellow">Less than PR · normalized markers</span></div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Doses — Stratum III</div>
+      <div class="rt-box" style="margin-bottom:8px;">
+        <div class="rt-box-label">Phase 1 — WVI</div>
+        <div class="rt-box-val"><span class="rt-dose esc">24 Gy</span> <span style="font-size:11px;color:var(--text2);margin-left:8px;">24 fractions · 1 Gy/fr · ~5 weeks (estimated)</span></div>
+        <div class="rt-sub">Full-dose WVI for suboptimal responders. Consistent with historical SIOP-CNS-GCT standard arm approach.</div>
+      </div>
+      <div class="rt-box">
+        <div class="rt-box-label">Phase 2 — Tumor Boost</div>
+        <div class="rt-box-val"><span class="rt-dose standard">12 Gy</span></div>
+        <div class="rt-sub">Cumulative at primary site: <strong>36 Gy total</strong>.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slabel">References</div>
+  <div class="refs-list">
+    <div class="ref-item">
+      <div class="ref-num">1</div>
+      <div class="ref-body">
+        <div class="ref-authors">COG · Children's Oncology Group</div>
+        <div class="ref-title-text">ACNS2321 Protocol · NCT06368817</div>
+        <div class="ref-journal">ClinicalTrials.gov · 2024</div>
+        <div class="ref-doi"><a href="https://clinicaltrials.gov/study/NCT06368817" target="_blank">NCT06368817</a></div>
+      </div>
+    </div>
+  </div>
+  <div class="print-footer">ACNS2321 Germinoma Review Tool · COG Phase II · NCT06368817 · Educational use only</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PANEL — STRATUM IV + V (Metastatic)
+═══════════════════════════════════════════════════ -->
+<div id="panel-s4" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>Strata IV & V — Metastatic Germinoma</h2>
+    <div class="ph-sub">Exploratory Endpoints · CSI-based RT · Recruiting</div>
+  </div>
+  <div class="slabel">Stratum Entry — Metastatic Definition</div>
+  <div class="strata-summary" style="margin-bottom:28px;">
+    <div class="ss-title">Metastatic = Non-contiguous or Distant Disease</div>
+    <div class="ss-row">
+      <div class="ss-strat">Stratum IV</div>
+      <div class="ss-desc">Metastatic germinoma achieving CR after induction (± second-look surgery with mature teratoma / non-viable tumor). Markers normalized.</div>
+      <div class="ss-dose">CSI 18 Gy</div>
+    </div>
+    <div class="ss-row">
+      <div class="ss-strat">Stratum V</div>
+      <div class="ss-desc">Metastatic germinoma with normalized markers failing to achieve CR. No second-look surgery performed.</div>
+      <div class="ss-dose">CSI 24 Gy</div>
+    </div>
+  </div>
+  <div class="slabel">Radiation Therapy — Strata IV & V</div>
+  <div class="rt-block">
+    <div class="rt-block-title">Radiotherapy — Craniospinal Irradiation · Metastatic Strata</div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Target Volume <span class="rt-tag alert">CSI — Entire Neuraxis</span></div>
+      <div class="rt-2col">
+        <div class="rt-box">
+          <div class="rt-box-label">Craniospinal Volume</div>
+          <div class="rt-box-val">Full brain (whole brain) + entire spinal canal to thecal sac. Standard CSI field arrangement (posterior fossa matching with spinal fields or VMAT/IMRT CSI).</div>
+        </div>
+        <div class="rt-box">
+          <div class="rt-box-label">Boost Volumes</div>
+          <div class="rt-box-val">12 Gy boost to pre-treatment primary tumor volume AND all metastatic sites (non-contiguous disease / brain / ventricular / spinal lesions).</div>
+        </div>
+      </div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Doses</div>
+      <div class="rt-box" style="margin-bottom:8px;">
+        <div class="rt-box-label">Stratum IV — CR after chemo</div>
+        <div class="rt-box-val"><span class="rt-dose standard">CSI 18 Gy</span> + <span class="rt-dose standard">Boost 12 Gy</span></div>
+        <div class="rt-sub">Cumulative at primary + mets: 30 Gy. Reduced CSI dose vs historical (24–30 Gy) for CR patients.</div>
+      </div>
+      <div class="rt-box">
+        <div class="rt-box-label">Stratum V — Less than CR</div>
+        <div class="rt-box-val"><span class="rt-dose esc">CSI 24 Gy</span> + <span class="rt-dose standard">Boost 12 Gy</span></div>
+        <div class="rt-sub">Cumulative at primary + mets: 36 Gy. Once daily, 5 days/week. 3DCRT or IMRT/VMAT.</div>
+      </div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Clinical Note <span class="rt-tag yellow">Spinal Toxicity</span></div>
+      <div class="rt-note">CSI carries significant late effects risk in pediatric patients: growth hormone deficiency, thyroid dysfunction, hearing loss, ototoxicity, neurocognitive impact, vertebral growth effects. Proton CSI preferred when available for dose reduction to anterior structures. Endocrine monitoring mandatory throughout follow-up (every 3–4 months × 1 year, then per annual follow-up schedule).</div>
+    </div>
+  </div>
+  <div class="slabel">References</div>
+  <div class="refs-list">
+    <div class="ref-item">
+      <div class="ref-num">1</div>
+      <div class="ref-body">
+        <div class="ref-authors">Murray MJ, Bartels U, Nishikawa R, Fangusaro J, Matsutani M, Nicholson JC.</div>
+        <div class="ref-title-text">Consensus on the management of intracranial germ-cell tumours</div>
+        <div class="ref-journal">Lancet Oncology. 2015;16(9):e470–7</div>
+        <div class="ref-doi"><a href="https://doi.org/10.1016/S1470-2045(15)00244-2" target="_blank">doi:10.1016/S1470-2045(15)00244-2</a></div>
+      </div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">2</div>
+      <div class="ref-body">
+        <div class="ref-authors">COG · ACNS2321</div>
+        <div class="ref-title-text">NCT06368817 · Strata IV–V design</div>
+        <div class="ref-doi"><a href="https://clinicaltrials.gov/study/NCT06368817" target="_blank">NCT06368817</a></div>
+      </div>
+    </div>
+  </div>
+  <div class="print-footer">ACNS2321 Germinoma Review Tool · COG Phase II · NCT06368817 · Educational use only</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PANEL — STRATA VI & VII (BG/Thalamus)
+═══════════════════════════════════════════════════ -->
+<div id="panel-s5" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>Strata V — see Strata IV & V panel</h2>
+  </div>
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+</div>
+</div>
+
+<div id="panel-s6" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>Strata VI & VII — Basal Ganglia / Thalamic Germinoma</h2>
+    <div class="ph-sub">Exploratory Endpoints · WBI-based RT · Recruiting</div>
+  </div>
+  <div class="slabel">Clinical Context — BG/Thalamic Germinomas</div>
+  <div class="signal-box" style="margin-bottom:28px;">
+    <span class="signal-hl">Basal ganglia and thalamic (BGTG) germinomas</span> represent a diagnostically challenging subset — they often present with <span class="signal-hl2">insidious motor or cognitive symptoms</span> rather than classic endocrinopathy or visual field defects. Radiological mimics include gliomas, demyelination, and metabolic disease. <span class="signal-hl3">Hemiatrophy ipsilateral to the tumor</span> is a characteristic but not universal feature. Marker elevation (even mild hCGβ) in a unilateral hemispheric lesion should prompt germinoma workup. These tumors historically treated as "localized" disease but with unique radiation field considerations — WBI rather than WVI given parenchymal location outside ventricular system.
+  </div>
+  <div class="slabel">Stratum Entry</div>
+  <div class="strata-summary" style="margin-bottom:28px;">
+    <div class="ss-row">
+      <div class="ss-strat">Stratum VI</div>
+      <div class="ss-desc">Primary BG or thalamic germinoma — CR after chemo (± second-look).</div>
+      <div class="ss-dose">WBI 18 Gy</div>
+    </div>
+    <div class="ss-row">
+      <div class="ss-strat">Stratum VII</div>
+      <div class="ss-desc">Primary BG or thalamic germinoma — less than CR (normalized markers, no surgery).</div>
+      <div class="ss-dose">WBI 24 Gy</div>
+    </div>
+  </div>
+  <div class="slabel">Radiation Therapy — Strata VI & VII</div>
+  <div class="rt-block">
+    <div class="rt-block-title">Radiotherapy — Whole Brain Irradiation · BG/Thalamic Strata</div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Target Volume <span class="rt-tag yellow">WBI — Whole Brain</span></div>
+      <div class="rt-2col">
+        <div class="rt-box">
+          <div class="rt-box-label">WBI Volume</div>
+          <div class="rt-box-val">Whole brain irradiation (not WVI) — entire brain parenchyma. Differs from WVI (ventricular only) given parenchymal tumor origin.</div>
+        </div>
+        <div class="rt-box">
+          <div class="rt-box-label">Boost Volume</div>
+          <div class="rt-box-val">Pre-treatment primary tumor volume (BG/thalamic lesion) → CTV/PTV boost. 12 Gy sequential boost.</div>
+        </div>
+      </div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Doses</div>
+      <div class="rt-box" style="margin-bottom:8px;">
+        <div class="rt-box-label">Stratum VI — CR</div>
+        <div class="rt-box-val"><span class="rt-dose standard">WBI 18 Gy</span> + <span class="rt-dose standard">Boost 12 Gy</span></div>
+        <div class="rt-sub">Cumulative at tumor: 30 Gy. 3DCRT or IMRT.</div>
+      </div>
+      <div class="rt-box">
+        <div class="rt-box-label">Stratum VII — &lt; CR</div>
+        <div class="rt-box-val"><span class="rt-dose esc">WBI 24 Gy</span> + <span class="rt-dose standard">Boost 12 Gy</span></div>
+        <div class="rt-sub">Cumulative at tumor: 36 Gy.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slabel">References</div>
+  <div class="refs-list">
+    <div class="ref-item">
+      <div class="ref-num">1</div>
+      <div class="ref-body">
+        <div class="ref-authors">COG · ACNS2321</div>
+        <div class="ref-title-text">NCT06368817 · Strata VI–VII design</div>
+        <div class="ref-doi"><a href="https://clinicaltrials.gov/study/NCT06368817" target="_blank">NCT06368817</a></div>
+      </div>
+    </div>
+  </div>
+  <div class="print-footer">ACNS2321 Germinoma Review Tool · COG Phase II · NCT06368817 · Educational use only</div>
+</div>
+</div>
+
+<div id="panel-s7" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>Stratum VII — BG/Thalamic, Less than CR</h2>
+    <div class="ph-sub">See Strata VI & VII panel for full RT details</div>
+  </div>
+  <button onclick="show('s6')" style="background:var(--accent);color:#fff;border:none;padding:10px 18px;border-radius:8px;font-size:13px;">View Strata VI & VII Detail →</button>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PANEL — ELIGIBILITY
+═══════════════════════════════════════════════════ -->
+<div id="panel-elig" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>Eligibility Criteria — ACNS2321</h2>
+    <div class="ph-sub">NCT06368817 · Ages 3–29 · All strata</div>
+  </div>
+
+  <div class="slabel">Diagnostic Criteria — Markers & Histology</div>
+  <div class="rt-block" style="margin-bottom:28px;">
+    <div class="rt-block-title">Germinoma Diagnosis — ACNS2321 Criteria</div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Category A — No biopsy required <span class="rt-tag green">Classic presentation</span></div>
+      <div class="rt-2col">
+        <div class="rt-box">
+          <div class="rt-box-label">Localized — Midline</div>
+          <div class="rt-box-val">Suprasellar and/or pineal lesion + hCGβ 5–50 mIU/mL (serum or CSF) + institutional normal AFP (or ≤10 ng/mL). Includes bifocal and contiguous extension.</div>
+        </div>
+        <div class="rt-box">
+          <div class="rt-box-label">Bifocal or Pineal + DI</div>
+          <div class="rt-box-val">Pineal + suprasellar OR pineal lesion + diabetes insipidus + hCGβ ≤100 mIU/mL + normal AFP.</div>
+        </div>
+      </div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Category B — Biopsy required <span class="rt-tag yellow">Elevated hCGβ 51–100 mIU/mL</span></div>
+      <div class="rt-box">
+        <div class="rt-box-label">Histologic confirmation mandatory</div>
+        <div class="rt-box-val">hCGβ 51–100 mIU/mL (serum or CSF) + institutional normal AFP → histologic confirmation of germinoma required before enrollment.</div>
+        <div class="rt-sub">Note: hCGβ-secreting GCT can cause false-positive pregnancy tests — confirm non-pregnant by institutional standard before enrollment.</div>
+      </div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Excluded histologic elements <span class="rt-tag alert">Ineligible</span></div>
+      <div class="rt-note">Endodermal sinus (yolk sac), embryonal carcinoma, choriocarcinoma, malignant/immature teratoma, mixed GCT with malignant elements → NGGCT protocol (ACNS2021, NCT04684368). Pure mature teratoma with negative markers → also excluded from ACNS2321.</div>
+    </div>
+  </div>
+
+  <div class="slabel">Patient Eligibility</div>
+  <div class="elig-grid">
+    <div class="elig-box">
+      <div class="elig-box-title">Inclusion</div>
+      <div class="elig-item"><strong>Age:</strong> ≥3 years and &lt;30 years at enrollment</div>
+      <div class="elig-item"><strong>Newly diagnosed:</strong> No prior tumor-directed therapy (surgery and steroids allowed)</div>
+      <div class="elig-item"><strong>Performance:</strong> ECOG 0–1–2 (Karnofsky &gt;16y; Lansky ≤16y)</div>
+      <div class="elig-item"><strong>Central imaging review:</strong> Eligibility confirmed by Rapid Central Imaging Review (APEC14B1-CNS)</div>
+      <div class="elig-item"><strong>Marker review:</strong> Eligibility confirmed by Rapid Central Tumor Marker Review</div>
+      <div class="elig-item"><strong>CSF:</strong> Lumbar CSF obtained prior to enrollment (unless contraindicated). Ventricular CSF at diversion acceptable for markers.</div>
+      <div class="elig-item"><strong>Spine MRI:</strong> With gadolinium at diagnosis — required</div>
+      <div class="elig-item"><strong>HIV:</strong> Eligible if on effective ART with undetectable viral load</div>
+      <div class="elig-item"><strong>Seizure disorder:</strong> Eligible if well-controlled on anticonvulsants</div>
+    </div>
+    <div class="elig-box">
+      <div class="elig-box-title">Exclusion</div>
+      <div class="elig-item"><strong>NGGCT elements:</strong> Yolk sac, embryonal Ca, choriocarcinoma, malignant teratoma</div>
+      <div class="elig-item"><strong>Pure mature teratoma</strong> with negative markers</div>
+      <div class="elig-item"><strong>Prior therapy:</strong> Any tumor-directed treatment (except surgery + steroids)</div>
+      <div class="elig-item"><strong>Pregnancy:</strong> Excluded — serum/urine test required (may be false positive due to hCGβ)</div>
+      <div class="elig-item"><strong>Breastfeeding</strong></div>
+      <div class="elig-item"><strong>Status epilepticus, coma,</strong> or assisted ventilation</div>
+      <div class="elig-item"><strong>CNS toxicity</strong> &gt;grade 2</div>
+    </div>
+  </div>
+
+  <div class="slabel">Lab Requirements at Enrollment (within 7 days)</div>
+  <div class="rt-block">
+    <div class="rt-block-title">Organ Function Thresholds</div>
+    <div class="rt-2col">
+      <div class="rt-box">
+        <div class="rt-box-label">Hematology</div>
+        <div class="rt-box-val">ANC ≥1000/μL · Platelets ≥100,000/μL (transfusion independent) · Hgb ≥8.0 g/dL</div>
+      </div>
+      <div class="rt-box">
+        <div class="rt-box-label">Hepatic</div>
+        <div class="rt-box-val">Total bilirubin ≤1.5× ULN for age · ALT ≤135 U/L (ULN set at 45 U/L for this study)</div>
+      </div>
+      <div class="rt-box">
+        <div class="rt-box-label">Renal (Pediatric)</div>
+        <div class="rt-box-val">Age-based serum creatinine thresholds OR CrCl ≥70 mL/min/1.73 m² OR GFR ≥50 mL/min/1.73 m² by direct measurement. eGFR not acceptable.</div>
+      </div>
+      <div class="rt-box">
+        <div class="rt-box-label">Renal (Adults ≥18y)</div>
+        <div class="rt-box-val">Cockcroft-Gault CrCl ≥70 mL/min or 24h urine collection.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel">Imaging Requirements</div>
+  <div class="strata-summary" style="margin-bottom:28px;">
+    <div class="ss-row">
+      <div class="ss-strat">Brain MRI</div>
+      <div class="ss-desc">With and without gadolinium at diagnosis / pre-enrollment. If surgical resection: pre-op AND post-op MRI (post-op within 72h of surgery). Biopsy only: post-op MRI recommended but not required. Must be within 31 days of enrollment.</div>
+    </div>
+    <div class="ss-row">
+      <div class="ss-strat">Spine MRI</div>
+      <div class="ss-desc">With gadolinium — required prior to enrollment. Perform before lumbar puncture (LP can obscure spinal MRI interpretation).</div>
+    </div>
+    <div class="ss-row">
+      <div class="ss-strat">Timing</div>
+      <div class="ss-desc">Enrollment and protocol therapy start: no later than 31 days after definitive surgery or clinical diagnosis, whichever is later.</div>
+    </div>
+    <div class="ss-row">
+      <div class="ss-strat">CSF timing</div>
+      <div class="ss-desc">Lumbar CSF ≥10 days post-surgery (false positive cytology can occur within 10 days). CSF markers + cytology required. Obtain after spine MRI.</div>
+    </div>
+  </div>
+
+  <div class="slabel">Follow-up Schedule</div>
+  <div class="strata-summary">
+    <div class="ss-row"><div class="ss-strat">Year 1</div><div class="ss-desc">Every 3 months</div></div>
+    <div class="ss-row"><div class="ss-strat">Years 2–3</div><div class="ss-desc">Every 4 months</div></div>
+    <div class="ss-row"><div class="ss-strat">Years 4–10</div><div class="ss-desc">Annually</div></div>
+    <div class="ss-row"><div class="ss-strat">Neurocog</div><div class="ss-desc">COG standardized battery at 9, 30, and 60 months post-diagnosis (processing speed, working memory, verbal learning, executive function, QoL)</div></div>
+    <div class="ss-row"><div class="ss-strat">Neuroendo</div><div class="ss-desc">Serial endocrine function monitoring — GH, thyroid, gonadal axes. Cumulative incidence of neuroendocrine dysfunction is a key secondary endpoint.</div></div>
+  </div>
+
+  <div class="print-footer">ACNS2321 Germinoma Review Tool · COG Phase II · NCT06368817 · Educational use only</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PANEL — CONTEXT
+═══════════════════════════════════════════════════ -->
+<div id="panel-context" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>COG Trial Lineage & Clinical Context</h2>
+    <div class="ph-sub">ACNS0232 → ACNS1123 → ACNS2321 · Evidence Base & Signal 2024–2026</div>
+  </div>
+
+  <div class="slabel">Clinical Signal — 2024–2026</div>
+  <div class="signal-box">
+    <span class="signal-hl">The central rationale for ACNS2321</span> is to test whether <span class="signal-hl2">12 Gy WVI</span> (vs. 18 Gy in ACNS1123) maintains comparable disease control in complete responders, while potentially reducing late neurocognitive and neuroendocrine toxicity. The ACNS1123 CR result was striking: <span class="signal-hl3">3-year EFS ~94.4% in patients receiving 18 Gy WVI</span> after carbo-etoposide induction. Prior ACNS0232 and SIOP-CNS-GCT-96 established that focal RT alone resulted in unacceptable ventricular relapse rates, driving the shift to WVI. The <span class="signal-hl">dose-reduction hypothesis</span> rests on the assumption that the chemotherapy–RT interaction provides sufficient radiosensitization at 12 Gy to sterilize microscopic ventricular disease. Secondary endpoints targeting <span class="signal-hl2">cognitive processing speed and neuroendocrine function</span> reflect the field's recognition that survival-focused endpoints alone are insufficient in this largely curable, young population.
+  </div>
+
+  <div class="slabel">Active & Reference Trials</div>
+  <div class="trials-grid">
+    <div class="trial-card">
+      <div class="tc-status recruiting">RECRUITING</div>
+      <div class="tc-nct"><a href="https://clinicaltrials.gov/study/NCT06368817" target="_blank">NCT06368817</a></div>
+      <div class="tc-title">ACNS2321 — Chemotherapy + Response-Based Reduced RT for CNS Germinomas</div>
+      <div class="tc-sponsor">Children's Oncology Group · Phase II</div>
+      <div class="tc-tags">
+        <span class="tc-tag th-ch">Carboplatin + Etoposide</span>
+        <span class="tc-tag th-rt">WVI / CSI / WBI</span>
+        <span class="tc-tag th-ct">Neurocog</span>
+      </div>
+      <div class="tc-context">Primary endpoint: 12 Gy WVI EFS at 2 & 3 years vs ACNS1123 benchmark (18 Gy). Target n=240. Sites: USA, Canada, Australia.</div>
+      <div class="tc-enroll">Open Oct 2024 · Primary completion 2033</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-status recruiting">RECRUITING</div>
+      <div class="tc-nct"><a href="https://clinicaltrials.gov/study/NCT04684368" target="_blank">NCT04684368</a></div>
+      <div class="tc-title">ACNS2021 — Localized CNS NGGCT: Chemo + Whole Ventricular + Spinal Canal RT</div>
+      <div class="tc-sponsor">Children's Oncology Group · Phase II</div>
+      <div class="tc-tags">
+        <span class="tc-tag th-ch">Carbo + Etoposide + Ifosfamide</span>
+        <span class="tc-tag th-rt">WVSCI</span>
+      </div>
+      <div class="tc-context">NGGCT counterpart to ACNS2321. Tests WVI + spinal canal irradiation to reduce spinal relapses seen with WVI alone in ACNS1123 NGGCT arm.</div>
+      <div class="tc-enroll">Parallel COG trial — NGGCT only</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-status completed">COMPLETED — Reference</div>
+      <div class="tc-nct"><a href="https://clinicaltrials.gov/study/NCT01602666" target="_blank">NCT01602666</a></div>
+      <div class="tc-title">ACNS1123 — Response-Based RT for Localized CNS GCT (Germinoma + NGGCT)</div>
+      <div class="tc-sponsor">Children's Oncology Group · Phase II</div>
+      <div class="tc-tags">
+        <span class="tc-tag th-ch">Carboplatin + Etoposide</span>
+        <span class="tc-tag th-rt">WVI 18 Gy</span>
+      </div>
+      <div class="tc-context">Germinoma CR arm: 3y EFS 94.4% (n=74). Established 18 Gy WVI as feasible. ACNS2321 tests 12 Gy vs this benchmark. Published Neuro-Oncology 2022.</div>
+      <div class="tc-enroll">Published 2022 · Bartels et al.</div>
+    </div>
+  </div>
+
+  <div class="slabel">References</div>
+  <div class="refs-list">
+    <div class="ref-item">
+      <div class="ref-num">1</div>
+      <div class="ref-body">
+        <div class="ref-authors">Bartels U, Onar-Thomas A, Patel SK, Shaw D, Fangusaro J, Dhall G, et al.</div>
+        <div class="ref-title-text">Phase II trial of response-based radiation therapy for patients with localized germinoma: a Children's Oncology Group study</div>
+        <div class="ref-journal">Neuro-Oncology. 2022;24(6):974–83</div>
+        <div class="ref-doi"><a href="https://doi.org/10.1093/neuonc/noab291" target="_blank">doi:10.1093/neuonc/noab291</a> · <a href="https://clinicaltrials.gov/study/NCT01602666" target="_blank">NCT01602666</a></div>
+        <div class="ref-note">Key benchmark: 3y EFS 94.4% ± 2.7% in CR patients receiving 18 Gy WVI + 12 Gy boost (ACNS1123 Stratum 2)</div>
+      </div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">2</div>
+      <div class="ref-body">
+        <div class="ref-authors">Calaminus G, Kortmann R, Worch J, Nicholson JC, Alapetite C, Garre ML, et al.</div>
+        <div class="ref-title-text">SIOP CNS GCT 96: final report of outcome of a prospective, multinational nonrandomized trial for children and adults with intracranial germinoma</div>
+        <div class="ref-journal">Neuro-Oncology. 2013;15(6):788–96</div>
+        <div class="ref-doi"><a href="https://doi.org/10.1093/neuonc/not019" target="_blank">doi:10.1093/neuonc/not019</a></div>
+        <div class="ref-note">Demonstrated unacceptable ventricular relapse with focal RT → shift to WVI in SIOP and COG trials</div>
+      </div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">3</div>
+      <div class="ref-body">
+        <div class="ref-authors">Murray MJ, Bartels U, Nishikawa R, Fangusaro J, Matsutani M, Nicholson JC.</div>
+        <div class="ref-title-text">Consensus on the management of intracranial germ-cell tumours</div>
+        <div class="ref-journal">Lancet Oncology. 2015;16(9):e470–7</div>
+        <div class="ref-doi"><a href="https://doi.org/10.1016/S1470-2045(15)00244-2" target="_blank">doi:10.1016/S1470-2045(15)00244-2</a></div>
+      </div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">4</div>
+      <div class="ref-body">
+        <div class="ref-authors">Takami H, et al. (International Perspectives)</div>
+        <div class="ref-title-text">Still divergent but on the way to convergence: clinical practice of CNS GCT in Europe and North America</div>
+        <div class="ref-journal">Neuro-Oncology Advances. 2022;4(1):vdac061</div>
+        <div class="ref-doi"><a href="https://doi.org/10.1093/noajnl/vdac061" target="_blank">doi:10.1093/noajnl/vdac061</a></div>
+      </div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">5</div>
+      <div class="ref-body">
+        <div class="ref-authors">Frappaz D, et al. (EANO/SNO/Euracan)</div>
+        <div class="ref-title-text">EANO, SNO and Euracan consensus review on the current management and future development of intracranial germ cell tumors in adolescents and young adults</div>
+        <div class="ref-journal">Neuro-Oncology. 2022;24(4):516–27</div>
+        <div class="ref-doi"><a href="https://doi.org/10.1093/neuonc/noab252" target="_blank">doi:10.1093/neuonc/noab252</a></div>
+      </div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">6</div>
+      <div class="ref-body">
+        <div class="ref-authors">COG · Children's Oncology Group</div>
+        <div class="ref-title-text">ACNS2321 — NCT06368817 · Phase II · 2024</div>
+        <div class="ref-journal">ClinicalTrials.gov</div>
+        <div class="ref-doi"><a href="https://clinicaltrials.gov/study/NCT06368817" target="_blank">NCT06368817</a></div>
+      </div>
+    </div>
+  </div>
+  <div class="print-footer">ACNS2321 Germinoma Review Tool · COG Phase II · NCT06368817 · Educational use only</div>
+</div>
+</div>
+
+<script>
+// ═══ THÈME ═══
+var THEME_KEY = 'theme-acns2321-germinoma-revue';
+
+function initTheme() {
+  try {
+    if (localStorage.getItem(THEME_KEY) === 'light') applyTheme('light');
+  } catch(e) {}
+}
+
+function toggleTheme() {
+  applyTheme(document.body.classList.contains('light') ? 'dark' : 'light');
+}
+
+function applyTheme(mode) {
+  var btn = document.getElementById('btn-theme');
+  if (mode === 'light') {
+    document.body.classList.add('light');
+    btn.textContent = '☀';
+    btn.title = 'Switch to dark mode';
+    try { localStorage.setItem(THEME_KEY, 'light'); } catch(e) {}
+  } else {
+    document.body.classList.remove('light');
+    btn.textContent = '◑';
+    btn.title = 'Switch to light mode';
+    try { localStorage.setItem(THEME_KEY, 'dark'); } catch(e) {}
+  }
+}
+
+// ═══ NAVIGATION ═══
+var _currentPanel = null;
+
+function show(id) {
+  _currentPanel = id;
+  document.getElementById('landing').style.display = 'none';
+  document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('active'); });
+  var p = document.getElementById('panel-' + id);
+  if (p) p.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function back() {
+  document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('landing').style.display = '';
+  _currentPanel = null;
+  window.scrollTo(0, 0);
+}
+
+// ═══ INIT ═══
+initTheme();
+</script>
+</body>
+</html>
