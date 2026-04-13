@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>ACNS2021 · CNS NGGCT — Clinical Review Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+button { cursor: pointer; font-family: 'DM Sans', sans-serif; }
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── THÈME (root = sombre par défaut) ── */
+:root {
+  --bg:       #0d1117;
+  --surface:  #161b22;
+  --surface2: #1c2330;
+  --surface3: #21262d;
+  --border:   #2a3441;
+  --border2:  #30363d;
+  --text:     #e6edf3;
+  --text2:    #8b949e;
+  --text3:    #6e7681;
+  --green:    #3fb950;
+  --blue:     #388bfd;
+  --red:      #f85149;
+  --yellow:   #d29922;
+  --purple:   #a371f7;
+  --orange:   #f0883e;
+  --cyan:     #39c5cf;
+  --accent:   #388bfd;
+  --accent-rgb: 56,139,253;
+  --radius:   10px;
+}
+
+body.light {
+  --bg:       #f5f0e8;
+  --surface:  #ffffff;
+  --surface2: #ede8dc;
+  --surface3: #e6e0d2;
+  --border:   #c8bfaa;
+  --border2:  #d4ccba;
+  --text:     #1a1208;
+  --text2:    #5a4f3a;
+  --text3:    #9a8f7a;
+  --green:    #2d7a3a;
+  --blue:     #1a5fa8;
+  --red:      #c0392b;
+  --yellow:   #a0720a;
+  --purple:   #6b3fa0;
+  --orange:   #c45a10;
+  --cyan:     #1a7a8a;
+  --accent:   #1a5fa8;
+}
+
+/* ── BASE ── */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(13,17,23,0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 12px; flex-wrap: nowrap;
+}
+body.light header {
+  background: rgba(245,240,232,0.97);
+  backdrop-filter: blur(10px);
+}
+.hdr-logo {
+  width: 36px; height: 36px;
+  border: 1.5px solid var(--accent); border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace; font-size: 8px;
+  color: var(--accent); font-weight: 500; flex-shrink: 0; letter-spacing: 0;
+}
+.hdr-texts { flex: 1; min-width: 0; }
+.hdr-title {
+  font-family: 'DM Serif Display', serif; font-size: 15px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.hdr-sub { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3); margin-top: 2px; }
+.hdr-badge {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  padding: 3px 10px; border-radius: 20px;
+  background: rgba(56,139,253,.1); border: 1px solid rgba(56,139,253,.3);
+  color: var(--accent); margin-left: auto; flex-shrink: 0; white-space: nowrap;
+}
+.hdr-disclaimer {
+  font-family: 'DM Mono', monospace; font-size: 8px; color: var(--text3);
+  flex-shrink: 0; max-width: 160px; text-align: right; line-height: 1.3;
+  display: none;
+}
+@media (min-width: 900px) { .hdr-disclaimer { display: block; } }
+.btn-theme {
+  width: 30px; height: 30px; border-radius: 6px;
+  border: 1px solid var(--border2); background: transparent;
+  color: var(--text2); font-size: 14px; cursor: pointer;
+  transition: all .18s; display: flex; align-items: center; justify-content: center;
+  margin-left: 8px; flex-shrink: 0;
+}
+.btn-theme:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── MAIN CONTAINER ── */
+.container { max-width: 960px; margin: 0 auto; padding: 32px 20px 80px; }
+
+/* ── LANDING ── */
+.landing-intro { margin-bottom: 28px; }
+.landing-intro h1 {
+  font-family: 'DM Serif Display', serif; font-size: 26px;
+  margin-bottom: 6px; line-height: 1.3;
+}
+.landing-intro p {
+  font-size: 13px; color: var(--text2); max-width: 640px; line-height: 1.6;
+}
+.landing-intro .trial-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(56,139,253,.1); border: 1px solid rgba(56,139,253,.25);
+  border-radius: 20px; padding: 4px 12px;
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent);
+  margin-top: 10px;
+}
+
+/* ── NAV CARDS GRID ── */
+.section-label {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 2px; color: var(--text3);
+  text-transform: uppercase; margin-bottom: 14px;
+}
+.nav-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 36px;
+}
+.nav-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px 18px;
+  cursor: pointer; transition: all .2s; text-align: left;
+  position: relative; overflow: hidden;
+}
+.nav-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 3px; background: var(--accent);
+}
+.nav-card:hover { border-color: var(--accent); background: var(--surface2); }
+body.light .nav-card:hover { background: #f8f4ee; }
+.nc-num {
+  font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3);
+  letter-spacing: 1px; margin-bottom: 6px;
+}
+.nc-name {
+  font-family: 'DM Serif Display', serif; font-size: 14px;
+  line-height: 1.3; margin-bottom: 8px; color: var(--text);
+}
+.nc-dose {
+  font-family: 'DM Mono', monospace; font-size: 11px; color: var(--blue);
+  margin-bottom: 6px;
+}
+.nc-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+.nc-tag {
+  font-family: 'DM Mono', monospace; font-size: 8px; padding: 2px 6px;
+  border-radius: 4px;
+}
+.nc-tag.plan-a { background: rgba(63,185,80,.12); color: var(--green); }
+.nc-tag.plan-b { background: rgba(248,81,73,.12); color: var(--red); }
+.nc-tag.crit { background: rgba(56,139,253,.12); color: var(--blue); }
+.nc-tag.ctx { background: rgba(163,113,247,.12); color: var(--purple); }
+
+/* ── COMPARATIVE TABLE ── */
+.ct {
+  width: 100%; border-collapse: collapse;
+  font-size: 12px; margin-bottom: 36px;
+}
+.ct thead th {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text3); padding: 8px 10px; text-align: left;
+  border-bottom: 1px solid var(--border); background: var(--surface);
+}
+.ct tbody td {
+  padding: 9px 10px; border-bottom: 1px solid var(--border2);
+  color: var(--text); vertical-align: top; line-height: 1.5;
+}
+.ct tbody tr:hover td { background: var(--surface2); }
+body.light .ct tbody tr:hover td { background: #ede8dc; }
+.ct-badge {
+  display: inline-block; font-family: 'DM Mono', monospace; font-size: 9px;
+  padding: 2px 7px; border-radius: 4px; white-space: nowrap;
+}
+.badge-green { background: rgba(63,185,80,.12); color: var(--green); }
+.badge-yellow { background: rgba(210,153,34,.12); color: var(--yellow); }
+.badge-red { background: rgba(248,81,73,.12); color: var(--red); }
+.badge-blue { background: rgba(56,139,253,.12); color: var(--blue); }
+.badge-purple { background: rgba(163,113,247,.12); color: var(--purple); }
+.badge-orange { background: rgba(240,136,62,.12); color: var(--orange); }
+
+/* ── PANELS ── */
+.panel { display: none; }
+.panel.active { display: block; }
+.back-btn {
+  background: none; border: 1px solid var(--border2);
+  color: var(--text2); border-radius: 6px; padding: 7px 14px;
+  font-size: 12px; margin-bottom: 20px; transition: all .2s;
+}
+.back-btn:hover { border-color: var(--accent); color: var(--accent); }
+.panel-header { margin-bottom: 28px; }
+.panel-header h2 {
+  font-family: 'DM Serif Display', serif; font-size: 22px;
+  line-height: 1.3; margin-bottom: 5px;
+}
+.panel-header .ph-sub {
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3);
+}
+
+/* ── RT TABLE ── */
+.rt-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 12px; margin-bottom: 28px;
+}
+.rt-table thead th {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text3); padding: 8px 10px; text-align: left;
+  border-bottom: 1px solid var(--border); background: var(--surface);
+}
+.rt-table tbody td {
+  padding: 10px 10px; border-bottom: 1px solid var(--border2);
+  color: var(--text); vertical-align: top; line-height: 1.55;
+}
+body.light .rt-table tbody tr:hover td { background: #ede8dc; }
+.rt-table tbody tr:hover td { background: var(--surface2); }
+.rt-dose-val {
+  font-family: 'DM Mono', monospace; font-size: 12px;
+  color: var(--blue); font-weight: 500;
+}
+.rt-dose-val.reduced { color: var(--green); }
+.rt-dose-val.standard { color: var(--blue); }
+.rt-dose-val.escalated { color: var(--yellow); }
+
+/* ── RT BLOCK (detail panels) ── */
+.rt-block {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-left: 3px solid var(--blue); border-radius: 8px;
+  padding: 16px; margin-bottom: 14px;
+}
+body.light .rt-block { box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+.rt-block-title {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 1.5px; color: var(--blue);
+  text-transform: uppercase; margin-bottom: 12px;
+}
+.rt-section { margin-bottom: 11px; padding-bottom: 11px; border-bottom: 1px solid var(--border); }
+.rt-section:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.rt-section-hdr {
+  font-size: 12px; font-weight: 500; color: var(--text);
+  margin-bottom: 7px; display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+}
+.rt-tag {
+  font-family: 'DM Mono', monospace; font-size: 9px; padding: 2px 7px;
+  border-radius: 4px; background: rgba(56,139,253,.12); color: var(--blue); flex-shrink: 0;
+}
+.rt-tag.yellow { background: rgba(210,153,34,.12); color: var(--yellow); }
+.rt-tag.alert { background: rgba(248,81,73,.12); color: var(--red); }
+.rt-tag.green { background: rgba(63,185,80,.12); color: var(--green); }
+.rt-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+@media (max-width: 560px) { .rt-2col { grid-template-columns: 1fr; } }
+.rt-box {
+  background: var(--surface3); border: 1px solid var(--border);
+  border-radius: 6px; padding: 9px 11px; margin-bottom: 6px;
+}
+.rt-box-label {
+  font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3);
+  letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px;
+}
+.rt-box-val { font-size: 12px; color: var(--text); line-height: 1.5; }
+.rt-sub { font-size: 11px; color: var(--text2); margin-top: 3px; line-height: 1.4; }
+.rt-note { font-size: 11px; color: var(--text2); margin-top: 5px; line-height: 1.5; }
+.rt-dose { color: var(--blue); font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; }
+.rt-dose.esc { color: var(--yellow); }
+.rt-dose.reduced { color: var(--green); }
+
+/* ── TRIAL CARDS ── */
+.trials-grid {
+  display: grid; gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  margin-bottom: 28px;
+}
+.trial-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; position: relative; overflow: hidden;
+}
+body.light .trial-card { box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+.trial-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--accent);
+}
+.tc-status {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  padding: 3px 8px; border-radius: 4px; margin-bottom: 10px;
+}
+.tc-status.recruiting { background: rgba(63,185,80,.12); color: var(--green); }
+.tc-status.recruiting::before { content: '●'; font-size: 7px; }
+.tc-status.active-nr { background: rgba(56,139,253,.12); color: var(--blue); }
+.tc-status.completed { background: rgba(110,118,129,.12); color: var(--text3); }
+.tc-nct {
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent);
+  margin-bottom: 6px;
+}
+.tc-title {
+  font-size: 13px; font-weight: 500; line-height: 1.4;
+  margin-bottom: 8px; color: var(--text);
+}
+.tc-sponsor {
+  font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3);
+  margin-bottom: 8px;
+}
+.tc-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
+.th-rt  { background: rgba(56,139,253,.12); color: var(--blue); }
+.th-ch  { background: rgba(63,185,80,.12); color: var(--green); }
+.th-sg  { background: rgba(163,113,247,.12); color: var(--purple); }
+.th-ct  { background: rgba(210,153,34,.12); color: var(--yellow); }
+.tc-tag {
+  font-family: 'DM Mono', monospace; font-size: 8px;
+  padding: 2px 6px; border-radius: 4px;
+}
+.tc-context { font-size: 11px; color: var(--text2); line-height: 1.5; }
+.tc-enroll {
+  font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3);
+  margin-top: 8px;
+}
+
+/* ── SIGNAL BOX ── */
+.signal-box {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-left: 3px solid var(--blue); border-radius: 8px;
+  padding: 16px 18px; font-size: 13px; line-height: 1.7;
+  margin-bottom: 28px; color: var(--text);
+}
+body.light .signal-box { color: #3a2e1a; }
+.signal-hl  { color: var(--orange); font-weight: 600; }
+.signal-hl2 { color: var(--blue); font-weight: 600; }
+.signal-hl3 { color: var(--green); font-weight: 600; }
+
+/* ── REFS ── */
+.refs-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+.ref-item { display: flex; gap: 12px; }
+.ref-num {
+  font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent);
+  flex-shrink: 0; width: 20px; padding-top: 1px;
+}
+.ref-body { flex: 1; }
+.ref-authors { font-size: 12px; color: var(--text2); margin-bottom: 2px; }
+.ref-title-text { font-size: 12px; color: var(--text); font-weight: 500; margin-bottom: 2px; line-height: 1.4; }
+.ref-journal { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); margin-bottom: 4px; }
+.ref-doi { font-family: 'DM Mono', monospace; font-size: 10px; }
+.ref-note { font-size: 11px; color: var(--text2); margin-top: 3px; font-style: italic; }
+
+/* ── STRATA SUMMARY BOX ── */
+.strata-summary {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; margin-bottom: 14px;
+}
+.ss-title {
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3);
+  letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px;
+}
+.ss-row {
+  display: flex; align-items: baseline; gap: 10px; padding: 7px 0;
+  border-bottom: 1px solid var(--border2); font-size: 12px;
+}
+.ss-row:last-child { border-bottom: none; }
+.ss-strat {
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent);
+  width: 80px; flex-shrink: 0;
+}
+.ss-desc { color: var(--text2); flex: 1; line-height: 1.4; }
+.ss-dose { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--blue); white-space: nowrap; }
+
+/* ── ELIGIBILITY BOX ── */
+.elig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 28px; }
+@media (max-width: 600px) { .elig-grid { grid-template-columns: 1fr; } }
+.elig-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px;
+}
+.elig-box-title {
+  font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+}
+.elig-item {
+  font-size: 12px; color: var(--text2); padding: 3px 0;
+  border-bottom: 1px solid var(--border2); line-height: 1.4;
+}
+.elig-item:last-child { border-bottom: none; }
+.elig-item strong { color: var(--text); }
+
+/* ── COMPARISON BLOCK ── */
+.cmp-block {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden; margin-bottom: 28px;
+}
+.cmp-row {
+  display: grid; grid-template-columns: 140px 1fr 1fr 1fr; gap: 0;
+}
+@media (max-width: 700px) { .cmp-row { grid-template-columns: 100px 1fr 1fr 1fr; } }
+.cmp-row + .cmp-row { border-top: 1px solid var(--border2); }
+.cmp-label {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  color: var(--text3); padding: 10px 12px;
+  background: var(--surface3); text-transform: uppercase; letter-spacing: 0.5px;
+  display: flex; align-items: center; line-height: 1.4;
+  border-right: 1px solid var(--border2);
+}
+.cmp-val {
+  padding: 10px 12px; font-size: 12px; color: var(--text);
+  line-height: 1.5; border-right: 1px solid var(--border2);
+}
+.cmp-val:last-child { border-right: none; }
+.cmp-header { background: var(--surface3); }
+.cmp-header .cmp-val {
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent);
+  font-weight: 500;
+}
+
+/* ── DECISION FLOW ── */
+.flow-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px; margin-bottom: 28px;
+}
+.flow-step {
+  display: flex; gap: 12px; padding: 10px 0;
+  border-bottom: 1px solid var(--border2);
+}
+.flow-step:last-child { border-bottom: none; }
+.flow-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(56,139,253,.12); color: var(--blue);
+  font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.flow-content { flex: 1; font-size: 12px; line-height: 1.5; color: var(--text); }
+.flow-content .flow-branch {
+  margin-top: 6px; padding: 6px 10px;
+  background: var(--surface2); border-radius: 6px;
+  font-size: 11px; color: var(--text2); line-height: 1.5;
+}
+.flow-arrow { color: var(--accent); font-weight: 600; }
+
+/* ── SLABEL ── */
+.slabel {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 2px; color: var(--text3);
+  text-transform: uppercase; margin-bottom: 12px; margin-top: 28px;
+}
+.slabel:first-of-type { margin-top: 0; }
+
+/* ── PRINT ── */
+@media print {
+  body, body.light { background: #fff !important; color: #000 !important; }
+  header, body.light header { position: static !important; background: #fff !important; border-bottom: 1px solid #ccc !important; }
+  .btn-theme, .back-btn { display: none !important; }
+  #landing { display: none !important; }
+  .panel { display: block !important; }
+  .rt-block { border: 1.5px solid #1a5fa8 !important; background: #f5f5f5 !important; break-inside: avoid; }
+  .print-footer { display: block; font-size: 8pt; color: #999; margin-top: 22px; border-top: 1px solid #ddd; padding-top: 8px; }
+  :root, body.light {
+    --text: #000; --text2: #444; --text3: #888;
+    --surface: #fff; --surface2: #f5f5f5; --surface3: #eeeeee;
+    --border: #ddd; --border2: #eee; --blue: #1a5fa8;
+  }
+}
+.print-footer { display: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-logo">NGGCT</div>
+  <div class="hdr-texts">
+    <div class="hdr-title">CNS NGGCT — Clinical Review Dashboard</div>
+    <div class="hdr-sub">COG ACNS2021 · NCT04684368 · Radiation Therapy Focus · Localized Disease</div>
+  </div>
+  <div class="hdr-disclaimer">Not a substitute for<br>institutional protocol</div>
+  <span class="hdr-badge">COG · Phase II · WVSCI</span>
+  <button class="btn-theme" id="btn-theme" onclick="toggleTheme()" title="Switch to light mode">◑</button>
+</header>
+
+<!-- ═══════════════════════════════════════════════════
+     LANDING
+═══════════════════════════════════════════════════ -->
+<div id="landing">
+<div class="container">
+  <div class="landing-intro">
+    <h1>ACNS2021 — Response-Based WVSCI<br>for Localized CNS NGGCT</h1>
+    <p>Interactive review of the COG ACNS2021 trial design, radiation therapy protocols (Plan A: WVSCI vs Plan B: HDCSCR + CSI), eligibility criteria, response-based decision tree, and context within the COG NGGCT trial lineage (ACNS0122 → ACNS1123 → ACNS2021). Focus on the novel WVSCI volume and the rationale for reintroducing spinal irradiation.</p>
+    <div class="trial-pill">● RECRUITING · NCT04684368 · COG Phase II · Localized NGGCT · Ages 3–29</div>
+  </div>
+
+  <div class="section-label">Sections — Select for detailed protocols</div>
+  <div class="nav-grid">
+    <div class="nav-card" onclick="show('plana')">
+      <div class="nc-num">PLAN A</div>
+      <div class="nc-name">WVSCI — Good Responders</div>
+      <div class="nc-dose">WVI 30.6 Gy + Spine 30.6 Gy + Boost 54 Gy</div>
+      <div class="nc-tags">
+        <span class="nc-tag plan-a">CR / PR</span>
+        <span class="nc-tag plan-a">Novel Volume</span>
+      </div>
+    </div>
+    <div class="nav-card" onclick="show('planb')">
+      <div class="nc-num">PLAN B</div>
+      <div class="nc-name">HDCSCR + CSI — Poor Responders</div>
+      <div class="nc-dose">Etoposide/Thiotepa → PBSCT → CSI 36 Gy + 54 Gy</div>
+      <div class="nc-tags">
+        <span class="nc-tag plan-b">&lt; CR/PR</span>
+        <span class="nc-tag plan-b">HDCSCR</span>
+      </div>
+    </div>
+    <div class="nav-card" onclick="show('decision')">
+      <div class="nc-num">DECISION TREE</div>
+      <div class="nc-name">Response-Based Assignment</div>
+      <div class="nc-dose">Induction → Response → SLS → Plan A or B</div>
+      <div class="nc-tags">
+        <span class="nc-tag crit">Algorithm</span>
+      </div>
+    </div>
+    <div class="nav-card" onclick="show('chemo')">
+      <div class="nc-num">CHEMOTHERAPY</div>
+      <div class="nc-name">Induction: CarboE / IE × 6 cycles</div>
+      <div class="nc-dose">Alternating q21d × 6 cycles</div>
+      <div class="nc-tags">
+        <span class="nc-tag plan-a">Induction</span>
+      </div>
+    </div>
+    <div class="nav-card" onclick="show('elig')">
+      <div class="nc-num">ELIGIBILITY</div>
+      <div class="nc-name">Inclusion / Exclusion Criteria</div>
+      <div class="nc-dose">Age 3–29 · AFP · hCGβ · Localized</div>
+      <div class="nc-tags">
+        <span class="nc-tag crit">Criteria</span>
+      </div>
+    </div>
+    <div class="nav-card" onclick="show('context')">
+      <div class="nc-num">CONTEXT</div>
+      <div class="nc-name">COG NGGCT Trial Lineage & Signal</div>
+      <div class="nc-dose">ACNS0122 → 1123 → 2021</div>
+      <div class="nc-tags">
+        <span class="nc-tag ctx">Evidence</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Landing summary table ── -->
+  <div class="section-label">ACNS2021 — Plan A vs Plan B Summary</div>
+  <div style="overflow-x:auto; margin-bottom:40px;">
+  <table class="ct">
+    <thead>
+      <tr>
+        <th>Plan</th>
+        <th>Response Criteria</th>
+        <th>Consolidation</th>
+        <th>RT Volume</th>
+        <th>RT Dose</th>
+        <th>Tumor Boost</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="ct-badge badge-green">A — WVSCI</span></td>
+        <td>CR or PR ± second-look surgery (mature teratoma / non-viable)</td>
+        <td>None — direct to RT</td>
+        <td>WVI + Spinal Canal (WVSCI)</td>
+        <td class="rt-dose-val reduced">30.6 Gy / 1.8 Gy/fx</td>
+        <td>Tumor bed to 54 Gy total</td>
+      </tr>
+      <tr>
+        <td><span class="ct-badge badge-red">B — HDCSCR</span></td>
+        <td>&lt; CR/PR or non-normalized markers or viable tumor at SLS</td>
+        <td>Etoposide + Thiotepa → PBSCT</td>
+        <td>CSI (Whole Brain + Spine)</td>
+        <td class="rt-dose-val standard">36 Gy / 1.8 Gy/fx</td>
+        <td>Tumor bed to 54 Gy total</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <!-- ── COG lineage comparison ── -->
+  <div class="section-label">COG NGGCT Trial Lineage — RT Volume & Dose Evolution</div>
+  <div class="cmp-block" style="margin-bottom:40px;">
+    <div class="cmp-row cmp-header">
+      <div class="cmp-label">Parameter</div>
+      <div class="cmp-val">ACNS0122</div>
+      <div class="cmp-val">ACNS1123 Stratum 1</div>
+      <div class="cmp-val">ACNS2021</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">NCT</div>
+      <div class="cmp-val"><a href="https://clinicaltrials.gov/study/NCT00047320" target="_blank">NCT00047320</a></div>
+      <div class="cmp-val"><a href="https://clinicaltrials.gov/study/NCT01602666" target="_blank">NCT01602666</a></div>
+      <div class="cmp-val"><a href="https://clinicaltrials.gov/study/NCT04684368" target="_blank">NCT04684368</a></div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">Induction</div>
+      <div class="cmp-val">CarboE / IE × 6c</div>
+      <div class="cmp-val">CarboE / IE × 6c</div>
+      <div class="cmp-val">CarboE / IE × 6c (identical)</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">CR/PR → RT volume</div>
+      <div class="cmp-val"><strong>CSI</strong> (whole brain + spine)</div>
+      <div class="cmp-val"><strong>WVI only</strong> (no spine)</div>
+      <div class="cmp-val" style="color:var(--green);font-weight:600;"><strong>WVSCI</strong> (WVI + spinal canal)</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">CR/PR → Dose</div>
+      <div class="cmp-val"><strong>36 Gy</strong> CSI + 54 Gy boost</div>
+      <div class="cmp-val"><strong>30.6 Gy</strong> WVI + 54 Gy boost</div>
+      <div class="cmp-val"><strong>30.6 Gy</strong> WVSCI + 54 Gy boost</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">Outcomes (CR/PR)</div>
+      <div class="cmp-val">5y EFS <strong>84%</strong> · OS <strong>93%</strong></div>
+      <div class="cmp-val">3y PFS <strong>87.8%</strong> · OS <strong>92.4%</strong><br><span style="font-size:10px;color:var(--red);">8 failures — 6 isolated spinal</span></div>
+      <div class="cmp-val">Accruing — results pending</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">Key change</div>
+      <div class="cmp-val">Reference standard</div>
+      <div class="cmp-val">Removed spine → spinal failures</div>
+      <div class="cmp-val" style="color:var(--green);">Re-added spine, kept WVI (no WBRT)</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">Poor responders</div>
+      <div class="cmp-val">All received CSI 36 Gy</div>
+      <div class="cmp-val">Not stratified separately</div>
+      <div class="cmp-val">Plan B: HDCSCR → CSI 36 Gy</div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PANEL — PLAN A (WVSCI)
+═══════════════════════════════════════════════════ -->
+<div id="panel-plana" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>Plan A — WVSCI for Good Responders</h2>
+    <div class="ph-sub">CR or PR (± SLS) · Novel Volume: WVI + Spinal Canal · PRIMARY OBJECTIVE</div>
+  </div>
+
+  <div class="slabel">Plan A Entry Criteria</div>
+  <div class="strata-summary" style="margin-bottom:28px;">
+    <div class="ss-title">Eligibility for Plan A (WVSCI)</div>
+    <div class="ss-row">
+      <div class="ss-strat">Response</div>
+      <div class="ss-desc">CR or PR after 6 cycles of induction chemotherapy with marker normalization (AFP + hCGβ). Includes patients with PR after second-look surgery showing mature teratoma or non-viable tumor only.</div>
+    </div>
+    <div class="ss-row">
+      <div class="ss-strat">Markers</div>
+      <div class="ss-desc">AFP and hCGβ normalized at time of RT assignment.</div>
+    </div>
+    <div class="ss-row">
+      <div class="ss-strat">Timing</div>
+      <div class="ss-desc">Within 6 weeks of the end of induction chemotherapy or second-look surgery.</div>
+    </div>
+  </div>
+
+  <div class="slabel">Radiation Therapy — Plan A (WVSCI)</div>
+  <div class="rt-block">
+    <div class="rt-block-title">Radiotherapy — Novel WVSCI Volume · Timing · Doses</div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Target Volume <span class="rt-tag green">WVSCI — Novel Volume</span></div>
+      <div class="rt-2col">
+        <div class="rt-box">
+          <div class="rt-box-label">Whole Ventricular Irradiation (WVI)</div>
+          <div class="rt-box-val">Full ventricular system — lateral ventricles, third ventricle, cerebral aqueduct, fourth ventricle. Same volume as ACNS1123.</div>
+          <div class="rt-sub">WVI replaces WBRT to reduce neurocognitive late effects — no ventricular relapses were seen on ACNS1123.</div>
+        </div>
+        <div class="rt-box">
+          <div class="rt-box-label">Spinal Canal Irradiation</div>
+          <div class="rt-box-val">Entire spinal canal from foramen magnum to thecal sac. Added to WVI to address the 12% isolated spinal relapse rate seen on ACNS1123 with WVI-only.</div>
+          <div class="rt-sub">Modern techniques (IMRT/VMAT/proton) minimize dose to tissues anterior to the spinal canal (vertebral bodies, abdominal organs).</div>
+        </div>
+      </div>
+      <div class="rt-2col" style="margin-top:8px;">
+        <div class="rt-box">
+          <div class="rt-box-label">Tumor Bed Boost Volume</div>
+          <div class="rt-box-val">Pre-treatment primary tumor volume (GTV pre-chemo) + margin per institutional convention → CTV/PTV boost. Includes original primary site.</div>
+        </div>
+        <div class="rt-box">
+          <div class="rt-box-label">Technique</div>
+          <div class="rt-box-val">3D-CRT or IMRT/VMAT. Proton therapy eligible. QD delivery, 5 fractions/week. Online contouring atlas provided by COG.</div>
+        </div>
+      </div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Doses — Plan A <span class="rt-tag green">REDUCED vs ACNS0122</span></div>
+      <div class="rt-box" style="margin-bottom:8px;">
+        <div class="rt-box-label">Phase 1 — WVSCI (WVI + Spinal Canal)</div>
+        <div class="rt-box-val">
+          <span class="rt-dose reduced">30.6 Gy</span>
+          <span style="font-size:11px;color:var(--text2);margin-left:8px;">17 fractions · 1.8 Gy/fr · 5 fx/week · ~3.4 weeks</span>
+        </div>
+        <div class="rt-sub">Same dose as ACNS1123 WVI, now extended to include spinal canal. Reduced vs ACNS0122 CSI (36 Gy). No ventricular relapses on ACNS1123 → 30.6 Gy adequate for microscopic ventricular disease.</div>
+      </div>
+      <div class="rt-box">
+        <div class="rt-box-label">Phase 2 — Tumor Bed Boost</div>
+        <div class="rt-box-val">
+          <span class="rt-dose standard">54 Gy total</span>
+          <span style="font-size:11px;color:var(--text2);margin-left:8px;">13 additional fractions · 1.8 Gy/fr · sequential boost</span>
+        </div>
+        <div class="rt-sub">Boost volume = pre-treatment tumor. Cumulative dose at primary: <strong>54 Gy</strong>. Total treatment ~6 weeks (17 fr + 13 fr = 30 fractions).</div>
+      </div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Key Concept <span class="rt-tag yellow">WVSCI vs CSI</span></div>
+      <div class="rt-note">WVSCI is a <strong>novel radiation volume</strong> — it combines ventricular irradiation (brain component) with spinal canal irradiation (spinal component), but critically avoids whole-brain RT. This means cortical brain parenchyma outside the ventricular system is spared, unlike traditional CSI where the entire brain receives the full prescription dose. The goal: retain spinal disease control (lost on ACNS1123) while minimizing the neurocognitive burden of WBRT (as used in ACNS0122).</div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Proton vs Photon <span class="rt-tag">Secondary Objective</span></div>
+      <div class="rt-note">Prospective comparison of proton vs photon outcomes (cognitive, auditory, neuroendocrine, spinal growth) is a key secondary objective. For patients &lt;13 years, vertebral body inclusion/exclusion is specifically evaluated. Proton therapy preferred when available for anterior dose reduction.</div>
+    </div>
+  </div>
+
+  <div class="slabel">References</div>
+  <div class="refs-list">
+    <div class="ref-item">
+      <div class="ref-num">1</div>
+      <div class="ref-body">
+        <div class="ref-authors">Fangusaro J, Wu S, MacDonald S, Murphy E, Shaw D, Bartels U, et al.</div>
+        <div class="ref-title-text">Phase II Trial of Response-Based Radiation Therapy for Patients With Localized CNS Nongerminomatous Germ Cell Tumors: A Children's Oncology Group Study (ACNS1123)</div>
+        <div class="ref-journal">J Clin Oncol. 2019;37(35):3283–90</div>
+        <div class="ref-doi"><a href="https://doi.org/10.1200/JCO.19.00701" target="_blank">doi:10.1200/JCO.19.00701</a></div>
+        <div class="ref-note">3y PFS 87.8% with WVI 30.6 Gy — 8 failures, 6 isolated spinal → basis for WVSCI in ACNS2021</div>
+      </div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">2</div>
+      <div class="ref-body">
+        <div class="ref-authors">COG · Children's Oncology Group</div>
+        <div class="ref-title-text">ACNS2021 Protocol · NCT04684368</div>
+        <div class="ref-journal">ClinicalTrials.gov</div>
+        <div class="ref-doi"><a href="https://clinicaltrials.gov/study/NCT04684368" target="_blank">NCT04684368</a></div>
+      </div>
+    </div>
+  </div>
+  <div class="print-footer">ACNS2021 NGGCT Review Tool · COG Phase II · NCT04684368 · Educational use only</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PANEL — PLAN B (HDCSCR + CSI)
+═══════════════════════════════════════════════════ -->
+<div id="panel-planb" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>Plan B — HDCSCR + Standard CSI for Poor Responders</h2>
+    <div class="ph-sub">Investigational arm · Etoposide/Thiotepa + PBSCT → CSI 36 Gy + 54 Gy boost</div>
+  </div>
+
+  <div class="slabel">Plan B Entry Criteria</div>
+  <div class="strata-summary" style="margin-bottom:28px;">
+    <div class="ss-title">Eligibility for Plan B (HDCSCR)</div>
+    <div class="ss-row">
+      <div class="ss-strat">Response</div>
+      <div class="ss-desc">Radiographic CR without marker normalization → Plan B. Less than CR/PR with marker normalization → second-look surgery → if viable tumor at SLS → Plan B. Less than CR/PR without marker normalization → Plan B (± SLS).</div>
+    </div>
+    <div class="ss-row">
+      <div class="ss-strat">PR + markers ↑</div>
+      <div class="ss-desc">PR without marker normalization → second-look surgery (unless contraindicated) → Plan B regardless of SLS findings.</div>
+    </div>
+    <div class="ss-row">
+      <div class="ss-strat">Rationale</div>
+      <div class="ss-desc">Based on the success of HDCSCR in salvage settings for relapsed NGGCT. Investigational as frontline strategy for primary poor responders.</div>
+    </div>
+  </div>
+
+  <div class="slabel">Consolidation Chemotherapy — Plan B</div>
+  <div class="rt-block" style="border-left-color: var(--red); margin-bottom:28px;">
+    <div class="rt-block-title" style="color:var(--red);">HDCSCR — High-Dose Chemotherapy + Stem Cell Rescue</div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Regimen <span class="rt-tag alert">Myeloablative</span></div>
+      <div class="rt-2col">
+        <div class="rt-box">
+          <div class="rt-box-label">Etoposide</div>
+          <div class="rt-box-val">IV · Days −5 to −3 (3 days)</div>
+        </div>
+        <div class="rt-box">
+          <div class="rt-box-label">Thiotepa</div>
+          <div class="rt-box-val">IV over 3 hours · Days −5 to −3 (3 days)</div>
+        </div>
+      </div>
+      <div class="rt-note" style="margin-top:8px;">
+        <strong>Day 0:</strong> Peripheral blood stem cell (PBSC) transplant. Filgrastim or pegfilgrastim support per institutional standards. RT to begin within 6–8 weeks of induction completion or SLS.
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel">Radiation Therapy — Plan B</div>
+  <div class="rt-block">
+    <div class="rt-block-title">Radiotherapy — Standard CSI after HDCSCR</div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Target Volume <span class="rt-tag alert">CSI — Full Neuraxis</span></div>
+      <div class="rt-2col">
+        <div class="rt-box">
+          <div class="rt-box-label">CSI Volume</div>
+          <div class="rt-box-val">Whole brain + entire spinal canal to thecal sac. Standard CSI technique (traditional fields or VMAT/IMRT CSI). Unlike Plan A, this includes full brain irradiation.</div>
+        </div>
+        <div class="rt-box">
+          <div class="rt-box-label">Tumor Bed Boost</div>
+          <div class="rt-box-val">Pre-treatment primary tumor volume → CTV/PTV boost. Sequential after CSI.</div>
+        </div>
+      </div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Doses — Plan B</div>
+      <div class="rt-box" style="margin-bottom:8px;">
+        <div class="rt-box-label">Phase 1 — CSI</div>
+        <div class="rt-box-val">
+          <span class="rt-dose esc">36 Gy</span>
+          <span style="font-size:11px;color:var(--text2);margin-left:8px;">20 fractions · 1.8 Gy/fr · 5 fx/week · 4 weeks</span>
+        </div>
+        <div class="rt-sub">Standard CSI dose as per ACNS0122. Full neuraxis coverage for poor-responding / non-normalized marker patients.</div>
+      </div>
+      <div class="rt-box">
+        <div class="rt-box-label">Phase 2 — Tumor Bed Boost</div>
+        <div class="rt-box-val">
+          <span class="rt-dose standard">54 Gy total</span>
+          <span style="font-size:11px;color:var(--text2);margin-left:8px;">10 additional fractions · 1.8 Gy/fr</span>
+        </div>
+        <div class="rt-sub">Cumulative at primary tumor: <strong>54 Gy</strong>. Total RT duration ~6 weeks (20 fr + 10 fr = 30 fractions).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel">References</div>
+  <div class="refs-list">
+    <div class="ref-item">
+      <div class="ref-num">1</div>
+      <div class="ref-body">
+        <div class="ref-authors">Goldman S, Bouffet E, Fisher PG, Allen JC, Robertson PL, Chuba PJ, et al.</div>
+        <div class="ref-title-text">Phase II Trial of Chemotherapy With or Without Second-Look Surgery for CNS NGGCT (ACNS0122)</div>
+        <div class="ref-journal">J Clin Oncol. 2015;33(21):2313–23</div>
+        <div class="ref-doi"><a href="https://doi.org/10.1200/JCO.2014.59.8466" target="_blank">doi:10.1200/JCO.2014.59.8466</a></div>
+        <div class="ref-note">5y EFS 84%, OS 93% with CSI 36 Gy → reference standard for Plan B</div>
+      </div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">2</div>
+      <div class="ref-body">
+        <div class="ref-authors">COG · ACNS2021</div>
+        <div class="ref-title-text">NCT04684368 · Plan B design</div>
+        <div class="ref-doi"><a href="https://clinicaltrials.gov/study/NCT04684368" target="_blank">NCT04684368</a></div>
+      </div>
+    </div>
+  </div>
+  <div class="print-footer">ACNS2021 NGGCT Review Tool · COG Phase II · NCT04684368 · Educational use only</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PANEL — DECISION TREE
+═══════════════════════════════════════════════════ -->
+<div id="panel-decision" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>Response-Based Treatment Assignment</h2>
+    <div class="ph-sub">After 6 cycles of induction · Response assessment → SLS decision → Plan A or B</div>
+  </div>
+
+  <div class="slabel">Decision Algorithm</div>
+  <div class="flow-box">
+    <div class="flow-step">
+      <div class="flow-num">1</div>
+      <div class="flow-content">
+        <strong>Induction chemotherapy × 6 cycles</strong> (CarboE / IE alternating q21d)<br>
+        <span style="color:var(--text2);font-size:11px;">Response assessment: MRI brain + spine with gadolinium + serum/CSF AFP + hCGβ</span>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">2</div>
+      <div class="flow-content">
+        <strong>CR + markers normalized</strong>
+        <div class="flow-branch"><span class="flow-arrow">→</span> <strong style="color:var(--green);">Plan A (WVSCI)</strong> — WVSCI 30.6 Gy + boost 54 Gy</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">3</div>
+      <div class="flow-content">
+        <strong>PR + markers normalized</strong>
+        <div class="flow-branch"><span class="flow-arrow">→</span> <strong style="color:var(--green);">Plan A (WVSCI)</strong> — WVSCI 30.6 Gy + boost 54 Gy</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">4</div>
+      <div class="flow-content">
+        <strong>CR + markers NOT normalized</strong>
+        <div class="flow-branch"><span class="flow-arrow">→</span> <strong style="color:var(--red);">Plan B (HDCSCR)</strong> — Etoposide/Thiotepa → PBSCT → CSI 36 Gy + boost 54 Gy</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">5</div>
+      <div class="flow-content">
+        <strong>PR + markers NOT normalized</strong>
+        <div class="flow-branch"><span class="flow-arrow">→</span> Second-look surgery (unless contraindicated) <span class="flow-arrow">→</span> <strong style="color:var(--red);">Plan B regardless of SLS findings</strong></div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">6</div>
+      <div class="flow-content">
+        <strong>&lt; CR/PR + markers normalized</strong>
+        <div class="flow-branch"><span class="flow-arrow">→</span> Second-look surgery (unless contraindicated)<br>
+        &nbsp;&nbsp;• If <strong>mature teratoma / non-viable tumor</strong> at SLS <span class="flow-arrow">→</span> <strong style="color:var(--green);">Plan A</strong><br>
+        &nbsp;&nbsp;• If <strong>viable tumor</strong> at SLS <span class="flow-arrow">→</span> <strong style="color:var(--red);">Plan B</strong><br>
+        &nbsp;&nbsp;• If SLS <strong>not feasible</strong> → removed from protocol therapy (follow-up only)</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">7</div>
+      <div class="flow-content">
+        <strong>&lt; CR/PR + markers NOT normalized</strong>
+        <div class="flow-branch"><span class="flow-arrow">→</span> Second-look surgery (± contraindicated) <span class="flow-arrow">→</span> <strong style="color:var(--red);">Plan B regardless of SLS findings</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="signal-box" style="border-left-color:var(--yellow);">
+    <span class="signal-hl">Second-look surgery (SLS)</span> is central to ACNS2021 response assessment. Unlike germinomas (ACNS2321), NGGCT frequently contains <span class="signal-hl2">mature teratoma</span> that does not respond to chemotherapy but is biologically benign — SLS can reclassify apparent poor responders to Plan A eligibility. <span class="signal-hl3">Barrier documentation and clinical benefit assessment of SLS</span> is a specific secondary objective of this trial. AFP normalization timing is critical: elevated AFP >10 ng/mL after induction raises concern for persistent viable malignant elements.
+  </div>
+
+  <div class="slabel">References</div>
+  <div class="refs-list">
+    <div class="ref-item">
+      <div class="ref-num">1</div>
+      <div class="ref-body">
+        <div class="ref-authors">COG · ACNS2021</div>
+        <div class="ref-title-text">NCT04684368 · Response-based algorithm</div>
+        <div class="ref-doi"><a href="https://clinicaltrials.gov/study/NCT04684368" target="_blank">NCT04684368</a></div>
+      </div>
+    </div>
+  </div>
+  <div class="print-footer">ACNS2021 NGGCT Review Tool · COG Phase II · NCT04684368 · Educational use only</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PANEL — INDUCTION CHEMOTHERAPY
+═══════════════════════════════════════════════════ -->
+<div id="panel-chemo" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>Induction Chemotherapy — All Patients</h2>
+    <div class="ph-sub">CarboE / IE alternating × 6 cycles · q21d · Same as ACNS0122 & ACNS1123</div>
+  </div>
+
+  <div class="slabel">Induction Regimen</div>
+  <div class="rt-block" style="border-left-color: var(--green); margin-bottom:28px;">
+    <div class="rt-block-title" style="color:var(--green);">Chemotherapy — Induction Phase (6 Cycles)</div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Cycles 1, 3, 5 — Carboplatin + Etoposide <span class="rt-tag green">CarboE</span></div>
+      <div class="rt-2col">
+        <div class="rt-box">
+          <div class="rt-box-label">Carboplatin</div>
+          <div class="rt-box-val">IV over 15–60 min · Day 1</div>
+        </div>
+        <div class="rt-box">
+          <div class="rt-box-label">Etoposide</div>
+          <div class="rt-box-val">IV over 90–120 min · Days 1–3</div>
+        </div>
+      </div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Cycles 2, 4, 6 — Ifosfamide + Etoposide <span class="rt-tag yellow">IE</span></div>
+      <div class="rt-2col">
+        <div class="rt-box">
+          <div class="rt-box-label">Ifosfamide</div>
+          <div class="rt-box-val">IV over 60 min · Days 1–5 (+ Mesna)</div>
+        </div>
+        <div class="rt-box">
+          <div class="rt-box-label">Etoposide</div>
+          <div class="rt-box-val">IV over 60–120 min · Days 1–5</div>
+        </div>
+      </div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Schedule <span class="rt-tag">q21d × 6 cycles</span></div>
+      <div class="rt-note">Treatment repeats every 21 days for up to 6 cycles in the absence of disease progression or unacceptable toxicity. CarboE alternates with IE. Total induction duration ~18 weeks. G-CSF (filgrastim or pegfilgrastim) per institutional standards.</div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Response Assessment <span class="rt-tag yellow">After Cycle 6</span></div>
+      <div class="rt-note">MRI brain + spine with gadolinium. Serum and CSF tumor markers (AFP, hCGβ). Response determines Plan assignment (A vs B). Second-look surgery offered per decision algorithm.</div>
+    </div>
+  </div>
+
+  <div class="slabel">References</div>
+  <div class="refs-list">
+    <div class="ref-item">
+      <div class="ref-num">1</div>
+      <div class="ref-body">
+        <div class="ref-authors">Goldman S et al. (ACNS0122) · Fangusaro J et al. (ACNS1123)</div>
+        <div class="ref-title-text">Identical induction backbone used across COG NGGCT trials</div>
+        <div class="ref-journal">JCO 2015;33(21):2313–23 · JCO 2019;37(35):3283–90</div>
+      </div>
+    </div>
+  </div>
+  <div class="print-footer">ACNS2021 NGGCT Review Tool · COG Phase II · NCT04684368 · Educational use only</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PANEL — ELIGIBILITY
+═══════════════════════════════════════════════════ -->
+<div id="panel-elig" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>Eligibility Criteria — ACNS2021</h2>
+    <div class="ph-sub">NCT04684368 · Ages 3–29 · Localized NGGCT · Suprasellar/Pineal</div>
+  </div>
+
+  <div class="slabel">Diagnostic Criteria — Markers & Histology</div>
+  <div class="rt-block" style="margin-bottom:28px;">
+    <div class="rt-block-title">NGGCT Diagnosis — ACNS2021 Criteria</div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Eligible Histologies <span class="rt-tag green">NGGCT elements</span></div>
+      <div class="rt-box">
+        <div class="rt-box-val">Endodermal sinus tumor (yolk sac), embryonal carcinoma, choriocarcinoma, malignant/immature teratoma, and mixed GCT (may include germinoma component if malignant NGGCT elements are present).</div>
+      </div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Marker-Based Diagnosis <span class="rt-tag yellow">Without biopsy</span></div>
+      <div class="rt-box">
+        <div class="rt-box-val">AFP elevated above institutional normal OR &gt;10 ng/mL, OR hCGβ &gt;100 mIU/mL (serum or CSF) in a suprasellar/pineal lesion. Confirmed by Rapid Central Marker Screening Review (APEC14B1-CNS).</div>
+        <div class="rt-sub">Histologic confirmation not mandatory if markers are diagnostic.</div>
+      </div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Excluded <span class="rt-tag alert">Ineligible</span></div>
+      <div class="rt-note">Pure mature teratoma with non-elevated markers. Basal ganglia or other non-ventricular primary sites. Metastatic disease (MRI, CSF cytology, or intraoperative evidence of dissemination). Pure germinoma → ACNS2321 (NCT06368817).</div>
+    </div>
+  </div>
+
+  <div class="slabel">Patient Eligibility</div>
+  <div class="elig-grid">
+    <div class="elig-box">
+      <div class="elig-box-title">Inclusion</div>
+      <div class="elig-item"><strong>Age:</strong> ≥3 years and &lt;30 years at enrollment</div>
+      <div class="elig-item"><strong>Location:</strong> Suprasellar and/or pineal region. Bifocal tumors included.</div>
+      <div class="elig-item"><strong>Newly diagnosed:</strong> No prior tumor-directed therapy (surgery + steroids allowed)</div>
+      <div class="elig-item"><strong>Central review:</strong> Eligibility confirmed by Rapid Central Imaging Review + Rapid Central Marker Review</div>
+      <div class="elig-item"><strong>CSF:</strong> Lumbar CSF obtained prior to enrollment (unless contraindicated). Within 31 days of enrollment.</div>
+      <div class="elig-item"><strong>Spine MRI:</strong> With gadolinium at diagnosis — required. Obtain before LP.</div>
+      <div class="elig-item"><strong>Serum markers:</strong> AFP + hCGβ within 7 days of enrollment</div>
+      <div class="elig-item"><strong>CSF markers:</strong> Within 31 days of enrollment; ≥10 days post-surgery</div>
+    </div>
+    <div class="elig-box">
+      <div class="elig-box-title">Exclusion</div>
+      <div class="elig-item"><strong>Basal ganglia / thalamic</strong> or other non-ventricular primary sites</div>
+      <div class="elig-item"><strong>Metastatic disease</strong> at diagnosis</div>
+      <div class="elig-item"><strong>Pure mature teratoma</strong> with non-elevated markers</div>
+      <div class="elig-item"><strong>Prior therapy:</strong> Any tumor-directed treatment (except surgery + steroids)</div>
+      <div class="elig-item"><strong>Pregnancy:</strong> Excluded (false positive possible due to hCGβ)</div>
+      <div class="elig-item"><strong>Breastfeeding</strong></div>
+      <div class="elig-item"><strong>Sexually active</strong> without effective contraception</div>
+    </div>
+  </div>
+
+  <div class="slabel">Neurocognitive Assessment</div>
+  <div class="strata-summary">
+    <div class="ss-row"><div class="ss-strat">Language</div><div class="ss-desc">English, Spanish, or French-speaking (other languages participate but without neurocog assessment)</div></div>
+    <div class="ss-row"><div class="ss-strat">Battery</div><div class="ss-desc">COG Standardized Neuropsychological Battery + BRIEF-2, PedsQL, ABAS-3, BASC-3 questionnaires</div></div>
+    <div class="ss-row"><div class="ss-strat">Exclusion</div><div class="ss-desc">Pre-existing neurodevelopmental disorder (Down syndrome, Fragile X, intellectual disability). NF1 allowed.</div></div>
+  </div>
+
+  <div class="print-footer">ACNS2021 NGGCT Review Tool · COG Phase II · NCT04684368 · Educational use only</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PANEL — CONTEXT
+═══════════════════════════════════════════════════ -->
+<div id="panel-context" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>COG NGGCT Trial Lineage & Clinical Context</h2>
+    <div class="ph-sub">ACNS0122 → ACNS1123 → ACNS2021 · Evidence Base & Signal 2024–2026</div>
+  </div>
+
+  <div class="slabel">Clinical Signal — 2024–2026</div>
+  <div class="signal-box">
+    <span class="signal-hl">The defining lesson from ACNS1123 NGGCT Stratum 1 is unambiguous:</span> eliminating spinal irradiation led to <span class="signal-hl" style="color:var(--red);">12% isolated spinal relapse rate</span> (6 of 66 evaluable patients), prompting early study closure of the NGGCT arm. This is despite encouraging 3-year PFS of 87.8% — the pattern of failure was unacceptable given the near-zero salvage rates for relapsed NGGCT (5-year OS 9–14% in the EU-RHAB registry).
+    <br><br>
+    <span class="signal-hl2">ACNS2021 represents a carefully calibrated course correction:</span> it reintroduces spinal irradiation via the novel WVSCI volume while preserving the neurocognitive advantage of WVI over whole-brain RT. The 30.6 Gy dose for microscopic disease was validated by the absence of ventricular failures on ACNS1123, and is maintained in ACNS2021 rather than returning to 36 Gy CSI.
+    <br><br>
+    For poor responders, <span class="signal-hl3">Plan B introduces frontline HDCSCR (etoposide/thiotepa + PBSCT)</span> — investigational in the newly diagnosed setting but supported by salvage data showing that standard-dose re-treatment has essentially zero efficacy in relapsed NGGCT.
+  </div>
+
+  <div class="slabel">Active & Reference Trials</div>
+  <div class="trials-grid">
+    <div class="trial-card">
+      <div class="tc-status recruiting">RECRUITING</div>
+      <div class="tc-nct"><a href="https://clinicaltrials.gov/study/NCT04684368" target="_blank">NCT04684368</a></div>
+      <div class="tc-title">ACNS2021 — Response-Based WVSCI for Localized CNS NGGCT</div>
+      <div class="tc-sponsor">Children's Oncology Group · Phase II</div>
+      <div class="tc-tags">
+        <span class="tc-tag th-ch">CarboE / IE × 6c</span>
+        <span class="tc-tag th-rt">WVSCI / CSI</span>
+        <span class="tc-tag th-ct">HDCSCR</span>
+      </div>
+      <div class="tc-context">Primary objective: maintain 2y PFS of ACNS0122 while reducing spinal relapses vs ACNS1123 using WVSCI. Plan B tests frontline HDCSCR for poor responders.</div>
+      <div class="tc-enroll">Recruiting · Ages 3–29 · USA, Canada, Australia</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-status recruiting">RECRUITING</div>
+      <div class="tc-nct"><a href="https://clinicaltrials.gov/study/NCT06368817" target="_blank">NCT06368817</a></div>
+      <div class="tc-title">ACNS2321 — Response-Based Reduced RT for CNS Germinomas</div>
+      <div class="tc-sponsor">Children's Oncology Group · Phase II</div>
+      <div class="tc-tags">
+        <span class="tc-tag th-ch">Carboplatin + Etoposide × 4c</span>
+        <span class="tc-tag th-rt">WVI 12–24 Gy</span>
+      </div>
+      <div class="tc-context">Companion germinoma trial. Tests WVI dose reduction to 12 Gy in CR patients. 7 strata by location + response.</div>
+      <div class="tc-enroll">Open Oct 2024 · Target n=240</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-status completed">COMPLETED — Reference</div>
+      <div class="tc-nct"><a href="https://clinicaltrials.gov/study/NCT01602666" target="_blank">NCT01602666</a></div>
+      <div class="tc-title">ACNS1123 Stratum 1 — WVI 30.6 Gy for Localized NGGCT</div>
+      <div class="tc-sponsor">Children's Oncology Group · Phase II</div>
+      <div class="tc-tags">
+        <span class="tc-tag th-ch">CarboE / IE × 6c</span>
+        <span class="tc-tag th-rt">WVI 30.6 Gy</span>
+      </div>
+      <div class="tc-context">3y PFS 87.8%, OS 92.4% — but 8 failures with 6 isolated spinal relapses. Closed early for NGGCT → led to WVSCI design of ACNS2021.</div>
+      <div class="tc-enroll">Published JCO 2019 · Fangusaro et al.</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-status completed">COMPLETED — Reference</div>
+      <div class="tc-nct"><a href="https://clinicaltrials.gov/study/NCT00047320" target="_blank">NCT00047320</a></div>
+      <div class="tc-title">ACNS0122 — CSI 36 Gy + 54 Gy for CNS NGGCT</div>
+      <div class="tc-sponsor">Children's Oncology Group · Phase II</div>
+      <div class="tc-tags">
+        <span class="tc-tag th-ch">CarboE / IE × 6c</span>
+        <span class="tc-tag th-rt">CSI 36 Gy</span>
+      </div>
+      <div class="tc-context">5y EFS 84%, OS 93%. CSI 36 Gy remains the reference standard. SLS role established. Target for ACNS2021 to match or exceed.</div>
+      <div class="tc-enroll">Published JCO 2015 · Goldman et al.</div>
+    </div>
+  </div>
+
+  <div class="slabel">References</div>
+  <div class="refs-list">
+    <div class="ref-item">
+      <div class="ref-num">1</div>
+      <div class="ref-body">
+        <div class="ref-authors">Fangusaro J, Wu S, MacDonald S, Murphy E, Shaw D, Bartels U, et al.</div>
+        <div class="ref-title-text">Phase II Trial of Response-Based Radiation Therapy for Patients With Localized CNS Nongerminomatous Germ Cell Tumors (ACNS1123 Stratum 1)</div>
+        <div class="ref-journal">J Clin Oncol. 2019;37(35):3283–90</div>
+        <div class="ref-doi"><a href="https://doi.org/10.1200/JCO.19.00701" target="_blank">doi:10.1200/JCO.19.00701</a></div>
+        <div class="ref-note">WVI 30.6 Gy + 54 Gy boost: 3y PFS 87.8% but 6/66 isolated spinal relapses → rationale for WVSCI in ACNS2021</div>
+      </div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">2</div>
+      <div class="ref-body">
+        <div class="ref-authors">Goldman S, Bouffet E, Fisher PG, Allen JC, Robertson PL, Chuba PJ, et al.</div>
+        <div class="ref-title-text">Phase II Trial of Chemotherapy With or Without Second-Look Surgery for CNS NGGCT (ACNS0122)</div>
+        <div class="ref-journal">J Clin Oncol. 2015;33(21):2313–23</div>
+        <div class="ref-doi"><a href="https://doi.org/10.1200/JCO.2014.59.8466" target="_blank">doi:10.1200/JCO.2014.59.8466</a></div>
+        <div class="ref-note">5y EFS 84%, OS 93% · CSI 36 Gy reference standard · SLS role documented</div>
+      </div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">3</div>
+      <div class="ref-body">
+        <div class="ref-authors">MacDonald SM, Fangusaro J, Wu S, Murphy E, Shaw D, et al.</div>
+        <div class="ref-title-text">Patterns of Failure and Radiation Dosimetry for Nongerminomatous Germ Cell Tumors (ACNS1123)</div>
+        <div class="ref-journal">Int J Radiat Oncol Biol Phys. 2023;115(1):199–205</div>
+        <div class="ref-doi"><a href="https://doi.org/10.1016/j.ijrobp.2022.07.014" target="_blank">doi:10.1016/j.ijrobp.2022.07.014</a></div>
+        <div class="ref-note">All 8 failures had spinal component · Contouring atlas + early RT plan review ensured protocol adherence</div>
+      </div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">4</div>
+      <div class="ref-body">
+        <div class="ref-authors">Frappaz D, et al. (EANO/SNO/Euracan)</div>
+        <div class="ref-title-text">Consensus review on the current management of intracranial germ cell tumors in adolescents and young adults</div>
+        <div class="ref-journal">Neuro-Oncology. 2022;24(4):516–27</div>
+        <div class="ref-doi"><a href="https://doi.org/10.1093/neuonc/noab252" target="_blank">doi:10.1093/neuonc/noab252</a></div>
+      </div>
+    </div>
+    <div class="ref-item">
+      <div class="ref-num">5</div>
+      <div class="ref-body">
+        <div class="ref-authors">COG · Children's Oncology Group</div>
+        <div class="ref-title-text">ACNS2021 — NCT04684368 · Phase II</div>
+        <div class="ref-journal">ClinicalTrials.gov</div>
+        <div class="ref-doi"><a href="https://clinicaltrials.gov/study/NCT04684368" target="_blank">NCT04684368</a></div>
+      </div>
+    </div>
+  </div>
+  <div class="print-footer">ACNS2021 NGGCT Review Tool · COG Phase II · NCT04684368 · Educational use only</div>
+</div>
+</div>
+
+<script>
+// ═══ THÈME ═══
+var THEME_KEY = 'theme-acns2021-nggct-revue';
+
+function initTheme() {
+  try {
+    if (localStorage.getItem(THEME_KEY) === 'light') applyTheme('light');
+  } catch(e) {}
+}
+
+function toggleTheme() {
+  applyTheme(document.body.classList.contains('light') ? 'dark' : 'light');
+}
+
+function applyTheme(mode) {
+  var btn = document.getElementById('btn-theme');
+  if (mode === 'light') {
+    document.body.classList.add('light');
+    btn.textContent = '☀';
+    btn.title = 'Switch to dark mode';
+    try { localStorage.setItem(THEME_KEY, 'light'); } catch(e) {}
+  } else {
+    document.body.classList.remove('light');
+    btn.textContent = '◑';
+    btn.title = 'Switch to light mode';
+    try { localStorage.setItem(THEME_KEY, 'dark'); } catch(e) {}
+  }
+}
+
+// ═══ NAVIGATION ═══
+var _currentPanel = null;
+
+function show(id) {
+  _currentPanel = id;
+  document.getElementById('landing').style.display = 'none';
+  document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('active'); });
+  var p = document.getElementById('panel-' + id);
+  if (p) p.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function back() {
+  document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('landing').style.display = '';
+  _currentPanel = null;
+  window.scrollTo(0, 0);
+}
+
+// ═══ INIT ═══
+initTheme();
+</script>
+</body>
+</html>
