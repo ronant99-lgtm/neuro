@@ -1,0 +1,1611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>Pediatric Rare Neuro-Oncology — RT &amp; Trials Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── THÈME ROOT (sombre défaut) ── */
+    :root {
+      --bg:       #0d1117;
+      --surface:  #161b22;
+      --surface2: #1e2530;
+      --border:   #2a3340;
+      --accent:   #58a6ff;
+      --accent2:  #3fb950;
+      --accent4:  #d2a8ff;
+      --accent5:  #ffa657;
+      --accent6:  #39c5cf;
+      --text:     #e6edf3;
+      --muted:    #7d8590;
+      --tag-bg:   #1c2a3a;
+    }
+
+    /* ── THÈME CLAIR ── */
+    body.light {
+      --bg:       #f5f0e8;
+      --surface:  #ffffff;
+      --surface2: #ede8dc;
+      --border:   #c8bfaa;
+      --accent:   #1a5fa8;
+      --accent2:  #2d7a3a;
+      --accent4:  #6b3fa0;
+      --accent5:  #c45a10;
+      --accent6:  #1a7a8a;
+      --text:     #1a1208;
+      --muted:    #5a4f3a;
+      --tag-bg:   #e6e0d2;
+    }
+
+    /* ── BASE ── */
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 32px 14px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    body.light header { background: rgba(245,240,232,0.97); backdrop-filter: blur(10px); }
+    .header-top { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+    .header-title { font-family: 'DM Serif Display', serif; font-size: 22px; }
+    .header-sub { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
+    .header-meta { margin-top: 7px; display: flex; gap: 20px; font-size: 11px; color: var(--muted); flex-wrap: wrap; align-items: center; }
+    .header-meta span { display: flex; align-items: center; gap: 5px; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+    .dot-blue  { background: var(--accent); }
+    .dot-green { background: var(--accent2); }
+    .dot-pur   { background: var(--accent4); }
+    .disclaimer { margin-top: 7px; font-size: 10.5px; color: var(--muted); font-style: italic; }
+
+    /* ── THEME TOGGLE ── */
+    .btn-theme {
+      margin-left: auto;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--muted);
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-theme:hover { border-color: var(--accent); color: var(--text); }
+
+    /* ── TOOL CROSS-LINK ── */
+    .tool-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      margin-top: 6px;
+      padding: 4px 10px;
+      font-size: 11px; font-family: 'DM Mono', monospace; font-weight: 500;
+      color: var(--accent); background: var(--tag-bg);
+      border: 1px solid var(--border); border-radius: 5px;
+      text-decoration: none;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .tool-link:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+    .tool-link::before { content: '🔗'; font-size: 10px; }
+
+    /* ── MAIN ── */
+    main { padding: 32px 32px 80px; max-width: 1280px; margin: 0 auto; }
+
+    /* ── LANDING ── */
+    #landing { display: block; }
+    .landing-intro {
+      font-family: 'DM Serif Display', serif;
+      font-size: 15px;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .nav-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 18px;
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.12s, box-shadow 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    body.light .nav-card:hover { background: #f8f4ee; }
+    .nav-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 10px 10px 0 0;
+    }
+    .nav-card.c1::before { background: var(--accent4); }
+    .nav-card.c2::before { background: #f78166; }
+    .nav-card.c3::before { background: var(--accent5); }
+    .nav-card.c4::before { background: var(--accent); }
+    .nav-card.c5::before { background: var(--accent6); }
+    .nav-card.c6::before { background: #4ac08a; }
+    .nav-card:hover { border-color: #3a4a5a; transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
+    body.light .nav-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+    .nav-card-num  { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); margin-bottom: 6px; }
+    .nav-card-name { font-family: 'DM Serif Display', serif; font-size: 18px; margin-bottom: 10px; }
+    .nav-card-dose { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); margin-bottom: 6px; }
+    .nav-card-trials { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+    .nav-card-tag { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+    .tag-red   { background: #2a0d0d; color: #f85149; border: 1px solid #4a1a1a; }
+    .tag-pur   { background: #2a1a40; color: var(--accent4); border: 1px solid #4a2a60; }
+    .tag-blue  { background: #1a2a40; color: var(--accent);  border: 1px solid #2a4060; }
+    .tag-cyan  { background: #1a2a30; color: var(--accent6); border: 1px solid #2a4a50; }
+    .tag-green { background: #0d2a1a; color: var(--accent2); border: 1px solid #1a4a2a; }
+    body.light .tag-red  { background: #fde8e8; color: #c0392b; border-color: #e8b0b0; }
+    body.light .tag-pur  { background: #ede0f8; color: #6b3fa0; border-color: #c0a0d8; }
+    body.light .tag-blue { background: #e0ecf8; color: #1a5fa8; border-color: #a0c0d8; }
+    body.light .tag-cyan { background: #e0f0f4; color: #1a7a8a; border-color: #a0c8d0; }
+    body.light .tag-green{ background: #e0f2e8; color: #2d7a3a; border-color: #a0c8a8; }
+
+    /* ── COMPARE TABLE ── */
+    .compare-wrap { margin-bottom: 8px; }
+    .compare-wrap h2 {
+      font-family: 'DM Mono', monospace; font-size: 10px;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .compare-wrap h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .ct { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    .ct th { background: var(--surface2); color: var(--muted); font-weight: 500; font-size: 11px;
+             padding: 8px 12px; text-align: left; border: 1px solid var(--border); }
+    .ct td { padding: 9px 12px; border: 1px solid var(--border); vertical-align: top; }
+    .ct tr:nth-child(odd)  td { background: var(--surface); }
+    .ct tr:nth-child(even) td { background: var(--surface2); }
+    .ct tr:hover td { background: #1e2a38; }
+    body.light .ct tr:hover td { background: #ede8dc; }
+    .mono  { font-family: 'DM Mono', monospace; color: var(--accent);  font-size: 12px; }
+    .mono2 { font-family: 'DM Mono', monospace; color: var(--accent4); font-size: 12px; }
+    .mono3 { font-family: 'DM Mono', monospace; color: var(--accent5); font-size: 12px; }
+    .mono4 { font-family: 'DM Mono', monospace; color: var(--accent6); font-size: 12px; }
+
+    /* ── PANELS ── */
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      cursor: pointer; color: var(--muted); font-size: 12px;
+      margin-bottom: 24px; padding: 6px 12px 6px 8px;
+      border: 1px solid var(--border); border-radius: 6px;
+      background: var(--surface); transition: color 0.15s, border-color 0.15s;
+      user-select: none;
+    }
+    .back-btn:hover { color: var(--text); border-color: var(--accent); }
+    .panel-header { margin-bottom: 24px; }
+    .panel-title { font-family: 'DM Serif Display', serif; font-size: 30px; margin-bottom: 4px; }
+    .panel-subtitle { font-size: 12px; color: var(--muted); }
+
+    /* ── SECTION LABEL ── */
+    .slabel {
+      font-family: 'DM Mono', monospace; font-size: 10px;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      color: var(--muted); margin: 28px 0 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .slabel::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* ── RT TABLE ── */
+    .rt-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .rt-table th { background: var(--surface2); color: var(--muted); font-weight: 500;
+                   font-size: 11px; padding: 8px 12px; text-align: left; border: 1px solid var(--border); }
+    .rt-table td { padding: 9px 12px; border: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+    .rt-table tr:nth-child(odd)  td { background: var(--surface); }
+    .rt-table tr:nth-child(even) td { background: var(--surface2); }
+    .rt-table tr:hover td { background: #1e2a38; }
+    body.light .rt-table tr:hover td { background: #ede8dc; }
+    .val  { font-family: 'DM Mono', monospace; color: var(--accent);  font-size: 12.5px; }
+    .val2 { font-family: 'DM Mono', monospace; color: var(--accent2); font-size: 12.5px; }
+    .val3 { font-family: 'DM Mono', monospace; color: var(--accent5); font-size: 12.5px; }
+    .val4 { font-family: 'DM Mono', monospace; color: var(--accent4); font-size: 12.5px; }
+    .val6 { font-family: 'DM Mono', monospace; color: var(--accent6); font-size: 12.5px; }
+    .nt   { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+
+    /* ── TRIAL CARDS ── */
+    .trials-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
+    .trial-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 16px;
+      transition: border-color 0.15s, transform 0.1s;
+    }
+    body.light .trial-card { box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+    .trial-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+    .tc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+    .nct-id { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); text-decoration: none; }
+    .nct-id:hover { text-decoration: underline; }
+    .sbadge { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+    .s-r  { background: #0d2a1a; color: var(--accent2); border: 1px solid #1a4a2a; }
+    .s-a  { background: #1a1a2e; color: var(--accent4); border: 1px solid #2a2a4e; }
+    .s-ny { background: #2a1a0a; color: var(--accent5); border: 1px solid #4a2a0a; }
+    body.light .s-r  { background: #e0f2e8; color: #2d7a3a; border-color: #a0c8a8; }
+    body.light .s-a  { background: #ede0f8; color: #6b3fa0; border-color: #c0a0d8; }
+    body.light .s-ny { background: #fdf0e0; color: #c45a10; border-color: #d8c0a0; }
+    .tc-title   { font-size: 13px; font-weight: 500; line-height: 1.4; margin-bottom: 10px; }
+    .tc-meta    { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+    .ttag { font-size: 10.5px; background: var(--tag-bg); border: 1px solid var(--border);
+            border-radius: 4px; padding: 2px 7px; color: var(--muted); font-family: 'DM Mono', monospace; }
+    .th-rt { font-size:10.5px; border-radius:4px; padding:2px 7px; font-family:'DM Mono',monospace;
+             background:#1a2030; color:#79b4ff; border:1px solid #2a3a5a; }
+    .th-tg { font-size:10.5px; border-radius:4px; padding:2px 7px; font-family:'DM Mono',monospace;
+             background:#1a2a1a; color:#7dcc7d; border:1px solid #2a4a2a; }
+    .th-ct { font-size:10.5px; border-radius:4px; padding:2px 7px; font-family:'DM Mono',monospace;
+             background:#2a2a1a; color:#ffcc55; border:1px solid #4a4a1a; }
+    .th-ch { font-size:10.5px; border-radius:4px; padding:2px 7px; font-family:'DM Mono',monospace;
+             background:#2a1a1a; color:#ff9980; border:1px solid #4a2a2a; }
+    .th-im { font-size:10.5px; border-radius:4px; padding:2px 7px; font-family:'DM Mono',monospace;
+             background:#2a1a2a; color:#cc99ff; border:1px solid #4a2a4a; }
+    .tc-sponsor { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .tc-sponsor strong { color: #a0b0c0; }
+    body.light .tc-sponsor strong { color: #3a4a5a; }
+
+    /* ── SIGNAL BOX ── */
+    .signal-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent); border-radius: 6px;
+      padding: 16px 20px; font-size: 13.5px; line-height: 1.7; color: #c9d8e8;
+    }
+    body.light .signal-box { color: #3a2e1a; }
+    .signal-box p { margin-bottom: 8px; }
+    .signal-box p:last-child { margin-bottom: 0; }
+    .signal-box strong { color: var(--text); }
+    .signal-hl  { color: var(--accent2); font-weight: 600; }
+    .signal-hl2 { color: var(--accent4); font-weight: 600; }
+    .signal-hl3 { color: var(--accent5); font-weight: 600; }
+
+    /* ── REFERENCES ── */
+    .refs-list { display: flex; flex-direction: column; gap: 8px; }
+    .ref-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 12px 14px; font-size: 12px; line-height: 1.6;
+    }
+    .ref-num { display: inline-block; font-family: 'DM Mono', monospace; font-size: 10px;
+               color: var(--accent); background: var(--tag-bg); border-radius: 4px;
+               padding: 1px 6px; margin-right: 8px; vertical-align: middle; }
+    .ref-authors { color: var(--muted); }
+    .ref-title   { color: var(--text); font-weight: 500; margin: 3px 0 1px; }
+    .ref-journal { color: #79b4ff; font-style: italic; }
+    body.light .ref-journal { color: var(--accent); }
+    .ref-doi a   { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); text-decoration: none; }
+    .ref-doi a:hover { text-decoration: underline; }
+    .ref-note    { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+
+    /* ── PRINT ── */
+    @media print {
+      body, body.light { background: #fff !important; color: #000 !important; }
+      header { position: static !important; background: #fff !important; border-bottom: 1px solid #ccc !important; }
+      .btn-theme { display: none !important; }
+      .back-btn  { display: none !important; }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      header, main { padding-left: 16px; padding-right: 16px; }
+      .trials-grid { grid-template-columns: 1fr; }
+      .nav-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <span class="header-title">Pediatric Rare Neuro-Oncology</span>
+    <span class="header-sub">RT Protocols &amp; Active Trials — St. Jude Observership 2026</span>
+    <button class="btn-theme" id="btn-theme" onclick="toggleTheme()" title="Toggle theme">◑</button>
+  </div>
+  <div class="header-meta">
+    <span><span class="dot dot-blue"></span>Sources: RadOncReview · ClinicalTrials.gov · PubMed · COG</span>
+    <span><span class="dot dot-green"></span>Updated: April 2026</span>
+    <span><span class="dot dot-pur"></span>6 entities · ATRT · ETMR · Pineoblastoma · GCT/NGGCT · Ependymoma · CPT</span>
+  </div>
+  <div class="disclaimer">For personal educational use only — not a substitute for institutional protocols or multidisciplinary clinical judgment.</div>
+</header>
+
+<main>
+
+<!-- ═══════════════ LANDING ═══════════════ -->
+<div id="landing">
+  <p class="landing-intro">Rare and embryonal CNS tumors — RT protocols, molecular landscape, active trials, and clinical signal 2025–2026.</p>
+
+  <div class="nav-grid">
+    <div class="nav-card c1" onclick="show('atrt')">
+      <div class="nav-card-num">01</div>
+      <div class="nav-card-name">ATRT</div>
+      <div class="nav-card-dose">54 Gy IFRT / ± 23.4–36 CSI</div>
+      <div class="nav-card-trials">4 active trials</div>
+      <span class="nav-card-tag tag-red">WHO Grade 4 · INI-1 loss</span>
+    </div>
+    <div class="nav-card c2" onclick="show('etmr')">
+      <div class="nav-card-num">02</div>
+      <div class="nav-card-name">ETMR</div>
+      <div class="nav-card-dose">36–54 Gy ± CSI</div>
+      <div class="nav-card-trials">3 trials / context</div>
+      <span class="nav-card-tag tag-red">WHO Grade 4 · C19MC amp</span>
+    </div>
+    <div class="nav-card c3" onclick="show('pineoblas')">
+      <div class="nav-card-num">03</div>
+      <div class="nav-card-name">Pineoblastoma</div>
+      <div class="nav-card-dose">54 Gy IFRT / 23.4–36 CSI</div>
+      <div class="nav-card-trials">4 active trials</div>
+      <span class="nav-card-tag tag-pur">WHO Grade 4 · DICER1 · miRNA</span>
+    </div>
+    <div class="nav-card c4" onclick="show('gct')">
+      <div class="nav-card-num">04</div>
+      <div class="nav-card-name">GCT / NGGCT</div>
+      <div class="nav-card-dose">Germinoma: 18–24 Gy WVRT + 12 Gy<br>NGGCT: 36 Gy CSI + 54 Gy boost</div>
+      <div class="nav-card-trials">3 active trials</div>
+      <span class="nav-card-tag tag-blue">OS germinoma &gt;90% · NGGCT 60–70%</span>
+    </div>
+    <div class="nav-card c5" onclick="show('ependy')">
+      <div class="nav-card-num">05</div>
+      <div class="nav-card-name">Ependymoma</div>
+      <div class="nav-card-dose">59.4 Gy IFRT (54 Gy &lt;18 mo GTR)</div>
+      <div class="nav-card-trials">5 active trials</div>
+      <span class="nav-card-tag tag-cyan">RELA · YAP1 · PFA/PFB · 1q gain</span>
+    </div>
+    <div class="nav-card c6" onclick="show('cpt')">
+      <div class="nav-card-num">06</div>
+      <div class="nav-card-name">Choroid Plexus Tumors</div>
+      <div class="nav-card-dose">CPC: 54 Gy focal / 35.2 Gy CSI + boost</div>
+      <div class="nav-card-trials">CPT-SIOP-2009 registry</div>
+      <span class="nav-card-tag tag-green">CPP · aCPP · CPC · TP53/LFS</span>
+    </div>
+  </div>
+
+  <!-- Cross-entity comparative table -->
+  <div class="compare-wrap">
+    <h2>Cross-entity comparison</h2>
+    <table class="ct">
+      <thead>
+        <tr>
+          <th>Entity</th>
+          <th>Molecular marker</th>
+          <th>CSI indication</th>
+          <th>Reference RT dose</th>
+          <th>5y OS (approx.)</th>
+          <th>Dominant trial theme</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>ATRT</strong></td>
+          <td>INI-1/SMARCB1 loss (85%) · SMARCA4 (15%)</td>
+          <td>M+ only (23.4–36 Gy) · never routine</td>
+          <td><span class="mono2">54 Gy IFRT</span> · 50.4 Gy if &lt;3y</td>
+          <td><span class="mono">~40–45%</span> (ACNS0333)</td>
+          <td>SHH/TYR/MYC subgroups · HDCT · targeted (EZH2i, BET)</td>
+        </tr>
+        <tr>
+          <td><strong>ETMR</strong></td>
+          <td>C19MC amp/TTYH1 fusion · LIN28A+</td>
+          <td>≥3y, M+ · probable benefit · no consensus</td>
+          <td><span class="mono3">36 Gy CSI + 54 Gy boost</span> (HR-MB paradigm)</td>
+          <td><span class="mono">&lt;20%</span> (historical)</td>
+          <td>HDCT (Head Start) · LIN28A · DICER1 subset</td>
+        </tr>
+        <tr>
+          <td><strong>Pineoblastoma</strong></td>
+          <td>DICER1 · miRNA-1 · miRNA-2 · MYC/FOXR2 · RB1</td>
+          <td>M0: 23.4 Gy · M+: 36 Gy (response-adapted)</td>
+          <td><span class="mono2">54 Gy IFRT</span> + CSI per risk</td>
+          <td><span class="mono">50–65%</span> (≥3y) · 15–40% (&lt;4y)</td>
+          <td>Molecular subgrouping → risk adaptation · SJMB03 paradigm</td>
+        </tr>
+        <tr>
+          <td><strong>Germinoma</strong></td>
+          <td>Markers: AFP neg · β-hCG &lt;100 (ACNS1123)</td>
+          <td>M+: CSI 21–24 Gy; M0: WVRT only</td>
+          <td><span class="mono">18 Gy WVRT + 12 Gy</span> boost (post-chemo CR)</td>
+          <td><span class="mono2">&gt;90%</span> (RT ± chemo)</td>
+          <td>WVI dose reduction (12 vs 18 Gy) · ACNS2321</td>
+        </tr>
+        <tr>
+          <td><strong>NGGCT</strong></td>
+          <td>AFP &gt;10 or β-hCG &gt;100 · mixed histology</td>
+          <td>Mandatory CSI (WVRT failed — ACNS1123)</td>
+          <td><span class="mono3">36 Gy CSI + 54 Gy boost</span> (ACNS0122 standard)</td>
+          <td><span class="mono">60–70%</span> (5y EFS 84% — ACNS0122)</td>
+          <td>CSI dose (30.6 vs 36 Gy M0) · ACNS2021</td>
+        </tr>
+        <tr>
+          <td><strong>Ependymoma</strong></td>
+          <td>RELA fus · YAP1 fus · PFA · PFB · 1q gain (poor)</td>
+          <td>M+ only: CSI 36 Gy + boost 59.4 Gy primary</td>
+          <td><span class="mono6" style="font-family:'DM Mono',monospace;color:var(--accent6);font-size:12px;">59.4 Gy IFRT</span> (54 Gy &lt;18 mo GTR)</td>
+          <td><span class="mono2">71–84%</span> (7y OS ACNS0121)</td>
+          <td>Chemo role (ACNS0831) · molecular stratification · proton dose-escalation</td>
+        </tr>
+        <tr>
+          <td><strong>CPT — CPC</strong></td>
+          <td>TP53 mut (40–50% CPC) · LFS · methylation Ped-B</td>
+          <td>M+: CSI 35.2 Gy + boost 54 Gy · never if LFS</td>
+          <td><span class="mono2">54 Gy</span> focal (CPC &gt;3y, M0) · avoid RT &lt;3y &amp; LFS</td>
+          <td>CPP <span class="mono2">&gt;90%</span> · aCPP <span class="mono">~85%</span> · CPC <span class="mono3">36–65%</span></td>
+          <td>CarbEV vs CycEV (SIOP-2000) · TP53 subgrouping · no RT in LFS</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════ PANEL 01 — ATRT ═══════════════ -->
+<div class="panel" id="atrt">
+  <div class="back-btn" onclick="back()">← All entities</div>
+  <div class="panel-header">
+    <div class="panel-title">ATRT</div>
+    <div class="panel-subtitle">Atypical Teratoid/Rhabdoid Tumor · WHO Grade 4 · INI-1/SMARCB1 · SHH · TYR · MYC subgroups</div>
+  </div>
+
+  <div class="slabel">RT Reference Protocols</div>
+  <table class="rt-table">
+    <thead>
+      <tr><th>Scenario</th><th>RT Timing</th><th>Volumes &amp; Dose</th><th>Key Outcomes</th><th>Source</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>M0 · ≥6 mo (infratentorial) or ≥12 mo (supratentorial)</strong><br><span class="nt">ACNS0333 standard</span></td>
+        <td><span class="val">After induction chemo ×2c</span><br><span class="nt">Before consolidative HDCT/PBSC</span></td>
+        <td>
+          IFRT to primary<br>
+          <span class="val">54 Gy / 1.8 Gy/fx</span> (≥3y)<br>
+          <span class="val2">50.4 Gy</span> (1–3y)<br>
+          CTV: tumor bed + residual + 1 cm → confined to anatomy<br>
+          <span class="nt">Avoid if &lt;6 mo (infratentorial) / &lt;12 mo (supratentorial)</span>
+        </td>
+        <td>4y EFS <span class="val2">37%</span> · 4y OS <span class="val2">43%</span><br><span class="nt">Improved vs historical (&lt;3y: 5% → 40%)</span></td>
+        <td>ACNS0333 [Reddy JCO '20]</td>
+      </tr>
+      <tr>
+        <td><strong>M+ disease (any age)</strong></td>
+        <td><span class="val">Same timing as M0</span></td>
+        <td>
+          CSI: <span class="val3">36 Gy</span> (≥3y) · <span class="val3">23.4 Gy</span> (&lt;3y)<br>
+          + IFRT boost to <span class="val">54 Gy</span><br>
+          Spinal mets: focal boost 45 Gy (cord level) or 50.4–54 Gy (cauda)
+        </td>
+        <td>Poor — MS ~1y<br><span class="nt">Treat as high-risk MB paradigm</span></td>
+        <td>ACNS0333; RadOncReview</td>
+      </tr>
+      <tr>
+        <td><strong>Age &lt;6–12 mo (RT avoidance)</strong></td>
+        <td>—</td>
+        <td>RT deferred / omitted<br>HDCT/PBSC consolidation as primary local strategy<br><span class="nt">RT reserved at relapse or progression</span></td>
+        <td>Dismal — most fail within 2y<br><span class="nt">Emerging: focal RT even in infants if stable post-HDCT</span></td>
+        <td>SJYC07 paradigm; Mahajan COG PPT 2016</td>
+      </tr>
+      <tr>
+        <td><strong>SIOPE ATRT01 · Part A (EU)</strong></td>
+        <td><span class="val">After induction ×4c</span></td>
+        <td>
+          Focal RT <span class="val">54 Gy / 30 fx</span> (all M0 ≥12 mo)<br>
+          CTV: GTV_post-op + 1 cm<br>
+          Optional CSI 23.4 Gy if M+ or high-risk features<br>
+          <span class="nt">RTQA QUARTET framework applies</span>
+        </td>
+        <td>3y PFS ~45–50% (Part A interim)<br><span class="nt">Key EU reference — SHH vs TYR vs MYC arms</span></td>
+        <td>SIOPE ATRT01 [NCT02114229]</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="slabel">Active Clinical Trials</div>
+  <div class="trials-grid">
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT02114229" target="_blank">NCT02114229</a><span class="sbadge s-a">ACTIVE · NR</span></div>
+      <div class="tc-title">SIOPE ATRT01 — Risk-Adapted Multimodal Therapy ⭐</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">EU multi-centre</span><span class="th-rt">RT focal/CSI</span><span class="th-ch">HDCT</span></div>
+      <div class="tc-sponsor"><strong>SIOPE / GPOH</strong> — Part A: SHH/TYR/MYC stratification with focal RT 54 Gy; Part B: infants &lt;12 mo</div>
+      <a class="tool-link" href="siope-atrt01-fusion.html" target="_blank">Open SIOPE ATRT01 interactive tool</a>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT03654833" target="_blank">NCT03654833</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">Tazemetostat (EZH2i) for SMARCB1/SMARCA4-Deficient Tumors incl. ATRT</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">Peds + Adults</span><span class="th-tg">EZH2 inhibitor</span></div>
+      <div class="tc-sponsor"><strong>Epizyme / NCI</strong> — Epigenetic target in INI-1–deficient tumors</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT05535166" target="_blank">NCT05535166</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">SJiMB21 — Risk-Directed Therapy for Infants &amp; Young Children (incl. ATRT)</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">St. Jude · 10 sites</span><span class="th-rt">RT-sparing</span><span class="th-ch">HDCT</span></div>
+      <div class="tc-sponsor"><strong>St. Jude</strong> — Successor to SJYC07; covers ATRT infant stratum; focal RT allowed ≥12 mo</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT04297358" target="_blank">NCT04297358</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">Iadademstat (BET-bromodomain inhibitor) + Re-induction — Relapsed CNS Embryonal Tumors incl. ATRT</div>
+      <div class="tc-meta"><span class="ttag">Phase I</span><span class="ttag">Peds</span><span class="th-tg">BETi epigenetic</span></div>
+      <div class="tc-sponsor"><strong>Oryzon / Spanish consortium</strong> — Exploits SWI/SNF complex vulnerability in rhabdoid tumors</div>
+    </div>
+  </div>
+
+  <div class="slabel">Clinical Signal 2025–2026</div>
+  <div class="signal-box">
+    <p>ATRT prognosis has improved substantially over the past decade, driven primarily by intensified regimens incorporating HDCT/PBSC and early focal RT — <span class="signal-hl">4y EFS reaching ~37–40% in ACNS0333</span>, compared to &lt;5% historically in children &lt;3 years. The molecular subgrouping (SHH · TYR · MYC) defined by DNA methylation profiling is now the central framework: <span class="signal-hl2">SHH-subgroup carries the best prognosis</span>, while MYC-subgroup remains the most aggressive. SIOPE ATRT01 (EU) is building treatment arms around this stratification.</p>
+    <p><span class="signal-hl3">Early RT remains critical</span> — most failures are local within the first 2 years, and postponing RT beyond HDCT is associated with inferior LC. The key question for 2026 is whether EZH2 inhibition (tazemetostat) or BET-bromodomain inhibitors can meaningfully extend survival in relapsed or high-risk MYC-subgroup disease, where outcomes remain dismal.</p>
+  </div>
+
+  <div class="slabel">References</div>
+  <div class="refs-list">
+    <div class="ref-item">
+      <span class="ref-num">1</span>
+      <span class="ref-authors">Reddy AT, Strother DR, Judkins AR, et al.</span>
+      <div class="ref-title">Efficacy of High-Dose Chemotherapy and Three-Dimensional Conformal Radiation for Atypical Teratoid/Rhabdoid Tumor — ACNS0333</div>
+      <div class="ref-journal">Journal of Clinical Oncology, 2020; 38(11):1175–1185</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1200/JCO.19.01776" target="_blank">https://doi.org/10.1200/JCO.19.01776</a></div>
+      <div class="ref-note">n=65 (54 &lt;3y) · 4y EFS 37% · 4y OS 43% · 6% treatment-related deaths</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">2</span>
+      <span class="ref-authors">Frühwald MC, Nemes K, Hasselblatt M, et al.</span>
+      <div class="ref-title">Current and future treatment approaches for ATRT — lessons from the European Rhabdoid Registry (EU-RHAB)</div>
+      <div class="ref-journal">Neuro-Oncology, 2020; 22(8):1083–1095</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1093/neuonc/noaa072" target="_blank">https://doi.org/10.1093/neuonc/noaa072</a></div>
+      <div class="ref-note">Molecular subgrouping SHH/TYR/MYC · SHH best prognosis · MYC worst · basis for SIOPE ATRT01 stratification</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">3</span>
+      <span class="ref-authors">Baliga S, Gandola L, Timmermann B, et al.</span>
+      <div class="ref-title">Brain tumors: Medulloblastoma, ATRT, ependymoma — RT dose schema and outcomes</div>
+      <div class="ref-journal">Pediatric Blood &amp; Cancer, 2021; 68(S2): e28395</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1002/pbc.28395" target="_blank">https://doi.org/10.1002/pbc.28395</a></div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">4</span>
+      <span class="ref-authors">Mahajan A (MD Anderson/COG).</span>
+      <div class="ref-title">Radiotherapy for Infant Brain Tumors — COG Powerpoint ASTRO 2016</div>
+      <div class="ref-journal">QARC/COG Educational Resource, 2016</div>
+      <div class="ref-doi"><a href="http://qarc.org/COG/BabyCNSTumors_.pdf" target="_blank">http://qarc.org/COG/BabyCNSTumors_.pdf</a></div>
+      <div class="ref-note">Foundational reference for RT timing decisions in infants with ATRT/ETMR/MB</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PANEL 02 — ETMR ═══════════════ -->
+<div class="panel" id="etmr">
+  <div class="back-btn" onclick="back()">← All entities</div>
+  <div class="panel-header">
+    <div class="panel-title">ETMR</div>
+    <div class="panel-subtitle">Embryonal Tumor with Multilayered Rosettes · WHO Grade 4 · C19MC amplification · LIN28A+ · DICER1 subset</div>
+  </div>
+
+  <div class="slabel">RT Reference Protocols</div>
+  <table class="rt-table">
+    <thead>
+      <tr><th>Scenario</th><th>RT Timing &amp; Decision</th><th>Volumes &amp; Dose</th><th>Key Data / Notes</th><th>Source</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Age ≥3y · M0 or M+</strong><br><span class="nt">Preferred paradigm when RT given</span></td>
+        <td><span class="val">Post-induction chemo</span><br><span class="nt">Early RT likely beneficial — delays progression</span></td>
+        <td>
+          CSI: <span class="val3">36 Gy / 1.8 Gy/fx</span> (≥3y)<br>
+          + IFRT boost to <span class="val">54 Gy</span> (primary site)<br>
+          Spinal mets: 45 Gy (cord) · 50.4 Gy (cauda)<br>
+          <span class="nt">Model: ACNS0332 HR-MB paradigm (concurrent VCR ± carbo)</span>
+        </td>
+        <td>All 4 ETMR pts in ACNS0334 expired within 2y<br><span class="nt">No randomized data — managed per institutional choice</span></td>
+        <td>ACNS0332; ACNS0334 [Schumacher ASTRO '23]; RadOncReview</td>
+      </tr>
+      <tr>
+        <td><strong>Age &lt;3y · M0</strong></td>
+        <td><span class="val2">HDCT/PBSC first</span><br><span class="nt">Focal RT at relapse or progression</span></td>
+        <td>
+          Focal RT: <span class="val2">50.4 Gy</span> (bed + residual + 1 cm)<br>
+          CSI <span class="val3">23.4 Gy</span> reserved for M+ if ≥ ~18 mo<br>
+          <span class="nt">SJYC07 · Head Start 4 frameworks applicable</span>
+        </td>
+        <td>Most series: MS &lt;2y regardless of RT strategy<br><span class="nt">DICER1-mutant subset may have marginally better outcome</span></td>
+        <td>SJYC07; Head Start 4; Mahajan COG 2016</td>
+      </tr>
+      <tr>
+        <td><strong>DICER1-mutant ETMR-like</strong><br><span class="nt">Distinct entity — better prognosis</span></td>
+        <td><span class="val2">Max safe resection → standard multimodal Rx</span></td>
+        <td>
+          Treat per ETMR standard above<br>
+          <span class="nt">DICER1 status should be checked in all cases</span><br>
+          No specific RT protocol established
+        </td>
+        <td>DICER1mut subset: 3y OS ~60% (small series)<br><span class="nt">Infantile cerebellar embryonal tumors often DICER1mut</span></td>
+        <td>Frühwald et al.; WHO 2021 classification update</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="slabel">Active Trials / Applicable Frameworks</div>
+  <div class="trials-grid">
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT01086735" target="_blank">NCT01086735</a><span class="sbadge s-a">ACTIVE · NR</span></div>
+      <div class="tc-title">Head Start 4 — Intensive Induction + HDCT/PBSC for CNS Embryonal Tumors (&lt;10y) ⭐</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">COG / Nationwide Children's</span><span class="th-ch">HDCT</span><span class="th-rt">Focal RT option</span></div>
+      <div class="tc-sponsor"><strong>COG/Nationwide Children's</strong> — Primary framework for ETMR &lt;10y; RT per institutional decision post-HDCT</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT05535166" target="_blank">NCT05535166</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">SJiMB21 — Risk-Directed Therapy for Infants &amp; Young Children (covers ETMR)</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">St. Jude · 10 sites</span><span class="th-ch">HDCT</span><span class="th-rt">RT-sparing</span></div>
+      <div class="tc-sponsor"><strong>St. Jude</strong> — SJYC07 successor · ETMR included as non-MB embryonal tumor stratum</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><span class="nct-id">No dedicated ETMR trial</span><span class="sbadge s-a">Context</span></div>
+      <div class="tc-title">ACNS0334 (Closed) — HD Chemo ± MTX for &lt;3y HR-MB / PNET — ETMR data extracted</div>
+      <div class="tc-meta"><span class="ttag">Phase II · Closed</span><span class="ttag">COG</span><span class="th-ch">HDCT ± MTX</span><span class="th-rt">RT at discretion</span></div>
+      <div class="tc-sponsor"><strong>COG</strong> — 4 ETMR patients enrolled; all expired within 2y [Schumacher ASTRO '23] — sobering reference data</div>
+    </div>
+  </div>
+
+  <div class="slabel">Clinical Signal 2025–2026</div>
+  <div class="signal-box">
+    <p>ETMR remains one of the most lethal pediatric CNS tumors, with <span class="signal-hl">median survival &lt;12–18 months</span> in most historical series regardless of treatment intensity. The C19MC amplification/TTYH1 fusion that defines the entity is present in ~90% of cases and is now required for diagnosis per WHO 2021; <span class="signal-hl2">LIN28A immunohistochemistry</span> serves as a practical surrogate marker.</p>
+    <p>The clearest emerging signal is the <span class="signal-hl3">DICER1-mutant ETMR-like subset</span> of infantile cerebellar embryonal tumors, which appears to carry meaningfully better outcomes and may warrant distinct treatment consideration. For the C19MC-amplified majority, there is no established standard beyond HDCT frameworks (Head Start 4, SJYC07 paradigm). No targeted therapy has demonstrated efficacy. <strong>Enrollment in any available embryonal tumor trial remains the highest priority</strong> for new diagnoses.</p>
+  </div>
+
+  <div class="slabel">References</div>
+  <div class="refs-list">
+    <div class="ref-item">
+      <span class="ref-num">1</span>
+      <span class="ref-authors">Sturm D, Orr BA, Toprak UH, et al.</span>
+      <div class="ref-title">New Brain Tumor Entities Emerge from Molecular Classification of CNS-PNETs — C19MC, ETMR, FOXR2, BCOR</div>
+      <div class="ref-journal">Cell, 2016; 164(5):1060–1072</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1016/j.cell.2016.01.015" target="_blank">https://doi.org/10.1016/j.cell.2016.01.015</a></div>
+      <div class="ref-note">Founding molecular classification paper — defines C19MC-ETMR, FOXR2-neuroblastoma, BCOR-ITD as distinct entities</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">2</span>
+      <span class="ref-authors">Schumacher K, et al. (ACNS0334 ETMR sub-analysis)</span>
+      <div class="ref-title">Outcomes Following RT in ACNS0334 — ETMR and Pineoblastoma sub-analysis</div>
+      <div class="ref-journal">ASTRO Annual Meeting 2023 — Abstract presentation</div>
+      <div class="ref-doi"><a href="https://astro2023.eventscribe.net/index.asp?presTarget=2421345" target="_blank">ASTRO 2023 Abstract</a></div>
+      <div class="ref-note">All 4 ETMR patients expired within 2y; all 4 pineoblastoma patients expired within 2y</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">3</span>
+      <span class="ref-authors">Hwang EI, Kool M, Burger PC, et al. (ACNS0332 PNET cohort)</span>
+      <div class="ref-title">Extensive Molecular and Clinical Heterogeneity in Patients With Histologically Diagnosed CNS-PNET — ACNS0332</div>
+      <div class="ref-journal">Journal of Clinical Oncology, 2018; 36(31):3110–3119</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1200/JCO.2017.76.4720" target="_blank">https://doi.org/10.1200/JCO.2017.76.4720</a></div>
+      <div class="ref-note">5y EFS for true SPNET + pineoblastoma 63%; HGG misdiagnosed as PNET: 5y EFS 6%</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PANEL 03 — PINEOBLASTOMA ═══════════════ -->
+<div class="panel" id="pineoblas">
+  <div class="back-btn" onclick="back()">← All entities</div>
+  <div class="panel-header">
+    <div class="panel-title">Pineoblastoma</div>
+    <div class="panel-subtitle">WHO Grade 4 · Pineal parenchymal tumor · DICER1 · miRNA-1 · miRNA-2 · MYC/FOXR2 · RB1 subgroups</div>
+  </div>
+
+  <div class="slabel">RT Reference Protocols</div>
+  <table class="rt-table">
+    <thead>
+      <tr><th>Scenario</th><th>RT Timing</th><th>Volumes &amp; Dose</th><th>Key Outcomes</th><th>Source</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Age ≥3y · M0</strong><br><span class="nt">Standard — SJMB03 or ACNS0332 paradigm</span></td>
+        <td><span class="val">Post-induction chemo → before HDCT (if applicable)</span></td>
+        <td>
+          CSI: <span class="val3">23.4 Gy / 1.8 Gy/fx</span><br>
+          IFRT boost to <span class="val">54 Gy</span> (pineal region)<br>
+          CTV: GTV post-op + 1 cm → anatomically conformal
+        </td>
+        <td>5y OS <span class="val2">50–65%</span> (≥3y)<br><span class="nt">ACNS0332 PNET cohort: 5y EFS 63%, OS 79%</span></td>
+        <td>SJMB03; ACNS0332 [Hwang JCO '18]</td>
+      </tr>
+      <tr>
+        <td><strong>Age ≥3y · M+ · incomplete chemo response</strong></td>
+        <td><span class="val">Response-adapted after induction</span></td>
+        <td>
+          <strong>CR to chemo:</strong> CSI <span class="val3">23.4 Gy</span> → IFRT <span class="val">54 Gy</span><br>
+          <strong>&lt;CR (M1):</strong> CSI <span class="val3">36 Gy</span> → focal boost <span class="val">54 Gy</span><br>
+          <strong>&lt;CR (M2–3):</strong> CSI <span class="val3">36–39.6 Gy</span> → primary <span class="val">54 Gy</span> + spinal mets 50.4–54 Gy
+        </td>
+        <td>5y OS <span class="val3">15–40%</span> (&lt;4y)<br><span class="nt">CSF dissemination in up to 50%</span></td>
+        <td>RadOncReview; SJMB03 PNET data</td>
+      </tr>
+      <tr>
+        <td><strong>Age &lt;3y · M0</strong></td>
+        <td><span class="val2">HDCT/PBSC first (SJYC07 or ACNS0334)</span></td>
+        <td>
+          Focal RT: <span class="val2">50.4 Gy</span> (≥18 mo)<br>
+          CSI <span class="val3">23.4 Gy</span> if M+ and response allows<br>
+          <span class="nt">Avoid RT if &lt;6–12 mo when possible</span>
+        </td>
+        <td>4y OS &lt;25%<br><span class="nt">All 4 pineoblastoma pts in ACNS0334 expired within 2y</span></td>
+        <td>SJYC07; ACNS0334 [Schumacher ASTRO '23]</td>
+      </tr>
+      <tr>
+        <td><strong>Trilateral retinoblastoma (RB1-assoc.)</strong><br><span class="nt">Pineoblastoma + bilateral Rb</span></td>
+        <td><span class="val3">Treat pineoblastoma component per age/stage above</span></td>
+        <td>Additional orbital RT considerations for Rb management<br><span class="nt">Genetic counseling mandatory · DICER1 testing</span></td>
+        <td>Very poor — 5y OS &lt;15%<br><span class="nt">Trilateral Rb: pineoblastoma almost always lethal</span></td>
+        <td>Rb guidelines; RadOncReview</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="slabel">Active Clinical Trials</div>
+  <div class="trials-grid">
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT02114229" target="_blank">NCT02114229</a><span class="sbadge s-a">ACTIVE · NR</span></div>
+      <div class="tc-title">SIOPE ATRT01 — also covers non-ATRT embryonal incl. Pineoblastoma (off-protocol arm) ⭐</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">EU</span><span class="th-rt">RT focal/CSI</span><span class="th-ch">HDCT</span></div>
+      <div class="tc-sponsor"><strong>SIOPE / GPOH</strong> — Pineoblastoma managed per SJYC07/ACNS0332 cross-reference</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT00392327" target="_blank">NCT00392327</a><span class="sbadge s-a">ACTIVE · NR</span></div>
+      <div class="tc-title">ACNS0332 — HR Medulloblastoma / PNET including Pineoblastoma (results published)</div>
+      <div class="tc-meta"><span class="ttag">Phase III · Closed</span><span class="ttag">COG</span><span class="th-rt">36 Gy CSI + 55.8 Gy</span><span class="th-ch">VCR ± Carbo</span></div>
+      <div class="tc-sponsor"><strong>COG</strong> — Reference data: 5y EFS 63%, OS 79% for SPNET + pineoblastoma combined cohort</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT05535166" target="_blank">NCT05535166</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">SJiMB21 — Infant/Young Child CNS Embryonal Tumors (pineoblastoma stratum included)</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">St. Jude</span><span class="th-ch">HDCT</span><span class="th-rt">Focal RT selective</span></div>
+      <div class="tc-sponsor"><strong>St. Jude</strong> — Covers pineoblastoma &lt;3y; molecular stratification ongoing</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT04278560" target="_blank">NCT04278560</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">ONC201 (DRD2 antagonist) — Relapsed/Refractory Pediatric CNS Tumors incl. Pineoblastoma</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">Peds</span><span class="th-tg">DRD2i / mitochondrial</span></div>
+      <div class="tc-sponsor"><strong>Chimerix / Pediatric consortia</strong> — Activity in H3K27M DMG · explored in other embryonal tumors</div>
+    </div>
+  </div>
+
+  <div class="slabel">Clinical Signal 2025–2026</div>
+  <div class="signal-box">
+    <p>Pineoblastoma molecular subgrouping (miRNA-1, miRNA-2, MYC/FOXR2, PPTID, RB1-assoc.) is now well-established in the research setting but has <span class="signal-hl">not yet been formally integrated into WHO classification or prospective trial stratification</span>. This remains the dominant unmet need: outcomes diverge substantially by subgroup, yet treatment remains uniformly high-intensity.</p>
+    <p>The critical practical point from ACNS0334 data is sobering: <span class="signal-hl3">all pineoblastoma patients treated in infancy expired within 2 years regardless of RT strategy</span>. For children ≥3 years, the SJMB03/ACNS0332 HR-MB paradigm (CSI 23.4–36 Gy + IFRT 54 Gy) remains the best available framework with 5y OS 50–65%. <span class="signal-hl2">DICER1 testing</span> is mandatory at diagnosis as it may identify a distinct, more favorable subset.</p>
+  </div>
+
+  <div class="slabel">References</div>
+  <div class="refs-list">
+    <div class="ref-item">
+      <span class="ref-num">1</span>
+      <span class="ref-authors">Li BK, Vasiljevic A, Dufour C, et al.</span>
+      <div class="ref-title">Pineoblastoma Segregates into Molecular Sub-groups with Distinct Clinicopathologic Features — miRNA-1, miRNA-2, MYC/FOXR2, PPTID</div>
+      <div class="ref-journal">Acta Neuropathologica, 2020; 139(2):223–241</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1007/s00401-019-02112-5" target="_blank">https://doi.org/10.1007/s00401-019-02112-5</a></div>
+      <div class="ref-note">International cohort · methylation-based subgrouping · DICER1 enriched in miRNA-2 subgroup</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">2</span>
+      <span class="ref-authors">Hwang EI, Kool M, Burger PC, et al. (COG ACNS0332)</span>
+      <div class="ref-title">Extensive Molecular and Clinical Heterogeneity in CNS-PNET — pineoblastoma + SPNET combined analysis</div>
+      <div class="ref-journal">Journal of Clinical Oncology, 2018; 36(31):3110–3119</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1200/JCO.2017.76.4720" target="_blank">https://doi.org/10.1200/JCO.2017.76.4720</a></div>
+      <div class="ref-note">5y EFS 63%, 5y OS 79% for SPNET + pineoblastoma; HGGs misclassified as PNET had 5y EFS 6%</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">3</span>
+      <span class="ref-authors">Gajjar A, Robinson GW, Smith KS, et al. (SJMB03)</span>
+      <div class="ref-title">Outcomes by Clinical and Molecular Features in Children with Medulloblastoma Treated with Risk-Adapted Therapy — molecular analysis including PNET arms</div>
+      <div class="ref-journal">Journal of Clinical Oncology, 2021; 39(34):3773–3785</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1200/JCO.20.01372" target="_blank">https://doi.org/10.1200/JCO.20.01372</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PANEL 04 — GCT / NGGCT ═══════════════ -->
+<div class="panel" id="gct">
+  <div class="back-btn" onclick="back()">← All entities</div>
+  <div class="panel-header">
+    <div class="panel-title">Intracranial GCT / NGGCT</div>
+    <div class="panel-subtitle">Germinoma · Non-Germinomatous GCT · Pineal/Suprasellar · Peak age 10–12y · M:F 2–3:1</div>
+  </div>
+
+  <div class="slabel">RT Reference Protocols — Germinoma</div>
+  <table class="rt-table">
+    <thead>
+      <tr><th>Scenario</th><th>RT Timing</th><th>Volumes &amp; Dose</th><th>Key Outcomes</th><th>Source</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>M0 · CR/PR after induction chemo</strong><br><span class="nt">ACNS1123 standard — preferred</span></td>
+        <td><span class="val">After CarboE/IE ×3c alternating</span></td>
+        <td>
+          WVRT: <span class="val">18 Gy / 1.5 Gy/fx</span><br>
+          + Focal boost: <span class="val2">12 Gy</span> → total <span class="val2">30 Gy</span><br>
+          CTV_WV: 3rd ventricle + lateral ventricles + suprasellar cistern + pineal cistern + 0 mm margin (5 mm protons)<br>
+          CTV_boost: GTV pre-chemo + 0.5–1 cm
+        </td>
+        <td>3y EFS <span class="val2">~88%</span> · 3y OS <span class="val2">~92%</span><br><span class="nt">10y OS &gt;90% (RT ± chemo series)</span></td>
+        <td>ACNS1123 [Fangusaro JCO '19]; ACNS2321 (ongoing)</td>
+      </tr>
+      <tr>
+        <td><strong>M0 · SD or PR &gt;1.5 cm residual after chemo</strong></td>
+        <td><span class="val3">Escalated RT</span></td>
+        <td>
+          WVRT: <span class="val3">24 Gy</span> + boost <span class="val3">12 Gy</span> → total <span class="val3">36 Gy</span><br>
+          OR treat off-protocol: boost to ~45 Gy
+        </td>
+        <td>OS comparable if dose escalated<br><span class="nt">Second-look surgery recommended if ≥1.5 cm residual</span></td>
+        <td>ACNS1123; ACNS0232</td>
+      </tr>
+      <tr>
+        <td><strong>M0 · RT alone (no chemo)</strong><br><span class="nt">Older teen preference / logistic constraint</span></td>
+        <td><span class="val">Upfront RT (completed in ~6 weeks)</span></td>
+        <td>
+          WVRT: <span class="val">23.4–25 Gy</span> + focal boost → total <span class="val2">45–50.4 Gy</span><br>
+          <span class="nt">Less preferred: higher dose, more toxicity</span>
+        </td>
+        <td>10y DFS ~92%, 10y OS ~96% [Byun IJROBP '20]<br><span class="nt">No in-field failures if dose adequate</span></td>
+        <td>Byun IJROBP 2020; MAKEI 83/86/89</td>
+      </tr>
+      <tr>
+        <td><strong>M+ (disseminated germinoma)</strong></td>
+        <td><span class="val">After induction chemo ×4c</span></td>
+        <td>
+          CSI: <span class="val3">21–24 Gy</span><br>
+          + boost all gross disease to <span class="val2">30–36 Gy</span><br>
+          OR RT alone: CSI 24 Gy (30 Gy if diffuse cord coating) + boost 45–50.4 Gy
+        </td>
+        <td>OS &gt;90% even M+<br><span class="nt">Germinomas are exquisitely radiosensitive</span></td>
+        <td>RadOncReview; Rogers Lancet Oncol '05</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="slabel">RT Reference Protocols — NGGCT</div>
+  <table class="rt-table">
+    <thead>
+      <tr><th>Scenario</th><th>RT Timing</th><th>Volumes &amp; Dose</th><th>Key Outcomes</th><th>Source</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>NGGCT · M0 · CR or PR to chemo</strong><br><span class="nt">ACNS0122 standard (CSI mandatory)</span></td>
+        <td><span class="val">After CarboE/IE ×6c</span><br><span class="nt">± SLS if &lt;CR to normalize markers</span></td>
+        <td>
+          CSI: <span class="val3">36 Gy / 1.8 Gy/fx</span><br>
+          + Focal boost to <span class="val">54 Gy</span> (primary site)<br>
+          CTV_boost: pre-chemo GTV + residual + 1 cm<br>
+          Spinal mets: 45 Gy (cord) · 54 Gy (cauda/intracranial)
+        </td>
+        <td>5y EFS <span class="val2">84%</span> · 5y OS <span class="val2">93%</span> [ACNS0122]<br><span class="nt">WVRT-only (ACNS1123) failed: 12% isolated spinal relapse</span></td>
+        <td>Goldman JCO '15; Fangusaro JCO '19</td>
+      </tr>
+      <tr>
+        <td><strong>NGGCT · ACNS2021 (active trial)</strong><br><span class="nt">M0: exploring 30.6 Gy CSI</span></td>
+        <td><span class="val">After induction chemo</span></td>
+        <td>
+          M0 arm: CSI <span class="val2">30.6 Gy</span> + boost <span class="val">54 Gy</span><br>
+          M+ arm: CSI <span class="val3">36 Gy</span> + boost <span class="val">54 Gy</span><br>
+          <span class="nt">Investigational — direct response to ACNS1123 spinal failures</span>
+        </td>
+        <td>Accruing — results pending<br><span class="nt">Key question: is 30.6 Gy CSI sufficient for M0 NGGCT?</span></td>
+        <td>ACNS2021 [NCT04684368]</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="slabel">Active Clinical Trials</div>
+  <div class="trials-grid">
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT06368817" target="_blank">NCT06368817</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">ACNS2321 — Germinoma · Chemo → Response-Adapted WVI (12 vs 18 Gy) ⭐</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">COG · 240 pts</span><span class="ttag">2024–2033</span><span class="th-rt">WVI dose reduction</span><span class="th-ch">CarboE / IE</span></div>
+      <div class="tc-sponsor"><strong>COG</strong> — Key question: can WVI be reduced to 12 Gy (vs 18 Gy in ACNS1123) in CR? 7 strata by site + response + dissemination</div>
+      <a class="tool-link" href="acns2321-germinoma-revue.html" target="_blank">Open ACNS2321 interactive tool</a>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT04684368" target="_blank">NCT04684368</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">ACNS2021 — NGGCT · Response-Based WVSCI 30.6 Gy (Plan A) vs HDCSCR + CSI 36 Gy (Plan B) ⭐</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">COG</span><span class="th-rt">Novel WVSCI volume</span><span class="th-ch">CarboE / IE</span></div>
+      <div class="tc-sponsor"><strong>COG</strong> — Successor to ACNS1123; re-adds spinal RT via novel WVSCI (WVI + spinal canal) to reduce 12% spinal relapse rate; Plan B: HDCSCR for poor responders</div>
+      <a class="tool-link" href="acns2021-nggct-revue.html" target="_blank">Open ACNS2021 interactive tool</a>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT02375204" target="_blank">NCT02375204</a><span class="sbadge s-a">ACTIVE · NR</span></div>
+      <div class="tc-title">A031102 / TIGER — TIP vs. HD-TI-CE + SCT for Relapsed GCT (≥14y)</div>
+      <div class="tc-meta"><span class="ttag">Phase III</span><span class="ttag">Adult + AYA</span><span class="th-ch">Salvage HDCT</span></div>
+      <div class="tc-sponsor"><strong>Alliance / SWOG</strong> — First-salvage for recurrent GCT ≥14y (includes intracranial); TIP vs paclitaxel/ifosfamide + HD carboplatin/etoposide</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><span class="sbadge" style="background:rgba(88,166,255,.12);color:#388bfd;border:1px solid rgba(88,166,255,.3);">ESCP STANDARD</span></div>
+      <div class="tc-title">SIOP CNS GCT II — European Standard · Germinoma &amp; NGGCT ⭐</div>
+      <div class="tc-meta"><span class="ttag">SIOPE BTG</span><span class="ttag">ERN PaedCan</span><span class="ttag">Closed 2018</span><span class="th-rt">WVI 24 Gy ± boost</span><span class="th-ch">CarboE/IE · PEI · HD-PEI</span></div>
+      <div class="tc-sponsor"><strong>SIOPE Brain Tumour Group</strong> — European reference protocol for paediatric intracranial GCT. Germinoma: WVI+TB 24 Gy (boost omit in single-site CR). NGGCT SR: PEI × 3–4 + TU 54 Gy. NGGCT HR (AFP &gt;1000 or &lt;6y): HD-PEI + SCT experimental arm.</div>
+      <a class="tool-link" href="siop-cnsgct2-revue.html" target="_blank">Open SIOP CNS GCT II interactive tool</a>
+    </div>
+  </div>
+
+  <div class="slabel">Clinical Signal 2025–2026</div>
+  <div class="signal-box">
+    <p>GCT/NGGCT management is undergoing its most significant prospective refinement in a decade through two concurrent COG trials. For germinomas, <span class="signal-hl">ACNS2321 (recruiting since October 2024)</span> directly tests whether WVI can be reduced to 12 Gy in CR patients — a meaningful question given that ACNS1123 already demonstrated 18 Gy WVI + 12 Gy boost is safe and effective (3y EFS 88%). The 12 Gy arm would represent the lowest published WVI dose in a prospective trial.</p>
+    <p>For NGGCT, the defining lesson of the past cycle is unambiguous: <span class="signal-hl3">CSI cannot be replaced by WVRT</span> — ACNS1123 closed early after 12% isolated spinal failures in the WVRT arm. <span class="signal-hl2">ACNS2021 now tests whether 30.6 Gy CSI (vs 36 Gy) is sufficient for M0 disease</span>, a more cautious de-escalation hypothesis. AFP normalization post-induction and second-look surgery for persistent marker elevation remain critical decision points in NGGCT management.</p>
+    <p>The <span class="signal-hl2">SIOP CNS GCT II European standard</span> (ESCP 2021) uses a distinct chemo backbone (alternating CarboE/ifosfamide-E for germinoma; PEI for NGGCT) and already implements boost omission for single-site germinoma in CR — the COG comparison tool is now available via the SIOP CNS GCT II interactive card.</p>
+  </div>
+
+  <div class="slabel">References</div>
+  <div class="refs-list">
+    <div class="ref-item">
+      <span class="ref-num">1</span>
+      <span class="ref-authors">Fangusaro J, Wu S, MacDonald S, et al. (COG ACNS1123)</span>
+      <div class="ref-title">Phase II Trial of Response-Based RT for Localized CNS Germ Cell Tumors (ACNS1123)</div>
+      <div class="ref-journal">Journal of Clinical Oncology, 2019; 37(34):3283–3290</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1200/JCO.19.00701" target="_blank">https://doi.org/10.1200/JCO.19.00701</a></div>
+      <div class="ref-note">NGGCT arm: 12% isolated spinal failures with WVRT → trial closed early; germinoma arm: 3y PFS 88%, OS 92%</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">2</span>
+      <span class="ref-authors">Goldman S, Bouffet E, Fisher PG, et al. (COG ACNS0122)</span>
+      <div class="ref-title">Phase II Trial Assessing the Ability of Neoadjuvant Chemotherapy With or Without SLS to Reduce the Extent of RT for NGGCT</div>
+      <div class="ref-journal">Journal of Clinical Oncology, 2015; 33(22):2464–2471</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1200/JCO.2014.59.5132" target="_blank">https://doi.org/10.1200/JCO.2014.59.5132</a></div>
+      <div class="ref-note">n=102 · 5y EFS 84%, OS 93% · AFP &gt;10 = poor prognosis · CSI 36 Gy remains reference standard for NGGCT</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">3</span>
+      <span class="ref-authors">Byun HK, Kim H, Lyu CJ, et al.</span>
+      <div class="ref-title">Reduced-Volume and Reduced-Dose RT for Intracranial Germinoma — 36 Gy primary / 18 Gy WVRT or CSI (RT alone)</div>
+      <div class="ref-journal">International Journal of Radiation Oncology Biology Physics, 2020; 108(2):408–416</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1016/j.ijrobp.2020.04.023" target="_blank">https://doi.org/10.1016/j.ijrobp.2020.04.023</a></div>
+      <div class="ref-note">n=213 · 10y DFS 92%, OS 96% · No in-field recurrences with RT alone ≤40 Gy primary; spinal relapses with focal RT alone</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">4</span>
+      <span class="ref-authors">WVRT Contouring Atlas — ACNS1123</span>
+      <div class="ref-title">Whole Ventricular RT Atlas for CNS Germ Cell Tumors (ACNS1123) — CTV delineation guidelines</div>
+      <div class="ref-journal">QARC / COG Educational Resource</div>
+      <div class="ref-doi"><a href="http://qarc.org/cog/ACNS1123_Atlas.pdf" target="_blank">http://qarc.org/cog/ACNS1123_Atlas.pdf</a></div>
+      <div class="ref-note">Mandatory reference for WVRT contouring: 3rd/4th ventricles, lateral ventricles, suprasellar + pineal cisterns, pre-pontine cistern if 3rd ventriculostomy</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PANEL 05 — EPENDYMOMA ═══════════════ -->
+<div class="panel" id="ependy">
+  <div class="back-btn" onclick="back()">← All entities</div>
+  <div class="panel-header">
+    <div class="panel-title">Ependymoma</div>
+    <div class="panel-subtitle">Pediatric · WHO Grade 2–3 · RELA fusion · YAP1 fusion · PFA (poor) · PFB (good) · 1q gain (poor prognosis)</div>
+  </div>
+
+  <div class="slabel">RT Reference Protocols</div>
+  <table class="rt-table">
+    <thead>
+      <tr><th>Scenario</th><th>RT Timing</th><th>Volumes &amp; Dose</th><th>Key Outcomes</th><th>Source</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Infratentorial · all grades · any EOR ≥18 mo</strong><br><span class="nt">PORT mandatory after GTR and STR</span></td>
+        <td><span class="val">Immediate post-op RT</span><br><span class="nt">If STR: ± induction chemo → SLS → RT</span></td>
+        <td>
+          IFRT: <span class="val">59.4 Gy / 1.8 Gy/fx</span><br>
+          CTV_54: GTV (bed + residual) + <span class="val2">0.5 cm</span> (ACNS0831) · historically 1 cm<br>
+          CTV_59.4 boost: residual above cord + no margin<br>
+          Cord D10% &lt;57 Gy · Brainstem D10% ≤63 Gy<br>
+          <span class="nt">Cover foramen of Luschka + lateral recess extension carefully</span>
+        </td>
+        <td>7y LC <span class="val2">84%</span> · 7y EFS <span class="val2">69%</span> · 7y OS <span class="val2">81%</span> [SJCRH series]<br>
+            7y OS GTR <span class="val2">88%</span> vs STR <span class="val3">52%</span></td>
+        <td>Merchant JCO '04 / Lancet Oncol '09; ACNS0121 [Merchant IJROBP '15]</td>
+      </tr>
+      <tr>
+        <td><strong>Age 12–18 mo · GTR</strong><br><span class="nt">Dose capped per ACNS0121/0831</span></td>
+        <td><span class="val">Immediate PORT if GTR</span></td>
+        <td>
+          IFRT: <span class="val2">54 Gy</span> (not 59.4 Gy)<br>
+          CTV: bed + 0.5 cm<br>
+          <span class="nt">59.4 Gy reserved for ≥18 mo or STR residual above cord</span>
+        </td>
+        <td>5y EFS (&lt;3y cohort): <span class="val2">63%</span> — better than chemo-delay historical controls</td>
+        <td>ACNS0121; ACNS0831</td>
+      </tr>
+      <tr>
+        <td><strong>Supratentorial · GTR · WHO Grade 2</strong><br><span class="nt">Observation acceptable</span></td>
+        <td>—</td>
+        <td>
+          Observation (ACNS0121 Stratum 1, n=11)<br>
+          PORT if RELA fusion or Grade 3 even after GTR
+        </td>
+        <td>5y EFS <span class="val3">61%</span> · 5y OS <span class="val2">100%</span><br><span class="nt">Half will fail but OS preserved — salvage feasible</span></td>
+        <td>ACNS0121 Stratum 1</td>
+      </tr>
+      <tr>
+        <td><strong>Supratentorial · STR or Grade 3</strong><br><span class="nt">PORT mandatory</span></td>
+        <td><span class="val">After SLS attempt if STR</span></td>
+        <td>
+          IFRT: <span class="val">59.4 Gy</span><br>
+          CTV: residual + bed + 0.5–1 cm<br>
+          Add CSI 36 Gy only if CSF positive
+        </td>
+        <td>5y EFS STR ~<span class="val3">40%</span> (Stratum 2) · GTR Grade 3 ~<span class="val2">70%</span></td>
+        <td>ACNS0121 Strata 2–4</td>
+      </tr>
+      <tr>
+        <td><strong>M+ disease (5–10% at diagnosis)</strong></td>
+        <td><span class="val">PORT + CSI</span></td>
+        <td>
+          CSI: <span class="val3">36 Gy</span><br>
+          Spinal boost: 45 Gy (cord) · 54–59.4 Gy (below cord)<br>
+          Intracranial primary: 59.4 Gy
+        </td>
+        <td>Poor — spinal failures despite CSI<br><span class="nt">1q gain associated with 5y OS 20% vs 91% (no 1q)</span></td>
+        <td>ACNS0121; Indelicato IJROBP '21</td>
+      </tr>
+      <tr>
+        <td><strong>Proton therapy — dose-escalation</strong><br><span class="nt">Standard at major proton centers</span></td>
+        <td><span class="val">Same timing as photon protocols</span></td>
+        <td>
+          Median dose: <span class="val2">55.8 CGE</span> (Indelicato 2021 series)<br>
+          Brainstem: D50% ≤52.4 CGE · D10% ≤63 CGE<br>
+          Cochlea D50% &lt;35 Gy · Optic globe D10% &lt;54 Gy<br>
+          <span class="nt">Cumulative brainstem necrosis 4% at 7y</span>
+        </td>
+        <td>7y LC <span class="val2">77%</span> · 7y PFS <span class="val2">64%</span> · 7y OS <span class="val2">82%</span> [Indelicato IJROBP '21, n=386]<br>
+            Hormone replacement 12% · Hearing aids 5%</td>
+        <td>Indelicato IJROBP 2021; U. Florida proton series</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="slabel">Active Clinical Trials</div>
+  <div class="trials-grid">
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT01096368" target="_blank">NCT01096368</a><span class="sbadge s-a">ACTIVE · NR</span></div>
+      <div class="tc-title">ACNS0831 — RT ± Maintenance Chemotherapy for Ependymoma ⭐</div>
+      <div class="tc-meta"><span class="ttag">Phase III · Closed May 2019</span><span class="ttag">COG</span><span class="th-rt">59.4 Gy IFRT (0.5 cm CTV)</span><span class="th-ch">Chemo maintenance</span></div>
+      <div class="tc-sponsor"><strong>COG</strong> — Results anticipated 2025–2026; primary question: does maintenance chemo (CDDP, VP16, VCR, Cyclo) improve EFS after RT?</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT02265978" target="_blank">NCT02265978</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">ACNS1123 — Molecularly Stratified RT for Ependymoma (RELA · YAP1 · PF subgroups)</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">COG</span><span class="th-rt">Proton preferred · 59.4 CGE</span><span class="th-ch">No chemo standard arm</span></div>
+      <div class="tc-sponsor"><strong>COG</strong> — Tests molecular-guided RT delivery; PFB stratum: 54 Gy; RELA: 59.4 Gy; proton priority for all strata</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT02589652" target="_blank">NCT02589652</a><span class="sbadge s-r">RECRUITING</span></div>
+      <div class="tc-title">SIOPE EP-II — Risk-Adapted Chemo + RT for Ependymoma ≥12 mo (EU)</div>
+      <div class="tc-meta"><span class="ttag">Phase II/III</span><span class="ttag">SIOPE · EU</span><span class="th-rt">RT 59.4 Gy IFRT</span><span class="th-ch">VCR/Carbo/VP16</span></div>
+      <div class="tc-sponsor"><strong>SIOPE</strong> — Primary EU ependymoma trial; tests chemo for STR before SLS; proton use encouraged</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT04743661" target="_blank">NCT04743661</a><span class="sbadge s-a">ACTIVE · NR</span></div>
+      <div class="tc-title">Omburtamab (I-131 anti-B7-H3) Intraventricular — Recurrent Medulloblastoma / Ependymoma</div>
+      <div class="tc-meta"><span class="ttag">Phase II</span><span class="ttag">PBTC · 3 sites</span><span class="th-rt">Radioimmunotherapy</span></div>
+      <div class="tc-sponsor"><strong>PBTC / Y-mAbs</strong> — Intraventricular delivery of radiolabeled anti-B7-H3 Ab for recurrent ependymoma + MB</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT06485908" target="_blank">NCT06485908</a><span class="sbadge s-ny">NOT YET RECRUITING</span></div>
+      <div class="tc-title">MEPENDAX — Axitinib + Metronomic Etoposide for Relapsed Ependymoma / Medulloblastoma</div>
+      <div class="tc-meta"><span class="ttag">Phase I/II</span><span class="ttag">40 pts</span><span class="th-ch">Anti-angio + Chemo</span></div>
+      <div class="tc-sponsor"><strong>AP-HM Marseille 🇫🇷</strong> — French network opportunity; VEGFR-targeted + metronomic for relapsed disease</div>
+    </div>
+  </div>
+
+  <div class="slabel">Clinical Signal 2025–2026</div>
+  <div class="signal-box">
+    <p>Ependymoma management is being transformed by molecular stratification. The central paradigm shift: <span class="signal-hl">PFB subgroup (excellent prognosis, ~5y EFS &gt;85%) may tolerate de-escalated RT</span>, while <span class="signal-hl2">RELA fusion (supratentorial) and PFA with 1q gain carry the worst outcomes</span> and may warrant intensification. <strong>ACNS1123 (COG)</strong> is the first prospective trial to assign RT dose based on molecular subgroup, with proton therapy mandated as the preferred modality.</p>
+    <p>The other dominant theme is the role of chemotherapy: <strong>ACNS0831 results</strong> (closed 2019, reported 2025–2026) will finally answer whether maintenance chemotherapy after RT improves EFS — a question debated for 20 years. The current signal from retrospective series suggests chemo benefit is limited to STR cases. For infants, <span class="signal-hl3">ACNS0121 established that PORT at 12–18 months achieves EFS comparable to older children</span> — a practice-changing result that moved away from chemo-first delay strategies.</p>
+  </div>
+
+  <div class="slabel">References</div>
+  <div class="refs-list">
+    <div class="ref-item">
+      <span class="ref-num">1</span>
+      <span class="ref-authors">Merchant TE, Li C, Xiong X, et al.</span>
+      <div class="ref-title">Conformal RT after Surgery for Pediatric Ependymoma — Phase II Prospective Study (St. Jude)</div>
+      <div class="ref-journal">Lancet Oncology, 2009; 10(3):258–266</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1016/S1470-2045(08)70342-2" target="_blank">https://doi.org/10.1016/S1470-2045(08)70342-2</a></div>
+      <div class="ref-note">n=88+153 · 59.4 Gy to CTV (bed + 1 cm) · 7y LC 84%, EFS 69%, OS 81% · GTR vs STR 7y OS 88% vs 52%</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">2</span>
+      <span class="ref-authors">Merchant TE, Bendel AE, Sabin ND, et al. (COG ACNS0121)</span>
+      <div class="ref-title">Conformal Radiation Therapy for Pediatric Ependymoma, Chemotherapy for Incompletely Resected Ependymoma, and Observation for Completely Resected, Supratentorial Ependymoma</div>
+      <div class="ref-journal">Journal of Clinical Oncology, 2019; 37(12):974–983</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1200/JCO.18.01765" target="_blank">https://doi.org/10.1200/JCO.18.01765</a></div>
+      <div class="ref-note">n=356 · Age 1–21y · 5y/10y EFS 63%/56% · 5y/10y OS 84%/71% · PORT at 12 mo: EFS 63% vs historical chemo-delay controls</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">3</span>
+      <span class="ref-authors">Indelicato DJ, Flampouri S, Rotondo RL, et al.</span>
+      <div class="ref-title">Proton Therapy for Pediatric Ependymoma 2000–2019 — Long-term Outcomes and Toxicity</div>
+      <div class="ref-journal">International Journal of Radiation Oncology Biology Physics, 2021; 110(1):155–165</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1016/j.ijrobp.2021.01.028" target="_blank">https://doi.org/10.1016/j.ijrobp.2021.01.028</a></div>
+      <div class="ref-note">n=386 · Median RT 55.8 CGE · 7y LC 77%, PFS 64%, OS 82% · Brainstem necrosis 4% · SMN 1.3%</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">4</span>
+      <span class="ref-authors">Pajtler KW, Witt H, Sill M, et al.</span>
+      <div class="ref-title">Molecular Classification of Ependymal Tumors across All CNS Compartments, Histological Grades, and Age Groups</div>
+      <div class="ref-journal">Cancer Cell, 2015; 27(5):728–743</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1016/j.ccell.2015.04.002" target="_blank">https://doi.org/10.1016/j.ccell.2015.04.002</a></div>
+      <div class="ref-note">9 molecular subgroups defined · PFA/PFB · RELA · YAP1 · spinal subgroups · foundation for current trial stratification</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">5</span>
+      <span class="ref-authors">Indelicato DJ, Rotondo RL, Uezono H, et al. (U. Florida proton series)</span>
+      <div class="ref-title">Brainstem Toxicity after Proton Therapy for Pediatric Brain Tumors — University of Florida Cohort</div>
+      <div class="ref-journal">Acta Oncologica, 2014; 53(10):1314–1320</div>
+      <div class="ref-doi"><a href="https://doi.org/10.3109/0284186X.2014.957414" target="_blank">https://doi.org/10.3109/0284186X.2014.957414</a></div>
+      <div class="ref-note">n=313 peds · Brainstem toxicity 2% G3+ · Risk &gt;5y, PF location, D10% &gt;55.4 CGE → key constraint thresholds</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PANEL 06 — CPT ═══════════════ -->
+<div class="panel" id="cpt">
+  <div class="back-btn" onclick="back()">← All entities</div>
+  <div class="panel-header">
+    <div class="panel-title">Choroid Plexus Tumors</div>
+    <div class="panel-subtitle">CPP (WHO I) · aCPP (WHO II) · CPC (WHO III) · TP53 / Li-Fraumeni syndrome · CPT-SIOP-2000/2009</div>
+  </div>
+
+  <!-- ALERT BANNER -->
+  <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px;">
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent5);border-radius:6px;padding:10px 14px;font-size:12px;flex:1;min-width:220px;">
+      ⚠ <strong>Pas de consensus</strong> — aucune guideline ESMO/NCCN/SIOPE dédiée. Données issues principalement du seul RCT complété (CPT-SIOP-2000, n=158).
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid #f85149;border-radius:6px;padding:10px 14px;font-size:12px;flex:1;min-width:220px;">
+      🧬 <strong>TP53 germinal systématique</strong> devant tout CPC — Li-Fraumeni contre-indique la RT (risque seconds cancers &amp; radiorésistance).
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent2);border-radius:6px;padding:10px 14px;font-size:12px;flex:1;min-width:220px;">
+      🏥 <strong>RCP recommandée</strong> — RENOCLIP-LOC (adulte) · SFCE/FRACTAL (pédiatrique) pour tout cas hors CPP grade I en GTR.
+    </div>
+  </div>
+
+  <!-- CLASSIFICATION -->
+  <div class="slabel">Classification OMS 2021 &amp; Épidémiologie</div>
+  <table class="rt-table">
+    <thead>
+      <tr><th>Grade</th><th>Entité</th><th>Critères histologiques clés</th><th>Localisation typique</th><th>Épidémiologie</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="val2">Grade I</span></td>
+        <td><strong>CPP</strong> — Choroid Plexus Papilloma</td>
+        <td>Architecture papillaire régulière, mitoses rares (&lt; 2/10 HPF), membrane basale intacte</td>
+        <td>Ventricule latéral (enfant) · 4e ventricule (adulte)</td>
+        <td>60–70 % des CPT · 10–20 % des tumeurs cérébrales &lt; 1 an</td>
+      </tr>
+      <tr>
+        <td><span class="val3">Grade II</span></td>
+        <td><strong>aCPP</strong> — Atypical Choroid Plexus Papilloma <span class="nt">(entité indépendante depuis WHO 2007)</span></td>
+        <td><strong>≥ 2 mitoses / 10 HPF</strong> — critère unique de distinction avec CPP</td>
+        <td>Idem CPP · surtout supratentoriel pédiatrique</td>
+        <td>~15–20 % des CPT · 74 % dans la 1re décennie</td>
+      </tr>
+      <tr>
+        <td><span class="val4" style="font-family:'DM Mono',monospace;color:#f85149;font-size:12.5px;">Grade III</span></td>
+        <td><strong>CPC</strong> — Choroid Plexus Carcinoma</td>
+        <td>≥ 4/5 critères : mitoses fréquentes · densité cellulaire ↑ · pléomorphisme · perte pattern papillaire · nécrose</td>
+        <td>Ventricule latéral principalement · 5 % 3e ventricule · 40 % 4e ventricule</td>
+        <td>~10–20 % des CPT · principalement nourrisson &lt; 2 ans · rare adulte</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- MOLECULAR -->
+  <div class="slabel">Biologie Moléculaire &amp; Sous-groupes Épigénétiques</div>
+  <table class="rt-table">
+    <thead>
+      <tr><th>Sous-groupe méthylation</th><th>Histologies</th><th>Localisation</th><th>Risque clinique</th><th>Altérations moléculaires</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="val2">Pediatric A</span></td>
+        <td>CPP, aCPP</td>
+        <td>Supratentoriel pédiatrique</td>
+        <td><span class="val2">Bas risque</span></td>
+        <td>Gains Chr 1, 2, 21q · TP53 rare</td>
+      </tr>
+      <tr>
+        <td><span class="val3">Pediatric B</span></td>
+        <td>CPP, aCPP, <strong>CPC (100 %)</strong></td>
+        <td>Supratentoriel pédiatrique</td>
+        <td><span class="val3">Haut risque</span></td>
+        <td>TP53 muté (fréquent) · instabilité chromosomique · gains Chr 1, 2, 21</td>
+      </tr>
+      <tr>
+        <td><span class="val">Adult</span></td>
+        <td>CPP, aCPP</td>
+        <td>Infratentoriel, adulte</td>
+        <td><span class="val2">Bas risque</span></td>
+        <td>Mutation TERT promoteur (~25 %) → SSP ↓ (p=0,015) · Fusion CCDC47-PRKCA (rare, agressif)</td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 16px;margin-top:10px;font-size:12.5px;line-height:1.7;">
+    <strong>TP53 &amp; Li-Fraumeni :</strong> mutation germinale TP53 chez ~40–50 % des CPC (25 % pédiatrique tous CPT). Impact pronostique majeur : SG 5 ans <span class="val4" style="font-family:'DM Mono',monospace;color:#f85149;font-size:12px;">0 %</span> (TP53 IHC+) vs <span class="val2">82 %</span> (TP53−) pour CPC (Tabori 2010, n=64). Voies oncogéniques : Notch3, TWIST1, PDGFR, Wnt/β-caténine. Classification par méthylation ADN = outil de stratification robuste (Thomas &amp; Hasselblatt, <em>Neuro-Oncol Adv</em> 2024).
+  </div>
+
+  <!-- RT PROTOCOLS -->
+  <div class="slabel">Protocoles de Radiothérapie</div>
+  <table class="rt-table">
+    <thead>
+      <tr><th>Situation</th><th>Indication RT</th><th>Volumes &amp; Dose</th><th>Données d'outcome</th><th>Source</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>CPP Grade I — GTR</strong></td>
+        <td><span class="val2">❌ Surveillance seule</span></td>
+        <td>—</td>
+        <td>SG 5 ans &gt; 90 % · curable par chirurgie seule</td>
+        <td>SIOP-2000 · Wolff 2022</td>
+      </tr>
+      <tr>
+        <td><strong>CPP Grade I — résidu / récidive</strong></td>
+        <td><span class="val3">⚠ SRS à discuter</span> (RCP)<br><span class="nt">Pas de standard établi</span></td>
+        <td>SRS (CyberKnife / Gamma Knife) · dose selon volume<br><span class="nt">Pas de standard — données de cas uniquement</span></td>
+        <td>Séries Stanford (Zhang 2023) et Pittsburgh (Kim 2008) — efficacité et sécurité sur petit effectif</td>
+        <td>Zhang <em>World Neurosurg</em> 2023</td>
+      </tr>
+      <tr>
+        <td><strong>aCPP Grade II — GTR, M0</strong></td>
+        <td><span class="val3">⚠ Cas par cas</span><br>Tendance vers surveillance chez l'enfant · RT adjuvante chez l'adulte (Ki-67 élevé)</td>
+        <td>RT locale si décision adjuvante : <span class="val">54 Gy / 30 fr</span> (1,8 Gy/fr)</td>
+        <td>SG 5 ans ~85–96 % · aCPP sous-groupe "pediatric B" + résidu = indication chimio à discuter</td>
+        <td>SIOP-2000 · Akade 2020 · CPT-SIOP Registry 2025</td>
+      </tr>
+      <tr>
+        <td><strong>aCPP Grade II — STR ou M+</strong></td>
+        <td><span class="val2">✅ Recommandée</span></td>
+        <td>
+          M0/STR : RT locale <span class="val">54 Gy / 30 fr</span><br>
+          M+ : <span class="val3">CSI 35,2 Gy</span> (1,6 Gy/fr) + boost local <span class="val">54 Gy</span><br>
+          <span class="nt">&lt; 3 ans : chimio en priorité, RT différée</span>
+        </td>
+        <td>Réponse à RT documentée dans SIOP-2000 · EFS/OS bons dans cohorte APP (n intermédiaire)</td>
+        <td>Wolff <em>J Neurooncol</em> 2022</td>
+      </tr>
+      <tr>
+        <td><strong>CPC Grade III &gt; 3 ans — M0</strong></td>
+        <td><span class="val2">✅ Adjuvante après chimio</span></td>
+        <td>RT focale : <span class="val">54 Gy / 30 fr</span> (1,8 Gy/fr)<br>CTV = lit tumoral + marges<br><span class="nt">Protons préférables si disponibles</span></td>
+        <td>RT associée à meilleure survie en analyse multivariée (Wolff 2002, méta-analyse). 5-y PFS CarbEV + RT &gt; chimio seule (tendance)</td>
+        <td>SIOP-2000 · Wolff <em>Br J Cancer</em> 2002</td>
+      </tr>
+      <tr>
+        <td><strong>CPC Grade III — M+</strong></td>
+        <td><span class="val2">✅ CSI recommandée</span></td>
+        <td>
+          CSI : <span class="val3">35,2 Gy</span> (1,6 Gy/fr)<br>
+          Boost local : jusqu'à <span class="val">54 Gy</span><br>
+          Si non-répondeur chimio : CSI d'emblée
+        </td>
+        <td>Données limitées — paradigme issu de SIOP-2000 par analogie avec MB HR</td>
+        <td>CPT-SIOP-2000 algorithm</td>
+      </tr>
+      <tr>
+        <td><strong>CPC &lt; 3 ans — tout statut</strong></td>
+        <td><span class="val3">⚠ RT différée / évitée</span></td>
+        <td>Chimio CarbEV en priorité<br>Étoposide intraventriculaire (Ommaya) si pas de GTR<br><span class="nt">RT différée jusqu'à 3 ans si possible</span></td>
+        <td>12/33 patients CPC &lt; 3 ans vivants à médiane 8,5 ans sans RT (SIOP-2000)</td>
+        <td>Wolff <em>J Neurooncol</em> 2022</td>
+      </tr>
+      <tr>
+        <td><strong>CPC + Li-Fraumeni / TP53 germinal</strong></td>
+        <td><span class="val4" style="font-family:'DM Mono',monospace;color:#f85149;font-size:12.5px;">❌ RT contre-indiquée</span><br><span class="nt">sauf nécessité absolue</span></td>
+        <td>Chimio intensive seule (CarbEV/ICE)<br>SRS ponctuelle si rechute localisée (données de cas 2024)<br><span class="nt">Ne jamais irradier de façon prophylactique</span></td>
+        <td>OS 2 ans 18 % (RT) vs 58 % (sans RT) chez LFS (p=0,056) · mécanisme : radiorésistance TP53 + seconds cancers radio-induits (3 leucémies myéloïdes dans SIOP-2000)</td>
+        <td>Bahar <em>Anticancer Res</em> 2015</td>
+      </tr>
+      <tr>
+        <td><strong>CPC récidivant — tous statuts</strong></td>
+        <td><span class="val3">⚠ Cas par cas · RCP</span></td>
+        <td>
+          Re-résection si possible<br>
+          HD-chimio ± autogreffe (Head Start)<br>
+          RT proton locale si non-LFS (54 Gy RBE)<br>
+          SRS 24 Gy / 1 fr (cas rapportés)
+        </td>
+        <td>Contrôle local 41 mois rapporté en SRS (Yuan <em>J Neurosurg Case Lessons</em> 2024) · récidive ultérieure fatale fréquente</td>
+        <td>Yuan 2024 · LFS case report 2017</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- CHEMOTHERAPY -->
+  <div class="slabel">Chimiothérapie — Protocoles de Référence</div>
+  <table class="rt-table">
+    <thead>
+      <tr><th>Protocole</th><th>Régime</th><th>Indication</th><th>Résultats clés</th><th>Statut</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>CarbEV</strong><br><span class="nt">CPT-SIOP-2000 Arm A — référence actuelle</span></td>
+        <td>
+          <span class="val">Carboplatine</span> 350 mg/m² J2–3<br>
+          <span class="val">Étoposide</span> 100 mg/m² J1–5<br>
+          <span class="val">Vincristine</span> 1,5 mg/m² J5<br>
+          <span class="nt">6 cycles q4 semaines</span>
+        </td>
+        <td>CPC (tous) · aCPP M+ ou STR · haut risque CPT</td>
+        <td>SSprog 5/10 ans : <span class="val2">62 % / 47 %</span> · supérieur à CycEV (HR 2,6 · p=0,032)</td>
+        <td><span class="sbadge s-a">STANDARD · SIOP-2009</span></td>
+      </tr>
+      <tr>
+        <td><strong>CycEV</strong><br><span class="nt">CPT-SIOP-2000 Arm B — inférieur</span></td>
+        <td>
+          <span class="val3">Cyclophosphamide</span> 1 g/m² J2–3<br>
+          <span class="val">Étoposide</span> 100 mg/m² J1–5<br>
+          <span class="val">Vincristine</span> 1,5 mg/m² J5<br>
+          <span class="nt">6 cycles q4 semaines</span>
+        </td>
+        <td>Bras comparateur SIOP-2000 — <strong>ne plus utiliser en 1re ligne</strong></td>
+        <td>SSprog 5/10 ans : <span class="val3">27 % / 18 %</span> · significativement inférieur à CarbEV</td>
+        <td><span class="sbadge s-ny">ABANDONNÉ EN 1re LIGNE</span></td>
+      </tr>
+      <tr>
+        <td><strong>ICE</strong><br><span class="nt">Régime nord-américain (Head Start / COG)</span></td>
+        <td>
+          Ifosfamide · Carboplatine · Étoposide<br>
+          <span class="nt">± utilisation néoadjuvante avant 2e résection</span>
+        </td>
+        <td>CPC en STR initial · néoadjuvant avant ré-opération · rechute</td>
+        <td>Efficacité démontrée en néoadjuvant (réduction tumorale permettant GTR 2e résection) — données rétrospectives</td>
+        <td><span class="sbadge s-a">UTILISÉ EN PRATIQUE (US)</span></td>
+      </tr>
+      <tr>
+        <td><strong>Étoposide intraventriculaire</strong><br><span class="nt">Via cathéter Ommaya</span></td>
+        <td>
+          Étoposide 1 mg J1–5 intraventriculaire<br>
+          <span class="nt">Concurrent à IV CarbEV · protocol SIOP-2009 Arm A modifié</span>
+        </td>
+        <td>CPC &lt; 3 ans sans possibilité de RT · LFS · alternative intra-cranienne</td>
+        <td>Rémission complète rapportée (cas LFS) · arachnoïdite possible — traitable par dexaméthasone</td>
+        <td><span class="sbadge s-a">OPTION PÉDIATRIQUE</span></td>
+      </tr>
+      <tr>
+        <td><strong>HD-chimio + autogreffe</strong><br><span class="nt">Head Start · ACNS / COG</span></td>
+        <td>
+          Induction : VCR + CDDP + Cyclophosphamide + VP16<br>
+          Consolidation : Thiotepa + Carboplatine (myéloablatif)<br>
+          + Rescue cellules souches autologues
+        </td>
+        <td>CPC &lt; 3 ans en rechute · CPC haut risque après SIOP standard</td>
+        <td>Quelques longs survivants documentés (Head Start, n=petite série) · toxicité significative · 3 leucémies myéloïdes secondaires dans SIOP-2000</td>
+        <td><span class="sbadge s-ny">RECOURS / RECHUTE</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- PRONOSTIC -->
+  <div class="slabel">Pronostic &amp; Facteurs Pronostiques</div>
+  <table class="rt-table">
+    <thead>
+      <tr><th>Entité</th><th>SG 5 ans</th><th>SG 10 ans</th><th>SSE/SSprog 5 ans</th><th>Facteurs pronostiques dominants</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>CPP Grade I</strong></td>
+        <td><span class="val2">&gt; 90 %</span></td>
+        <td><span class="val2">77–95 %</span></td>
+        <td><span class="val2">92 %</span> (SIOP-2000)</td>
+        <td>GTR = facteur quasi-suffisant · récidive rare mais possible (suivi à vie)</td>
+      </tr>
+      <tr>
+        <td><strong>aCPP Grade II</strong></td>
+        <td><span class="val2">85–96 %</span></td>
+        <td><span class="val2">67–100 %</span></td>
+        <td><span class="val3">76 %</span> (SIOP-2000)</td>
+        <td>GTR · résidu tumoral · sous-groupe "pediatric B" · mutation TERT (adulte)</td>
+      </tr>
+      <tr>
+        <td><strong>CPC Grade III — tous</strong></td>
+        <td><span class="val3">36–65 %</span></td>
+        <td><span class="val3">35–51 %</span></td>
+        <td><span class="val3">41 %</span> (SIOP-2000 registre)</td>
+        <td>GTR (84 % vivants à 2 ans vs 18 % STR) · statut TP53 · CarbEV · présence métastases</td>
+      </tr>
+      <tr>
+        <td><strong>CPC TP53 sauvage</strong></td>
+        <td><span class="val2">70–80 %</span></td>
+        <td>—</td>
+        <td><span class="val2">~70 %</span></td>
+        <td>Pronostic nettement meilleur · cure possible sans RT dans un sous-groupe</td>
+      </tr>
+      <tr>
+        <td><strong>CPC TP53 muté / LFS</strong></td>
+        <td><span class="val4" style="font-family:'DM Mono',monospace;color:#f85149;font-size:12.5px;">0–25 %</span></td>
+        <td>—</td>
+        <td><span class="val4" style="font-family:'DM Mono',monospace;color:#f85149;font-size:12.5px;">&lt; 25 %</span></td>
+        <td>TP53 IHC+ = SG 5 ans 0 % vs 82 % TP53− · résistance chimio et RT · risque de seconds cancers (3 LAM secondaires dans SIOP-2000)</td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 16px;margin-top:10px;font-size:12px;color:var(--muted);">
+    ⚠ Récidive tardive possible jusqu'à <strong>17 ans</strong> après chirurgie initiale (CPC — Nagai <em>NMC Case Rep J</em> 2022). Progression maligne CPP → CPC : exceptionnelle, surtout porteurs TP53 germinal. Dissémination leptoméningée : rare Grade I, surveiller aCPP/CPC.
+  </div>
+
+  <!-- ALGORITHM -->
+  <div class="slabel">Algorithme Décisionnel</div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;font-size:13px;line-height:1.9;font-family:'DM Mono',monospace;">
+    <div style="color:var(--muted);margin-bottom:12px;font-size:11px;letter-spacing:1px;">DIAGNOSTIC CPT CONFIRMÉ (IRM + AP + TP53 germinal)</div>
+    <div style="padding-left:0;">
+      <div>├─► <span style="color:var(--accent2);">Grade I (CPP)</span></div>
+      <div style="padding-left:24px;">│ ├─► GTR → <strong>Surveillance IRM seule</strong> (J6 mois × 2 ans → annuelle)</div>
+      <div style="padding-left:24px;">│ └─► Résidu / Récidive → <strong>Discussion SRS</strong> (volume limité) · ⚠ RCP RENOCLIP-LOC</div>
+      <div style="margin-top:8px;">├─► <span style="color:var(--accent3,#ffa657);">Grade II (aCPP)</span></div>
+      <div style="padding-left:24px;">│ ├─► Bilan TP53 germinal ± méthylation ADN</div>
+      <div style="padding-left:24px;">│ ├─► GTR, M0 → Discussion cas/cas · adulte : tendance RT 54 Gy · enfant : surveillance si GTR stricte</div>
+      <div style="padding-left:24px;">│ ├─► STR → <strong>RT locale 54 Gy / 30 fr</strong></div>
+      <div style="padding-left:24px;">│ ├─► M+ → <strong>CSI 35,2 Gy + boost 54 Gy</strong></div>
+      <div style="padding-left:24px;">│ └─► &lt; 3 ans → <strong>Chimio CarbEV en priorité</strong> · RT différée</div>
+      <div style="margin-top:8px;">└─► <span style="color:#f85149;">Grade III (CPC)</span></div>
+      <div style="padding-left:24px;">  ├─► <strong>TP53 germinal systématique</strong> (Li-Fraumeni ?)</div>
+      <div style="padding-left:24px;">  ├─► TP53 sauvage &gt; 3 ans : GTR → <strong>CarbEV × 6 cycles</strong> → <strong>RT focale 54 Gy</strong></div>
+      <div style="padding-left:24px;">  ├─► TP53 sauvage &lt; 3 ans : GTR → <strong>CarbEV ± étoposide IVT</strong> · RT différée si possible</div>
+      <div style="padding-left:24px;">  ├─► LFS / TP53 muté : <strong>CarbEV/ICE sans RT</strong> · SRS si rechute localisée (cas/cas)</div>
+      <div style="padding-left:24px;">  ├─► M+ : <strong>CarbEV → CSI 35,2 Gy + boost 54 Gy</strong> (si non-LFS)</div>
+      <div style="padding-left:24px;">  └─► STR : <strong>Re-résection</strong> si possible → puis protocole selon TP53 + âge</div>
+    </div>
+    <div style="margin-top:12px;color:var(--muted);font-size:11px;">🏥 RCP RENOCLIP-LOC (adulte) · SFCE/FRACTAL (pédiatrique) · Registre CPT-SIOP-2009 (NCT01014767)</div>
+  </div>
+
+  <!-- TRIALS -->
+  <div class="slabel">Protocoles Cliniques Actifs</div>
+  <div class="trials-grid">
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT01014767" target="_blank">NCT01014767</a><span class="sbadge s-a">REGISTRE · ACTIF</span></div>
+      <div class="tc-title">CPT-SIOP-2009 — International Registry &amp; Chemotherapy Protocol for High-Risk CPT</div>
+      <div class="tc-meta"><span class="ttag">Registre + chimio Arm A/B/C</span><span class="ttag">SIOPE · International</span><span class="th-ch">CarbEV / ICE / HD-Méthotrexate</span></div>
+      <div class="tc-sponsor"><strong>SIOP / Wolff JE</strong> — Registre international continu (2009–présent). Arm A = CarbEV standard. Arm C = HD-Méthotrexate + cytarabine IVT pour rechute. Référence thérapeutique mondiale actuelle pour CPC et aCPP haut risque.</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://clinicaltrials.gov/study/NCT00500890" target="_blank">NCT00500890</a><span class="sbadge s-a">COMPLÉTÉ · RÉSULTATS 2022</span></div>
+      <div class="tc-title">CPT-SIOP-2000 — Seul RCT complété pour CPT (CarbEV vs CycEV)</div>
+      <div class="tc-meta"><span class="ttag">RCT Phase II/III · n=158</span><span class="ttag">23 pays</span><span class="th-ch">CarbEV vs CycEV · 6 cycles</span><span class="th-rt">54 Gy focale / 35.2 Gy CSI</span></div>
+      <div class="tc-sponsor"><strong>SIOP · Wolff JE</strong> — Résultats publiés <em>J Neurooncol</em> 2022. Conclusions : CarbEV supérieur (SSprog 5y 62 % vs 27 %, HR 2.6, p=0.032). Sous-groupe CPC sans RT : 12/33 vivants à 8.5 ans médian.</div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><a class="nct-id" href="https://www.pnoc.us/" target="_blank">PNOC</a><span class="sbadge s-ny">À SURVEILLER</span></div>
+      <div class="tc-title">PNOC Basket Trials — CPT potentiellement éligibles (moléculaire)</div>
+      <div class="tc-meta"><span class="ttag">Basket trial · moléculaire</span><span class="ttag">PNOC · COG</span><span class="th-tg">Thérapies ciblées</span></div>
+      <div class="tc-sponsor"><strong>PNOC / COG</strong> — Les CPT (notamment CPC TP53 muté) peuvent être inclus dans des basket trials pédiatriques basés sur le profil moléculaire (NTRK, PDGFR, Wnt, ATM). Consulter ClinicalTrials.gov par profil moléculaire tumoral.</div>
+    </div>
+  </div>
+
+  <!-- SIGNAL -->
+  <div class="slabel">Signal Clinique 2024–2026</div>
+  <div class="signal-box">
+    <p>Le paradigme thérapeutique des CPT est dominé par <span class="signal-hl">la stratification TP53 comme variable décisionnelle centrale</span> — bien au-delà du simple grade OMS. Pour les CPC, la dichotomie TP53 sauvage (SG 5 ans ~70–80 %) vs TP53 muté/LFS (SG 5 ans 0–25 %) est plus prédictive que tout autre facteur. <span class="signal-hl2">La RT est formellement contre-indiquée en cas de LFS</span> (radiorésistance + risque de seconds cancers radio-induits documenté — 3 LAM secondaires dans SIOP-2000).</p>
+    <p>Sur le plan thérapeutique, <strong>CarbEV reste le seul régime validé par un RCT</strong> et doit être considéré comme standard de référence pour tout CPC et aCPP haut risque. La question de la RT adjuvante reste non-résolue pour les CPC TP53 sauvage après GTR : un sous-groupe est curable par chimio seule (12/33 dans SIOP-2000 sans RT, médiane 8,5 ans de suivi). <span class="signal-hl3">La classification épigénétique (méthylation ADN : Pediatric A/B/Adult)</span> emerge comme outil de stratification robuste et pourrait guider les futures études — les CPC sont uniformément "Pediatric B" (Thomas &amp; Hasselblatt, <em>Neuro-Oncol Adv</em> 2024).</p>
+    <p>Perspective 2026 : les approches précliniques (criblage HTS sur lignée patient-dérivée CCHE-45, combinations ATMi + alkylants/topoisomérase) et la caractérisation par snRNA-seq de l'hétérogénéité tumorale ouvrent la voie à des essais ciblés. L'enrôlement dans le <strong>registre CPT-SIOP-2009</strong> reste essentiel pour accumuler des données prospectives dans cette pathologie ultra-rare.</p>
+  </div>
+
+  <!-- REFERENCES -->
+  <div class="slabel">References</div>
+  <div class="refs-list">
+    <div class="ref-item">
+      <span class="ref-num">1</span>
+      <span class="ref-authors">Wolff JE, Van Gool SW, Kutluk T, et al.</span>
+      <div class="ref-title">Final results of the Choroid Plexus Tumor study CPT-SIOP-2000</div>
+      <div class="ref-journal">Journal of Neuro-Oncology, 2022; 156(3):599–613</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1007/s11060-021-03942-0" target="_blank">https://doi.org/10.1007/s11060-021-03942-0</a></div>
+      <div class="ref-note">🟢 Essai prospectif randomisé — seul RCT · n=158 · 23 pays · CarbEV vs CycEV · médiane suivi 7,3 ans · CarbEV HR 2.6 (p=0.032)</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">2</span>
+      <span class="ref-authors">Thomas C, Hasselblatt M.</span>
+      <div class="ref-title">Molecular genetics and diversity of choroid plexus tumors</div>
+      <div class="ref-journal">Neuro-Oncology Advances, 2024; 6(1):vdae101</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1093/noajnl/vdae101" target="_blank">https://doi.org/10.1093/noajnl/vdae101</a></div>
+      <div class="ref-note">🟡 Revue moléculaire + série rétrospective · n=268 profils méthylation · 3 sous-groupes épigénétiques · CPC uniformément Pediatric B · 2 sous-groupes CPC selon TP53</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">3</span>
+      <span class="ref-authors">Osorio DS, Yankelevich M, Lafay-Cousin L, Zaky W.</span>
+      <div class="ref-title">An overview of the diagnosis and management of Choroid Plexus tumors</div>
+      <div class="ref-journal">Advances in Cancer Research, 2025; 167:103–139</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1016/bs.acr.2025.08.008" target="_blank">https://doi.org/10.1016/bs.acr.2025.08.008</a></div>
+      <div class="ref-note">🟢 Revue exhaustive MD Anderson/Alberta 2025 · EFS 5y TP53-mut 0–25% vs TP53-wt 70–80% · instabilité chromosomique · LFS management</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">4</span>
+      <span class="ref-authors">Tabori U, Shlien A, Baskin B, et al.</span>
+      <div class="ref-title">TP53 alterations determine clinical subgroups and survival of patients with choroid plexus tumors</div>
+      <div class="ref-journal">Journal of Clinical Oncology, 2010; 28(12):1995–2001</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1200/JCO.2009.26.8169" target="_blank">https://doi.org/10.1200/JCO.2009.26.8269</a></div>
+      <div class="ref-note">🟡 Série rétrospective · n=64 · SG 5 ans 0% (TP53 IHC+) vs 82% (TP53−) pour CPC · référence fondatrice de la stratification TP53</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">5</span>
+      <span class="ref-authors">Bahar M, Kordes U, Tekautz T, Wolff J.</span>
+      <div class="ref-title">Radiation therapy for choroid plexus carcinoma patients with Li-Fraumeni syndrome: advantageous or detrimental?</div>
+      <div class="ref-journal">Anticancer Research, 2015; 35(5):3013–3017</div>
+      <div class="ref-doi"><a href="https://ar.iiarjournals.org/content/35/5/3013" target="_blank">https://ar.iiarjournals.org/content/35/5/3013</a></div>
+      <div class="ref-note">🟡 Revue systématique · n=28 patients LFS · OS 2y 18% (RT) vs 58% (sans RT) · p=0.056 · base de la contre-indication RT en LFS</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">6</span>
+      <span class="ref-authors">Akade E, Aslani F, Verdi K, et al.</span>
+      <div class="ref-title">Role of available adjuvant therapies following surgical resection of atypical choroid plexus papilloma — a systematic review and pooled analysis</div>
+      <div class="ref-journal">Neuro-Oncology Advances, 2020; 2(1):vdaa139</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1093/noajnl/vdaa139" target="_blank">https://doi.org/10.1093/noajnl/vdaa139</a></div>
+      <div class="ref-note">🟡 Méta-analyse · n=144 aCPP · 107 surveillance · 24 chimio · 8 chimio-RT · 5 RT seule · pas de différence OS significative selon adjuvant · GTR = facteur dominant</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">7</span>
+      <span class="ref-authors">Wolff JE, Bison B, Kordes U, et al.</span>
+      <div class="ref-title">CPT-SIOP registry: evaluation of risk factors for disease progression in pediatric choroid plexus papilloma</div>
+      <div class="ref-journal">Journal of Neuro-Oncology, 2025 (online ahead of print)</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1007/s11060-025-05136-4" target="_blank">https://doi.org/10.1007/s11060-025-05136-4</a></div>
+      <div class="ref-note">🟡 Registre CPT-SIOP 2011–2023 · n=93 · aCPP Pediatric B + résidu = indication chimio raisonnable · 94.6% surveillance post-GTR · résultats excellents</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">8</span>
+      <span class="ref-authors">Thompson A, Pescaru H, Griffin B, et al.</span>
+      <div class="ref-title">Choroid plexus carcinoma: state of the field and emerging directions</div>
+      <div class="ref-journal">Oncogenesis, 2026</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1038/s41389-026-00612-6" target="_blank">https://doi.org/10.1038/s41389-026-00612-6</a></div>
+      <div class="ref-note">🟢 Revue état du terrain la plus récente (2026) · criblage HTS CCHE-45 · snRNA-seq · combinaisons ATMi · délivrance intra-artérielle · cibles moléculaires émergentes</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">9</span>
+      <span class="ref-authors">Yuan L, Park DJ, Persad ARL, et al.</span>
+      <div class="ref-title">Recurrent choroid plexus carcinoma treated with CyberKnife radiosurgery: illustrative case</div>
+      <div class="ref-journal">Journal of Neurosurgery Case Lessons, 2024; 8(2):CASE23748</div>
+      <div class="ref-doi"><a href="https://doi.org/10.3171/CASE23748" target="_blank">https://doi.org/10.3171/CASE23748</a></div>
+      <div class="ref-note">🔴 Données de cas · CPC récidivant · SRS 24 Gy / 1 fr · contrôle local 41 mois · récidive ultérieure · illustration du rôle possible de la SRS en situation de recours</div>
+    </div>
+    <div class="ref-item">
+      <span class="ref-num">10</span>
+      <span class="ref-authors">Wolff JE, Sajedi M, Brant R, Coppes MJ, Egeler RM.</span>
+      <div class="ref-title">Choroid plexus tumours — meta-analysis of 566 documented cases (1966–1998)</div>
+      <div class="ref-journal">British Journal of Cancer, 2002; 87(10):1086–1091</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1038/sj.bjc.6600609" target="_blank">https://doi.org/10.1038/sj.bjc.6600609</a></div>
+      <div class="ref-note">🟡 Méta-analyse historique · n=566 · SG 1/5/10y CPP 90/81/77% vs CPC 71/41/35% · chirurgie et RT facteurs pronostiques significatifs pour CPC</div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+  // ═══ NAVIGATION ═══
+  function show(id) {
+    document.getElementById('landing').style.display = 'none';
+    document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('active'); });
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function back() {
+    document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('active'); });
+    document.getElementById('landing').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ═══ THEME TOGGLE ═══
+  function toggleTheme() {
+    var isLight = document.body.classList.toggle('light');
+    document.getElementById('btn-theme').textContent = isLight ? '☀' : '◑';
+    try { localStorage.setItem('theme-rare-neuroOnco-revue', isLight ? 'light' : 'dark'); } catch(e) {}
+  }
+  function initTheme() {
+    var saved;
+    try { saved = localStorage.getItem('theme-rare-neuroOnco-revue'); } catch(e) {}
+    if (saved === 'light') {
+      document.body.classList.add('light');
+      document.getElementById('btn-theme').textContent = '☀';
+    }
+  }
+  initTheme();
+</script>
+</body>
+</html>
