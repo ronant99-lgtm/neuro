@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>SIOP CNS GCT II · European Approach — Clinical Review Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+button { cursor: pointer; font-family: 'DM Sans', sans-serif; }
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── THÈME (root = sombre par défaut) ── */
+:root {
+  --bg:       #0d1117;
+  --surface:  #161b22;
+  --surface2: #1c2330;
+  --surface3: #21262d;
+  --border:   #2a3441;
+  --border2:  #30363d;
+  --text:     #e6edf3;
+  --text2:    #8b949e;
+  --text3:    #6e7681;
+  --green:    #3fb950;
+  --blue:     #388bfd;
+  --red:      #f85149;
+  --yellow:   #d29922;
+  --purple:   #a371f7;
+  --orange:   #f0883e;
+  --cyan:     #39c5cf;
+  --accent:   #58a6ff;
+  --accent-rgb: 88,166,255;
+  --radius:   10px;
+}
+body.light {
+  --bg:       #f5f0e8;
+  --surface:  #ffffff;
+  --surface2: #ede8dc;
+  --surface3: #e6e0d2;
+  --border:   #c8bfaa;
+  --border2:  #d4ccba;
+  --text:     #1a1208;
+  --text2:    #5a4f3a;
+  --text3:    #9a8f7a;
+  --green:    #2d7a3a;
+  --blue:     #1a5fa8;
+  --red:      #c0392b;
+  --yellow:   #a0720a;
+  --purple:   #6b3fa0;
+  --orange:   #c45a10;
+  --cyan:     #1a7a8a;
+  --accent:   #1a5fa8;
+}
+
+/* ── BASE ── */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(13,17,23,0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 12px; flex-wrap: nowrap;
+}
+body.light header { background: rgba(245,240,232,0.97); }
+.hdr-logo {
+  width: 32px; height: 32px;
+  border: 1.5px solid var(--accent); border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace; font-size: 8px;
+  color: var(--accent); font-weight: 500; flex-shrink: 0; letter-spacing: 0;
+}
+.hdr-texts { flex: 1; min-width: 0; }
+.hdr-title {
+  font-family: 'DM Serif Display', serif; font-size: 15px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.hdr-sub { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3); margin-top: 2px; }
+.hdr-badge {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  padding: 3px 10px; border-radius: 20px;
+  background: rgba(88,166,255,.1); border: 1px solid rgba(88,166,255,.3);
+  color: var(--accent); margin-left: auto; flex-shrink: 0; white-space: nowrap;
+}
+.hdr-disclaimer {
+  font-family: 'DM Mono', monospace; font-size: 8px; color: var(--text3);
+  flex-shrink: 0; max-width: 160px; text-align: right; line-height: 1.3;
+  display: none;
+}
+@media (min-width: 900px) { .hdr-disclaimer { display: block; } }
+.btn-theme {
+  width: 30px; height: 30px; border-radius: 6px;
+  border: 1px solid var(--border2); background: transparent;
+  color: var(--text2); font-size: 14px;
+  transition: all .18s; display: flex; align-items: center; justify-content: center;
+  margin-left: 8px; flex-shrink: 0;
+}
+.btn-theme:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── MAIN CONTAINER ── */
+.container { max-width: 960px; margin: 0 auto; padding: 32px 20px 80px; }
+
+/* ── LANDING ── */
+.landing-intro { margin-bottom: 28px; }
+.landing-intro h1 {
+  font-family: 'DM Serif Display', serif; font-size: 26px;
+  margin-bottom: 6px; line-height: 1.3;
+}
+.landing-intro p { font-size: 13px; color: var(--text2); max-width: 640px; line-height: 1.6; }
+.trial-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(88,166,255,.1); border: 1px solid rgba(88,166,255,.25);
+  border-radius: 20px; padding: 4px 12px;
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent);
+  margin-top: 10px;
+}
+
+/* ── SECTION LABEL ── */
+.section-label, .slabel {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 2px; color: var(--text3);
+  text-transform: uppercase; margin-bottom: 14px; margin-top: 28px;
+}
+.slabel:first-of-type { margin-top: 0; }
+.section-label:first-child { margin-top: 0; }
+
+/* ── NAV GRID ── */
+.nav-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px; margin-bottom: 36px;
+}
+.nav-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px 18px;
+  cursor: pointer; transition: all .2s; text-align: left;
+  position: relative; overflow: hidden;
+}
+.nav-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 3px; background: var(--accent);
+}
+.nav-card.green::before { background: var(--green); }
+.nav-card.yellow::before { background: var(--yellow); }
+.nav-card.red::before { background: var(--red); }
+.nav-card.purple::before { background: var(--purple); }
+.nav-card.cyan::before { background: var(--cyan); }
+.nav-card:hover { border-color: var(--accent); background: var(--surface2); }
+body.light .nav-card:hover { background: #f8f4ee; }
+.nc-num { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3); letter-spacing: 1px; margin-bottom: 6px; }
+.nc-name { font-family: 'DM Serif Display', serif; font-size: 14px; line-height: 1.3; margin-bottom: 8px; color: var(--text); }
+.nc-dose { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--blue); margin-bottom: 6px; }
+.nc-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+.nc-tag {
+  font-family: 'DM Mono', monospace; font-size: 8px; padding: 2px 6px; border-radius: 4px;
+}
+.nc-tag.g { background: rgba(63,185,80,.15); color: var(--green); }
+.nc-tag.y { background: rgba(210,153,34,.12); color: var(--yellow); }
+.nc-tag.r { background: rgba(248,81,73,.12); color: var(--red); }
+.nc-tag.b { background: rgba(56,139,253,.12); color: var(--blue); }
+.nc-tag.p { background: rgba(163,113,247,.12); color: var(--purple); }
+.nc-tag.c { background: rgba(57,197,207,.12); color: var(--cyan); }
+.nc-tag.o { background: rgba(240,136,62,.12); color: var(--orange); }
+
+/* ── PANELS ── */
+.panel { display: none; }
+.panel.active { display: block; }
+.back-btn {
+  background: none; border: 1px solid var(--border2);
+  color: var(--text2); border-radius: 6px; padding: 7px 14px;
+  font-size: 12px; margin-bottom: 20px; transition: all .2s;
+}
+.back-btn:hover { border-color: var(--accent); color: var(--accent); }
+.panel-header { margin-bottom: 28px; }
+.panel-header h2 { font-family: 'DM Serif Display', serif; font-size: 22px; line-height: 1.3; margin-bottom: 5px; }
+.panel-header .ph-sub { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); }
+
+/* ── RT BLOCKS ── */
+.rt-block {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-left: 3px solid var(--blue); border-radius: 8px;
+  padding: 16px; margin-bottom: 14px;
+}
+body.light .rt-block { box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+.rt-block-title {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 1.5px; color: var(--blue);
+  text-transform: uppercase; margin-bottom: 12px;
+}
+.rt-section { margin-bottom: 11px; padding-bottom: 11px; border-bottom: 1px solid var(--border); }
+.rt-section:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.rt-section-hdr {
+  font-size: 12px; font-weight: 500; color: var(--text);
+  margin-bottom: 7px; display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+}
+.rt-tag {
+  font-family: 'DM Mono', monospace; font-size: 9px; padding: 2px 7px;
+  border-radius: 4px; background: rgba(56,139,253,.12); color: var(--blue); flex-shrink: 0;
+}
+.rt-tag.yellow { background: rgba(210,153,34,.12); color: var(--yellow); }
+.rt-tag.alert  { background: rgba(248,81,73,.12); color: var(--red); }
+.rt-tag.green  { background: rgba(63,185,80,.12); color: var(--green); }
+.rt-tag.purple { background: rgba(163,113,247,.12); color: var(--purple); }
+.rt-tag.cyan   { background: rgba(57,197,207,.12); color: var(--cyan); }
+.rt-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+@media (max-width: 560px) { .rt-2col { grid-template-columns: 1fr; } }
+.rt-box {
+  background: var(--surface3); border: 1px solid var(--border);
+  border-radius: 6px; padding: 9px 11px; margin-bottom: 6px;
+}
+.rt-box-label {
+  font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3);
+  letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px;
+}
+.rt-box-val { font-size: 12px; color: var(--text); line-height: 1.5; }
+.rt-sub  { font-size: 11px; color: var(--text2); margin-top: 3px; line-height: 1.4; }
+.rt-note { font-size: 11px; color: var(--text2); margin-top: 5px; line-height: 1.5; }
+.rt-dose { color: var(--blue); font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; }
+.rt-dose.esc { color: var(--yellow); }
+.rt-dose.red { color: var(--red); }
+
+/* ── COMPARATIVE TABLE ── */
+.ct {
+  width: 100%; border-collapse: collapse;
+  font-size: 12px; margin-bottom: 36px;
+}
+.ct thead th {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text3); padding: 8px 10px; text-align: left;
+  border-bottom: 1px solid var(--border); background: var(--surface);
+}
+.ct tbody td {
+  padding: 9px 10px; border-bottom: 1px solid var(--border2);
+  color: var(--text); vertical-align: top; line-height: 1.5;
+}
+.ct tbody tr:hover td { background: var(--surface2); }
+body.light .ct tbody tr:hover td { background: #ede8dc; }
+.ct-badge {
+  display: inline-block; font-family: 'DM Mono', monospace; font-size: 9px;
+  padding: 2px 7px; border-radius: 4px; white-space: nowrap;
+}
+.badge-green  { background: rgba(63,185,80,.12); color: var(--green); }
+.badge-yellow { background: rgba(210,153,34,.12); color: var(--yellow); }
+.badge-red    { background: rgba(248,81,73,.12); color: var(--red); }
+.badge-blue   { background: rgba(56,139,253,.12); color: var(--blue); }
+.badge-purple { background: rgba(163,113,247,.12); color: var(--purple); }
+.badge-cyan   { background: rgba(57,197,207,.12); color: var(--cyan); }
+.badge-orange { background: rgba(240,136,62,.12); color: var(--orange); }
+.rt-dose-val { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--blue); font-weight: 500; }
+.rt-dose-val.reduced  { color: var(--green); }
+.rt-dose-val.standard { color: var(--blue); }
+.rt-dose-val.escalated { color: var(--yellow); }
+
+/* ── COMPARISON BLOCK ── */
+.cmp-block {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden; margin-bottom: 28px;
+}
+.cmp-row { display: grid; grid-template-columns: 160px 1fr 1fr; gap: 0; }
+.cmp-row + .cmp-row { border-top: 1px solid var(--border2); }
+.cmp-label {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  color: var(--text3); padding: 10px 12px;
+  background: var(--surface3); text-transform: uppercase; letter-spacing: 0.5px;
+  display: flex; align-items: center; line-height: 1.4;
+  border-right: 1px solid var(--border2);
+}
+.cmp-val {
+  padding: 10px 12px; font-size: 12px; color: var(--text);
+  line-height: 1.5; border-right: 1px solid var(--border2);
+}
+.cmp-val:last-child { border-right: none; }
+.cmp-header { background: var(--surface3); }
+.cmp-header .cmp-val { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent); font-weight: 500; }
+@media (max-width: 600px) {
+  .cmp-row { grid-template-columns: 1fr; }
+  .cmp-label { border-right: none; border-bottom: 1px solid var(--border2); }
+  .cmp-val { border-right: none; }
+}
+
+/* ── STRATA SUMMARY ── */
+.strata-summary {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; margin-bottom: 14px;
+}
+.ss-title {
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3);
+  letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px;
+}
+.ss-row {
+  display: flex; align-items: baseline; gap: 10px; padding: 7px 0;
+  border-bottom: 1px solid var(--border2); font-size: 12px;
+}
+.ss-row:last-child { border-bottom: none; }
+.ss-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent); width: 100px; flex-shrink: 0; }
+.ss-desc  { color: var(--text2); flex: 1; line-height: 1.4; }
+.ss-dose  { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--blue); white-space: nowrap; }
+
+/* ── CHEMO TABLE ── */
+.chemo-table {
+  width: 100%; border-collapse: collapse; font-size: 12px; margin: 10px 0 0;
+}
+.chemo-table th {
+  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--text3); padding: 6px 10px;
+  text-align: left; background: var(--surface3); border-bottom: 1px solid var(--border);
+}
+.chemo-table td {
+  padding: 7px 10px; border-bottom: 1px solid var(--border2);
+  color: var(--text); line-height: 1.5; vertical-align: top;
+}
+.chemo-table tr:last-child td { border-bottom: none; }
+.drug { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--cyan); font-weight: 500; }
+.dose { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--blue); }
+
+/* ── ALERT BOXES ── */
+.alert-box {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-left: 3px solid var(--yellow); border-radius: 8px;
+  padding: 12px 16px; font-size: 12px; line-height: 1.6;
+  margin-bottom: 14px; color: var(--text2);
+}
+.alert-box.red   { border-left-color: var(--red); }
+.alert-box.green { border-left-color: var(--green); }
+.alert-box.blue  { border-left-color: var(--blue); }
+.alert-box strong { color: var(--text); }
+
+/* ── SIGNAL BOX ── */
+.signal-box {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-left: 3px solid var(--orange); border-radius: 8px;
+  padding: 16px 18px; font-size: 13px; line-height: 1.7;
+  margin-bottom: 28px; color: var(--text);
+}
+body.light .signal-box { color: #3a2e1a; }
+.signal-box p + p { margin-top: 10px; }
+.signal-hl  { color: var(--orange); font-weight: 600; }
+.signal-hl2 { color: var(--blue); font-weight: 600; }
+.signal-hl3 { color: var(--green); font-weight: 600; }
+
+/* ── MARKER TABLE ── */
+.marker-block {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden; margin-bottom: 14px;
+}
+.marker-row { display: grid; grid-template-columns: 140px 1fr 1fr 1fr; border-bottom: 1px solid var(--border2); }
+.marker-row:last-child { border-bottom: none; }
+.marker-hdr .mc { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3); text-transform: uppercase; background: var(--surface3); }
+.mc { padding: 8px 10px; font-size: 12px; color: var(--text); border-right: 1px solid var(--border2); line-height: 1.4; }
+.mc:last-child { border-right: none; }
+@media (max-width: 600px) { .marker-row { grid-template-columns: 1fr 1fr; } }
+
+/* ── IHC TABLE ── */
+.ihc-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 14px; overflow-x: auto; display: block; }
+.ihc-table th { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); padding: 6px 8px; text-align: center; background: var(--surface3); border: 1px solid var(--border); }
+.ihc-table th:first-child { text-align: left; }
+.ihc-table td { padding: 6px 8px; border: 1px solid var(--border2); text-align: center; color: var(--text2); }
+.ihc-table td:first-child { text-align: left; font-weight: 500; color: var(--text); }
+.ihc-pos { color: var(--green); font-weight: 600; }
+.ihc-neg { color: var(--text3); }
+.ihc-var { color: var(--yellow); }
+
+/* ── REFS ── */
+.refs-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+.ref-item { display: flex; gap: 12px; }
+.ref-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); flex-shrink: 0; width: 20px; padding-top: 1px; }
+.ref-body { flex: 1; }
+.ref-authors { font-size: 12px; color: var(--text2); margin-bottom: 2px; }
+.ref-title-text { font-size: 12px; color: var(--text); font-weight: 500; margin-bottom: 2px; line-height: 1.4; }
+.ref-journal { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); margin-bottom: 4px; }
+.ref-doi { font-family: 'DM Mono', monospace; font-size: 10px; }
+.ref-note { font-size: 11px; color: var(--text2); margin-top: 3px; font-style: italic; }
+
+/* ── TABS ── */
+.tab-row { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+.tab-btn {
+  font-family: 'DM Mono', monospace; font-size: 10px; padding: 5px 12px;
+  border-radius: 5px; border: 1px solid var(--border2);
+  background: transparent; color: var(--text2); transition: all .18s;
+}
+.tab-btn.active { background: rgba(88,166,255,.15); border-color: var(--accent); color: var(--accent); }
+.tab-btn:hover:not(.active) { border-color: var(--text3); color: var(--text); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ── PRINT ── */
+@media print {
+  body, body.light { background: #fff !important; color: #000 !important; }
+  header { position: static !important; background: #fff !important; border-bottom: 1px solid #ccc !important; }
+  .btn-theme, .back-btn { display: none !important; }
+  #landing { display: none !important; }
+  .panel { display: block !important; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-logo">SIOP</div>
+  <div class="hdr-texts">
+    <div class="hdr-title">SIOP CNS GCT II — European Approach · Clinical Review</div>
+    <div class="hdr-sub">SIOP CNS GCT II · ESCP 2021 · Germinoma · NGGCT · Paediatric · European Standard</div>
+  </div>
+  <div class="hdr-disclaimer">Not a substitute for<br>institutional protocol</div>
+  <span class="hdr-badge">SIOPE · BTG · 2021</span>
+  <button class="btn-theme" id="btn-theme" onclick="toggleTheme()" title="Toggle light mode">◑</button>
+</header>
+
+<!-- ═══════════════════════════════════ LANDING ═══════════════════════════════════ -->
+<div id="landing">
+<div class="container">
+
+  <div class="landing-intro">
+    <h1>SIOP CNS GCT II — European Standard<br>for Intracranial GCT</h1>
+    <p>Interactive review of the European approach to paediatric intracranial germ cell tumours, based on SIOP CNS GCT II (closed 2018) and the ESCP 2021 clinical practice document. Covers germinoma and NGGCT diagnostic grouping, chemotherapy regimens, risk stratification, and radiation therapy protocols.</p>
+    <div class="trial-pill">ESCP STANDARD · SIOPE Brain Tumour Group · CNS GCT Working Group · ERN PaedCan</div>
+  </div>
+
+  <!-- Navigation cards -->
+  <div class="section-label">Sections — Select for detailed protocol</div>
+  <div class="nav-grid">
+    <div class="nav-card green" onclick="show('diag')">
+      <div class="nc-num">SECTION 01</div>
+      <div class="nc-name">Diagnosis & Staging</div>
+      <div class="nc-dose">Markers · Imaging · IHC · Groups</div>
+      <div class="nc-tags">
+        <span class="nc-tag g">AFP · HCG</span>
+        <span class="nc-tag b">Bifocal DI rule</span>
+      </div>
+    </div>
+    <div class="nav-card" onclick="show('germ-nonmet')">
+      <div class="nc-num">SECTION 02</div>
+      <div class="nc-name">Localised Germinoma</div>
+      <div class="nc-dose">24 Gy WVI+TB (±16 Gy boost)</div>
+      <div class="nc-tags">
+        <span class="nc-tag g">CR → no boost</span>
+        <span class="nc-tag b">CarboE / IE × 4</span>
+      </div>
+    </div>
+    <div class="nav-card yellow" onclick="show('germ-met')">
+      <div class="nc-num">SECTION 03</div>
+      <div class="nc-name">Metastatic Germinoma</div>
+      <div class="nc-dose">CSI 24 Gy + 16 Gy boost</div>
+      <div class="nc-tags">
+        <span class="nc-tag r">Metastatic</span>
+        <span class="nc-tag y">No chemo first-line</span>
+      </div>
+    </div>
+    <div class="nav-card red" onclick="show('nggct-sr')">
+      <div class="nc-num">SECTION 04</div>
+      <div class="nc-name">Standard-Risk NGGCT</div>
+      <div class="nc-dose">PEI × 3–4 → TU 54 Gy</div>
+      <div class="nc-tags">
+        <span class="nc-tag b">AFP ≤1000 · Age ≥6y</span>
+        <span class="nc-tag y">Second-look surgery</span>
+      </div>
+    </div>
+    <div class="nav-card red" onclick="show('nggct-hr')">
+      <div class="nc-num">SECTION 05</div>
+      <div class="nc-name">High-Risk NGGCT</div>
+      <div class="nc-dose">HD-PEI + SCT → RT</div>
+      <div class="nc-tags">
+        <span class="nc-tag r">AFP &gt;1000 or &lt;6y</span>
+        <span class="nc-tag o">Experimental</span>
+      </div>
+    </div>
+    <div class="nav-card purple" onclick="show('teratoma')">
+      <div class="nc-num">SECTION 06</div>
+      <div class="nc-name">Teratoma</div>
+      <div class="nc-dose">Surgery — RT if unresectable</div>
+      <div class="nc-tags">
+        <span class="nc-tag p">Chemo-resistant</span>
+        <span class="nc-tag b">Growing teratoma</span>
+      </div>
+    </div>
+    <div class="nav-card cyan" onclick="show('relapse')">
+      <div class="nc-num">SECTION 07</div>
+      <div class="nc-name">Relapse</div>
+      <div class="nc-dose">SDC + re-RT or HDC+SCT</div>
+      <div class="nc-tags">
+        <span class="nc-tag c">Germinoma</span>
+        <span class="nc-tag r">NGGCT thiotepa-HDC</span>
+      </div>
+    </div>
+    <div class="nav-card" onclick="show('compare')">
+      <div class="nc-num">SECTION 08</div>
+      <div class="nc-name">COG vs SIOP Comparison</div>
+      <div class="nc-dose">Key protocol differences</div>
+      <div class="nc-tags">
+        <span class="nc-tag g">Germinoma</span>
+        <span class="nc-tag r">NGGCT</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary table germinoma -->
+  <div class="section-label">SIOP CNS GCT II — Germinoma RT Summary</div>
+  <div style="overflow-x:auto; margin-bottom:36px;">
+  <table class="ct">
+    <thead>
+      <tr>
+        <th>Situation</th>
+        <th>Chemo</th>
+        <th>RT Volume</th>
+        <th>WVI/CSI Dose</th>
+        <th>Boost</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="ct-badge badge-green">Localised — CR</span></td>
+        <td>CarboE/IE × 4</td>
+        <td>WVI+TB</td>
+        <td class="rt-dose-val reduced">24 Gy</td>
+        <td style="color:var(--green); font-family:'DM Mono',monospace;">Omit boost</td>
+        <td>Single-site, CR after chemo</td>
+      </tr>
+      <tr>
+        <td><span class="ct-badge badge-yellow">Localised — PR / bifocal / other</span></td>
+        <td>CarboE/IE × 4</td>
+        <td>WVI+TB</td>
+        <td class="rt-dose-val standard">24 Gy</td>
+        <td style="font-family:'DM Mono',monospace;">+16 Gy → 40 Gy total</td>
+        <td>PR, bifocal, or incomplete data for omission</td>
+      </tr>
+      <tr>
+        <td><span class="ct-badge badge-red">Metastatic</span></td>
+        <td>None (or bridging)</td>
+        <td>CSI</td>
+        <td class="rt-dose-val escalated">24 Gy</td>
+        <td style="font-family:'DM Mono',monospace;">+16 Gy → 40 Gy met sites</td>
+        <td>M+ at diagnosis · SIOP CNS GCT 96 standard</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <!-- Summary table NGGCT -->
+  <div class="section-label">SIOP CNS GCT II — NGGCT RT Summary</div>
+  <div style="overflow-x:auto; margin-bottom:36px;">
+  <table class="ct">
+    <thead>
+      <tr>
+        <th>Risk Group</th>
+        <th>Criteria</th>
+        <th>Induction</th>
+        <th>RT Volume (M0)</th>
+        <th>RT Volume (M+)</th>
+        <th>Response to chemo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="ct-badge badge-blue">Standard</span></td>
+        <td>AFP ≤1000 ng/ml AND age ≥6y</td>
+        <td>PEI × 3 → reassess → ×1 post-surgery</td>
+        <td class="rt-dose-val standard">TU 54 Gy</td>
+        <td class="rt-dose-val escalated">CSI 30 Gy + TU 24 Gy</td>
+        <td>If viable cells → 1× HD-PEI + SCT</td>
+      </tr>
+      <tr>
+        <td><span class="ct-badge badge-red">High-risk</span></td>
+        <td>AFP &gt;1000 ng/ml OR age &lt;6y</td>
+        <td>PEI × 2 → HD-PEI + SCT × 2</td>
+        <td class="rt-dose-val escalated">TU 54 Gy (if ≥6y)</td>
+        <td class="rt-dose-val escalated">CSI 30 Gy + TU 24 Gy</td>
+        <td>Dose-intensified strategy</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+</div><!-- /container -->
+</div><!-- /landing -->
+
+
+<!-- ═══════════════════════════════════ PANEL DIAG ═══════════════════════════════════ -->
+<div id="panel-diag" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>Diagnosis, Staging & Diagnostic Grouping</h2>
+    <div class="ph-sub">SIOP CNS GCT II · ESCP 2021 · Markers · Imaging · IHC · Dissemination</div>
+  </div>
+
+  <div class="tab-row">
+    <button class="tab-btn active" onclick="switchTab(this,'diag','markers')">Markers</button>
+    <button class="tab-btn" onclick="switchTab(this,'diag','imaging')">Imaging & Staging</button>
+    <button class="tab-btn" onclick="switchTab(this,'diag','groups')">Diagnostic Groups</button>
+    <button class="tab-btn" onclick="switchTab(this,'diag','ihc')">IHC Panel</button>
+    <button class="tab-btn" onclick="switchTab(this,'diag','surgery-dx')">Surgery / CSF</button>
+  </div>
+
+  <!-- TAB: Markers -->
+  <div id="diag-markers" class="tab-content active">
+    <div class="slabel">Tumour Markers — European Thresholds</div>
+    <div style="overflow-x:auto;">
+    <table class="ct" style="margin-bottom:20px;">
+      <thead><tr><th>Marker</th><th>Threshold (EU)</th><th>Significance</th><th>Half-life</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>AFP</strong> (alpha-fetoprotein)</td>
+          <td><span style="color:var(--yellow); font-family:'DM Mono',monospace;">&gt;25 ng/ml</span><br><small style="color:var(--text3);">serum and/or CSF</small></td>
+          <td>Diagnostic of secreting malignant NGGCT — biopsy not mandatory</td>
+          <td style="font-family:'DM Mono',monospace;">5–7 days</td>
+          <td>Normal in children &lt;2y; produced by YST and EC components. AFP &gt;1000 ng/ml = high-risk NGGCT.</td>
+        </tr>
+        <tr>
+          <td><strong>HCG</strong> (total β-HCG)</td>
+          <td><span style="color:var(--yellow); font-family:'DM Mono',monospace;">&gt;50 IU/L</span><br><small style="color:var(--text3);">serum and/or CSF</small></td>
+          <td>Diagnostic of secreting malignant NGGCT — biopsy not mandatory</td>
+          <td style="font-family:'DM Mono',monospace;">12–36 h</td>
+          <td>Modest elevation (50–200 IU/L) may indicate syncytiotrophoblastic cells within germinoma. Method must detect β-free subunits.</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="alert-box blue">
+      <strong>AFP unit conversion:</strong> ng/ml × 0.83 = kU/L (IU/ml). After birth, AFP falls to normal range by age 2y — interpret elevated AFP in infants with caution.
+    </div>
+    <div class="alert-box">
+      <strong>HCG measurement method:</strong> Assay must detect total HCG including free β-subunits — intact HCG-only methods are insufficient for GCT. Half-life is only 12–36h: sample promptly.
+    </div>
+    <div class="alert-box green">
+      <strong>Bifocal exception (marker-negative):</strong> Age &gt;8–10y + DI + bifocal (pineal + suprasellar) + negative markers → treat as germinoma without biopsy. But note: 3.4% may be NGGCT (Kanamori 2021) — maintain low threshold for biopsy if response atypical.
+    </div>
+  </div>
+
+  <!-- TAB: Imaging -->
+  <div id="diag-imaging" class="tab-content">
+    <div class="slabel">Imaging Protocol</div>
+    <div class="rt-block" style="border-left-color:var(--cyan);">
+      <div class="rt-block-title" style="color:var(--cyan);">MRI — Essential Sequences</div>
+      <div class="rt-section">
+        <div class="rt-section-hdr">Brain MRI <span class="rt-tag cyan">1.5T</span></div>
+        <div class="rt-2col">
+          <div class="rt-box"><div class="rt-box-label">T1W</div><div class="rt-box-val">2D SE/TSE — axial + sagittal — ≤4mm slice / ≤1mm gap</div></div>
+          <div class="rt-box"><div class="rt-box-label">T2W + FLAIR</div><div class="rt-box-val">2D SE/TSE — axial or coronal — ≤4mm</div></div>
+          <div class="rt-box"><div class="rt-box-label">T1W + Gd</div><div class="rt-box-val">Axial + coronal + sagittal — ≤4mm — required for staging</div></div>
+          <div class="rt-box"><div class="rt-box-label">DWI + ADC</div><div class="rt-box-val">2D EPI — b=0 and 1000 — axial</div></div>
+        </div>
+      </div>
+      <div class="rt-section">
+        <div class="rt-section-hdr">Brain MRI <span class="rt-tag cyan">3T</span></div>
+        <div class="rt-note">T1W: 3D gradient echo (MPRAGE) — isotropic 1mm³ — T2W/FLAIR 2D as above — T1W+Gd 3D gradient echo preferred for thin-slice staging</div>
+      </div>
+      <div class="rt-section">
+        <div class="rt-section-hdr">Spine MRI <span class="rt-tag cyan">Full spine · pre-LP &amp; surgery</span></div>
+        <div class="rt-note">T1W+Gd sagittal whole spine (≤3mm, gap &lt;0.5mm) + axial at suspicious areas. Must include lower dural sac. Perform BEFORE lumbar puncture and surgery.</div>
+      </div>
+    </div>
+    <div class="slabel">Timing Rules</div>
+    <div class="alert-box">
+      <strong>Post-operative MRI:</strong> Must be performed within 24–48h of surgery (and no later than 72h) to avoid non-specific enhancement artefact.
+    </div>
+    <div class="alert-box blue">
+      <strong>Spinal MRI:</strong> Ideally BEFORE lumbar puncture AND before surgery. If pre-operative MRI not obtained, perform as soon as feasible post-operatively.
+    </div>
+    <div class="slabel">Tumour Volume & Response Criteria</div>
+    <table class="ct">
+      <thead><tr><th>Response</th><th>Definition</th></tr></thead>
+      <tbody>
+        <tr><td><span class="ct-badge badge-green">CR</span></td><td>No residual or recurrent tumour, no meningeal dissemination</td></tr>
+        <tr><td><span class="ct-badge badge-blue">PR</span></td><td>Tumour volume reduction ≥50% vs previous staging MRI</td></tr>
+        <tr><td><span class="ct-badge badge-yellow">SD</span></td><td>Between ≤50% decrease and ≤25% increase</td></tr>
+        <tr><td><span class="ct-badge badge-red">PD</span></td><td>&gt;25% volume increase or new lesion</td></tr>
+      </tbody>
+    </table>
+    <div class="rt-note" style="margin-bottom:14px;">Volume = A × B × C × ½ (ellipsoid). Multiple lesions: sum of 5 largest. Post-op residue: R0 (none) → R4 (unchanged from pre-op).</div>
+  </div>
+
+  <!-- TAB: Diagnostic Groups -->
+  <div id="diag-groups" class="tab-content">
+    <div class="slabel">Diagnostic Grouping — Germinoma vs NGGCT</div>
+    <div class="rt-block" style="border-left-color:var(--green);">
+      <div class="rt-block-title" style="color:var(--green);">Germinoma — Criteria</div>
+      <div class="rt-section">
+        <div class="rt-section-hdr">Biopsy-confirmed germinoma <span class="rt-tag green">Histology</span></div>
+        <div class="rt-note">KIT+, POU5F1(OCT3/4)+, NANOG+, PLAP+/−, SOX2−. Strong lymphocytic infiltration — sparse malignant cells may require full IHC panel. Syncytiotrophoblastic cells may cause mild HCG elevation.</div>
+      </div>
+      <div class="rt-section">
+        <div class="rt-section-hdr">Bifocal marker-negative <span class="rt-tag yellow">Clinical diagnosis</span></div>
+        <div class="rt-note">Age &gt;8–10y + central DI + pineal and suprasellar masses + AFP ≤25 ng/ml + HCG ≤50 IU/L → treat as germinoma. Low threshold for biopsy if doubt (3.4% may be NGGCT — Kanamori 2021).</div>
+      </div>
+    </div>
+    <div class="rt-block" style="border-left-color:var(--red);">
+      <div class="rt-block-title" style="color:var(--red);">NGGCT — Criteria</div>
+      <div class="rt-section">
+        <div class="rt-section-hdr">Secreting NGGCT <span class="rt-tag alert">No biopsy needed</span></div>
+        <div class="rt-note">AFP &gt;25 ng/ml and/or HCG &gt;50 IU/L (serum and/or CSF) + typical radiology → NGGCT diagnosis, treatment may start without biopsy (80% sensitivity in serum, &gt;60% in CSF).</div>
+      </div>
+      <div class="rt-section">
+        <div class="rt-section-hdr">Non-secreting NGGCT <span class="rt-tag">Biopsy required</span></div>
+        <div class="rt-note">Histological CHC, YST, and/or EC confirm NGGCT. MMGCT containing ≥1 of YST/EC/CHC treated as NGGCT. MMGCT with teratoma + germinoma only → treat as germinoma.</div>
+      </div>
+    </div>
+    <div class="slabel">Dissemination Grouping</div>
+    <div class="rt-block">
+      <div class="rt-block-title">Localised vs Metastatic</div>
+      <div class="rt-section">
+        <div class="rt-section-hdr">M0 — Localised <span class="rt-tag green">Including bifocal</span></div>
+        <div class="rt-note">Single pineal, single suprasellar, or bifocal (pineal + suprasellar). Contiguous ventricular/parenchymal extension may be acceptable — discuss with expert team. CSF cytology negative.</div>
+      </div>
+      <div class="rt-section">
+        <div class="rt-section-hdr">M+ — Metastatic <span class="rt-tag alert">Full neuroaxis</span></div>
+        <div class="rt-note">Radiological and/or cytological dissemination beyond primary site. ~20% of germinomas are M+ at diagnosis. Intraventricular extension documented by neurosurgeon during ETV should trigger M+ staging consideration.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: IHC -->
+  <div id="diag-ihc" class="tab-content">
+    <div class="slabel">Minimum IHC Panel — Marker-Negative CNS GCT</div>
+    <div style="overflow-x:auto;">
+    <table class="ihc-table">
+      <thead>
+        <tr>
+          <th>Subtype</th><th>PLAP</th><th>AFP</th><th>HCG</th><th>OCT3/4</th><th>NANOG</th><th>SOX2</th><th>KIT</th><th>CD30</th><th>Gly3/SALL4</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Germinoma</td><td class="ihc-pos">+</td><td class="ihc-neg">−</td><td class="ihc-var">±(sync)</td><td class="ihc-pos">+</td><td class="ihc-pos">+</td><td class="ihc-neg">−</td><td class="ihc-var">+/−</td><td class="ihc-var">−/+</td><td class="ihc-neg">−</td></tr>
+        <tr><td>Embryonal carcinoma</td><td class="ihc-var">+/−</td><td class="ihc-var">−/+</td><td class="ihc-var">−/+</td><td class="ihc-pos">+</td><td class="ihc-pos">+</td><td class="ihc-pos">+</td><td class="ihc-var">−/+</td><td class="ihc-var">+/−</td><td class="ihc-neg">−</td></tr>
+        <tr><td>Yolk sac tumour</td><td class="ihc-var">+/−</td><td class="ihc-pos">++</td><td class="ihc-var">−/+</td><td class="ihc-neg">−</td><td class="ihc-neg">−</td><td class="ihc-neg">−</td><td class="ihc-neg">−</td><td class="ihc-neg">−</td><td class="ihc-pos">+</td></tr>
+        <tr><td>Choriocarcinoma</td><td class="ihc-var">+/−</td><td class="ihc-var">−/+</td><td class="ihc-pos">++</td><td class="ihc-neg">−</td><td class="ihc-neg">−</td><td class="ihc-neg">−</td><td class="ihc-neg">−</td><td class="ihc-neg">−</td><td class="ihc-neg">−</td></tr>
+        <tr><td>Teratoma (mature)</td><td class="ihc-neg">−</td><td class="ihc-var">±</td><td class="ihc-neg">−</td><td class="ihc-neg">−</td><td class="ihc-neg">−</td><td class="ihc-pos">+</td><td class="ihc-pos">+</td><td class="ihc-pos">+</td><td class="ihc-var">±(immature)</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="rt-note" style="margin-bottom:14px;">SOX2 distinguishes EC (positive) from germinoma (negative). Gly3 + SALL4 useful for detecting small YST islands. CD30 rules in/out EC. Germinoma-EC distinction critical as treatment is identical (germinoma pathway for EC alone is not standard).</div>
+    <div class="alert-box">
+      <strong>MMGCT:</strong> Search intensively for malignant GCT foci within teratomas — small YST/EC islands change treatment entirely. Germinoma + teratoma MMGCT → treat as germinoma. Any YST/EC/CHC → treat as NGGCT.
+    </div>
+  </div>
+
+  <!-- TAB: Surgery/CSF -->
+  <div id="diag-surgery-dx" class="tab-content">
+    <div class="slabel">Initial Management Algorithm</div>
+    <div class="rt-block" style="border-left-color:var(--red);">
+      <div class="rt-block-title" style="color:var(--red);">Severe RICP (Emergency)</div>
+      <div class="rt-note">Emergency CT/MRI → collect CSF cytology + markers during CSF diversion → ETV preferred over EVD over shunt → serum markers immediately post-op → brain + spine MRI ideally within 24h → repeat LP for CSF cytology once RICP controlled.</div>
+    </div>
+    <div class="rt-block" style="border-left-color:var(--yellow);">
+      <div class="rt-block-title" style="color:var(--yellow);">RICP Stable</div>
+      <div class="rt-note">Brain + spine MRI + serum markers BEFORE surgery → CSF cytology + markers during diversion procedure → biopsy if necessary during same procedure → repeat LP when safe.</div>
+    </div>
+    <div class="rt-block" style="border-left-color:var(--green);">
+      <div class="rt-block-title" style="color:var(--green);">Normal ICP — Elective</div>
+      <div class="rt-note">Brain + spine MRI + serum markers → CSF via lumbar puncture (preferred over ventricular) for markers AND cytology → biopsy if markers non-diagnostic.</div>
+    </div>
+    <div class="slabel">Biopsy Strategy</div>
+    <div class="alert-box blue">
+      <strong>Biopsy NOT required</strong> when: AFP &gt;25 ng/ml and/or HCG &gt;50 IU/L (serum or CSF), OR bifocal disease in age &gt;8–10y with DI + negative markers.
+    </div>
+    <table class="ct" style="margin-bottom:14px;">
+      <thead><tr><th>Approach</th><th>Indication</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Endoscopic biopsy (ETV combined)</td><td>During CSF diversion for hydrocephalus</td><td>ETV first to control ICP, then biopsy. May reveal lesions not seen on MRI → upstaging. ETV success 70–90%.</td></tr>
+        <tr><td>Stereotactic biopsy</td><td>Small, deep-seated lesions — gold standard</td><td>Diagnostic yield &gt;95%, low complication rate. Requires separate procedure from ETV.</td></tr>
+        <tr><td>Open surgery / resection</td><td>Suspected teratoma, mass effect on visual pathways</td><td>Avoid for other GCT subtypes. Upfront resection generally discouraged.</td></tr>
+      </tbody>
+    </table>
+    <div class="slabel">CSF Diversion — Preference Order</div>
+    <div class="rt-note">ETV &gt; External ventricular drain (EVD) &gt; Permanent ventriculoperitoneal shunt. GCT is very chemosensitive: EVD expected to be temporary. Lumbar CSF preferred over ventricular CSF for cytology (if safe).</div>
+  </div>
+
+</div><!-- /container -->
+</div><!-- /panel-diag -->
+
+
+<!-- ═══════════════════════════════════ PANEL GERM NON-MET ═══════════════════════════════════ -->
+<div id="panel-germ-nonmet" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>Localised Germinoma — First-Line Treatment</h2>
+    <div class="ph-sub">SIOP CNS GCT II · Non-metastatic (M0) · Includes bifocal · ChemoRT strategy</div>
+  </div>
+
+  <div class="slabel">Eligibility</div>
+  <div class="strata-summary">
+    <div class="ss-title">Localised Germinoma Criteria</div>
+    <div class="ss-row"><div class="ss-label">Disease</div><div class="ss-desc">M0 germinoma — single-site (pineal OR suprasellar) or bifocal (pineal + suprasellar). Bifocal treated as non-metastatic. AFP ≤25 ng/ml AND HCG ≤50 IU/L (serum + CSF) or biopsy-confirmed.</div></div>
+    <div class="ss-row"><div class="ss-label">Age</div><div class="ss-desc">All ages — special chemotherapy dose considerations for &lt;1y (&lt;10 kg: per kg dosing) and very young (&lt;6y, chemotherapy-only approach may be attempted to defer RT).</div></div>
+    <div class="ss-row"><div class="ss-label">Staging</div><div class="ss-desc">Complete staging required: brain + spine MRI, serum AND CSF markers, CSF cytology (lumbar preferred). Classify as M0 before treatment starts.</div></div>
+  </div>
+
+  <div class="slabel">Induction Chemotherapy</div>
+  <div class="rt-block" style="border-left-color:var(--green);">
+    <div class="rt-block-title" style="color:var(--green);">4 Cycles — Alternating Carbo/E and I/E · q21d</div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Courses 1 & 3 — Carboplatin + Etoposide <span class="rt-tag green">q21d</span></div>
+      <table class="chemo-table">
+        <thead><tr><th>Drug</th><th>Dose</th><th>Days</th><th>Route</th></tr></thead>
+        <tbody>
+          <tr><td class="drug">Carboplatin</td><td class="dose">600 mg/m²/day (max 1200 mg)</td><td>Day 1</td><td>IV 1h</td></tr>
+          <tr><td class="drug">Etoposide</td><td class="dose">100 mg/m²/day</td><td>Days 1, 2, 3</td><td>IV 1–4h (prior to carbo)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Courses 2 & 4 — Ifosfamide + Etoposide <span class="rt-tag green">q21d</span></div>
+      <table class="chemo-table">
+        <thead><tr><th>Drug</th><th>Dose</th><th>Days</th><th>Route</th></tr></thead>
+        <tbody>
+          <tr><td class="drug">Ifosfamide</td><td class="dose">1800 mg/m²/day</td><td>Days 1–5</td><td>IV 3h + MESNA + hydration</td></tr>
+          <tr><td class="drug">Etoposide</td><td class="dose">100 mg/m²/day</td><td>Days 1, 2, 3</td><td>IV 1–4h</td></tr>
+        </tbody>
+      </table>
+      <div class="rt-note"><strong>Note:</strong> Ifosfamide dose for germinoma (1800 mg/m²) differs from NGGCT (1500 mg/m²). MESNA at 2200 mg/m²/day (120% of ifos dose) as continuous infusion. GFR &gt;80 ml/min/1.73m² + TRP &gt;85% required before each course. Neutrophils ≥1.0×10⁹/L, platelets ≥100×10⁹/L.</div>
+    </div>
+  </div>
+
+  <div class="slabel">Tumour Reassessment After 4 Cycles</div>
+  <div class="alert-box blue">
+    MRI head with/without contrast + serum markers (+ CSF markers if doubt). Classify response as CR, PR, or SD before determining RT.
+  </div>
+
+  <div class="slabel">Radiation Therapy — Response-Adapted</div>
+  <div class="rt-block" style="border-left-color:var(--blue);">
+    <div class="rt-block-title">WVI+TB Irradiation — Decision Tree</div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">CR after induction chemo — Single-site localised <span class="rt-tag green">Boost can be omitted</span></div>
+      <div class="rt-2col">
+        <div class="rt-box"><div class="rt-box-label">Volume</div><div class="rt-box-val">WVI + tumour bed (WVI+TB)</div></div>
+        <div class="rt-box"><div class="rt-box-label">Dose</div><div class="rt-box-val"><span class="rt-dose">24 Gy</span> — 16 Gy boost <span style="color:var(--green);">omitted</span></div></div>
+      </div>
+      <div class="rt-note">Boost omission only validated for single-site localised disease achieving CR. Insufficient data for bifocal cases to recommend boost omission — currently all bifocal patients receive the boost.</div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">PR or SD after chemo — All bifocal — Other situations <span class="rt-tag yellow">Boost required</span></div>
+      <div class="rt-2col">
+        <div class="rt-box"><div class="rt-box-label">Volume</div><div class="rt-box-val">WVI + tumour bed (WVI+TB)</div></div>
+        <div class="rt-box"><div class="rt-box-label">Dose</div><div class="rt-box-val"><span class="rt-dose">24 Gy</span> WVI+TB + <span class="rt-dose esc">16 Gy</span> boost → <strong>40 Gy total</strong></div></div>
+      </div>
+      <div class="rt-note">Includes: PR after chemo; bifocal disease; any case where boost omission has insufficient evidence. SIOP CNS GCT 96 historical standard.</div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">SD — Suspected teratoma or no response <span class="rt-tag alert">Consider resection first</span></div>
+      <div class="rt-note">If SD with imaging suggestive of teratoma → resection before RT. If non-viable or pure germinoma on pathology → treat as PR (WVI+TB 24 Gy + 16 Gy boost). If TER + GER → WVI+TB 24 Gy + 30 Gy boost (total 54 Gy to gross disease).</div>
+    </div>
+  </div>
+  <div class="alert-box green">
+    <strong>Residual disease post-RT:</strong> Residual tumour after chemo does NOT adversely affect prognosis in germinoma (unlike other brain tumours) — watch-and-wait for small residuals. Surgery for bulky residuals only if teratoma/viable elements suspected.
+  </div>
+  <div class="alert-box">
+    <strong>3y EFS:</strong> Preliminary SIOP CNS GCT II data: 96% at 3y for all localised germinoma. SIOP CNS GCT 96 (n=190): 5y EFS/OS &gt;90% with WVI 24 Gy + 16 Gy boost.
+  </div>
+
+</div><!-- /container -->
+</div>
+
+<!-- ═══════════════════════════════════ PANEL GERM MET ═══════════════════════════════════ -->
+<div id="panel-germ-met" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>Metastatic Germinoma — First-Line Treatment</h2>
+    <div class="ph-sub">M+ at diagnosis · ~20% of germinomas · CSI-only approach · European standard</div>
+  </div>
+
+  <div class="slabel">Treatment Rationale</div>
+  <div class="signal-box">
+    <p>Metastatic germinomas are treated with <span class="signal-hl">CSI alone without neoadjuvant chemotherapy</span>, in contrast to the localised approach. The chemotherapy-first strategy used for localised disease (to spare radiation volume) does not apply when CSI is already mandatory due to dissemination. Outcomes remain excellent — comparable to localised disease.</p>
+    <p>If there will be a delay in delivering CSI (e.g. logistical), a short period of <span class="signal-hl2">"holding" chemotherapy</span> (carboplatin/etoposide or vinblastine) may be considered to prevent further disease-related morbidity.</p>
+  </div>
+
+  <div class="slabel">Radiation Therapy</div>
+  <div class="rt-block" style="border-left-color:var(--red);">
+    <div class="rt-block-title" style="color:var(--red);">CSI + Boost — Metastatic Germinoma</div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Craniospinal Irradiation <span class="rt-tag alert">M+</span></div>
+      <div class="rt-2col">
+        <div class="rt-box"><div class="rt-box-label">CSI dose</div><div class="rt-box-val"><span class="rt-dose esc">24 Gy</span></div></div>
+        <div class="rt-box"><div class="rt-box-label">Boost (met sites)</div><div class="rt-box-val"><span class="rt-dose esc">+16 Gy → 40 Gy total</span> to all macroscopic metastatic sites</div></div>
+      </div>
+      <div class="rt-note">SIOP CNS GCT 96 historical standard. Very good outcomes — metastatic germinoma patients achieve comparable EFS to localised disease after CSI alone.</div>
+    </div>
+  </div>
+
+  <div class="slabel">Holding Chemotherapy (If CSI Delayed)</div>
+  <div class="rt-block" style="border-left-color:var(--yellow);">
+    <div class="rt-block-title" style="color:var(--yellow);">Bridging Options — Pre-CSI only</div>
+    <div class="rt-note">Carboplatin + etoposide (standard doses), OR vinblastine monotherapy (Murray 2021 — used during COVID-19 delays). These are holding regimens only — not definitive treatment. Discuss with national GCT team.</div>
+  </div>
+
+  <div class="slabel">Incompletely Staged Disease</div>
+  <div class="alert-box">
+    Incompletely staged germinoma (incomplete spine MRI, no CSF cytology) → treat as metastatic with CSI + boost to be safe.
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════ PANEL NGGCT SR ═══════════════════════════════════ -->
+<div id="panel-nggct-sr" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>Standard-Risk NGGCT — First-Line Treatment</h2>
+    <div class="ph-sub">AFP ≤1000 ng/ml AND age ≥6y · PEI chemotherapy + RT · SIOP CNS GCT II</div>
+  </div>
+
+  <div class="slabel">Risk Stratification</div>
+  <div class="strata-summary">
+    <div class="ss-title">Standard-Risk NGGCT Criteria</div>
+    <div class="ss-row"><div class="ss-label">AFP</div><div class="ss-desc">Serum OR CSF AFP ≤1000 ng/ml at diagnosis</div><div class="ss-dose">AND</div></div>
+    <div class="ss-row"><div class="ss-label">Age</div><div class="ss-desc">Patient ≥6 years of age</div><div class="ss-dose"> </div></div>
+    <div class="ss-row"><div class="ss-label">Histology</div><div class="ss-desc">Any NGGCT subtype (YST, EC, CHC, MMGCT) — secreting or biopsy-confirmed</div><div class="ss-dose"> </div></div>
+    <div class="ss-row"><div class="ss-label">Staging</div><div class="ss-desc">M0 or M+ — RT fields adapt accordingly</div><div class="ss-dose"> </div></div>
+  </div>
+
+  <div class="slabel">Standard-Dose PEI — Induction Chemotherapy</div>
+  <div class="rt-block" style="border-left-color:var(--blue);">
+    <div class="rt-block-title">Standard-Risk: 3 Cycles PEI → Reassess → ×1 Post-Surgery</div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Each PEI Course <span class="rt-tag">×3 initial → reassess after course 3</span></div>
+      <table class="chemo-table">
+        <thead><tr><th>Drug</th><th>Dose</th><th>Days</th><th>Route</th></tr></thead>
+        <tbody>
+          <tr><td class="drug">Cisplatin</td><td class="dose">20 mg/m²/day</td><td>Days 1–5</td><td>IV 1h + mannitol diuresis (unless DI present)</td></tr>
+          <tr><td class="drug">Etoposide</td><td class="dose">100 mg/m²/day</td><td>Days 1–3</td><td>IV 1–4h (prior to cisplatin)</td></tr>
+          <tr><td class="drug">Ifosfamide</td><td class="dose">1500 mg/m²/day</td><td>Days 1–5</td><td>IV 3h + MESNA 1800 mg/m²/day + hydration 3 L/m²/day</td></tr>
+        </tbody>
+      </table>
+      <div class="rt-note"><strong>⚠ Ifosfamide dose differs from germinoma protocol (1500 vs 1800 mg/m²/day).</strong> Carboplatin substitution possible (600 mg/m² d1) if cisplatin intolerance (nephro or ototoxicity grade ≥3).</div>
+    </div>
+  </div>
+  <div class="alert-box">
+    <strong>CSF AFP critical:</strong> CSF AFP may be higher than serum AFP and can reclassify patient as high-risk (&gt;1000 ng/ml). Always measure BOTH serum and CSF AFP at diagnosis.
+  </div>
+
+  <div class="slabel">Treatment Algorithm — After 3 PEI Cycles</div>
+  <div class="rt-block">
+    <div class="rt-block-title">Reassessment → Surgery Decision → Radiotherapy</div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">CR after 3 PEI <span class="rt-tag green">No surgery needed</span></div>
+      <div class="rt-note">4th PEI cycle given (no surgery). Proceed to RT.</div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">PR or SD after 3 PEI <span class="rt-tag yellow">Second-look surgery</span></div>
+      <div class="rt-note">Resection of residual if feasible. Pathology determines next step: <br>
+      — <strong>Nonviable/mature teratoma cells</strong> → 4th PEI post-surgery → RT.<br>
+      — <strong>Viable malignant cells</strong> → 1× HD-PEI + SCT → RT.</div>
+    </div>
+  </div>
+
+  <div class="slabel">Radiation Therapy</div>
+  <div class="rt-block" style="border-left-color:var(--blue);">
+    <div class="rt-block-title">RT Fields — Standard-Risk NGGCT</div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">M0 — Non-metastatic <span class="rt-tag">After PEI ± surgery</span></div>
+      <div class="rt-2col">
+        <div class="rt-box"><div class="rt-box-label">Volume</div><div class="rt-box-val">Tumour bed (TU)</div></div>
+        <div class="rt-box"><div class="rt-box-label">Dose</div><div class="rt-box-val"><span class="rt-dose esc">54 Gy</span> to tumour bed</div></div>
+      </div>
+      <div class="rt-note">WVI extension (24 Gy) may be considered if germinoma component present on histology, ventricular seeding observed at ETV, or modest HCG elevation (50–200 IU/L). Evolving consensus — discuss with expert team.</div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">M+ — Metastatic <span class="rt-tag alert">CSI mandatory</span></div>
+      <div class="rt-2col">
+        <div class="rt-box"><div class="rt-box-label">CSI dose</div><div class="rt-box-val"><span class="rt-dose esc">30 Gy</span></div></div>
+        <div class="rt-box"><div class="rt-box-label">TU boost</div><div class="rt-box-val"><span class="rt-dose esc">+24 Gy → 54 Gy total</span> primary + macroscopic mets</div></div>
+      </div>
+      <div class="rt-note">Spinal cord sites: boost limited to 14.4 Gy (total 45 Gy spine). SIOP CNS GCT 96: 5y EFS 68%, OS 75% metastatic NGGCT.</div>
+    </div>
+  </div>
+
+  <div class="slabel">Outcomes</div>
+  <div class="alert-box green">
+    <strong>SIOP CNS GCT 96 (Calaminus 2017):</strong> SR-NGGCT M0 — 5y EFS 72%, OS 82%. M+ — 5y EFS 68%, OS 75%. SIOP CNS GCT II preliminary: 3y EFS 70%, OS 81% (all NGGCT).
+  </div>
+  <div class="alert-box">
+    <strong>High-risk features in SIOP CNS GCT 96:</strong> AFP &gt;1000 ng/ml OR residual disease after treatment — independently associated with worse outcome.
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════ PANEL NGGCT HR ═══════════════════════════════════ -->
+<div id="panel-nggct-hr" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>High-Risk NGGCT — Dose-Intensified Approach</h2>
+    <div class="ph-sub">AFP &gt;1000 ng/ml OR age &lt;6y · HD-PEI + SCT · Experimental arm SIOP CNS GCT II</div>
+  </div>
+
+  <div class="slabel">High-Risk Criteria</div>
+  <div class="strata-summary">
+    <div class="ss-title">High-Risk NGGCT</div>
+    <div class="ss-row"><div class="ss-label">AFP</div><div class="ss-desc">Diagnostic serum OR CSF AFP &gt;1000 ng/ml</div></div>
+    <div class="ss-row"><div class="ss-label">OR Age</div><div class="ss-desc">Age &lt;6 years (RT deferral strategy)</div></div>
+    <div class="ss-row"><div class="ss-label">OR Response</div><div class="ss-desc">Viable malignant tumour cells at delayed surgery after standard PEI</div></div>
+    <div class="ss-row"><div class="ss-label">Outcomes SR</div><div class="ss-desc">5y EFS only 32% for high-risk patients with standard-dose PEI in SIOP CNS GCT 96</div></div>
+  </div>
+
+  <div class="slabel">Treatment Rationale</div>
+  <div class="signal-box">
+    <p>The 5y EFS of only 32% for high-risk patients with standard PEI in SIOP CNS GCT 96 justifies dose intensification. <span class="signal-hl">HD-PEI + SCT was well tolerated in SIOP CNS GCT II with no serious adverse events reported.</span> However, evidence remains insufficient to definitively recommend HD-PEI over standard PEI given the small patient numbers. <span class="signal-hl2">Clinicians may offer HD-PEI + SCT with appropriate consent.</span></p>
+  </div>
+
+  <div class="slabel">HD-PEI Induction + Dose-Intensified Sequence</div>
+  <div class="rt-block" style="border-left-color:var(--red);">
+    <div class="rt-block-title" style="color:var(--red);">High-Risk Sequence: 2× PEI → HD-PEI + SCT → reassess → HD-PEI + SCT</div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Standard PEI Induction (×2 courses) <span class="rt-tag">Same doses as SR-NGGCT</span></div>
+      <div class="rt-note">Cisplatin 20 mg/m²/day d1–5 + Etoposide 100 mg/m²/day d1–3 + Ifosfamide 1500 mg/m²/day d1–5. Harvest stem cells after course 1 (G-CSF from d7). Target: &gt;1×10⁶ CD34+/kg for each of 2 HD-PEI courses.</div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">HD-PEI + SCT (×1 after course 2, ×1 after reassessment) <span class="rt-tag alert">Dose-escalated</span></div>
+      <table class="chemo-table">
+        <thead><tr><th>Drug</th><th>HD Dose</th><th>Days</th><th>vs Standard PEI</th></tr></thead>
+        <tbody>
+          <tr><td class="drug">Cisplatin</td><td class="dose">20 mg/m²/day</td><td>Days 1–5</td><td>Unchanged</td></tr>
+          <tr><td class="drug">Etoposide</td><td class="dose" style="color:var(--red);">300 mg/m²/day</td><td>Days 1–5</td><td style="color:var(--red);">↑ 3× standard dose</td></tr>
+          <tr><td class="drug">Ifosfamide</td><td class="dose" style="color:var(--yellow);">2000 mg/m²/day</td><td>Days 1–5</td><td style="color:var(--yellow);">↑ from 1500 mg/m²</td></tr>
+        </tbody>
+      </table>
+      <div class="rt-note">SCT reinfusion on day 7. MESNA 2400 mg/m²/24h (120% of ifos dose). Hydration ≥125 ml/m²/h. Modify schedule only in exceptional circumstances (fever, significant toxicity).</div>
+    </div>
+  </div>
+
+  <div class="slabel">Radiation Therapy (if ≥6 years)</div>
+  <div class="rt-block" style="border-left-color:var(--yellow);">
+    <div class="rt-block-title" style="color:var(--yellow);">RT — Same fields as Standard-Risk</div>
+    <div class="rt-note">M0: TU 54 Gy. M+: CSI 30 Gy + TU 24 Gy (total 54 Gy). RT only for patients ≥6y. For &lt;6y patients: RT deferred / chemotherapy-only approach attempted.</div>
+  </div>
+
+  <div class="alert-box">
+    <strong>Stem cell harvest:</strong> Harvest after course 1 standard PEI using G-CSF (10 µg/kg/day sc from d7 until leucocyte recovery or CD34+ rise). Collect sufficient for 2 HD-PEI courses (&gt;1×10⁶ CD34+/kg each).
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════ PANEL TERATOMA ═══════════════════════════════════ -->
+<div id="panel-teratoma" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>Teratoma — Mature & Immature</h2>
+    <div class="ph-sub">Surgical treatment · Chemo/RT resistance · Growing teratoma syndrome</div>
+  </div>
+
+  <div class="slabel">Treatment Principles</div>
+  <div class="rt-block" style="border-left-color:var(--purple);">
+    <div class="rt-block-title" style="color:var(--purple);">Teratoma — Surgery is the Only Curative Option</div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Mature teratoma (MT) <span class="rt-tag purple">Surgery = complete resection</span></div>
+      <div class="rt-note">Complete surgical resection is the treatment of choice. Neither chemotherapy nor radiotherapy is effective for MT. Leaving large residues risks de-differentiation back to malignant GCT or somatic sarcomatous transformation (dismal prognosis).</div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">Immature teratoma (IT) <span class="rt-tag yellow">Individualized approach</span></div>
+      <div class="rt-note">Complete resection first choice. Rare cases of response to chemotherapy reported. RT may be considered for non-resectable residual or progression. Risk of malignant transformation — close surveillance mandatory.</div>
+    </div>
+    <div class="rt-section">
+      <div class="rt-section-hdr">RT for teratoma <span class="rt-tag">Only if unresectable</span></div>
+      <div class="rt-note">Consider RT for non-resectable residual disease and/or progression uncontrollable by repeated surgery. Not standard first-line treatment.</div>
+    </div>
+  </div>
+
+  <div class="slabel">Growing Teratoma Syndrome (GTS)</div>
+  <div class="alert-box">
+    <strong>Growing Teratoma Syndrome:</strong> Malignant NGGCT differentiates into mature teratoma elements — tumour increases in size despite chemotherapy with marker normalisation. Surgical resection is the only known cure. Recent case series report stabilisation of unresectable residues with <strong>CDK4/6 inhibitors (Palbociclib)</strong> — not standard of care but may be considered for truly unresectable progressive GTS. Discuss with expert team.
+  </div>
+  <div class="alert-box red">
+    <strong>Somatic transformation:</strong> GTS residues may de-differentiate into sarcoma or other non-GCT tissues — prognosis dismal. Aggressive surgical clearance is strongly recommended whenever feasible.
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════ PANEL RELAPSE ═══════════════════════════════════ -->
+<div id="panel-relapse" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>Relapse Treatment</h2>
+    <div class="ph-sub">Germinoma relapse · NGGCT relapse · Full restaging mandatory · Expert consultation required</div>
+  </div>
+
+  <div class="tab-row">
+    <button class="tab-btn active" onclick="switchTab(this,'relapse','germ-rel')">Germinoma Relapse</button>
+    <button class="tab-btn" onclick="switchTab(this,'relapse','nggct-rel')">NGGCT Relapse</button>
+  </div>
+
+  <!-- Germinoma relapse -->
+  <div id="relapse-germ-rel" class="tab-content active">
+    <div class="slabel">Germinoma Relapse — Restaging & Treatment</div>
+    <div class="alert-box blue">
+      <strong>Full restaging mandatory:</strong> Brain + spine MRI, serum AND CSF markers + cytology, before any treatment decision.
+    </div>
+    <div class="rt-block" style="border-left-color:var(--green);">
+      <div class="rt-block-title" style="color:var(--green);">Germinoma Relapse — Valid Treatment Approaches (Both Equally Supported)</div>
+      <div class="rt-section">
+        <div class="rt-section-hdr">Option A — Standard-dose chemotherapy + re-irradiation <span class="rt-tag green">SDC + RT</span></div>
+        <div class="rt-note">Platinum + ifosfamide-based salvage chemotherapy followed by re-irradiation to relapse site(s). Murray 2017 (UK/Germany SIOP CNS GCT 96 relapse cohort) — comparable outcomes to HDC+SCT approach.</div>
+      </div>
+      <div class="rt-section">
+        <div class="rt-section-hdr">Option B — High-dose chemo + stem cell transplant ± re-irradiation <span class="rt-tag">HDC + SCT</span></div>
+        <div class="rt-note">Melphalan-based or thiotepa-based HDC + SCT. Kubota 2018: platinum + ifosfamide reinduction → melphalan HD-SCT — most patients avoided re-irradiation. Callec 2020: HDC+SCT results comparable to SDC+RT.</div>
+      </div>
+    </div>
+    <div class="alert-box">
+      <strong>Prognosis:</strong> Relapsed germinoma — still curable in most cases with appropriate salvage. Rare event (&lt;10% relapse rate with current first-line therapy). Discuss all relapsed cases with national and European expert teams (see ESCP Appendix K).
+    </div>
+  </div>
+
+  <!-- NGGCT relapse -->
+  <div id="relapse-nggct-rel" class="tab-content">
+    <div class="slabel">NGGCT Relapse — Restaging & Treatment</div>
+    <div class="alert-box red">
+      <strong>Poor prognosis:</strong> Relapsed NGGCT — only 14% 5y OS in historical series (Murray 2017). Thiotepa-based HDC + SCT is mandatory for curative intent.
+    </div>
+    <div class="rt-block" style="border-left-color:var(--red);">
+      <div class="rt-block-title" style="color:var(--red);">NGGCT Relapse — Curative-Intent Strategy</div>
+      <div class="rt-section">
+        <div class="rt-section-hdr">Mandatory: Thiotepa-based HDC + SCT <span class="rt-tag alert">Curative intent only</span></div>
+        <div class="rt-note">Callec 2020 (n=44 relapsed GCT including 25 NGGCT): confirms HDC+SCT absolutely necessary for curative approach. Surgery and re-irradiation where feasible — optimal fields/doses/timing at relapse not established given small numbers. Discuss all cases with national + European experts.</div>
+      </div>
+    </div>
+    <div class="alert-box">
+      <strong>Restaging:</strong> Symptomatic, radiological, OR marker-detected relapse → full restaging (brain + spine MRI, serum + CSF markers + cytology) before treatment.
+    </div>
+    <div class="alert-box">
+      <strong>⭐ Expert consultation:</strong> All relapsed intracranial malignant GCT patients MUST be discussed with national GCT expert teams and with SIOPE BTG CNS GCT Working Group if needed. Contact details in ESCP Appendix K (Frappaz, Murray, Nicholson, Alapetite, Ajithkumar et al.).
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════ PANEL COMPARE ═══════════════════════════════════ -->
+<div id="panel-compare" class="panel">
+<div class="container">
+  <button class="back-btn" onclick="back()">← Back to Overview</button>
+  <div class="panel-header">
+    <h2>COG vs SIOP — Protocol Comparison</h2>
+    <div class="ph-sub">ACNS2321 / ACNS2021 (COG) vs SIOP CNS GCT II (European) · Key differences</div>
+  </div>
+
+  <div class="slabel">Germinoma — COG vs SIOP</div>
+  <div class="cmp-block">
+    <div class="cmp-row cmp-header">
+      <div class="cmp-label">Parameter</div>
+      <div class="cmp-val">COG ACNS2321 (2024–)</div>
+      <div class="cmp-val">SIOP CNS GCT II / ESCP 2021</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">Induction chemo</div>
+      <div class="cmp-val">Carboplatin + Etoposide × 4 cycles q21d (identical agents)</div>
+      <div class="cmp-val">Carboplatin/E + Ifosfamide/E × 4 cycles alternating q21d (adds ifosfamide)</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">CR → WVI/WVI+TB dose</div>
+      <div class="cmp-val" style="color:var(--green); font-weight:600;">12 Gy WVI + 12 Gy boost (= 24 Gy total primary) — <em>experimental arm</em></div>
+      <div class="cmp-val" style="color:var(--blue);">24 Gy WVI+TB — boost omitted in single-site CR (= 24 Gy total)</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">PR → WVI dose</div>
+      <div class="cmp-val">18 Gy WVI + 12 Gy boost (= 30 Gy)</div>
+      <div class="cmp-val">24 Gy WVI+TB + 16 Gy boost = 40 Gy</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">Metastatic</div>
+      <div class="cmp-val">CSI 18 Gy (CR) or 24 Gy (&lt;CR) + 12 Gy boost all sites</div>
+      <div class="cmp-val">CSI 24 Gy + 16 Gy boost → 40 Gy (SIOP CNS GCT 96 standard)</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">BG/Thalamus</div>
+      <div class="cmp-val">Strata VI–VII: WBI 18–24 Gy + 12 Gy boost</div>
+      <div class="cmp-val">Not separately stratified in SIOP — treated as standard localised or metastatic</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">Boost omission</div>
+      <div class="cmp-val">Not in ACNS2321 (boost 12 Gy retained in all strata)</div>
+      <div class="cmp-val">Boost omitted in single-site CR after chemo — insufficient data for bifocal</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">Reference EFS</div>
+      <div class="cmp-val">ACNS1123 CR stratum: 3y EFS 94.4%±2.7% (n=74)</div>
+      <div class="cmp-val">SIOP CNS GCT II preliminary: 3y EFS 96% all localised germinoma</div>
+    </div>
+  </div>
+
+  <div class="slabel">NGGCT — COG vs SIOP</div>
+  <div class="cmp-block">
+    <div class="cmp-row cmp-header">
+      <div class="cmp-label">Parameter</div>
+      <div class="cmp-val">COG ACNS2021 (2020–)</div>
+      <div class="cmp-val">SIOP CNS GCT II / ESCP 2021</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">Induction chemo</div>
+      <div class="cmp-val">Carbo/E alternating IE × 6 cycles (same as germinoma COG)</div>
+      <div class="cmp-val">PEI (cisplatin/etoposide/ifosfamide) × 3–4 cycles</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">RT volume M0</div>
+      <div class="cmp-val">Plan A: WVSCI 30.6 Gy (WVI + spinal canal). Plan B (poor responders): CSI 36 Gy</div>
+      <div class="cmp-val">TU 54 Gy (no CSI for M0). WVI 24 Gy considered if germinoma component present.</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">RT volume M+</div>
+      <div class="cmp-val">CSI 36 Gy (Plan B) + boost to 54 Gy primary + 45 Gy mets</div>
+      <div class="cmp-val">CSI 30 Gy + boost 24 Gy → 54 Gy primary (spine max 45 Gy)</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">High-dose chemo</div>
+      <div class="cmp-val">Thiotepa/etoposide HDC for Plan B (poor responders) in ACNS0122 lineage</div>
+      <div class="cmp-val">HD-PEI + SCT (experimental) for AFP &gt;1000 or age &lt;6y</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">Risk stratification</div>
+      <div class="cmp-val">By response to induction chemo (ACNS2021 Plan A vs B)</div>
+      <div class="cmp-val">By AFP threshold (≤1000 vs &gt;1000 ng/ml) AND age (≥6y vs &lt;6y)</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">Reference EFS</div>
+      <div class="cmp-val">ACNS0122: 5y EFS 84%, OS 93%</div>
+      <div class="cmp-val">SIOP CNS GCT 96: 5y EFS 72% (M0), 68% (M+). GCT II prelim: 3y EFS 70%</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-label">⚠ CSI lesson</div>
+      <div class="cmp-val">ACNS1123 NGGCT arm closed early — 12% isolated spinal failures with WVRT alone</div>
+      <div class="cmp-val">European: no WVRT-only arm for NGGCT; CSI mandatory for M+</div>
+    </div>
+  </div>
+
+  <div class="slabel">Cross-Reference Tools</div>
+  <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:28px;">
+    <a href="acns2321-germinoma-revue.html" target="_blank" style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 18px; font-size:12px; color:var(--accent); display:inline-block;">↗ Open ACNS2321 Germinoma Tool</a>
+    <a href="acns2021-nggct-revue.html" target="_blank" style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 18px; font-size:12px; color:var(--accent); display:inline-block;">↗ Open ACNS2021 NGGCT Tool</a>
+    <a href="RareNeuroOnco_Revue.html" target="_blank" style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 18px; font-size:12px; color:var(--accent); display:inline-block;">↗ Back to Rare Neuro-Onco Dashboard</a>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════ REFERENCES (landing bottom) ═══════════════════════════════════ -->
+<div id="refs-landing" style="max-width:960px; margin:0 auto; padding:0 20px 80px;">
+<div class="slabel" style="margin-top:0;">References</div>
+<div class="refs-list">
+  <div class="ref-item">
+    <span class="ref-num">1</span>
+    <div class="ref-body">
+      <div class="ref-authors">Diezi M, Pizer B, Murray M — SIOPE Brain Tumour Group</div>
+      <div class="ref-title-text">Childhood Intracranial Germ Cell Tumours — ESCP Standard Clinical Practice Document</div>
+      <div class="ref-journal">SIOP Europe / ERN PaedCan · FINAL v1.0 · October 2021</div>
+      <div class="ref-note">Basis of this tool. Based on and adapted from SIOP CNS GCT II Protocol v4, 16.03.2018.</div>
+    </div>
+  </div>
+  <div class="ref-item">
+    <span class="ref-num">2</span>
+    <div class="ref-body">
+      <div class="ref-authors">Calaminus G et al.</div>
+      <div class="ref-title-text">SIOP CNS GCT 96: final report — intracranial germinoma, CSI alone vs chemo + focal RT</div>
+      <div class="ref-journal">Neuro-Oncology, 2013; 15(6):788–796</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1093/neuonc/not019" target="_blank">10.1093/neuonc/not019</a></div>
+      <div class="ref-note">n=190 · WVI 24 Gy + 16 Gy boost · 5y EFS/OS &gt;90% · Boost omission experimental</div>
+    </div>
+  </div>
+  <div class="ref-item">
+    <span class="ref-num">3</span>
+    <div class="ref-body">
+      <div class="ref-authors">Calaminus G et al.</div>
+      <div class="ref-title-text">Outcome of patients with intracranial non-germinomatous germ cell tumors — SIOP CNS GCT 96</div>
+      <div class="ref-journal">Neuro-Oncology, 2017; 19(12):1661–1672</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1093/neuonc/nox122" target="_blank">10.1093/neuonc/nox122</a></div>
+      <div class="ref-note">5y EFS 72% M0 / 68% M+ · AFP &gt;1000 and residual disease = independent adverse factors · AFP &gt;1000 = high-risk group defined</div>
+    </div>
+  </div>
+  <div class="ref-item">
+    <span class="ref-num">4</span>
+    <div class="ref-body">
+      <div class="ref-authors">Murray MJ et al.</div>
+      <div class="ref-title-text">Consensus on the management of intracranial germ-cell tumours</div>
+      <div class="ref-journal">Lancet Oncology, 2015; 16(9):e470–e477</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1016/S1470-2045(15)00244-2" target="_blank">10.1016/S1470-2045(15)00244-2</a></div>
+      <div class="ref-note">Global consensus · Lumbar CSF preferred over ventricular · WVI recommended for localised germinoma · Bifocal = non-metastatic</div>
+    </div>
+  </div>
+  <div class="ref-item">
+    <span class="ref-num">5</span>
+    <div class="ref-body">
+      <div class="ref-authors">Kanamori M et al.</div>
+      <div class="ref-title-text">So-called bifocal tumors with diabetes insipidus and negative tumor markers: are they all germinoma?</div>
+      <div class="ref-journal">Neuro-Oncology, 2021; 23(2):295–303</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1093/neuonc/noaa197" target="_blank">10.1093/neuonc/noaa197</a></div>
+      <div class="ref-note">n=89 · 3.4% NGGCT in bifocal DI marker-negative cohort · No permanent complications from endoscopic/stereotactic biopsy</div>
+    </div>
+  </div>
+  <div class="ref-item">
+    <span class="ref-num">6</span>
+    <div class="ref-body">
+      <div class="ref-authors">Murray MJ et al.</div>
+      <div class="ref-title-text">Treatment and outcomes of UK and German patients with relapsed intracranial germ cell tumors</div>
+      <div class="ref-journal">International Journal of Cancer, 2017; 141(3):621–635</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1002/ijc.30748" target="_blank">10.1002/ijc.30748</a></div>
+      <div class="ref-note">Relapsed GCT: SDC+re-RT vs HDC+SCT — comparable outcomes for germinoma · NGGCT 14% 5y OS</div>
+    </div>
+  </div>
+  <div class="ref-item">
+    <span class="ref-num">7</span>
+    <div class="ref-body">
+      <div class="ref-authors">Callec L et al.</div>
+      <div class="ref-title-text">Relapsing intracranial germ cell tumours warrant retreatment</div>
+      <div class="ref-journal">European Journal of Cancer, 2020; 136:186–194</div>
+      <div class="ref-doi"><a href="https://doi.org/10.1016/j.ejca.2020.05.024" target="_blank">10.1016/j.ejca.2020.05.024</a></div>
+      <div class="ref-note">n=44 relapsed · HDC+SCT absolutely necessary for curative intent NGGCT relapse</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+/* ── NAVIGATION ── */
+var navStack = [];
+
+function show(id) {
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('refs-landing').style.display = 'none';
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  var el = document.getElementById('panel-' + id);
+  if (el) el.classList.add('active');
+  navStack.push(id);
+  window.scrollTo(0, 0);
+}
+
+function back() {
+  navStack.pop();
+  if (navStack.length === 0) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('landing').style.display = '';
+    document.getElementById('refs-landing').style.display = '';
+    window.scrollTo(0, 0);
+  } else {
+    show(navStack[navStack.length - 1]);
+  }
+}
+
+/* ── TABS ── */
+function switchTab(btn, panelId, tabId) {
+  var panel = document.getElementById('panel-' + panelId);
+  panel.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  panel.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  var tc = document.getElementById(panelId + '-' + tabId);
+  if (tc) tc.classList.add('active');
+}
+
+/* ── THEME ── */
+function toggleTheme() {
+  var isLight = document.body.classList.toggle('light');
+  document.getElementById('btn-theme').title = isLight ? 'Switch to dark mode' : 'Switch to light mode';
+  try { localStorage.setItem('theme', isLight ? 'light' : 'dark'); } catch(e) {}
+}
+(function() {
+  try { if (localStorage.getItem('theme') === 'light') document.body.classList.add('light'); } catch(e) {}
+})();
+</script>
+</body>
+</html>
