@@ -143,6 +143,7 @@
     .nav-card.c4::before { background: var(--accent); }
     .nav-card.c5::before { background: var(--accent6); }
     .nav-card.c6::before { background: #4ac08a; }
+    .nav-card.c7::before { background: #e05c7a; }
     .nav-card:hover { border-color: #3a4a5a; transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
     body.light .nav-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
     .nav-card-num  { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); margin-bottom: 6px; }
@@ -155,11 +156,13 @@
     .tag-blue  { background: #1a2a40; color: var(--accent);  border: 1px solid #2a4060; }
     .tag-cyan  { background: #1a2a30; color: var(--accent6); border: 1px solid #2a4a50; }
     .tag-green { background: #0d2a1a; color: var(--accent2); border: 1px solid #1a4a2a; }
+    .tag-pink  { background: #2a0d1a; color: #e05c7a;       border: 1px solid #4a1a2a; }
     body.light .tag-red  { background: #fde8e8; color: #c0392b; border-color: #e8b0b0; }
     body.light .tag-pur  { background: #ede0f8; color: #6b3fa0; border-color: #c0a0d8; }
     body.light .tag-blue { background: #e0ecf8; color: #1a5fa8; border-color: #a0c0d8; }
     body.light .tag-cyan { background: #e0f0f4; color: #1a7a8a; border-color: #a0c8d0; }
     body.light .tag-green{ background: #e0f2e8; color: #2d7a3a; border-color: #a0c8a8; }
+    body.light .tag-pink { background: #fde8ef; color: #b03060; border-color: #e8a0b0; }
 
     /* ── COMPARE TABLE ── */
     .compare-wrap { margin-bottom: 8px; }
@@ -319,7 +322,7 @@
   <div class="header-meta">
     <span><span class="dot dot-blue"></span>Sources: RadOncReview · ClinicalTrials.gov · PubMed · COG</span>
     <span><span class="dot dot-green"></span>Updated: April 2026</span>
-    <span><span class="dot dot-pur"></span>6 entities · ATRT · ETMR · Pineoblastoma · GCT/NGGCT · Ependymoma · CPT</span>
+    <span><span class="dot dot-pur"></span>7 entities · ATRT · ETMR · Pineoblastoma · GCT/NGGCT · Ependymoma · CPT · PIS</span>
   </div>
   <div class="disclaimer">For personal educational use only — not a substitute for institutional protocols or multidisciplinary clinical judgment.</div>
 </header>
@@ -372,6 +375,13 @@
       <div class="nav-card-dose">CPC: 54 Gy focal / 35.2 Gy CSI + boost</div>
       <div class="nav-card-trials">CPT-SIOP-2009 registry</div>
       <span class="nav-card-tag tag-green">CPP · aCPP · CPC · TP53/LFS</span>
+    </div>
+    <div class="nav-card c7" onclick="show('pis')">
+      <div class="nav-card-num">07</div>
+      <div class="nav-card-name">PIS — Pédiatrique</div>
+      <div class="nav-card-dose">RT focale 54–60 Gy / 30 fr · ICE sandwich</div>
+      <div class="nav-card-trials">Pas de protocole dédié · RCP NetSarc</div>
+      <span class="nav-card-tag tag-pink">OMS CNS5 · DICER1 · NOS · Chondrosarcome</span>
     </div>
   </div>
 
@@ -445,6 +455,14 @@
           <td><span class="mono2">54 Gy</span> focal (CPC &gt;3y, M0) · avoid RT &lt;3y &amp; LFS</td>
           <td>CPP <span class="mono2">&gt;90%</span> · aCPP <span class="mono">~85%</span> · CPC <span class="mono3">36–65%</span></td>
           <td>CarbEV vs CycEV (SIOP-2000) · TP53 subgrouping · no RT in LFS</td>
+        </tr>
+        <tr>
+          <td><strong>PIS — Pédiatrique</strong></td>
+          <td>DICER1 biallelique + TP53 + RAS (70%) · PDGFRA↑ · Germline DICER1 à tester</td>
+          <td>CSI si dissémination neuroaxiale confirmée uniquement</td>
+          <td><span style="font-family:'DM Mono',monospace;color:#e05c7a;font-size:12px;">54–60 Gy / 30 fr</span> focale · protonthérapie si dispo</td>
+          <td>OS-5 ans <span class="mono3">44–74%</span> selon série · PFS-5 ans <span class="mono3">21–47%</span></td>
+          <td>Pas de protocole dédié · ICE sandwich (Lafay-Cousin) · NGS obligatoire · RCP NetSarc</td>
         </tr>
       </tbody>
     </table>
@@ -1573,6 +1591,183 @@
       <div class="ref-note">🟡 Méta-analyse historique · n=566 · SG 1/5/10y CPP 90/81/77% vs CPC 71/41/35% · chirurgie et RT facteurs pronostiques significatifs pour CPC</div>
     </div>
   </div>
+</div>
+
+<!-- ═══════════════ PANEL 07 — PIS PÉDIATRIQUE ═══════════════ -->
+<div class="panel" id="pis">
+  <div class="back-btn" onclick="back()">← All entities</div>
+  <div class="panel-header">
+    <div class="panel-title">Sarcomes Primitifs Intracrâniens — Pédiatrique</div>
+    <div class="panel-subtitle">Primary Intracranial Sarcoma · OMS CNS5 2021 · PIS-DICER1 · Sarcome NOS · Chondrosarcome · Hors RMS / MPNST / synovial / angiosarcome · Note clinique Avril 2026</div>
+  </div>
+
+  <!-- ALERTES -->
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
+    <span style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;background:rgba(245,158,11,0.1);color:#f59e0b;border:1px solid rgba(245,158,11,0.3)">⚠ Pas de consensus — aucune guideline EANO/SIOPE spécifique</span>
+    <span style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.3)">🏥 RCP nationale obligatoire — NetSarc + RENOCLIP-LOC</span>
+    <span style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;background:rgba(251,191,36,0.1);color:#fbbf24;border:1px solid rgba(251,191,36,0.3)">📋 Données limitées — séries rétrospectives &lt; 200 cas publiés</span>
+  </div>
+
+  <!-- ENTITÉS OMS -->
+  <div class="slabel">Entités OMS CNS5 2021</div>
+  <table class="rt-table" style="margin-bottom:20px">
+    <thead><tr><th>Entité</th><th>Statut OMS</th><th>Particularité clé</th></tr></thead>
+    <tbody>
+      <tr><td><strong style="color:#e05c7a">PIS-DICER1</strong><br><span class="nt">Spindle cell / RMS-like</span></td><td><span class="val">Reconnue CNS5</span></td><td>Entité moléculaire dominante en pédiatrie · profil méthylation distinct · mutations somatiques DICER1 + TP53 + RAS</td></tr>
+      <tr><td><strong style="color:var(--muted)">Sarcome NOS</strong></td><td><span class="nt">Exclusion moléculaire</span></td><td>Diagnostic d'exclusion (séries historiques pré-NGS) — doit être reclassé par méthylation/NGS</td></tr>
+      <tr><td><strong style="color:var(--accent2)">Chondrosarcome primitif</strong></td><td><span class="nt">Entité distincte</span></td><td>Rare · pronostic potentiellement plus favorable · GTR curatif possible</td></tr>
+      <tr><td><strong style="color:var(--accent5)">Sarcome à réarrang. CIC</strong></td><td><span class="val">Reconnue CNS5</span></td><td>Rare · chimiorésistant · pire pronostic</td></tr>
+      <tr><td><strong style="color:#ef4444">Sarcome radio-induit</strong></td><td><span class="nt">Complication tardive</span></td><td>Délai ≥ 5–10 ans post-RT · dans le champ irradié · critères Cahan</td></tr>
+    </tbody>
+  </table>
+
+  <!-- RT PROTOCOLS -->
+  <div class="slabel">RT Reference Protocols</div>
+  <table class="rt-table">
+    <thead><tr><th>Scénario</th><th>Timing RT</th><th>Volume &amp; Dose</th><th>Données clés</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Maladie localisée (standard)</strong><br><span class="nt">PIS-DICER1 · NOS · Chondrosarcome</span></td>
+        <td><span class="val">Après ICE ×2</span><br><span class="nt">~J21 post-C2 (séquence sandwich)</span></td>
+        <td>RT focale · lit opératoire + marge anatomique <span class="val">≈ 1 cm</span><br><span class="val">54–60 Gy / 30 fr</span> (médiane 59.4–60 Gy)<br><span class="nt">Protonthérapie recommandée si disponible</span><br><span style="font-family:'DM Mono',monospace;color:#e05c7a;font-size:11.5px">+ étoposide oral 35 mg/m² · 3 sem/4</span> (Lafay-Cousin)</td>
+        <td>OS-5 ans <span class="val2">67–74%</span> (Lafay-Cousin/Benesch)<br>OS-5 ans <span class="val3">44%</span> (Maher — série plus hétérogène)<br>PFS-5 ans 100% NED (Lafay-Cousin n=8)</td>
+        <td>Lafay-Cousin 2016 · Benesch 2013 · Maher 2016</td>
+      </tr>
+      <tr>
+        <td><strong>Maladie métastatique (neuroaxiale)</strong></td>
+        <td><span class="nt">Après chimio induction</span></td>
+        <td>Irradiation craniospinale (CSI)<br><span class="nt">Dose CSI non standardisée — extrapolation médulloblastome (23.4–36 Gy) + boost local 54–60 Gy</span></td>
+        <td>Pronostic très défavorable<br><span class="nt">Données anecdotiques — décision en RCP internationale</span></td>
+        <td>Maher 2016 · Al-Gahtany 2003</td>
+      </tr>
+      <tr>
+        <td><strong>Protonthérapie — Justification</strong></td>
+        <td colspan="2">
+          Adoptée systématiquement à MDACC depuis 2004 (5/5 patients post-2004 · Maher 2016)<br>
+          <span class="nt">① Réduction dose intégrale aux tissus sains (radiosensibilité pédiatrique)</span><br>
+          <span class="nt">② Sur-risque SMN en contexte de sarcome primitif : RR=10,1 pour sarcome secondaire (CCSS) · RR=3,1 pour RT</span><br>
+          <span class="nt">③ NB : les 2 sarcomes "radio-induits" de la série Maher sont des PIS secondaires à RT pour gliome — le seul vrai SMN chez un survivant de PIS est 1 GBM à 7 ans (Lafay-Cousin, cas 4, photons 60 Gy)</span>
+        </td>
+        <td><span class="nt">Pas de donnée comparative protons vs photons spécifique aux PIS</span></td>
+        <td>Maher 2016 · CCSS · Lafay-Cousin 2016</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SEQUENCES -->
+  <div class="slabel">Séquences thérapeutiques de référence</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px">
+    <div class="trial-card">
+      <div class="tc-top"><span style="font-family:'DM Mono',monospace;font-size:11px;color:#e05c7a">Lafay-Cousin 2016</span><span class="sbadge" style="background:#2a0d1a;color:#e05c7a;border:1px solid #4a1a2a">n=8 · Canada</span></div>
+      <div class="tc-title" style="font-size:12.5px;margin-bottom:8px">ICE × 2 → RT + ETO oral → ICE × 4–6</div>
+      <div style="font-size:11.5px;color:var(--muted)">
+        Chir (max résection) → <strong>ICE ×2</strong> (~J14) → <strong>RT 54–60 Gy/30fr + étoposide oral 35 mg/m² 3sem/4</strong> → <strong>ICE ×4–6</strong> post-RT<br>
+        Total 6–8 cycles ICE · Ifosfamide 3g/m²/j D1-2 · ETO 150mg/m² D1-2 · Carbo 500mg/m² D3<br>
+        <span style="color:#fbbf24">OS-5 ans 66,7% · PFS-5 ans 100% · 1 GBM radio-induit à 7 ans (photons)</span>
+      </div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-top"><span style="font-family:'DM Mono',monospace;font-size:11px;color:#e05c7a">Diaz Coronado 2022</span><span class="sbadge" style="background:#2a0d1a;color:#e05c7a;border:1px solid #4a1a2a">n=46 non-mét. · Pérou · PIS-DICER1</span></div>
+      <div class="tc-title" style="font-size:12.5px;margin-bottom:8px">ICE × 2 → RT → ICE × 4</div>
+      <div style="font-size:11.5px;color:var(--muted)">
+        Chir (max résection) → <strong>ICE ×2</strong> (~J14) → <strong>RT 54–60 Gy/30fr</strong> (~J21 post-C2) → <strong>ICE ×4</strong> consolidation<br>
+        Chimio concomitante à la RT non discutée dans la série<br>
+        <span style="color:#fbbf24">OS-2 ans 71% (chimio+RT) vs 45% (RT seule) · PFS-2 ans 58%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHIMIO TABLE -->
+  <div class="slabel">Régimes chimiothérapiques</div>
+  <table class="rt-table" style="margin-bottom:20px">
+    <thead><tr><th>Régime</th><th>Drogues</th><th>Contexte</th></tr></thead>
+    <tbody>
+      <tr><td><span class="val" style="font-family:'DM Mono',monospace">VAdriaC/IE</span><br><span class="nt">(5 drogues)</span></td><td>VCR + DOX + CPM alternant IFO + ETO</td><td>Régime le plus fréquent · série Maher 2016 (5 patients)</td></tr>
+      <tr><td><span style="font-family:'DM Mono',monospace;color:#e05c7a">ICE</span></td><td>IFO 3g/m²/j D1-2 + Carbo 500mg/m² D3 + ETO 150mg/m² D1-2</td><td>Séries Lafay-Cousin (Canada) · Diaz Coronado (Pérou) · réponse 75% en 1ère ligne (Cardona 2023)</td></tr>
+      <tr><td><span class="val" style="font-family:'DM Mono',monospace">VAC</span></td><td>VCR + ActD + CPM</td><td>Si phénotype RMS-like dominant</td></tr>
+      <tr><td><span class="val3" style="font-family:'DM Mono',monospace">TMZ</span><br><span class="nt">(concomitant RT)</span></td><td>Témozolomide</td><td>4 patients série Maher · extrapolation GBM · traitements très hétérogènes · <em>sans preuve de niveau solide dans les PIS</em></td></tr>
+      <tr><td><span class="val3" style="font-family:'DM Mono',monospace">TMZ + IRI ± Dasatinib</span><br><span class="nt">(sauvetage)</span></td><td>Témozolomide + Irinotécan ± Dasatinib</td><td>Réponse 30–60% · 1 rémission 15 mois sous dasatinib (BRAF V600E · Maher). Anti-BRAF si V600E documenté</td></tr>
+    </tbody>
+  </table>
+
+  <!-- BILAN & MOLÉCULAIRE -->
+  <div class="slabel">Bilan diagnostique &amp; moléculaire</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px">
+    <div class="trial-card">
+      <div class="tc-title" style="margin-bottom:8px">IRM — Caractéristiques typiques</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7">
+        <span class="val" style="font-family:'DM Mono',monospace">100%</span> Rehaussement gadolinium<br>
+        <span class="val" style="font-family:'DM Mono',monospace">89%</span> Hémorragie intratumorale<br>
+        <span class="val" style="font-family:'DM Mono',monospace">78%</span> Restriction diffusion<br>
+        <span class="val" style="font-family:'DM Mono',monospace">72%</span> Localisation supratentorielle<br>
+        <span class="val" style="font-family:'DM Mono',monospace">67%</span> Extension méningée · Nécrose<br>
+        <span class="nt">Source : Lazarte-Rantes 2023, n=18</span>
+      </div>
+    </div>
+    <div class="trial-card">
+      <div class="tc-title" style="margin-bottom:8px">NGS obligatoire — Panel cible</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7">
+        <span style="color:#e05c7a;font-family:'DM Mono',monospace">DICER1</span> biallelique · <span style="color:#e05c7a;font-family:'DM Mono',monospace">TP53</span> · <span style="color:#fbbf24;font-family:'DM Mono',monospace">KRAS/NRAS/NF1</span> (voie RAS) · <span style="font-family:'DM Mono',monospace">ATRX</span><br>
+        <strong>Profil méthylation ADN</strong> — gold standard PIS-DICER1<br>
+        <strong>Germline DICER1</strong> — systématique si PIS-DICER1 confirmé<br>
+        IHC : Vimentine+ · GFAP/S100− · PDGFRA · marqueurs myogéniques<br>
+        <span class="nt">PDGFRA positif dans 100% des cas séquencés (Maher 2016)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRONOSTIC -->
+  <div class="slabel">Pronostic — Données de survie</div>
+  <table class="rt-table" style="margin-bottom:20px">
+    <thead><tr><th>Série</th><th>N</th><th>OS</th><th>PFS</th><th>Commentaire</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Benesch 2013</strong><br><span class="nt">CWS/HIT · Europe</span></td><td>19</td><td><span class="val2">74% (5 ans)</span></td><td><span class="val2">47% (5 ans)</span></td><td>Meilleure série · GTR 11/19 · chimio + RT</td></tr>
+      <tr><td><strong>Lafay-Cousin 2016</strong><br><span class="nt">Canada · ICE sandwich</span></td><td>8</td><td><span class="val2">66,7% (5 ans)</span></td><td><span class="val2">100% (5 ans)</span></td><td>Séquence ICE homogène · ETO oral concomitant · 1 GBM radio-induit</td></tr>
+      <tr><td><strong>Maher 2016</strong><br><span class="nt">MDACC · Pédiatrique</span></td><td>13</td><td><span class="val3">44% (5 ans)</span></td><td><span class="val3">21% (5 ans)</span></td><td>Traitements hétérogènes · protons post-2004</td></tr>
+      <tr><td><strong>Diaz Coronado 2022</strong><br><span class="nt">Pérou · PIS-DICER1</span></td><td>57</td><td><span class="val2">71% (2 ans)</span></td><td><span class="val2">58% (2 ans)</span></td><td>Plus grande série PIS-DICER1 · chimio+RT supérieure à RT seule (OS 71 vs 45%)</td></tr>
+    </tbody>
+  </table>
+
+  <!-- REFS -->
+  <div class="slabel">Références clés</div>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div class="trial-card" style="padding:10px 14px">
+      <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-right:8px">1</span>
+      <strong>Maher OM et al.</strong> Primary intracranial soft tissue sarcomas in children, adolescents, and young adults. <em>J Neurooncol.</em> 2016;127:155–163.
+      <span style="font-size:10px;background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);padding:1px 5px;border-radius:3px;margin-left:4px">🟡 Série rétrospective n=13</span>
+    </div>
+    <div class="trial-card" style="padding:10px 14px">
+      <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-right:8px">2</span>
+      <strong>Benesch M et al.</strong> Primary intracranial soft tissue sarcoma in children and adolescents: CWS and HIT study groups. <em>J Neurooncol.</em> 2013;111:337–345.
+      <span style="font-size:10px;background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);padding:1px 5px;border-radius:3px;margin-left:4px">🟡 Série rétrospective n=19</span>
+    </div>
+    <div class="trial-card" style="padding:10px 14px">
+      <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-right:8px">3</span>
+      <strong>Diaz Coronado RY, Mynarek M, Koelsche C et al.</strong> Primary CNS sarcoma with DICER1 mutation — treatment results of a novel molecular entity in pediatric Peruvian patients. <em>Cancer.</em> 2022;128:697–707.
+      <span style="font-size:10px;background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);padding:1px 5px;border-radius:3px;margin-left:4px">🟡 Série rétrospective n=70</span>
+    </div>
+    <div class="trial-card" style="padding:10px 14px">
+      <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-right:8px">4</span>
+      <strong>Lafay-Cousin L et al.</strong> Successful treatment of primary intracranial sarcoma with the ICE chemotherapy regimen and focal radiation in children. <em>J Neurosurg Pediatr.</em> 2016;17:298–302.
+      <span style="font-size:10px;background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);padding:1px 5px;border-radius:3px;margin-left:4px">🟡 Série rétrospective n=8</span>
+    </div>
+    <div class="trial-card" style="padding:10px 14px">
+      <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-right:8px">5</span>
+      <strong>Koelsche C et al.</strong> Primary intracranial spindle cell sarcoma with rhabdomyosarcoma-like features — distinct methylation profile and DICER1 mutations. <em>Acta Neuropathol.</em> 2018;136:327–372.
+      <span style="font-size:10px;background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);padding:1px 5px;border-radius:3px;margin-left:4px">🟡 Série fondatrice · définition moléculaire</span>
+    </div>
+    <div class="trial-card" style="padding:10px 14px">
+      <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-right:8px">6</span>
+      <strong>Louis DN et al.</strong> The 2021 WHO Classification of Tumors of the Central Nervous System: a summary. <em>Neuro Oncol.</em> 2021;23:1231–1251.
+      <span style="font-size:10px;background:rgba(34,197,94,0.15);color:#22c55e;border:1px solid rgba(34,197,94,0.3);padding:1px 5px;border-radius:3px;margin-left:4px">🟢 Classification OMS</span>
+    </div>
+    <div class="trial-card" style="padding:10px 14px">
+      <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-right:8px">7</span>
+      <strong>Zumaeta J et al.</strong> Increase of primary intracranial sarcoma in children: clinical manifestations, diagnosis, and management. <em>Surg Neurol Int.</em> 2024;15:426.
+      <span style="font-size:10px;background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);padding:1px 5px;border-radius:3px;margin-left:4px">🟡 Série rétrospective n=25 · plus récente</span>
+    </div>
+  </div>
+
 </div>
 
 </main>
