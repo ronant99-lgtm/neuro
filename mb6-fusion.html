@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>SIOPE-MB6 · Medulloblastoma Decision Support — Stratification &amp; Flowchart</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+/* ── RESET ── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── THEME (root = dark) ── */
+:root {
+  --bg:       #0d1117;
+  --surface:  #161b22;
+  --surface2: #1c2330;
+  --surface3: #21262d;
+  --border:   #2a3441;
+  --border2:  #30363d;
+  --text:     #e6edf3;
+  --text2:    #8b949e;
+  --text3:    #6e7681;
+  --green:    #3fb950;
+  --blue:     #388bfd;
+  --red:      #f85149;
+  --yellow:   #d29922;
+  --purple:   #a371f7;
+  --orange:   #f0883e;
+  --cyan:     #39c5cf;
+  --accent:   #2dd4bf;   /* SIOPE-MB6 teal */
+  --accent-rgb: 45,212,191;
+  --radius:   10px;
+}
+body.light {
+  --bg:       #f5f0e8;
+  --surface:  #ffffff;
+  --surface2: #ede8dc;
+  --surface3: #e6e0d2;
+  --border:   #c8bfaa;
+  --border2:  #d4ccba;
+  --text:     #1a1208;
+  --text2:    #5a4f3a;
+  --text3:    #9a8f7a;
+  --green:    #2d7a3a;
+  --blue:     #1a5fa8;
+  --red:      #c0392b;
+  --yellow:   #a0720a;
+  --purple:   #6b3fa0;
+  --orange:   #c45a10;
+  --cyan:     #1a7a8a;
+  --accent:   #0d9488;
+  --accent-rgb: 13,148,136;
+}
+
+/* ── BASE ── */
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; line-height: 1.6; }
+
+/* ── HEADER ── */
+header {
+  border-bottom: 1px solid var(--border);
+  padding: 14px 24px;
+  display: flex; align-items: center; gap: 12px;
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(13,17,23,0.96);
+  backdrop-filter: blur(12px);
+}
+body.light header { background: rgba(245,240,232,0.97); }
+.hdr-logo { width: 34px; height: 34px; border: 1.5px solid var(--accent); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 8px; font-weight: 500; color: var(--accent); flex-shrink: 0; }
+.hdr-info { flex: 1; min-width: 0; }
+.hdr-title { font-family: 'DM Serif Display', serif; font-size: 15px; color: var(--text); }
+.hdr-sub { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; letter-spacing: 0.3px; margin-top: 1px; }
+.hdr-right { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+.hdr-badge { background: rgba(var(--accent-rgb),0.12); border: 1px solid rgba(var(--accent-rgb),0.28); border-radius: 20px; padding: 3px 10px; font-size: 9px; font-family: 'DM Mono', monospace; color: var(--accent); letter-spacing: 0.5px; white-space: nowrap; }
+.btn-theme { font-family: 'DM Mono', monospace; font-size: 14px; color: var(--text3); background: none; border: 1px solid var(--border); border-radius: 6px; padding: 3px 8px; cursor: pointer; transition: all 0.2s; }
+.btn-theme:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ── TAB NAV ── */
+.tab-nav { display: flex; border-bottom: 1px solid var(--border); background: var(--surface); position: sticky; z-index: 150; }
+body.light .tab-nav { background: var(--surface2); }
+.tab-btn { flex: 1; padding: 11px 16px; border: none; background: none; color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; border-bottom: 2px solid transparent; transition: all .2s; }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+body.light .tab-btn:hover { background: rgba(0,0,0,.04); }
+
+/* ── PANELS ── */
+#panel-wizard { display: block; }
+#panel-flow   { display: none; overflow: hidden; position: relative; }
+#chart        { width: 100%; height: 100%; cursor: grab; }
+#chart:active { cursor: grabbing; }
+
+/* ── WIZARD CONTAINER ── */
+.container { max-width: 840px; margin: 0 auto; padding: 32px 24px 80px; }
+
+/* ── PROGRESS ── */
+.progress-wrap { margin-bottom: 28px; }
+.progress-steps { display: flex; gap: 4px; align-items: center; margin-bottom: 5px; }
+.step-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); transition: background 0.3s, transform 0.2s; }
+.step-dot.active { background: var(--accent); transform: scale(1.35); }
+.step-dot.done { background: var(--green); }
+.progress-label { font-family: 'DM Mono', monospace; font-size: 9.5px; color: var(--text3); letter-spacing: 0.3px; }
+
+/* ── TRAIL ── */
+.trail { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; align-items: center; }
+.trail-item { font-family: 'DM Mono', monospace; font-size: 0.68rem; padding: 3px 9px; border-radius: 20px; background: var(--surface2); border: 1px solid var(--border); color: var(--text2); }
+.trail-arrow { color: var(--text3); font-size: 0.7rem; }
+
+/* ── QUESTION CARD ── */
+.q-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px; margin-bottom: 18px; animation: fadeSlide 0.3s ease; }
+body.light .q-card { box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+@keyframes fadeSlide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.q-step-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+.q-text { font-family: 'DM Serif Display', serif; font-size: 1.2rem; color: var(--text); margin-bottom: 6px; line-height: 1.35; }
+.q-hint { font-size: 0.78rem; color: var(--text3); margin-bottom: 20px; font-style: italic; }
+
+/* ── OPTIONS ── */
+.options { display: flex; flex-direction: column; gap: 8px; }
+.opt-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 13px 16px; cursor: pointer; text-align: left; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; transition: all 0.15s; display: flex; align-items: flex-start; gap: 12px; }
+.opt-btn:hover { border-color: var(--accent); background: rgba(var(--accent-rgb),0.07); transform: translateX(2px); }
+.opt-key { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--text3); background: var(--bg); border: 1px solid var(--border); border-radius: 4px; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.opt-btn:hover .opt-key { border-color: var(--accent); color: var(--accent); }
+.opt-body strong { display: block; font-weight: 500; }
+.opt-body .opt-sub { font-size: 0.72rem; color: var(--text3); margin-top: 2px; font-family: 'DM Mono', monospace; }
+
+/* ── RESULT ── */
+.result-wrap { animation: fadeSlide 0.4s ease; }
+.result-header-box { margin-bottom: 22px; }
+.result-title-main { font-family: 'DM Serif Display', serif; font-size: 1.35rem; color: var(--text); margin-bottom: 4px; }
+.result-subtitle { font-size: 0.78rem; color: var(--text3); font-family: 'DM Mono', monospace; }
+.arm-pill { display: inline-block; margin-top: 10px; font-family: 'DM Mono', monospace; font-size: 0.7rem; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.05em; }
+.arm-pill.vfr  { background: rgba(63,185,80,0.12);  color: var(--green);  border: 1px solid rgba(63,185,80,0.3); }
+.arm-pill.fr   { background: rgba(57,197,207,0.12); color: var(--cyan);   border: 1px solid rgba(57,197,207,0.3); }
+.arm-pill.sr   { background: rgba(56,139,253,0.12); color: var(--blue);   border: 1px solid rgba(56,139,253,0.3); }
+.arm-pill.hr   { background: rgba(248,81,73,0.12);  color: var(--red);    border: 1px solid rgba(248,81,73,0.3); }
+.arm-pill.excl { background: rgba(163,113,247,0.12);color: var(--purple); border: 1px solid rgba(163,113,247,0.3); }
+
+/* ── TREATMENT CARDS ── */
+.treatment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 560px) { .treatment-grid { grid-template-columns: 1fr; } }
+.treatment-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; position: relative; overflow: hidden; }
+body.light .treatment-card { box-shadow: 0 1px 4px rgba(0,0,0,.05); }
+.treatment-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.treatment-card.chemo::before { background: var(--orange); }
+.treatment-card.rt::before    { background: var(--blue); }
+.treatment-card.alt::before   { background: var(--green); }
+.treatment-card.full { grid-column: 1 / -1; }
+.tc-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.tc-label.chemo { color: var(--orange); }
+.tc-label.rt    { color: var(--blue); }
+.tc-label.alt   { color: var(--green); }
+.tc-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.chemo .tc-dot { background: var(--orange); }
+.rt .tc-dot    { background: var(--blue); }
+.alt .tc-dot   { background: var(--green); }
+.tc-value { font-size: 1rem; font-weight: 600; color: var(--text); line-height: 1.3; margin-bottom: 5px; }
+.tc-detail { font-size: 0.75rem; color: var(--text2); line-height: 1.5; }
+
+/* ── RT DOSE BOX ── */
+.rt-dose-box { margin-top: 12px; background: rgba(56,139,253,0.04); border: 1px solid rgba(56,139,253,0.15); border-radius: 8px; overflow: hidden; }
+.rt-dose-title { background: rgba(56,139,253,0.1); padding: 8px 14px; font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue); border-bottom: 1px solid rgba(56,139,253,0.15); }
+.rt-dose-grid { padding: 8px 14px; }
+.rt-dose-row { display: grid; grid-template-columns: 128px 1fr; gap: 4px 12px; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.76rem; align-items: start; }
+body.light .rt-dose-row { border-bottom-color: rgba(0,0,0,0.04); }
+.rt-dose-row:last-child { border-bottom: none; }
+.rt-dose-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; padding-top: 2px; }
+.rt-dose-val { color: var(--text2); line-height: 1.5; }
+.rt-dose-val strong { color: var(--blue); font-weight: 600; }
+.rt-dose-val em { color: var(--purple); font-style: normal; }
+.rt-dose-note { padding: 8px 14px; font-size: 0.72rem; color: var(--purple); border-top: 1px solid rgba(56,139,253,0.15); background: rgba(163,113,247,0.04); }
+
+/* ── NOTES BOX ── */
+.notes-box { margin-top: 16px; padding: 13px 16px; background: rgba(163,113,247,0.05); border: 1px solid rgba(163,113,247,0.15); border-radius: 8px; font-size: 0.78rem; color: var(--text2); line-height: 1.6; }
+.notes-box strong { color: var(--purple); font-weight: 500; }
+.notes-box ul { padding-left: 16px; margin-top: 6px; }
+.notes-box li { margin-bottom: 4px; }
+
+/* ── EXCLUSION BOX ── */
+.excl-box { background: rgba(163,113,247,0.06); border: 1px solid rgba(163,113,247,0.25); border-left: 3px solid var(--purple); border-radius: 8px; padding: 18px 20px; margin-bottom: 16px; }
+.excl-title { font-family: 'DM Serif Display', serif; font-size: 1.15rem; color: var(--text); margin-bottom: 8px; }
+.excl-reason { font-size: 0.88rem; color: var(--text2); line-height: 1.6; }
+.excl-reason strong { color: var(--purple); }
+
+/* ── OAR BTN ── */
+.oar-btn { display: inline-flex; align-items: center; gap: 7px; margin-top: 12px; padding: 7px 13px; background: transparent; border: 1px solid rgba(63,185,80,0.3); border-radius: 6px; color: var(--green); font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.06em; cursor: pointer; transition: all 0.15s; }
+.oar-btn:hover { background: rgba(63,185,80,0.08); border-color: var(--green); }
+
+/* ── MODAL ── */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 1000; align-items: flex-start; justify-content: center; padding: 20px; overflow-y: auto; }
+.modal-overlay.open { display: flex; }
+.modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; width: 100%; max-width: 900px; margin: auto; overflow: hidden; }
+.modal-header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 12px; }
+.modal-title { font-family: 'DM Serif Display', serif; font-size: 1rem; color: var(--text); flex: 1; }
+.modal-close { background: transparent; border: 1px solid var(--border); border-radius: 6px; color: var(--text2); cursor: pointer; padding: 5px 10px; font-size: 0.8rem; flex-shrink: 0; }
+.modal-close:hover { border-color: var(--text2); color: var(--text); }
+.modal-body { padding: 14px 20px 22px; overflow-y: auto; max-height: 74vh; }
+.oar-table { width: 100%; border-collapse: collapse; font-size: 0.72rem; }
+.oar-table thead tr { background: var(--surface2); border-bottom: 2px solid var(--border); }
+.oar-table th { padding: 8px 10px; text-align: left; font-family: 'DM Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); white-space: nowrap; }
+.oar-table td { padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--text2); vertical-align: top; line-height: 1.45; }
+body.light .oar-table td { border-bottom-color: rgba(0,0,0,.04); }
+.oar-table tr:hover td { background: rgba(255,255,255,0.02); }
+body.light .oar-table tr:hover td { background: rgba(0,0,0,.02); }
+.oar-table .oar-name { color: var(--text); font-weight: 500; }
+.oar-table .goal { color: var(--green); font-family: 'DM Mono', monospace; font-size: 0.69rem; }
+.oar-table .goal-mand { color: var(--red); font-family: 'DM Mono', monospace; font-size: 0.69rem; }
+.oar-section-header td { background: rgba(56,139,253,0.06); font-family: 'DM Mono', monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--blue); padding: 6px 10px; border-top: 1px solid rgba(56,139,253,0.12); }
+.oar-ref { margin-top: 14px; font-size: 0.68rem; color: var(--text3); font-style: italic; line-height: 1.5; }
+
+/* ── VOLUMES TABLE (modal) ── */
+.vol-table { width: 100%; border-collapse: collapse; font-size: 0.73rem; }
+.vol-table th { text-align: left; padding: 8px 10px; font-family: 'DM Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); background: var(--surface2); border-bottom: 2px solid var(--border); }
+.vol-table td { padding: 7px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--text2); vertical-align: top; line-height: 1.5; }
+body.light .vol-table td { border-bottom-color: rgba(0,0,0,.04); }
+.vol-table .vol-name { color: var(--accent); font-family: 'DM Mono', monospace; font-weight: 500; white-space: nowrap; }
+
+/* ── DOSE TABLE (modal) ── */
+.dose-table { width: 100%; border-collapse: collapse; font-size: 0.72rem; }
+.dose-table th { text-align: left; padding: 7px 9px; font-family: 'DM Mono', monospace; font-size: 0.56rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); background: var(--surface2); border-bottom: 2px solid var(--border); }
+.dose-table td { padding: 6px 9px; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--text2); }
+body.light .dose-table td { border-bottom-color: rgba(0,0,0,.04); }
+.dose-table .dg { color: var(--text); font-weight: 500; }
+.dose-table .dcsi { color: var(--blue); font-family: 'DM Mono', monospace; }
+.dose-table .dtot { color: var(--accent); font-family: 'DM Mono', monospace; font-weight: 600; }
+.dose-table tr.hl td { background: rgba(var(--accent-rgb),0.06); }
+
+/* ── ACTION BAR ── */
+.action-bar { display: flex; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
+.btn-primary { padding: 9px 18px; border-radius: 7px; font-family: 'DM Mono', monospace; font-size: 0.8rem; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; background: var(--accent); color: #04201c; }
+.btn-primary:hover { opacity: 0.85; }
+.btn-ghost { padding: 9px 18px; border-radius: 7px; font-family: 'DM Mono', monospace; font-size: 0.8rem; cursor: pointer; background: transparent; border: 1px solid var(--border); color: var(--text2); transition: all 0.15s; }
+.btn-ghost:hover { border-color: var(--text2); color: var(--text); }
+
+/* ── REF LINKS ── */
+.ref-links { margin-top: 16px; padding: 12px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; }
+.ref-links-title { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+.ref-links a { color: var(--accent); text-decoration: none; font-size: 0.75rem; border-bottom: 1px dotted rgba(var(--accent-rgb),0.4); }
+.ref-links a:hover { border-bottom-style: solid; }
+
+/* ── D3 FLOWCHART ── */
+.btn-reset-zoom { position: absolute; top: 14px; right: 14px; z-index: 10; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3); background: var(--surface); border: 1px solid var(--border); border-radius: 5px; padding: 4px 10px; cursor: pointer; }
+.btn-reset-zoom:hover { color: var(--accent); border-color: var(--accent); }
+.flow-legend { position: absolute; bottom: 16px; left: 16px; z-index: 10; display: flex; gap: 14px; flex-wrap: wrap; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; }
+.leg-item { display: flex; align-items: center; gap: 5px; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3); }
+.leg-swatch { width: 11px; height: 11px; border-radius: 2px; flex-shrink: 0; }
+
+/* ── TOOLTIP D3 ── */
+.tooltip { position: fixed; background: #1c2330; border: 1px solid #2a3441; border-radius: 8px; padding: 12px 15px; font-size: 12px; max-width: 320px; pointer-events: none; z-index: 300; opacity: 0; transition: opacity 0.15s; line-height: 1.5; color: #e6edf3; }
+.tooltip.visible { opacity: 1; }
+.tt-title { font-family: 'DM Mono', monospace; font-size: 9.5px; color: #6e7681; margin-bottom: 5px; letter-spacing: 0.06em; text-transform: uppercase; }
+.tt-q { font-weight: 500; color: #e6edf3; margin-bottom: 6px; font-size: 12px; }
+.tt-row { display: flex; justify-content: space-between; gap: 12px; border-top: 1px solid #2a3441; padding-top: 4px; margin-top: 4px; }
+.tt-label { color: #8b949e; font-size: 11px; }
+.tt-val { color: #e6edf3; font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; text-align: right; }
+
+/* ── FOOTER ── */
+.wizard-footer { margin-top: 36px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 0.68rem; color: var(--text3); line-height: 1.6; font-family: 'DM Mono', monospace; }
+.print-footer { display: none; }
+
+/* ── PRINT ── */
+@media print {
+  body, body.light { background: #fff !important; color: #000 !important; }
+  header, body.light header { position: static !important; background: #fff !important; border-bottom: 1px solid #ccc !important; }
+  .tab-nav, .btn-theme, .action-bar, #panel-flow, .progress-wrap, .oar-btn, .modal-overlay { display: none !important; }
+  #panel-wizard { display: block !important; }
+  .print-footer { display: block; font-size: 8pt; color: #999; margin-top: 22px; border-top: 1px solid #ddd; padding-top: 8px; }
+  :root, body.light { --text: #000; --text2: #444; --text3: #888; --surface: #fff; --surface2: #f5f5f5; --border: #ddd; }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  .hdr-sub { display: none; }
+  .container { padding: 24px 16px 80px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-logo">SIOPE<br>MB6</div>
+  <div class="hdr-info">
+    <div class="hdr-title">SIOPE-MB6 — Medulloblastoma Decision Support</div>
+    <div class="hdr-sub">Standard-risk umbrella trial · Final Draft V1.0 (14-Mar-2025) · Stratification &amp; RT granularity</div>
+  </div>
+  <div class="hdr-right">
+    <span class="hdr-badge">SIOPE-BTG · MB6</span>
+    <button class="btn-theme" id="btn-theme" onclick="toggleTheme()" title="Switch to light mode">◑</button>
+  </div>
+</header>
+
+<nav class="tab-nav" id="tab-nav">
+  <button class="tab-btn active" id="tab-wizard" onclick="switchTab('wizard')">⬡ Step-by-step Decision</button>
+  <button class="tab-btn"        id="tab-flow"   onclick="switchTab('flow')">⬡ Interactive Flowchart</button>
+</nav>
+
+<!-- ═══ PANEL WIZARD ═══ -->
+<div id="panel-wizard">
+  <div class="container">
+    <div id="progressWrap" class="progress-wrap">
+      <div class="progress-steps" id="progressDots"></div>
+      <div class="progress-label" id="progressLabel"></div>
+    </div>
+    <div class="trail" id="trail" style="display:none"></div>
+    <div id="mainArea"></div>
+    <div class="wizard-footer">
+      Source: SIOPE-MB6 Trial Protocol — Final Draft V1.0 (14-Mar-2025) + MB6 Radiotherapy Guidelines (SIOPE RT Working Group).<br>
+      Clinical decision support only. MB6 = clinically standard-risk medulloblastoma. High-risk disease is directed to SIOP-HR-MB. Always defer to the national RT coordinator and MDT/tumour-board consensus.
+    </div>
+    <div class="print-footer">SIOPE-MB6 Medulloblastoma Decision Support · Draft V1.0 · Not a substitute for MDT decision-making</div>
+  </div>
+</div>
+
+<!-- ═══ PANEL FLOW ═══ -->
+<div id="panel-flow">
+  <div id="chart"></div>
+  <button class="btn-reset-zoom" id="btnReset">⊙ Reset view</button>
+  <div class="flow-legend">
+    <div class="leg-item"><div class="leg-swatch" style="background:#388bfd;border-radius:50%"></div>Decision</div>
+    <div class="leg-item"><div class="leg-swatch" style="background:#3fb950"></div>VFR</div>
+    <div class="leg-item"><div class="leg-swatch" style="background:#39c5cf"></div>FR</div>
+    <div class="leg-item"><div class="leg-swatch" style="background:#388bfd;opacity:.7"></div>SR</div>
+    <div class="leg-item"><div class="leg-swatch" style="background:#d29922"></div>WNT-HR+R / adapted</div>
+    <div class="leg-item"><div class="leg-swatch" style="background:#a371f7"></div>Off-study (→ SIOP-HR-MB)</div>
+  </div>
+  <div class="tooltip" id="tooltip"></div>
+</div>
+
+<!-- ═══ OAR MODAL ═══ -->
+<div class="modal-overlay" id="oarModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">MB6 RT Guidelines — Target Volumes &amp; OAR Constraints</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--text3);margin-top:3px;">SIOPE-MB6 Radiotherapy Guidelines · CTV per SIOPE-BTG consensus (Ajithkumar, Radiother Oncol 2018; doi:10.1016/j.radonc.2018.04.016)</div>
+      </div>
+      <button class="modal-close" onclick="document.getElementById('oarModal').classList.remove('open')">✕ Close</button>
+    </div>
+    <div class="modal-body" id="oarModalBody"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════════════════════
+function toggleTheme() {
+  var isLight = document.body.classList.toggle('light');
+  var btn = document.getElementById('btn-theme');
+  btn.textContent = isLight ? '☀' : '◑';
+  btn.title = isLight ? 'Switch to dark mode' : 'Switch to light mode';
+  try { localStorage.setItem('theme-mb6', isLight ? 'light' : 'dark'); } catch(e){}
+}
+function initTheme() {
+  var saved;
+  try { saved = localStorage.getItem('theme-mb6'); } catch(e){}
+  if (saved === 'light') {
+    document.body.classList.add('light');
+    var btn = document.getElementById('btn-theme');
+    btn.textContent = '☀'; btn.title = 'Switch to dark mode';
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// LAYOUT
+// ═══════════════════════════════════════════════════════
+function fixLayout() {
+  var hh = document.querySelector('header').offsetHeight;
+  var navH = document.querySelector('.tab-nav').offsetHeight;
+  document.getElementById('tab-nav').style.top = hh + 'px';
+  document.getElementById('panel-flow').style.height = (window.innerHeight - hh - navH) + 'px';
+}
+window.addEventListener('resize', fixLayout);
+
+// ═══════════════════════════════════════════════════════
+// TAB SWITCH
+// ═══════════════════════════════════════════════════════
+function switchTab(tab) {
+  document.getElementById('panel-wizard').style.display = tab === 'wizard' ? 'block' : 'none';
+  document.getElementById('panel-flow').style.display   = tab === 'flow'   ? 'block' : 'none';
+  document.getElementById('tab-wizard').classList.toggle('active', tab === 'wizard');
+  document.getElementById('tab-flow').classList.toggle('active', tab === 'flow');
+  if (tab === 'flow' && !window._flowBuilt) {
+    buildFlow();
+    window._flowBuilt = true;
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// WIZARD STATE
+// ═══════════════════════════════════════════════════════
+var A = {};             // answers
+var navHistory = [];
+
+function choose(key, value) {
+  navHistory.push({ key: key, answers: JSON.parse(JSON.stringify(A)) });
+  A[key] = value;
+  nextStep();
+}
+function goBack() {
+  var prev = navHistory.pop();
+  if (prev) { A = prev.answers; nextStep(); }
+}
+function restart() {
+  A = {}; navHistory = [];
+  document.getElementById('progressWrap').style.display = 'block';
+  nextStep();
+}
+
+// Which steps are shown depends on prior answers (adaptive).
+function plannedSteps() {
+  var steps = ['age', 'stage', 'histo', 'mol'];
+  if (A.mol === 'nwns') steps.push('molfav');
+  if (A.mol === 'shh_wt' || A.mol === 'nwns') steps.push('myc');
+  steps.push('resid');
+  return steps;
+}
+function stepIndex(step) { return plannedSteps().indexOf(step); }
+function totalSteps() { return plannedSteps().length; }
+
+function renderProgress(step) {
+  var steps = plannedSteps();
+  var cur = steps.indexOf(step);
+  var dots = document.getElementById('progressDots');
+  var label = document.getElementById('progressLabel');
+  var html = '';
+  for (var i = 0; i < steps.length; i++) {
+    var cls = i < cur ? 'done' : i === cur ? 'active' : '';
+    html += '<div class="step-dot ' + cls + '"></div>';
+  }
+  dots.innerHTML = html;
+  label.textContent = 'Step ' + (cur + 1) + ' of ' + steps.length;
+}
+
+var TRAIL_LABELS = {
+  age:    { lt3: '< 3 yrs', y3_4: '3–4 yrs', y5_15: '5–15 yrs', gte16: '≥ 16 yrs', gt30: '≥ 30 yrs' },
+  stage:  { m0: 'M0', mplus: 'M+' },
+  histo:  { classic: 'Classic', dmb: 'DMB/MBEN', lca: 'LC/A' },
+  mol:    { wnt: 'WNT', shh_wt: 'SHH·TP53wt', shh_mut: 'SHH·TP53mut', nwns: 'Non-WNT/Non-SHH' },
+  molfav: { fav: 'Molecular FR', nonfav: 'Molecular SR' },
+  myc:    { neg: 'MYC/MYCN−', myc: 'MYC-amp', mycn_g4: 'MYCN-amp·Gp4', mycn_o: 'MYCN-amp·non-Gp4' },
+  resid:  { r0: 'R0 (<1.5 cm²)', str: 'STRrad (≥1.5 cm²)' }
+};
+function renderTrail() {
+  var order = ['age', 'stage', 'histo', 'mol', 'molfav', 'myc', 'resid'];
+  var trail = document.getElementById('trail');
+  var html = '', first = true;
+  order.forEach(function(k) {
+    if (A[k]) {
+      if (!first) html += '<span class="trail-arrow">›</span>';
+      html += '<span class="trail-item">' + (TRAIL_LABELS[k][A[k]] || A[k]) + '</span>';
+      first = false;
+    }
+  });
+  trail.innerHTML = html;
+  trail.style.display = first ? 'none' : 'flex';
+}
+
+function nextStep() {
+  if (!A.age)   return showStep('age');
+  if (!A.stage) return showStep('stage');
+  if (!A.histo) return showStep('histo');
+  if (!A.mol)   return showStep('mol');
+  if (A.mol === 'nwns' && !A.molfav) return showStep('molfav');
+  if ((A.mol === 'shh_wt' || A.mol === 'nwns') && !A.myc) return showStep('myc');
+  if (!A.resid) return showStep('resid');
+  return showResult();
+}
+
+var QUESTIONS = {
+  age: {
+    label: 'Age at diagnosis',
+    q: 'What is the age of the patient at diagnosis?',
+    hint: 'MB6 requires age ≥ 3 yrs (≥ 5 yrs if SHH-activated) and < 30 yrs. The WNT favourable prognosis applies only < 16 yrs.',
+    opts: [
+      { v: 'lt3',   l: '< 3 years',   s: 'Infant — not eligible for upfront CSI' },
+      { v: 'y3_4',  l: '3–4 years',   s: 'Eligible except SHH-activated' },
+      { v: 'y5_15', l: '5–15 years',  s: 'Core eligible age' },
+      { v: 'gte16', l: '16–29 years', s: 'WNT loses favourable prognosis' },
+      { v: 'gt30',  l: '≥ 30 years',  s: 'Above upper age limit' }
+    ]
+  },
+  stage: {
+    label: 'Metastatic stage (Chang M)',
+    q: 'What is the metastatic stage?',
+    hint: 'Post-operative craniospinal MRI ± CSF cytology. Spinal MRI is mandatory in non-WNT MB. M+ generally directs to SIOP-HR-MB (edge cases handled within MB6).',
+    opts: [
+      { v: 'm0',    l: 'M0 — localized', s: 'No CNS metastatic spread' },
+      { v: 'mplus', l: 'M+ — metastatic (M1–M4)', s: 'Cytological and/or macroscopic spread' }
+    ]
+  },
+  histo: {
+    label: 'Histomorphology (WHO 2021)',
+    q: 'What is the histomorphology?',
+    hint: 'Large-cell/anaplastic (LC/A) is a systematic high-risk marker and is excluded from MB6 (→ SIOP-HR-MB).',
+    opts: [
+      { v: 'classic', l: 'Classic medulloblastoma', s: 'CMB' },
+      { v: 'dmb',     l: 'Desmoplastic / MBEN',     s: 'DMB or extensive nodularity' },
+      { v: 'lca',     l: 'Large-cell / anaplastic', s: 'LC/A — high-risk marker' }
+    ]
+  },
+  mol: {
+    label: 'Molecular subgroup (methylation / expression)',
+    q: 'What is the molecular subgroup?',
+    hint: 'Integrated diagnosis required (methylation + copy-number + mutational). SHH-TP53 mutant is excluded (→ SIOP-HR-MB).',
+    opts: [
+      { v: 'wnt',     l: 'WNT-activated', s: 'CTNNB1 mut / monosomy 6 / nuclear β-catenin (± APC)' },
+      { v: 'shh_wt',  l: 'SHH-activated · TP53 wildtype', s: 'Favourable-risk marker (≥ 5 yrs)' },
+      { v: 'shh_mut', l: 'SHH-activated · TP53 mutant', s: 'Very high risk — excluded' },
+      { v: 'nwns',    l: 'Non-WNT / Non-SHH (Group 3 / 4)', s: 'FR vs SR by molecular profile' }
+    ]
+  },
+  molfav: {
+    label: 'Non-WNT/Non-SHH molecular risk',
+    q: 'Molecular risk profile within Non-WNT/Non-SHH?',
+    hint: 'Favourable = subtype VII AND/OR favourable whole-chromosomal-aberration phenotype (≥2 of: chr7 gain, chr8 loss, chr11 loss). These stratify FR vs SR.',
+    opts: [
+      { v: 'fav',    l: 'Molecularly favourable', s: 'Subtype VII and/or favourable WCA → FR arm' },
+      { v: 'nonfav', l: 'Not molecularly favourable', s: 'No favourable marker → SR arm (randomized)' }
+    ]
+  },
+  myc: {
+    label: 'MYC / MYCN amplification',
+    q: 'MYC and/or MYCN amplification status (FISH / NGS)?',
+    hint: 'MYC amplification is a high-risk marker in all subgroups (excluded). MYCN amplification is high-risk EXCEPT in Group 4 MB (per PNET5-MB / MB6).',
+    opts: [
+      { v: 'neg',     l: 'No MYC / MYCN amplification', s: 'Both negative' },
+      { v: 'myc',     l: 'MYC amplified', s: 'High-risk — excluded (any subgroup)' },
+      { v: 'mycn_g4', l: 'MYCN amplified — Group 4', s: 'Not high-risk in Group 4' },
+      { v: 'mycn_o',  l: 'MYCN amplified — non-Group 4', s: 'High-risk — excluded' }
+    ]
+  },
+  resid: {
+    label: 'Post-operative residual (at time of RT)',
+    q: 'Residual tumour on the pre-radiotherapy MRI?',
+    hint: 'STRrad = significant residual ≥ 1.5 cm² (axial) at the time of RT. In MB6, residual is NOT a high-risk marker but escalates CSI one level and adds a residual boost to 59.4 Gy.',
+    opts: [
+      { v: 'r0',  l: 'R0 — residual < 1.5 cm²', s: 'GTR / near-total resection' },
+      { v: 'str', l: 'STRrad — residual ≥ 1.5 cm²', s: 'Subtotal resection at RT' }
+    ]
+  }
+};
+
+function showStep(step) {
+  renderProgress(step);
+  renderTrail();
+  var Q = QUESTIONS[step];
+  var keys = ['A','B','C','D','E'];
+  var opts = '';
+  Q.opts.forEach(function(o, i) {
+    opts += '<button class="opt-btn" onclick="choose(\'' + step + '\',\'' + o.v + '\')">'
+      + '<span class="opt-key">' + keys[i] + '</span>'
+      + '<span class="opt-body"><strong>' + o.l + '</strong>' + (o.s ? '<span class="opt-sub">' + o.s + '</span>' : '') + '</span>'
+      + '</button>';
+  });
+  var backBtn = navHistory.length > 0 ? '<div style="margin-top:16px"><button class="btn-ghost" onclick="goBack()">← Back</button></div>' : '';
+  document.getElementById('mainArea').innerHTML = '<div class="q-card">'
+    + '<div class="q-step-label">' + Q.label + '</div>'
+    + '<div class="q-text">' + Q.q + '</div>'
+    + '<div class="q-hint">' + Q.hint + '</div>'
+    + '<div class="options">' + opts + '</div>'
+    + backBtn + '</div>';
+}
+
+// ═══════════════════════════════════════════════════════
+// DECISION LOGIC → returns a result object
+// ═══════════════════════════════════════════════════════
+function getResult() {
+  var age = A.age, stage = A.stage, histo = A.histo, mol = A.mol,
+      molfav = A.molfav, myc = A.myc, resid = A.resid;
+  var isSTR   = resid === 'str';
+  var adult   = age === 'gte16';
+  var infant  = age === 'lt3';
+  var y3_4    = age === 'y3_4';
+
+  // ---- Hard eligibility gates → OFF STUDY ----
+  if (age === 'gt30')
+    return excl('Above upper age limit', 'MB6 requires age < 30 years at surgery. Manage per adult neuro-oncology guidance.');
+  if (infant)
+    return excl('Too young for upfront CSI', 'Age < 3 years. Manage on an infant / young-child protocol (radiotherapy-sparing). SHH-TP53wt infants are low-risk; Non-WNT/Non-SHH infants are high-risk.');
+  if (histo === 'lca')
+    return excl('High-risk marker: LC/A histology', 'Large-cell/anaplastic histology is a systematic high-risk marker and is excluded from MB6. Direct to <strong>SIOP-HR-MB</strong>.');
+  if (mol === 'shh_mut')
+    return excl('High-risk marker: SHH-activated, TP53 mutant', 'SHH-TP53 mutant MB is very high risk and excluded from MB6. Direct to <strong>SIOP-HR-MB</strong>; screen for Li-Fraumeni.');
+  if (myc === 'myc')
+    return excl('High-risk marker: MYC amplification', 'MYC amplification is a high-risk marker in all subgroups. Direct to <strong>SIOP-HR-MB</strong>.');
+  if (myc === 'mycn_o')
+    return excl('High-risk marker: MYCN amplification (non-Group 4)', 'MYCN amplification outside Group 4 is a high-risk marker. Direct to <strong>SIOP-HR-MB</strong>.');
+  if ((mol === 'shh_wt') && (age === 'y3_4'))
+    return excl('SHH-activated below eligible age', 'SHH-activated MB requires age ≥ 5 years for the risk-stratified (CSI) phase. Younger SHH-TP53wt children follow an infant/young-child protocol.');
+
+  // ---- Metastatic handling ----
+  if (stage === 'mplus') {
+    if (mol === 'wnt') {
+      // VFR biology with metastatic disease → WNT-HR+R arm (risk-adapted)
+      if (adult)
+        return res('wnt_hrr', 'hr', 'WNT-HR+R — VFR biology, metastatic, ≥ 16 yrs',
+          '36', '36 Gy / 20 fr', armChemo('sjmb12_4'),
+          ['Metastatic WNT ≥ 16 yrs is managed within the WNT-HR+R arm at high-dose CSI (36 Gy).',
+           'Boost primary tumour bed to 54 Gy; residual boost to 59.4 Gy if applicable.',
+           'Metastatic boosts apply — see the RT dose box.'], true, isSTR);
+      return res('wnt_hrr', 'hr', 'WNT-HR+R — VFR biology (WNT), metastatic < 16 yrs',
+        '36', 'Risk-adapted (protocol: 36 Gy CSI for the metastatic edge case)', armChemo('sjmb12_4'),
+        ['Metastatic WNT is uncommon and falls into the WNT-HR+R arm — the exact CSI dose for a < 16 yrs metastatic WNT case must be confirmed with the national RT coordinator.',
+         'Boost primary tumour bed to 54 Gy; residual boost to 59.4 Gy if applicable; metastatic boosts apply.'], true, isSTR);
+    }
+    if (adult)
+      // adult metastatic managed within MB6 HR arm
+      return res('hr_adult', 'hr', 'High-risk arm — metastatic, ≥ 16 yrs',
+        '36', '36 Gy / 20 fr', armChemo('sjmb12_4'),
+        ['Adult (≥ 16 yrs) metastatic disease is managed within MB6 at high-dose CSI (36 Gy).',
+         'Boost primary tumour bed to 54 Gy; residual boost to 59.4 Gy if applicable.',
+         'Metastatic boosts apply — see the RT dose box.'], true, isSTR);
+    return excl('Metastatic disease (< 16 yrs, non-WNT)', 'Metastatic medulloblastoma in a non-WNT patient < 16 yrs is high risk and excluded from MB6. Direct to <strong>SIOP-HR-MB</strong>.');
+  }
+
+  // ---- M0 risk-stratified arms ----
+  // WNT
+  if (mol === 'wnt') {
+    if (adult)
+      return res('wnt_hrr', 'sr', 'WNT-HR+R — VFR biology, ≥ 16 yrs (treated at SR level)',
+        '23.4', '23.4 Gy / 13 fr', armChemo('sjmb12_4'),
+        ['WNT ≥ 16 yrs does not share the favourable childhood prognosis → CSI at standard-risk level (23.4 Gy) within the WNT-HR+R arm.',
+         isSTR ? 'STRrad present → residual boost to 59.4 Gy.' : 'Boost primary tumour bed to 54 Gy.'], false, isSTR);
+    if (isSTR)
+      return res('wnt_hrr', 'fr', 'WNT-HR+R — VFR biology (WNT), STRrad as only risk factor',
+        '18', '18 Gy / 10 fr', armChemo('sjmb12_4'),
+        ['VFR biology with isolated STRrad → CSI escalated one level to 18 Gy within the WNT-HR+R arm.',
+         'Residual tumour boost to 59.4 Gy (54 Gy tumour bed + 5.4 Gy).',
+         'APC-associated (Turcot) WNT MB is eligible and treated identically, with higher SMN surveillance.'], false, true);
+    return res('vfr', 'vfr', 'Very Favourable Risk (VFR) — WNT-activated, < 16 yrs, M0, R0',
+      '14.4', '14.4 Gy / 8 fr', armChemo('cycleB'),
+      ['CSI de-escalation to 14.4 Gy — the defining VFR feature (versus 18 Gy in SIOP-PNET5-MB LR).',
+       'Boost to primary tumour bed → 54 Gy cumulative (39.6 Gy boost / 22 fr).',
+       'APC-associated (constitutional) WNT MB is eligible and treated identically, with higher second-malignancy surveillance.',
+       'Single-arm design (no randomization).'], false, false);
+  }
+
+  // SHH-activated, TP53 wildtype → FR
+  if (mol === 'shh_wt') {
+    if (isSTR)
+      return res('wnt_hrr', 'sr', 'WNT-HR+R — FR biology (SHH-TP53wt), STRrad as only risk factor',
+        '23.4', '23.4 Gy / 13 fr', armChemo('sjmb12_4'),
+        ['FR biology with isolated STRrad → CSI escalated one level to 23.4 Gy within the WNT-HR+R arm.',
+         'Residual tumour boost to 59.4 Gy (54 Gy tumour bed + 5.4 Gy).',
+         'Exclude constitutional PTCH1/SUFU variants (would be excluded from the FR arm).'], false, true);
+    return res('fr', 'fr', 'Favourable Risk (FR) — SHH-activated, TP53 wildtype, M0, R0',
+      '18', '18 Gy / 10 fr', armChemo('sjmb12_3'),
+      ['CSI de-escalation to 18 Gy; boost to primary tumour bed → 54 Gy cumulative (36 Gy boost / 20 fr).',
+       'Eligible ≥ 5 yrs. Constitutional PTCH1 or SUFU pathogenic variants are excluded from this arm.',
+       'Single-arm design (no randomization).'], false, false);
+  }
+
+  // Non-WNT / Non-SHH
+  if (mol === 'nwns') {
+    if (molfav === 'fav') {
+      if (isSTR)
+        return res('wnt_hrr', 'sr', 'WNT-HR+R — FR biology (favourable Non-WNT/Non-SHH), STRrad only',
+          '23.4', '23.4 Gy / 13 fr', armChemo('sjmb12_4'),
+          ['Molecularly favourable Non-WNT/Non-SHH with isolated STRrad → CSI escalated to 23.4 Gy (WNT-HR+R arm).',
+           'Residual tumour boost to 59.4 Gy.'], false, true);
+      return res('fr', 'fr', 'Favourable Risk (FR) — Non-WNT/Non-SHH, favourable molecular profile, M0, R0',
+        '18', '18 Gy / 10 fr', armChemo('sjmb12_3'),
+        ['Favourable = subtype VII and/or favourable whole-chromosomal-aberration phenotype.',
+         'CSI de-escalation to 18 Gy; boost to tumour bed → 54 Gy (36 Gy boost / 20 fr).',
+         (myc === 'mycn_g4' ? 'MYCN amplification is retained here because it is Group-4 (not a high-risk marker per MB6).' : ''),
+         'Single-arm design (no randomization).'].filter(Boolean), false, false);
+    }
+    // non-favourable → SR (randomized)
+    return res('sr', 'sr', 'Standard Risk (SR) — Non-WNT/Non-SHH, no favourable marker, M0' + (isSTR ? ', STRrad' : ', R0'),
+      '23.4', '23.4 Gy / 13 fr', armChemo('sr_random'),
+      ['Randomized design: <strong>Standard therapy group</strong> (CSI 23.4 Gy → 54 Gy + SJMB12 maintenance ×4) vs <strong>Experimental therapy group</strong> (2× carbo/VP16 induction → 2× high-dose thiotepa + autologous stem-cell rescue → CSI 23.4 Gy → temozolomide ×6).',
+       isSTR ? 'STRrad present → residual tumour boost to 59.4 Gy (both randomization groups).' : 'Boost to primary tumour bed → 54 Gy.',
+       (myc === 'mycn_g4' ? 'MYCN amplification retained (Group 4, not a high-risk marker per MB6).' : '')].filter(Boolean), false, isSTR);
+  }
+
+  return excl('Not classifiable', 'This profile does not map to a defined MB6 arm — discuss with the national RT coordinator.');
+}
+
+// Build the chemotherapy descriptor for an arm
+function armChemo(key) {
+  var M = {
+    cycleB:   { chemo: 'Cycle B maintenance', full: 'Induction carboplatin/etoposide (×1–2) → CSI → Cycle B maintenance: 4 cycles cyclophosphamide/vincristine (start ~6 wks post-RT).' },
+    sjmb12_3: { chemo: 'SJMB12 maintenance ×3', full: 'Induction carboplatin/etoposide (×1–2) → CSI → SJMB12 maintenance: 3 cycles cyclophosphamide/cisplatin/vincristine (start ~6 wks post-RT).' },
+    sjmb12_4: { chemo: 'SJMB12 maintenance ×4', full: 'Induction carboplatin/etoposide (×1–2) → CSI → SJMB12 maintenance: 4 cycles cyclophosphamide/cisplatin/vincristine (start ~6 wks post-RT).' },
+    sr_random:{ chemo: 'Randomized (SJMB12 vs HD-thiotepa)', full: 'All: carboplatin/etoposide induction. Std group: CSI → SJMB12 ×4 (CPM/CDDP/VCR). Exp group: 2× induction → 2× high-dose thiotepa + ASCR → CSI → temozolomide ×6.' }
+  };
+  return M[key];
+}
+
+function res(armKey, riskCls, scenario, csiKey, csiLabel, chemoObj, notes, isMetBoost, isSTR) {
+  return {
+    eligible: true, arm: armKey, riskCls: riskCls, scenario: scenario,
+    csiKey: csiKey, csiLabel: csiLabel, chemo: chemoObj,
+    metBoost: !!isMetBoost, str: !!isSTR,
+    notes: notes || []
+  };
+}
+function excl(title, reason) {
+  return { eligible: false, title: title, reason: reason };
+}
+
+// ═══════════════════════════════════════════════════════
+// RT DOSE SCHEMES per CSI level (MB6 RT Guidelines, Table 3)
+// ═══════════════════════════════════════════════════════
+var CSI_SCHEME = {
+  '14.4': { csi: '14.4 Gy / 8 fr', boost: '39.6 Gy / 22 fr', total: '54 Gy', arm: 'VFR' },
+  '18':   { csi: '18 Gy / 10 fr',  boost: '36 Gy / 20 fr',   total: '54 Gy', arm: 'FR · VFR+STR' },
+  '23.4': { csi: '23.4 Gy / 13 fr',boost: '30.6 Gy / 17 fr', total: '54 Gy', arm: 'SR · FR+STR · VFR ≥16 yrs' },
+  '36':   { csi: '36 Gy / 20 fr',  boost: '18 Gy / 10 fr',   total: '54 Gy', arm: 'HR (M+ ≥16 yrs)' }
+};
+
+function doseBox(result) {
+  var sc = CSI_SCHEME[result.csiKey];
+  if (!sc) return '';
+  var rows = '';
+  rows += drow('Fractionation', '<strong>1.8 Gy</strong> / fraction · 1 fraction/day · 5 days/week');
+  rows += drow('Phase I · CSI', '<strong>' + sc.csi + '</strong> · entire craniospinal axis (CTVwb + CTVs)');
+  rows += drow('Phase II · Boost', '<strong>' + sc.boost + '</strong> to primary tumour bed → cumulative <strong>' + sc.total + '</strong>');
+  if (result.str)
+    rows += drow('Residual boost', '<em>STRrad</em>: +5.4 Gy / 3 fr to residual (GTVrtb) → total <strong>59.4 Gy</strong>');
+  if (result.metBoost) {
+    rows += drow('Spinal met boost', '+9 Gy / 5 fr (Table 3) — protocol target total ~<strong>45 Gy</strong> to macroscopic spinal metastasis');
+    rows += drow('Intracranial met', '+18 Gy / 10 fr (Table 3) — protocol target total <strong>45 Gy</strong> (&lt;16 yrs) / <strong>50.4 Gy</strong> (≥16 yrs) to macroscopic intracranial metastasis');
+  }
+  rows += drow('Boost volume', 'GTVtb → CTVtb +5 mm (3 mm at brainstem/cord if no invasion) → PTVtb +2–5 mm. Highly conformal — parallel-opposed pair not permitted.');
+  rows += drow('CSI margins', 'PTVwb: CTV +3–5 mm · PTVs: CTV +5–15 mm. Cribriform plate contoured separately (high relapse site).');
+  rows += drow('Prescription', 'CSI: 95–98% of Rx to 95% of PTV; 90% Rx to 100% PTV. Boost: 95% Rx to 95% PTV. Uniformity ≤107%.');
+  rows += drow('Timing', 'CSI starts when ANC ≥1.0 &amp; platelets ≥75. Start ≤47 d post-surgery (1 induction cycle) / ≤70 d (2 cycles, no 2nd surgery) / ≤28 d after 2nd surgery.');
+  rows += drow('Technique', 'Photons (IMRT/VMAT/tomotherapy, ≥4–6 MV; ≤10 MV if IMRT) or protons (Gy RBE 1.1). MRI fusion mandatory. No 60Co.');
+  var note = '⚠ OAR priority during boost: brainstem &amp; SpinalCord^C1/C2C3 constraints take precedence — PTVtb/PTVrtb undercoverage (define a PTV…EVAL structure) if required. See full constraints table.';
+  if (result.metBoost)
+    note += ' ⚠ Note: Table 3 boost doses (18/9 Gy) and the arm-narrative total-dose targets (45 / 50.4 Gy) differ — confirm the intended metastatic total with the national RT coordinator.';
+  return '<div class="rt-dose-box"><div class="rt-dose-title">Radiotherapy — ' + sc.arm + ' scheme (MB6 RT Guidelines, Table 3)</div>'
+    + '<div class="rt-dose-grid">' + rows + '</div>'
+    + '<div class="rt-dose-note">' + note + '</div></div>';
+}
+function drow(label, val) {
+  return '<div class="rt-dose-row"><span class="rt-dose-label">' + label + '</span><span class="rt-dose-val">' + val + '</span></div>';
+}
+
+// ═══════════════════════════════════════════════════════
+// RESULT RENDER
+// ═══════════════════════════════════════════════════════
+function showResult() {
+  document.getElementById('progressWrap').style.display = 'none';
+  renderTrail();
+  var r = getResult();
+
+  if (!r.eligible) {
+    document.getElementById('mainArea').innerHTML = '<div class="result-wrap">'
+      + '<div class="result-header-box"><div class="result-title-main">Off study — not eligible for MB6</div>'
+      + '<div class="result-subtitle">MB6 = clinically standard-risk medulloblastoma</div>'
+      + '<div class="arm-pill excl">→ ' + (r.title.indexOf('SIOP') > -1 ? 'redirect' : 'off-study') + '</div></div>'
+      + '<div class="excl-box"><div class="excl-title">' + r.title + '</div><div class="excl-reason">' + r.reason + '</div></div>'
+      + refLinks()
+      + '<div class="action-bar"><button class="btn-primary" onclick="restart()">New patient</button><button class="btn-ghost" onclick="goBack()">← Modify last answer</button></div>'
+      + '</div>';
+    return;
+  }
+
+  var pillLabel = { vfr: 'VFR arm', fr: 'FR arm', sr: 'SR arm · randomized', hr: 'HR / adult arm' }[r.riskCls] || 'MB6';
+  var armExtra = r.arm === 'wnt_hrr' ? ' · WNT-HR+R' : (r.arm === 'sr' ? '' : '');
+
+  var notesHTML = '';
+  if (r.notes && r.notes.length) {
+    notesHTML = '<div class="notes-box"><strong>Clinical notes</strong><ul>'
+      + r.notes.map(function(n){ return '<li>' + n + '</li>'; }).join('') + '</ul></div>';
+  }
+
+  document.getElementById('mainArea').innerHTML = '<div class="result-wrap">'
+    + '<div class="result-header-box">'
+    + '<div class="result-title-main">Treatment recommendation</div>'
+    + '<div class="result-subtitle">' + r.scenario + '</div>'
+    + '<span class="arm-pill ' + r.riskCls + '">' + pillLabel + armExtra + '</span>'
+    + '</div>'
+    + '<div class="treatment-grid">'
+    + '<div class="treatment-card rt"><div class="tc-label rt"><span class="tc-dot"></span>Craniospinal irradiation</div><div class="tc-value">' + r.csiLabel + '</div><div class="tc-detail">Boost to tumour bed → 54 Gy cumulative' + (r.str ? ' · residual boost → 59.4 Gy' : '') + '</div></div>'
+    + '<div class="treatment-card chemo"><div class="tc-label chemo"><span class="tc-dot"></span>Chemotherapy backbone</div><div class="tc-value">' + r.chemo.chemo + '</div><div class="tc-detail">' + r.chemo.full + '</div></div>'
+    + '</div>'
+    + doseBox(r)
+    + '<button class="oar-btn" onclick="openOAR()">⊕ Target volumes &amp; OAR dose constraints (MB6 RT Guidelines)</button>'
+    + notesHTML
+    + refLinks()
+    + '<div class="action-bar"><button class="btn-primary" onclick="restart()">New patient</button><button class="btn-ghost" onclick="goBack()">← Modify last answer</button><button class="btn-ghost" onclick="window.print()">⬇ Print / PDF</button></div>'
+    + '</div>';
+}
+
+function refLinks() {
+  return '<div class="ref-links"><div class="ref-links-title">Sources</div>'
+    + 'SIOPE-MB6 Trial Protocol, Final Draft V1.0 (14-Mar-2025) · MB6 Radiotherapy Guidelines (SIOPE RT Working Group) · '
+    + 'CTV consensus: <a href="https://doi.org/10.1016/j.radonc.2018.04.016" target="_blank" rel="noopener">Ajithkumar et al., Radiother Oncol 2018</a>'
+    + '</div>';
+}
+
+// ═══════════════════════════════════════════════════════
+// OAR / VOLUMES MODAL CONTENT
+// ═══════════════════════════════════════════════════════
+function openOAR() {
+  document.getElementById('oarModalBody').innerHTML = OAR_CONTENT;
+  document.getElementById('oarModal').classList.add('open');
+}
+
+var OAR_CONTENT =
+  // --- Standardized target volumes ---
+  '<div style="font-family:\'DM Mono\',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin:2px 0 10px">Standardized target volumes (Table 1)</div>'
+  + '<table class="vol-table"><thead><tr><th style="width:20%">Volume</th><th>Definition</th></tr></thead><tbody>'
+  + '<tr><td class="vol-name">CTVwb</td><td>Whole subarachnoid space + brain to inner table of skull; includes cribriform plate, pituitary fossa, middle cranial fossa, cranial-nerve dural sheaths and any meningeal herniation through the craniotomy. Coverage takes precedence over lens/eye sparing. Lower border precisely juxtaposed to spinal CTV.</td></tr>'
+  + '<tr><td class="vol-name">Cribriform plate</td><td>Contoured as a separate help-structure — high relapse site; must be covered by the cranial CTV.</td></tr>'
+  + '<tr><td class="vol-name">CTVs</td><td>Entire thecal sac; superior border juxtaposed to CTVwb; inferior border = lower thecal sac on sagittal T2 MRI (usually S2–S3, up to S4). Width includes subarachnoid extensions along nerve roots at the foramina. No lumbosacral "spade" field.</td></tr>'
+  + '<tr><td class="vol-name">PTVwb / PTVs</td><td>PTVwb = CTV + 3–5 mm. PTVs = CTV + 5–15 mm (per centre / immobilisation). PTVwb and PTVs accurately juxtaposed cranio-caudally, no overlap.</td></tr>'
+  + '<tr><td class="vol-name">GTVtb</td><td>Tumour bed at primary site + macroscopic residual: resection cavity extended to all pre-operative tumour-contact areas. Surgical tissue defects excluded unless tumour-involved.</td></tr>'
+  + '<tr><td class="vol-name">CTVtb</td><td>GTVtb + 5 mm 3-D, anatomically confined (calvarium/tentorium/posterior fossa). Reduced to 3 mm at brainstem/spinal cord when not invaded; if invaded, 5 mm with OAR constraints respected.</td></tr>'
+  + '<tr><td class="vol-name">PTVtb</td><td>CTVtb + 2–5 mm. Should not extend beyond a classical whole-posterior-fossa PTV. Define PTVtb EVAL (reduced at OAR) where cord/brainstem constraints force undercoverage.</td></tr>'
+  + '<tr><td class="vol-name">GTV/CTV/PTV RTB</td><td>Residual-tumour boost volumes: GTVrtb = residual on fusion MRI; CTVrtb = GTVrtb + 5 mm; PTVrtb = CTVrtb + 2–5 mm (+ EVAL variant at OAR).</td></tr>'
+  + '<tr><td class="vol-name">GTV/CTV/PTV M</td><td>Metastatic-site boost volumes (brain MB, spine MS): GTVm = measurable residual ≥5×5×5 mm post-chemo; CTVm = GTVm + 5 mm; PTVm = CTVm + 2–5 mm. Sites in CR at pre-RT MRI receive no boost.</td></tr>'
+  + '</tbody></table>'
+
+  // --- Dose per group ---
+  + '<div style="font-family:\'DM Mono\',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin:18px 0 10px">Dose by risk group (Table 3) — 1.8 Gy/fr, cumulative tumour-bed dose 54 Gy</div>'
+  + '<table class="dose-table"><thead><tr><th>Group</th><th>CSI</th><th>TB boost</th><th>Total (TB)</th><th>Residual boost</th></tr></thead><tbody>'
+  + drowD('VFR (&lt;16 y)', '14.4 / 8 fr', '39.6 / 22 fr', '54 Gy', '—', true)
+  + drowD('FR · VFR+STR', '18 / 10 fr', '36 / 20 fr', '54 Gy', '+5.4 → 59.4')
+  + drowD('SR · FR+STR · VFR≥16 y', '23.4 / 13 fr', '30.6 / 17 fr', '54 Gy', '+5.4 → 59.4')
+  + drowD('HR (M+ ≥16 y)', '36 / 20 fr', '18 / 10 fr', '54 Gy', '+5.4 → 59.4')
+  + '</tbody></table>'
+  + '<div style="font-size:0.7rem;color:var(--text3);margin-top:6px;line-height:1.5">Metastatic boosts: spinal +9 Gy/5 fr, intracranial +18 Gy/10 fr (Table 3). Arm narratives quote total-dose targets of 45 Gy (spinal), 45 Gy (&lt;16 y) / 50.4 Gy (≥16 y) intracranial — reconcile with the national RT coordinator.</div>'
+
+  // --- Spinal cord (Table 4) ---
+  + '<div style="font-family:\'DM Mono\',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin:18px 0 10px">Spinal cord constraints (Table 4)</div>'
+  + '<table class="oar-table"><thead><tr><th style="width:26%">Structure</th><th>Context</th><th>Constraint (mandatory)</th></tr></thead><tbody>'
+  + '<tr><td class="oar-name">SpinalCord^C1</td><td>GTVtb within posterior fossa</td><td class="goal-mand">D2% &lt; 54 Gy (optimal &lt; 51.3 Gy)</td></tr>'
+  + '<tr><td class="oar-name">SpinalCord^C1</td><td>GTVtb includes cervical spine</td><td class="goal-mand">V45 Gy &lt; 30% · D2% &lt; 54 Gy · V52 Gy &lt; 50%</td></tr>'
+  + '<tr><td class="oar-name">SpinalCord^C2C3*</td><td>—</td><td class="goal-mand">Only CSI dose allowed · D2% &lt; 54 Gy</td></tr>'
+  + '<tr><td class="oar-name">SpinalCord^C4*</td><td>—</td><td class="goal-mand">Only CSI dose allowed</td></tr>'
+  + '</tbody></table>'
+  + '<div style="font-size:0.68rem;color:var(--text3);margin-top:5px">C1 = foramen magnum→lower C1 · C2C3 = upper C2→lower C3 · C4 = lower C3→lower spine. *Cervical-spine mets not contiguous with GTVtb: see protocol prescription.</div>'
+
+  // --- Brainstem (Table 5) ---
+  + '<div style="font-family:\'DM Mono\',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin:18px 0 10px">Brainstem constraints (Table 5)</div>'
+  + '<table class="oar-table"><thead><tr><th style="width:26%">Organ</th><th>Optimal</th><th>Mandatory</th></tr></thead><tbody>'
+  + '<tr><td class="oar-name">Brainstem</td><td class="goal">V54 Gy &lt; 70% · D2% &lt; 59.8 Gy</td><td class="goal-mand">V59.4 Gy &lt; 25%</td></tr>'
+  + '</tbody></table>'
+  + '<div style="font-size:0.68rem;color:var(--text3);margin-top:5px">PTVrtb / PTVrtb EVAL undercoverage as needed to respect brainstem constraints. In proton planning, avoid high-weighted spots / distal Bragg peak in the brainstem.</div>'
+
+  // --- Other OAR (Table 6) ---
+  + '<div style="font-family:\'DM Mono\',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin:18px 0 10px">Other OAR constraints (Table 6)</div>'
+  + '<table class="oar-table"><thead><tr><th style="width:30%">Organ</th><th>Optimal</th><th>Mandatory</th></tr></thead><tbody>'
+  + oarRow('Bone_Mandible', 'V15 Gy &lt; 50%', '')
+  + oarRow('OpticChiasm', 'V50.4 Gy &lt; 50%', 'D2% &lt; 54 Gy')
+  + oarRow('OpticNrv L/R', '', 'D2% &lt; 45 Gy')
+  + oarRow('Cochlea L/R', 'D2% &lt; 35 Gy (at least one)', '')
+  + oarRow('Lens L/R', 'D2% &lt; 10 Gy (not limiting)', '')
+  + oarRow('Kidney L/R', 'D2% &lt; 20 Gy · Dmean &lt; 10 Gy · V18 Gy &lt; 32%', '')
+  + oarRow('Liver', 'V6 Gy &lt; 50% · V21 Gy &lt; 20%', '')
+  + oarRow('Lungs', 'V7 Gy &lt; 50% · V18 Gy &lt; 25% · V27 Gy &lt; 22%', '')
+  + oarRow('Parotid L/R', 'V26 Gy &lt; 50%', '')
+  + oarRow('Testis L/R', 'D2% &lt; 0.5 Gy', '')
+  + '<tr class="oar-section-header"><td colspan="3">ALARA (as low as reasonably achievable)</td></tr>'
+  + '<tr><td class="oar-name" colspan="3" style="color:var(--text2)">Bone_Iliac L/R · Breast L/R · Glnd_Thyroid · Heart · Hippocampus · Hypothalamus · Lobe_Temporal L/R · Ovary L/R · Pituitary</td></tr>'
+  + '</tbody></table>'
+  + '<div class="oar-ref">MB6 RT Guidelines Tables 4–6. Doses to surrounding OAR should not exceed the tumour-bed / metastatic prescription dose. Trial prospectively records mean/median/D98%/D2% to all OAR for late-toxicity analysis.</div>';
+
+function drowD(g, csi, boost, tot, resid, hl) {
+  return '<tr' + (hl ? ' class="hl"' : '') + '><td class="dg">' + g + '</td><td class="dcsi">' + csi + '</td><td>' + boost + '</td><td class="dtot">' + tot + '</td><td>' + resid + '</td></tr>';
+}
+function oarRow(name, opt, mand) {
+  return '<tr><td class="oar-name">' + name + '</td><td class="goal">' + (opt || '—') + '</td><td class="goal-mand">' + (mand || '—') + '</td></tr>';
+}
+
+// ═══════════════════════════════════════════════════════
+// D3 FLOWCHART
+// ═══════════════════════════════════════════════════════
+var TREE_MB6 = {
+  id:'start', label:'MB6 eligible?\nAge · M · histo · biology', type:'decision',
+  detail:{ title:'SIOPE-MB6 entry', q:'Clinically standard-risk MB, ≥3 y (≥5 y if SHH), <30 y, M0, no HR marker (LC/A, MYC-amp, MYCN-amp non-Gp4, SHH-TP53mut, metastatic). HR → SIOP-HR-MB.' },
+  children:[
+    {
+      id:'wnt', label:'WNT-activated', edgeLabel:'WNT', type:'decision',
+      detail:{ title:'WNT-activated MB', q:'VFR biology. Favourable prognosis only <16 y. APC-associated included.' },
+      children:[
+        { id:'vfr', label:'VFR\n14.4 Gy CSI', edgeLabel:'<16 y · M0 · R0', type:'result_vfr',
+          detail:{ title:'VFR — WNT <16 y M0 R0', protocol:'VFR arm (single-arm)', csi:'14.4 Gy / 8 fr', boost:'+39.6/22 → 54 Gy TB', chemo:'Induction carbo/VP16 → Cycle B (CPM/VCR ×4)' }},
+        { id:'wnt_str', label:'WNT-HR+R\n18 Gy CSI', edgeLabel:'STRrad only', type:'result_adapt',
+          detail:{ title:'WNT-HR+R — WNT + isolated STRrad', protocol:'WNT-HR+R arm', csi:'18 Gy / 10 fr', boost:'54 Gy TB + residual 59.4 Gy', chemo:'SJMB12 ×4' }},
+        { id:'wnt_o16', label:'WNT-HR+R\n23.4 Gy CSI', edgeLabel:'≥16 y', type:'result_adapt',
+          detail:{ title:'WNT-HR+R — WNT ≥16 y', protocol:'WNT-HR+R arm (SR-level CSI)', csi:'23.4 Gy / 13 fr', boost:'54 Gy TB (±59.4 if STR)', chemo:'SJMB12 ×4' }}
+      ]
+    },
+    {
+      id:'shh', label:'SHH-activated\nTP53 wildtype', edgeLabel:'SHH·TP53wt (≥5 y)', type:'decision',
+      detail:{ title:'SHH-activated, TP53wt (≥5 y)', q:'Favourable-risk marker. TP53mut and constitutional PTCH1/SUFU excluded.' },
+      children:[
+        { id:'fr_shh', label:'FR\n18 Gy CSI', edgeLabel:'M0 · R0', type:'result_fr',
+          detail:{ title:'FR — SHH-TP53wt M0 R0', protocol:'FR arm (single-arm)', csi:'18 Gy / 10 fr', boost:'+36/20 → 54 Gy TB', chemo:'SJMB12 ×3' }},
+        { id:'fr_shh_str', label:'WNT-HR+R\n23.4 Gy CSI', edgeLabel:'STRrad only', type:'result_adapt',
+          detail:{ title:'WNT-HR+R — SHH-TP53wt + STRrad', protocol:'WNT-HR+R arm', csi:'23.4 Gy / 13 fr', boost:'54 Gy TB + residual 59.4 Gy', chemo:'SJMB12 ×4' }}
+      ]
+    },
+    {
+      id:'nwns', label:'Non-WNT /\nNon-SHH', edgeLabel:'Group 3 / 4', type:'decision',
+      detail:{ title:'Non-WNT/Non-SHH', q:'Stratified FR vs SR by molecular profile (subtype VII / favourable WCA). MYCN-amp allowed only in Group 4.' },
+      children:[
+        { id:'fr_nwns', label:'FR\n18 Gy CSI', edgeLabel:'Molecular FR · M0R0', type:'result_fr',
+          detail:{ title:'FR — favourable Non-WNT/Non-SHH', protocol:'FR arm (single-arm)', csi:'18 Gy / 10 fr', boost:'+36/20 → 54 Gy TB', chemo:'SJMB12 ×3' }},
+        { id:'sr_nwns', label:'SR\n23.4 Gy CSI', edgeLabel:'Molecular SR · M0', type:'result_sr',
+          detail:{ title:'SR — non-favourable Non-WNT/Non-SHH (randomized)', protocol:'SR arm — RANDOMIZED', csi:'23.4 Gy / 13 fr', boost:'+30.6/17 → 54 Gy TB (±59.4 STR)', chemo:'Std SJMB12 ×4  vs  Exp HD-thiotepa ×2 + TMZ ×6' }}
+      ]
+    },
+    {
+      id:'hr', label:'High-risk\nmarkers', edgeLabel:'LC/A · MYC · SHH-TP53mut · M+', type:'decision',
+      detail:{ title:'High-risk / off-study', q:'LC/A, MYC-amp, MYCN-amp (non-Gp4), SHH-TP53mut, or metastatic (<16 y non-WNT) → SIOP-HR-MB. Adult metastatic (≥16 y) managed within MB6 HR arm.' },
+      children:[
+        { id:'off', label:'→ SIOP-HR-MB', edgeLabel:'HR marker / M+', type:'result_off',
+          detail:{ title:'Off study → SIOP-HR-MB', protocol:'SIOP-HR-MB (separate trial)', csi:'per HR-MB', boost:'—', chemo:'per HR-MB' }},
+        { id:'hr_adult', label:'MB6 HR arm\n36 Gy CSI', edgeLabel:'M+ · ≥16 y', type:'result_adapt',
+          detail:{ title:'MB6 HR arm — adult metastatic', protocol:'MB6 HR (M+ ≥16 y)', csi:'36 Gy / 20 fr', boost:'54 Gy TB + met boosts (spine 45, brain 50.4)', chemo:'SJMB12 ×4' }}
+      ]
+    }
+  ]
+};
+
+var NODE_STYLE = {
+  decision:     { fill:'#dce8f5', stroke:'#1a5fa8', text:'#0a1020' },
+  result_vfr:   { fill:'#d5edd8', stroke:'#2d7a3a', text:'#0a1a0a' },
+  result_fr:    { fill:'#d1eef1', stroke:'#1a7a8a', text:'#04201f' },
+  result_sr:    { fill:'#d5e4f5', stroke:'#1a5fa8', text:'#0a1020' },
+  result_adapt: { fill:'#f5ead5', stroke:'#a0720a', text:'#201000' },
+  result_off:   { fill:'#ece0f5', stroke:'#6b3fa0', text:'#100020' }
+};
+
+function buildFlow() {
+  var chartEl = document.getElementById('chart');
+  var W = chartEl.clientWidth || window.innerWidth;
+  var H = chartEl.clientHeight || (window.innerHeight - 120);
+  var NW = 140, NH = 54, DX = 78, DY = 210;
+
+  var svg = d3.select('#chart').append('svg').attr('width', W).attr('height', H);
+  var defs = svg.append('defs');
+  Object.keys(NODE_STYLE).forEach(function(k) {
+    defs.append('marker').attr('id', 'mb6-' + k).attr('viewBox', '0 -5 10 10')
+      .attr('refX', 8).attr('refY', 0).attr('markerWidth', 6).attr('markerHeight', 6).attr('orient', 'auto')
+      .append('path').attr('d', 'M0,-5L10,0L0,5').attr('fill', NODE_STYLE[k].stroke).attr('opacity', 0.7);
+  });
+
+  var g = svg.append('g');
+  var initTx, initTy, initScale;
+  var zoom = d3.zoom().scaleExtent([0.1, 3]).on('zoom', function(e) { g.attr('transform', e.transform); });
+  svg.call(zoom);
+  document.getElementById('btnReset').onclick = function() {
+    svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity.translate(initTx, initTy).scale(initScale));
+  };
+
+  var root = d3.hierarchy(TREE_MB6);
+  var layout = d3.tree().nodeSize([DX, DY]).separation(function(a, b){ return a.parent === b.parent ? 1.15 : 1.6; });
+  layout(root);
+
+  var linkG = g.append('g');
+  root.links().forEach(function(link) {
+    var s = NODE_STYLE[link.target.data.type] || NODE_STYLE.decision;
+    linkG.append('path').attr('fill', 'none').attr('stroke', s.stroke).attr('stroke-opacity', 0.4)
+      .attr('stroke-width', 1.5).attr('marker-end', 'url(#mb6-' + link.target.data.type + ')')
+      .attr('d', d3.linkHorizontal().x(function(d){ return d.y; }).y(function(d){ return d.x; })({ source: link.source, target: link.target }));
+    var el = link.target.data.edgeLabel;
+    if (el) {
+      var mx = (link.source.y + link.target.y) / 2, my = (link.source.x + link.target.x) / 2;
+      var lines = el.split('\n');
+      var lg = linkG.append('g').attr('transform', 'translate(' + mx + ',' + my + ')');
+      var w = 0; lines.forEach(function(ln){ w = Math.max(w, ln.length); });
+      lg.append('rect').attr('x', -(w*3+6)).attr('y', -9 * lines.length / 2 - 2).attr('width', w*6+12).attr('height', 9 * lines.length + 4)
+        .attr('rx', 3).attr('fill', '#1c2330').attr('opacity', 0.85);
+      lines.forEach(function(ln, i) {
+        lg.append('text').attr('text-anchor', 'middle').attr('y', (i - (lines.length - 1) / 2) * 10 + 1)
+          .attr('font-family', 'DM Mono, monospace').attr('font-size', 7.5).attr('fill', s.stroke).attr('opacity', 0.95).text(ln);
+      });
+    }
+  });
+
+  var tooltip = document.getElementById('tooltip');
+  var nodeG = g.append('g');
+  root.descendants().forEach(function(d) {
+    var data = d.data, s = NODE_STYLE[data.type] || NODE_STYLE.decision;
+    var isR = data.type.indexOf('result') === 0;
+    var nw = isR ? 150 : NW, nh = NH;
+    var ng = nodeG.append('g').attr('transform', 'translate(' + d.y + ',' + d.x + ')').attr('cursor', data.detail ? 'pointer' : 'default');
+    ng.append('rect').attr('x', -nw/2+2).attr('y', -nh/2+2).attr('width', nw).attr('height', nh).attr('rx', isR?8:4).attr('fill', 'rgba(0,0,0,0.12)');
+    ng.append('rect').attr('x', -nw/2).attr('y', -nh/2).attr('width', nw).attr('height', nh).attr('rx', isR?8:4).attr('fill', s.fill).attr('stroke', s.stroke).attr('stroke-width', isR?1.5:1);
+    if (!isR) ng.append('rect').attr('x', -nw/2).attr('y', -nh/2).attr('width', nw).attr('height', 3).attr('rx', 4).attr('fill', s.stroke).attr('opacity', 0.6);
+    var lines = data.label.split('\n'), lh = 13, sy = -(lines.length-1)*lh/2;
+    lines.forEach(function(ln, i) {
+      ng.append('text').attr('text-anchor', 'middle').attr('y', sy + i*lh + 4)
+        .attr('font-family', isR ? 'DM Mono, monospace' : 'DM Sans, sans-serif')
+        .attr('font-size', isR?9.5:10.5).attr('font-weight', isR?500:400).attr('fill', s.text).text(ln);
+    });
+    if (isR) {
+      var badge = { result_vfr:'VFR', result_fr:'FR', result_sr:'SR', result_adapt:'ADAPT', result_off:'OFF' }[data.type] || '~';
+      var bw = badge.length * 5.5 + 8;
+      ng.append('rect').attr('x', nw/2-bw-2).attr('y', -nh/2-1).attr('width', bw).attr('height', 14).attr('rx', 3).attr('fill', s.stroke).attr('opacity', 0.9);
+      ng.append('text').attr('x', nw/2-bw/2-2).attr('y', -nh/2+10).attr('text-anchor', 'middle').attr('font-family', 'DM Mono, monospace').attr('font-size', 8).attr('font-weight', 500).attr('fill', '#fff').text(badge);
+    }
+    if (data.detail) {
+      ng.on('mouseenter', function() {
+        d3.select(this).selectAll('rect').filter(function(dd, i){ return i === 1; }).attr('stroke-width', 2.5).attr('filter', 'brightness(1.25)');
+        var det = data.detail;
+        var html = '<div class="tt-title">' + det.title + '</div>';
+        if (det.q)        html += '<div class="tt-q">' + det.q + '</div>';
+        if (det.protocol) html += '<div class="tt-row"><span class="tt-label">Arm</span><span class="tt-val">' + det.protocol + '</span></div>';
+        if (det.csi)      html += '<div class="tt-row"><span class="tt-label">CSI</span><span class="tt-val">' + det.csi + '</span></div>';
+        if (det.boost)    html += '<div class="tt-row"><span class="tt-label">Boost</span><span class="tt-val">' + det.boost + '</span></div>';
+        if (det.chemo)    html += '<div class="tt-row"><span class="tt-label">Chemo</span><span class="tt-val">' + det.chemo + '</span></div>';
+        tooltip.innerHTML = html; tooltip.classList.add('visible');
+      }).on('mousemove', function(event) {
+        var x = event.clientX + 14, y = event.clientY - 20, tw = 320;
+        tooltip.style.left = (x + tw > window.innerWidth ? x - tw - 28 : x) + 'px';
+        tooltip.style.top = Math.max(10, Math.min(y, window.innerHeight - 220)) + 'px';
+      }).on('mouseleave', function() {
+        d3.select(this).selectAll('rect').filter(function(dd, i){ return i === 1; }).attr('stroke-width', isR?1.5:1).attr('filter', null);
+        tooltip.classList.remove('visible');
+      });
+    }
+  });
+
+  var bounds = root.descendants().reduce(function(acc, d) {
+    return { minX: Math.min(acc.minX, d.y), maxX: Math.max(acc.maxX, d.y), minY: Math.min(acc.minY, d.x), maxY: Math.max(acc.maxY, d.x) };
+  }, { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity });
+  var tW = bounds.maxX - bounds.minX + NW * 2, tH = bounds.maxY - bounds.minY + NH * 2;
+  initScale = Math.min(0.9, W / tW, H / tH) * 0.9;
+  initTx = 60 - bounds.minX * initScale;
+  initTy = H / 2 - (bounds.minY + tH / 2) * initScale;
+  svg.call(zoom.transform, d3.zoomIdentity.translate(initTx, initTy).scale(initScale));
+}
+
+// close modal on backdrop / Escape
+document.getElementById('oarModal').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('open');
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') document.getElementById('oarModal').classList.remove('open');
+});
+
+// ═══ INIT ═══
+fixLayout();
+initTheme();
+nextStep();
+</script>
+</body>
+</html>
