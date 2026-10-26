@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Pediatric Neuro-Oncology Atlas</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+/* ── RESET ── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── THÈME (root + body.light) ── */
+:root {
+  --bg: #0d1117; --surface: #161b22; --surface2: #1c2330; --surface3: #21262d;
+  --border: #2a3441; --border2: #30363d;
+  --text: #e6edf3; --text2: #8b949e; --text3: #6e7681;
+  --green: #3fb950; --blue: #388bfd; --red: #f85149; --yellow: #d29922;
+  --purple: #a371f7; --orange: #f0883e; --cyan: #39c5cf; --grey: #8b949e;
+  --accent: #39c5cf; --accent-rgb: 57,197,207;
+  --radius: 10px;
+}
+body.light {
+  --bg: #f5f0e8; --surface: #ffffff; --surface2: #ede8dc; --surface3: #e6e0d2;
+  --border: #c8bfaa; --border2: #d4ccba;
+  --text: #1a1208; --text2: #5a4f3a; --text3: #9a8f7a;
+  --green: #2d7a3a; --blue: #1a5fa8; --red: #c0392b; --yellow: #a0720a;
+  --purple: #6b3fa0; --orange: #c45a10; --cyan: #1a7a8a; --grey: #6e6656;
+  --accent: #1a7a8a; --accent-rgb: 26,122,138;
+}
+
+/* ── BASE ── */
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+.mono { font-family: 'DM Mono', monospace; }
+.container { max-width: 1180px; margin: 0 auto; padding: 24px 20px 80px; }
+
+/* ── HEADER ── */
+header {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(13,17,23,0.96); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px; display: flex; align-items: center; gap: 12px; flex-wrap: nowrap;
+}
+body.light header { background: rgba(245,240,232,0.97); backdrop-filter: blur(10px); }
+.hdr-logo { width: 32px; height: 32px; border: 1.5px solid var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--accent); font-weight: 500; flex-shrink: 0; cursor: pointer; }
+.hdr-texts { flex: 1; min-width: 0; }
+.hdr-title { font-family: 'DM Serif Display', serif; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hdr-sub { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hdr-badge { font-family: 'DM Mono', monospace; font-size: 9px; padding: 3px 10px; border-radius: 20px; background: rgba(var(--accent-rgb), .1); border: 1px solid rgba(var(--accent-rgb), .3); color: var(--accent); margin-left: auto; flex-shrink: 0; white-space: nowrap; }
+.btn-theme { width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--border2); background: transparent; color: var(--text2); font-size: 14px; cursor: pointer; transition: all .18s; display: flex; align-items: center; justify-content: center; margin-left: 8px; flex-shrink: 0; }
+.btn-theme:hover { border-color: var(--accent); color: var(--accent); }
+@media (max-width: 640px) { .hdr-badge { display: none; } }
+
+/* ── BREADCRUMB ── */
+.crumbs { position: sticky; z-index: 150; background: var(--surface); border-bottom: 1px solid var(--border); padding: 8px 20px; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text3); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+body.light .crumbs { background: var(--surface2); }
+.crumbs a { color: var(--text2); text-decoration: none; cursor: pointer; }
+.crumbs a:hover { color: var(--accent); }
+.crumbs .sep { color: var(--text3); }
+.crumbs .cur { color: var(--text); }
+
+/* ── HOME ── */
+.hero { margin-bottom: 26px; }
+.hero h1 { font-family: 'DM Serif Display', serif; font-size: 28px; font-weight: 400; line-height: 1.2; margin-bottom: 8px; }
+.hero p { color: var(--text2); max-width: 820px; font-size: 13.5px; }
+.section-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--text3); text-transform: uppercase; margin: 26px 0 10px; }
+.ent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+.ent-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; cursor: pointer; transition: all .2s; position: relative; overflow: hidden; }
+.ent-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); }
+.ent-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.ent-card.planned { cursor: default; opacity: .55; }
+.ent-card.planned::before { background: var(--border2); }
+.ent-card.planned:hover { border-color: var(--border); transform: none; }
+.ent-fam { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; }
+.ent-name { font-family: 'DM Serif Display', serif; font-size: 19px; margin: 4px 0 6px; }
+.ent-desc { font-size: 12px; color: var(--text2); margin-bottom: 10px; }
+.ent-meta { display: flex; flex-wrap: wrap; gap: 5px; }
+body.light .ent-card, body.light .sit-tile, body.light .sit-card, body.light .arm, body.light .ctx { box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+
+/* ── CHIPS / BADGES ── */
+.chip { font-family: 'DM Mono', monospace; font-size: 9px; padding: 2px 7px; border-radius: 4px; border: 1px solid var(--border2); color: var(--text2); white-space: nowrap; display: inline-block; }
+.chip.cog { color: var(--orange); border-color: rgba(240,136,62,.4); background: rgba(240,136,62,.08); }
+.chip.siop { color: var(--blue); border-color: rgba(56,139,253,.4); background: rgba(56,139,253,.08); }
+.chip.lit { color: var(--purple); border-color: rgba(163,113,247,.4); background: rgba(163,113,247,.08); }
+.chip.pend { color: var(--text3); border-style: dashed; }
+.chip.verify { color: var(--yellow); border-color: rgba(210,153,34,.45); background: rgba(210,153,34,.08); }
+.ev { font-family: 'DM Mono', monospace; font-size: 9px; padding: 2px 8px; border-radius: 20px; white-space: nowrap; display: inline-block; border: 1px solid; }
+.ev.rct { color: var(--green); border-color: rgba(63,185,80,.45); }
+.ev.trial { color: var(--blue); border-color: rgba(56,139,253,.45); }
+.ev.cons { color: var(--cyan); border-color: rgba(57,197,207,.45); }
+.ev.retro { color: var(--yellow); border-color: rgba(210,153,34,.45); }
+.ev.exp { color: var(--orange); border-color: rgba(240,136,62,.45); }
+.ev.pend { color: var(--text3); border-color: var(--border2); border-style: dashed; }
+.risk-badge { font-family: 'DM Mono', monospace; font-size: 9.5px; padding: 3px 9px; border-radius: 20px; font-weight: 500; white-space: nowrap; flex-shrink: 0; }
+.risk-badge.lr { background: rgba(63,185,80,.14); color: var(--green); }
+.risk-badge.sr { background: rgba(56,139,253,.14); color: var(--blue); }
+.risk-badge.hr { background: rgba(248,81,73,.14); color: var(--red); }
+.risk-badge.sp { background: rgba(210,153,34,.14); color: var(--yellow); }
+.risk-badge.inf { background: rgba(163,113,247,.14); color: var(--purple); }
+.risk-badge.off { background: rgba(139,148,158,.14); color: var(--grey); }
+
+/* ── LEGEND ── */
+.legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+.legend-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+.legend-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text2); margin: 5px 0; }
+
+/* ── ENTITY PAGE ── */
+.ent-head { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: flex-start; margin-bottom: 14px; }
+.ent-head h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; }
+.ent-head .sub { color: var(--text2); font-size: 12.5px; margin-top: 3px; }
+.ent-srcs { display: flex; gap: 6px; flex-wrap: wrap; }
+.id-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; margin-bottom: 12px; }
+.id-cell { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; }
+.id-k { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
+.id-v { font-size: 12px; color: var(--text); }
+.alert { border-left: 3px solid var(--yellow); background: rgba(210,153,34,.07); border-radius: 6px; padding: 8px 12px; font-size: 12px; color: var(--text2); margin-bottom: 6px; }
+.alert.red { border-left-color: var(--red); background: rgba(248,81,73,.07); }
+.alert.blue { border-left-color: var(--blue); background: rgba(56,139,253,.07); }
+.view-tabs { display: flex; border-bottom: 1px solid var(--border); margin: 18px 0 16px; gap: 4px; }
+.view-tab { padding: 9px 16px; border: none; background: none; color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12.5px; font-weight: 500; cursor: pointer; border-bottom: 2px solid transparent; }
+.view-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.view-tab:hover { color: var(--accent); }
+
+/* ── FILTERS ── */
+.filters { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.f-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.f-lbl { font-family: 'DM Mono', monospace; font-size: 9.5px; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; min-width: 150px; }
+.f-btn { font-family: 'DM Sans', sans-serif; font-size: 11.5px; padding: 4px 11px; border-radius: 20px; border: 1px solid var(--border2); background: var(--surface); color: var(--text2); cursor: pointer; transition: all .15s; }
+.f-btn:hover { border-color: var(--accent); color: var(--accent); }
+.f-btn.on { background: rgba(var(--accent-rgb), .14); border-color: var(--accent); color: var(--accent); }
+.f-reset { font-family: 'DM Mono', monospace; font-size: 10px; background: none; border: none; color: var(--text3); cursor: pointer; text-decoration: underline; }
+
+/* ── SITUATION MAP ── */
+.grp { margin-bottom: 18px; }
+.grp-title { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1.5px; color: var(--text3); text-transform: uppercase; margin-bottom: 8px; display: flex; gap: 8px; align-items: center; }
+.grp-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+.sit-tile { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--grey); border-radius: 8px; padding: 12px 14px; cursor: pointer; transition: all .18s; }
+.sit-tile:hover { border-color: var(--accent); }
+.sit-tile.dim { opacity: .22; }
+.sit-tile.lr { border-left-color: var(--green); } .sit-tile.sr { border-left-color: var(--blue); } .sit-tile.hr { border-left-color: var(--red); }
+.sit-tile.sp { border-left-color: var(--yellow); } .sit-tile.inf { border-left-color: var(--purple); } .sit-tile.off { border-left-color: var(--grey); }
+.tile-top { display: flex; justify-content: space-between; gap: 8px; align-items: flex-start; margin-bottom: 6px; }
+.tile-title { font-weight: 600; font-size: 13px; line-height: 1.35; }
+.tile-def { font-size: 11.5px; color: var(--text2); margin-bottom: 8px; }
+.tile-arms { display: flex; flex-direction: column; gap: 4px; }
+.tile-arm { display: flex; gap: 6px; align-items: baseline; font-size: 11px; }
+.tile-arm .k { font-family: 'DM Mono', monospace; font-size: 10.5px; color: var(--text); }
+
+/* ── CONTEXT SECTIONS ── */
+.ctx { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; }
+.ctx summary { cursor: pointer; padding: 12px 16px; font-weight: 600; font-size: 13px; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+.ctx summary::-webkit-details-marker { display: none; }
+.ctx summary::after { content: '+'; font-family: 'DM Mono', monospace; color: var(--text3); }
+.ctx[open] summary::after { content: '−'; }
+.ctx-body { padding: 4px 16px 16px; font-size: 12.5px; color: var(--text2); }
+.ctx-body p { margin: 6px 0; }
+.ctx-body ul { margin: 6px 0 6px 18px; }
+.tbl-wrap { overflow-x: auto; margin: 8px 0; }
+table.t { border-collapse: collapse; width: 100%; font-size: 12px; }
+table.t th { font-family: 'DM Mono', monospace; font-size: 9.5px; letter-spacing: .8px; text-transform: uppercase; color: var(--text3); text-align: left; padding: 7px 9px; border-bottom: 1px solid var(--border2); background: var(--surface2); white-space: nowrap; }
+table.t td { padding: 7px 9px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; }
+table.t td.k { color: var(--text2); font-weight: 500; white-space: nowrap; }
+table.t tr:hover td { background: var(--surface2); }
+.trial-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; margin-top: 6px; }
+.trial-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 11px 13px; }
+.trial-top { display: flex; justify-content: space-between; gap: 6px; margin-bottom: 5px; align-items: center; }
+.nct { font-family: 'DM Mono', monospace; font-size: 11px; }
+.st { font-family: 'DM Mono', monospace; font-size: 8.5px; padding: 2px 7px; border-radius: 10px; }
+.st.rec { background: rgba(63,185,80,.14); color: var(--green); }
+.st.done { background: rgba(139,148,158,.16); color: var(--grey); }
+.st.pend { background: rgba(210,153,34,.14); color: var(--yellow); }
+.trial-title { font-size: 12px; color: var(--text); font-weight: 500; margin-bottom: 4px; }
+.trial-meta { font-size: 11px; color: var(--text2); }
+
+/* ── SITUATION CARD ── */
+.btn-back { background: none; border: 1px solid var(--border2); color: var(--text2); font-family: 'DM Mono', monospace; font-size: 11px; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-bottom: 12px; }
+.btn-back:hover { border-color: var(--accent); color: var(--accent); }
+.sit-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.sit-card::before { content: ''; display: block; height: 4px; background: var(--grey); }
+.sit-card.lr::before { background: var(--green); } .sit-card.sr::before { background: var(--blue); } .sit-card.hr::before { background: var(--red); }
+.sit-card.sp::before { background: var(--yellow); } .sit-card.inf::before { background: var(--purple); }
+.sit-head { padding: 18px 20px 12px; display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; align-items: flex-start; border-bottom: 1px solid var(--border); }
+.sit-ent { font-family: 'DM Mono', monospace; font-size: 9.5px; color: var(--text3); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
+.sit-title { font-family: 'DM Serif Display', serif; font-size: 22px; line-height: 1.25; }
+.sit-body { padding: 16px 20px 20px; }
+.r-label { font-family: 'DM Mono', monospace; font-size: 9.5px; letter-spacing: 1.5px; color: var(--text3); text-transform: uppercase; margin-bottom: 7px; }
+.def-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px; margin-bottom: 18px; }
+.def-cell { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 9px 11px; }
+.def-k { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
+.def-v { font-size: 12px; color: var(--text); line-height: 1.5; }
+.arms { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); align-items: start; }
+.arm { background: var(--surface); border: 1px solid var(--border2); border-radius: 8px; overflow: hidden; }
+.arm-head { padding: 10px 13px; background: var(--surface2); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; align-items: center; }
+.arm-head.cog { border-top: 3px solid var(--orange); } .arm-head.siop { border-top: 3px solid var(--blue); } .arm-head.lit { border-top: 3px solid var(--purple); }
+.arm-proto { font-weight: 600; font-size: 13px; }
+.arm-sub { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text2); }
+.arm-body { padding: 12px 13px; }
+.arm.pending { border-style: dashed; background: transparent; }
+.arm.pending .arm-body { color: var(--text3); font-size: 12px; font-style: italic; }
+.blk { margin-bottom: 12px; }
+.blk:last-child { margin-bottom: 0; }
+.outcomes-block { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 9px 11px; }
+.outcome-row { display: flex; justify-content: space-between; gap: 10px; padding: 3px 0; border-bottom: 1px dashed var(--border); font-size: 12px; }
+.outcome-row:last-child { border-bottom: none; }
+.outcome-label { color: var(--text2); }
+.outcome-val { font-family: 'DM Mono', monospace; font-size: 11.5px; text-align: right; }
+.ov-good { color: var(--green); } .ov-mid { color: var(--yellow); } .ov-bad { color: var(--red); } .ov-neu { color: var(--text2); }
+.o-note { font-size: 11px; color: var(--text3); margin-top: 5px; }
+.r-val { font-size: 12.5px; color: var(--text); line-height: 1.55; }
+.r-val ul { margin: 4px 0 4px 16px; }
+.rt-block { background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--blue); border-radius: 8px; padding: 12px; }
+.rt-block-title { font-family: 'DM Mono', monospace; font-size: 9.5px; letter-spacing: 1.5px; color: var(--blue); text-transform: uppercase; margin-bottom: 10px; }
+.rt-section { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.rt-section:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.rt-section-hdr { font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+.rt-note { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.rt-box { background: var(--surface3); border: 1px solid var(--border); border-radius: 6px; padding: 7px 10px; margin-bottom: 6px; }
+.rt-box:last-child { margin-bottom: 0; }
+.rt-box-label { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
+.rt-box-val { font-size: 12px; color: var(--text); line-height: 1.5; }
+.rt-dose { color: var(--blue); font-family: 'DM Mono', monospace; font-size: 12.5px; font-weight: 500; }
+.rt-dose.esc { color: var(--yellow); }
+.rt-dose.highesc { color: var(--red); }
+.rt-sub { font-size: 11px; color: var(--text2); margin-top: 3px; line-height: 1.45; }
+.no-rt-box { background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--text3); border-radius: 8px; padding: 10px 13px; font-size: 12.5px; color: var(--text2); }
+.note-box { border-left: 3px solid var(--yellow); background: rgba(210,153,34,.06); padding: 9px 12px; border-radius: 6px; font-size: 12px; color: var(--text2); line-height: 1.55; }
+.common { margin-top: 18px; }
+.refs-list { margin-top: 18px; border-top: 1px solid var(--border); padding-top: 12px; }
+.ref-item { display: flex; gap: 10px; margin-bottom: 9px; font-size: 11.5px; }
+.ref-num { font-family: 'DM Mono', monospace; color: var(--accent); min-width: 22px; }
+.ref-authors { color: var(--text); }
+.ref-title-text { color: var(--text2); font-style: italic; }
+.ref-journal { color: var(--text3); font-family: 'DM Mono', monospace; font-size: 10.5px; }
+.ref-note { color: var(--text2); font-size: 11px; margin-top: 2px; }
+.sit-actions { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+.btn { background: var(--surface2); border: 1px solid var(--border2); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 7px 13px; border-radius: 6px; cursor: pointer; }
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn:disabled { opacity: .35; cursor: default; }
+sup { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--accent); }
+
+/* ── D3 FLOWCHART ── */
+#flowHost { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+#chart { width: 100%; height: 100%; cursor: grab; display: block; }
+#chart:active { cursor: grabbing; }
+.btn-reset-zoom { position: absolute; top: 14px; right: 14px; background: var(--surface); border: 1px solid var(--border2); color: var(--text2); padding: 7px 14px; border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 11px; cursor: pointer; z-index: 10; }
+.btn-reset-zoom:hover { border-color: var(--accent); color: var(--accent); }
+.flow-legend { position: absolute; bottom: 12px; left: 14px; display: flex; flex-wrap: wrap; gap: 10px; z-index: 10; pointer-events: none; }
+.leg-it { display: flex; align-items: center; gap: 5px; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text2); }
+.leg-dot { width: 9px; height: 9px; border-radius: 50%; }
+.flow-hint { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); margin-bottom: 8px; }
+
+/* ── TOOLTIP D3 ── */
+.tt-body { position: fixed; pointer-events: none; z-index: 300; background: rgba(13,17,23,.97); border-radius: 10px; padding: 13px 15px; width: 320px; box-shadow: 0 6px 28px rgba(0,0,0,.35); border: 1px solid rgba(57,197,207,.25); display: none; }
+.tt-title { font-family: 'DM Mono', monospace; font-size: 9px; color: #6e7681; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
+.tt-q { font-size: 13px; font-weight: 500; color: #e6edf3; margin-bottom: 9px; line-height: 1.4; }
+.tt-section { margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #2a3441; }
+.tt-section:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.tt-section-lbl { font-family: 'DM Mono', monospace; font-size: 9px; color: #6e7681; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+.tt-val { font-size: 11px; color: #8b949e; line-height: 1.5; }
+.tt-out { font-family: 'DM Mono', monospace; font-size: 10.5px; color: #39c5cf; margin-top: 3px; }
+.tt-hint { font-family: 'DM Mono', monospace; font-size: 9px; color: #6e7681; margin-top: 8px; }
+
+/* ── PRINT ── */
+.print-footer { display: none; }
+@media print {
+  body, body.light { background: #fff !important; color: #000 !important; }
+  header, .crumbs, .btn-back, .sit-actions, .btn-theme, .view-tabs, .filters { display: none !important; }
+  .container { padding: 0; max-width: none; }
+  .sit-card, .arm { border: 1px solid #999 !important; break-inside: avoid; }
+  .arms { grid-template-columns: 1fr 1fr; }
+  .print-footer { display: block; font-size: 8pt; color: #777; margin-top: 18px; border-top: 1px solid #ddd; padding-top: 6px; }
+  :root, body.light { --text: #000; --text2: #333; --text3: #777; --surface: #fff; --surface2: #f5f5f5; --surface3: #eee; --border: #ddd; --border2: #ccc; --blue: #1a5fa8; --yellow: #a0720a; --red: #c0392b; --green: #2d7a3a; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-logo" onclick="go('#/')" title="Home">PNO</div>
+  <div class="hdr-texts">
+    <div class="hdr-title">Pediatric Neuro-Oncology — Clinical Situation Atlas</div>
+    <div class="hdr-sub">Non-medulloblastoma entities · Protocol &amp; literature synthesis · COG / SIOP-E side by side</div>
+  </div>
+  <span class="hdr-badge">PROTOTYPE v0.1 · 2026</span>
+  <button class="btn-theme" id="btn-theme" onclick="toggleTheme()" title="Switch to light mode">◑</button>
+</header>
+<nav class="crumbs" id="crumbs"></nav>
+<main class="container" id="view"></main>
+<div class="tt-body" id="tt"></div>
+
+<script>
+// ═══ DONNÉES — LÉGENDES ═══
+var EVIDENCE = {
+  rct:   { l: 'Randomized trial', d: 'Arm of a randomized controlled trial' },
+  trial: { l: 'Prospective trial / protocol', d: 'Single-arm phase II or protocol-defined treatment' },
+  cons:  { l: 'Consensus / guideline', d: 'Consensus statement or standard clinical practice document' },
+  retro: { l: 'Retrospective series', d: 'Registry or retrospective cohort data' },
+  exp:   { l: 'Expert opinion / case-level', d: 'Case reports, expert practice, no formal series' },
+  pend:  { l: 'Results pending', d: 'Ongoing trial — outcome data not yet mature' }
+};
+var RISK = {
+  lr:  'Low risk / excellent prognosis',
+  sr:  'Standard risk',
+  hr:  'High risk',
+  sp:  'Special situation (relapse, teratoma, MDT)',
+  inf: 'Infant / RT-sparing high-dose chemotherapy',
+  off: 'Off-protocol / individual decision'
+};
+
+// ═══ DONNÉES — ATRT (SIOPE ATRT01) ═══
+var ATRT = {
+  id: 'atrt', name: 'Atypical Teratoid / Rhabdoid Tumour', short: 'ATRT', family: 'Embryonal tumours (non-MB)',
+  status: 'ready', flowKind: 'research',
+  desc: 'SIOPE ATRT01 umbrella trial — 10 final situations by age, metastatic status, randomized arm and residual disease.',
+  sources: [ { t: 'SIOPE ATRT01 · v1.5 (2023)', c: 'siop' }, { t: 'QUARTET RTQA v1.3', c: 'siop' } ],
+  identity: [
+    { k: 'Biology', v: 'SMARCB1 (INI1) loss; SMARCA4 more rarely. Most common malignant CNS tumour below 6 months of age <sup>[3]</sup>' },
+    { k: 'Staging before consolidation', v: 'Brain + whole-spine MRI, SMARCB1 confirmation on biopsy, CSF staging' },
+    { k: 'Induction (all parts)', v: '3 courses DOX / ICE / VCA (EU-RHAB backbone) <sup>[1]</sup>' },
+    { k: 'Stratification axes', v: 'Age at consolidation · M status · SYNC status · randomized arm · residual disease' }
+  ],
+  alerts: [
+    { c: 'red', t: 'Outcome ranges shown in this entity are approximate historical figures carried over from the source tool (origin not specified) — <strong>they are not ATRT01 results</strong>. Part A randomization data are not mature.' },
+    { c: '', t: 'Registry: the source tool cited NCT05058443, which is an unrelated trial on ClinicalTrials.gov. The protocol lists EudraCT 2018-003335-29 — verify the registry identifier.' }
+  ],
+  axes: [
+    { id: 'age', label: 'Age at consolidation', opts: [ { v: 'lt12', l: '< 12 months' }, { v: '12to35', l: '12–35 months' }, { v: 'ge36', l: '≥ 36 months' } ] },
+    { id: 'm', label: 'Metastatic status', opts: [ { v: 'M0', l: 'M0' }, { v: 'M+', l: 'M1–M3' } ] },
+    { id: 'arm', label: 'Consolidation', opts: [ { v: 'rt', l: 'Radiotherapy' }, { v: 'hdct', l: 'HDCT, no RT' }, { v: 'mdt', l: 'Off-protocol / MDT' } ] },
+    { id: 'res', label: 'Residual disease', opts: [ { v: 'none', l: 'No residual' }, { v: 'res', l: 'Residual primary' }, { v: 'bulky', l: 'Bulky metastases' } ] }
+  ],
+  groups: [
+    { t: '< 12 months — Part B', ids: [ 'lt12' ] },
+    { t: '12–35 months — Part A (SYNC−, M0: randomization RT vs HDCT)', ids: [ 'r12-rt-nores', 'r12-rt-res', 'r12-hdct', 'r12-mplus' ] },
+    { t: '≥ 36 months — Part C (RT for all)', ids: [ 'ge36-m0-nores', 'ge36-m0-res', 'ge36-m-nores', 'ge36-m-res', 'ge36-m-bulky' ] }
+  ],
+  refs: {
+    1: { a: 'Timmermann B, et al.', t: 'SIOPE ATRT01 — An international prospective umbrella trial for children with atypical teratoid/rhabdoid tumours', j: 'GPOH / SIOPE, 2023 · Protocol version 1.5 · EudraCT 2018-003335-29 (per protocol — not found on ClinicalTrials.gov)', n: 'Basis of all ATRT situations.' },
+    2: { a: 'SIOPE / EORTC / QUARTET', t: 'SIOPE ATRT01 QUARTET Radiotherapy Quality Assurance Guidelines, v1.3', j: '28/09/2023 · www.siope.eu/quartet', n: 'Volumes, OAR constraints, RTQA timelines.' },
+    3: { a: 'Frühwald MC, Biegel JA, Bourdeaut F, Roberts CWM, Chi SN.', t: 'Atypical teratoid/rhabdoid tumors — current concepts, advances in biology, and potential future therapies', j: 'Neuro Oncol. 2016;18(6):764–778', doi: '10.1093/neuonc/nov264', n: 'Corrected: the source tool cited this review as Neuro-Oncology 2020;22(9) doi:10.1093/neuonc/noaa033.' },
+    4: { a: 'Hoeben BA, et al. — SIOPE Radiotherapy Working Group', t: 'Management of vertebral radiotherapy dose in paediatric patients with cancer: consensus recommendations', j: 'Lancet Oncol. 2019;20(3):e155–e166', doi: '10.1016/S1470-2045(19)30034-8', n: 'Vertebral dose homogeneity in growing children.' }
+  },
+  situations: {
+    'lt12': {
+      title: 'Infant < 12 months — HDCT according to chemosensitivity (Part B)', risk: 'inf', badge: '< 12 MONTHS',
+      tags: { age: 'lt12', m: 'any', arm: 'hdct', res: 'any' },
+      def: [ { k: 'Age', v: '< 12 months at consolidation' }, { k: 'Part', v: 'ATRT01 Part B' } ],
+      arms: [ {
+        proto: 'SIOPE ATRT01', pc: 'siop', label: 'Part B', ev: 'trial', key: 'HDCT ×3 — no RT',
+        out: [ { l: 'OS 3–5 y', v: '~30–40 %', c: 'ov-bad' }, { l: 'EFS 3–5 y', v: '~25–35 %', c: 'ov-bad' }, { l: 'Cohort', v: 'limited n (< 12 months)' } ], outV: true,
+        chemo: '<strong>Induction:</strong> 3 courses DOX / ICE / VCA. <strong>If chemosensitive (SD or better):</strong> 1–2(3) courses EU-RHAB + SCA → HDCT ×3 (busulfan–thiotepa). <strong>If chemoresistant:</strong> off protocol.',
+        rt: null, noRt: 'NO RT — age < 12 months: RT considered contraindicated because of unacceptable neurocognitive toxicity in infants. HDCT is the consolidation option.',
+        refs: [ 1, 3 ]
+      } ],
+      notes: 'Multidisciplinary discussion mandatory. Intensive neurodevelopmental follow-up. Progression on HDCT: experimental options only (early-phase targeted agents such as EZH2 inhibitors — trial setting).'
+    },
+    'r12-rt-nores': {
+      title: '12–35 months · RT arm · No residual — focal RT 54 Gy', risk: 'sr', badge: 'RT ARM · M0',
+      tags: { age: '12to35', m: 'M0', arm: 'rt', res: 'none' },
+      def: [ { k: 'Age', v: '12–35 months' }, { k: 'Status', v: 'SYNC− (no synchronous extra-CNS rhabdoid tumour), M0' }, { k: 'Arm', v: 'Randomized to RT arm (Part A)' }, { k: 'Residual', v: 'No macroscopic residual on pre-simulation MRI (T1+Gd, T2, FLAIR)' } ],
+      arms: [ {
+        proto: 'SIOPE ATRT01', pc: 'siop', label: 'Part A — RT arm', ev: 'rct', key: '54 Gy / 30 fr focal',
+        out: [ { l: 'OS 3–5 y', v: '~50–60 %', c: 'ov-mid' }, { l: 'EFS 3–5 y', v: '~40–50 %', c: 'ov-mid' }, { l: 'Cohort', v: 'ATRT01 Part A (ongoing)' } ], outV: true,
+        chemo: '<strong>Pre-RT:</strong> 1–2(3) courses EU-RHAB + SCA. <strong>Post-RT:</strong> 9 courses EU-RHAB (vincristine, actinomycin-D, carboplatin, etoposide, cyclophosphamide). No concomitant chemotherapy during RT.',
+        rt: {
+          timing: 'After 1–2(3) courses EU-RHAB + SCA, once haematological recovery: ANC > 500/µL, Hb > 8 g/dL, platelets > 50 000/µL.',
+          vol: [ { l: 'GTVtb', v: 'Post-operative / post-chemo tumour bed on MRI (T1+Gd, T2, FLAIR)' }, { l: 'GTVtb+res', v: '= GTVtb (no residual)' }, { l: 'CTVtb', v: 'GTVtb+res + 10 mm isotropic (max 3 mm into brainstem; respect calvarium / tentorium)' }, { l: 'PTVtb_5400', v: 'CTVtb + 3–5 mm according to technique' } ],
+          doses: [ { l: 'Tumour bed', d: '54.0 Gy / 30 fr / 1.8 Gy · 5 fr/week', s: 'Photons 4–6 MV or protons (PBS) if available; IMRT/VMAT acceptable; no cobalt. MRI at 45 Gy: no persistent residual → no boost.' } ]
+        },
+        refs: [ 1, 2 ]
+      } ],
+      notes: 'QUARTET RTQA mandatory, submitted ≥ 5 working days before RT start. Protons strongly encouraged. Systematic immobilisation / anaesthesia in young children. Portal verification D1–D3 then twice weekly.'
+    },
+    'r12-rt-res': {
+      title: '12–35 months · RT arm · Macroscopic residual — 54 Gy ± boost 5.4 Gy', risk: 'sr', badge: 'RT ARM · RESIDUAL',
+      tags: { age: '12to35', m: 'M0', arm: 'rt', res: 'res' },
+      def: [ { k: 'Age', v: '12–35 months' }, { k: 'Status', v: 'SYNC−, M0' }, { k: 'Arm', v: 'Randomized to RT arm (Part A)' }, { k: 'Residual', v: 'Macroscopic residual on simulation MRI' } ],
+      arms: [ {
+        proto: 'SIOPE ATRT01', pc: 'siop', label: 'Part A — RT arm', ev: 'rct', key: '54 Gy ± 5.4 Gy boost (59.4 Gy)',
+        out: [ { l: 'OS 3–5 y', v: '~50–60 %', c: 'ov-mid' }, { l: 'EFS 3–5 y', v: '~40–50 %', c: 'ov-mid' }, { l: 'Cohort', v: 'ATRT01 Part A' } ], outV: true,
+        chemo: '<strong>Pre-RT:</strong> 1–2(3) courses EU-RHAB + SCA. <strong>Post-RT:</strong> 9 courses EU-RHAB. No concomitant chemotherapy during RT.',
+        rt: {
+          timing: 'After 1–2(3) courses EU-RHAB + SCA; haematological recovery required. Re-assessment MRI at 45 Gy before any boost decision.',
+          vol: [ { l: 'GTVtb', v: 'Pre-op / post-chemo tumour bed' }, { l: 'GTVres_a (GTV2)', v: 'Macroscopic residual on simulation MRI (T1+Gd, T2); GTVtb+res_a = union' }, { l: 'CTVtb → PTVtb_5400', v: 'GTVtb+res_a + 10 mm (3 mm brainstem) → + 3–5 mm' }, { l: 'Boost (if residual at 45 Gy MRI)', v: 'GTVres_b → CTVres_b = GTVres_b (no CTV margin) → PTVres_b_0540 = CTVres_b + 3–5 mm' } ],
+          doses: [ { l: 'Phase 1', d: '54.0 Gy / 30 fr / 1.8 Gy' }, { l: 'Optional boost', d: '+5.4 Gy / 3 fr → 59.4 Gy', c: 'esc', s: 'Only if residual > 5 mm persists in all planes at 45 Gy MRI. Individual risk analysis (site, age, neurological status, number of surgeries); national board + ATRT01 reference radiation oncologist.' } ]
+        },
+        refs: [ 1, 2 ]
+      } ],
+      notes: 'PTVres_b_0540 may be cropped at OARs (provide standard PTVres_b_0540 + PTVres_Eval-OAR). QUARTET RTQA mandatory.'
+    },
+    'r12-hdct': {
+      title: '12–35 months · HDCT arm — 3 high-dose courses, no RT', risk: 'inf', badge: 'HDCT ARM · M0',
+      tags: { age: '12to35', m: 'M0', arm: 'hdct', res: 'any' },
+      def: [ { k: 'Age', v: '12–35 months' }, { k: 'Status', v: 'SYNC−, M0' }, { k: 'Arm', v: 'Randomized to HDCT arm (Part A)' } ],
+      arms: [ {
+        proto: 'SIOPE ATRT01', pc: 'siop', label: 'Part A — HDCT arm', ev: 'rct', key: 'HDCT ×3 + ASCT — no RT',
+        out: [ { l: 'OS', v: 'not mature', c: 'ov-neu' }, { l: 'EFS', v: 'not mature', c: 'ov-neu' }, { l: 'Cohort', v: 'ATRT01 Part A randomization' } ],
+        chemo: '<strong>Induction:</strong> 3 courses DOX / ICE / VCA. <strong>If chemosensitive:</strong> 1–2(3) courses EU-RHAB + SCA then <strong>3 × HDCT</strong> (busulfan–thiotepa or melphalan–thiotepa per protocol), autologous stem-cell rescue after each course.',
+        rt: null, noRt: 'NO RT in the HDCT arm — comparator arm of the Part A randomization (question: HDCT vs focal RT at 12–35 months). RT discussed only at local relapse.',
+        refs: [ 1 ]
+      } ],
+      notes: 'Intensive neuropsychological follow-up. HDCT failure: discussion with reference centre — no standardized salvage RT in the protocol.'
+    },
+    'r12-mplus': {
+      title: '12–35 months · M+ — off protocol (not eligible for Part A)', risk: 'off', badge: 'OFF PROTOCOL',
+      tags: { age: '12to35', m: 'M+', arm: 'mdt', res: 'any' },
+      def: [ { k: 'Age', v: '12–35 months' }, { k: 'Status', v: 'M+ (Part A requires SYNC−, M0)' } ],
+      arms: [ {
+        proto: 'SIOPE ATRT01', pc: 'siop', label: 'Outside Part A', ev: 'exp', key: 'Individual MDT decision',
+        out: [ { l: 'Prognosis', v: 'very poor', c: 'ov-bad' }, { l: 'Data', v: 'isolated cases' } ],
+        chemo: 'Contact the trial coordinating centre and the national therapeutic board; individualized treatment discussed case by case.',
+        rt: null, noRt: 'RT not standardized — national multidisciplinary discussion. CSI may be considered in selected cases below 36 months, but benefit at this age is poorly documented.',
+        refs: [ 1 ]
+      } ],
+      notes: 'Contact the SIOPE ATRT01 Trial Office before any therapeutic decision.'
+    },
+    'ge36-m0-nores': {
+      title: '≥ 36 months · M0 · No residual — focal RT 54 Gy (Part C)', risk: 'sr', badge: '≥ 36 MO · M0',
+      tags: { age: 'ge36', m: 'M0', arm: 'rt', res: 'none' },
+      def: [ { k: 'Age', v: '≥ 36 months' }, { k: 'Status', v: 'M0' }, { k: 'Residual', v: 'None' } ],
+      arms: [ {
+        proto: 'SIOPE ATRT01', pc: 'siop', label: 'Part C', ev: 'trial', key: '54 Gy / 30 fr focal',
+        out: [ { l: 'OS 3–5 y', v: '~55–65 %', c: 'ov-mid' }, { l: 'EFS 3–5 y', v: '~45–55 %', c: 'ov-mid' }, { l: 'Cohort', v: 'ATRT01 Part C' } ], outV: true,
+        chemo: '<strong>Post-RT:</strong> 9 courses EU-RHAB (vincristine, actinomycin-D, carboplatin, etoposide, cyclophosphamide). No concomitant chemotherapy during RT.',
+        rt: {
+          timing: 'After haematological recovery post-induction; coordination with post-RT EU-RHAB.',
+          vol: [ { l: 'GTVtb', v: 'Post-op / post-chemo tumour bed on MRI' }, { l: 'CTVtb', v: 'GTVtb + 10 mm (3 mm brainstem)' }, { l: 'PTVtb_5400', v: 'CTVtb + 3–5 mm (technique / IGRT)' } ],
+          doses: [ { l: 'Tumour bed', d: '54.0 Gy / 30 fr / 1.8 Gy · 5 fr/week', s: 'Photons 4–6 MV or protons. MRI at 45 Gy recommended; no boost without persistent residual.' } ]
+        },
+        refs: [ 1, 2 ]
+      } ],
+      notes: 'Protons strongly encouraged ≥ 36 months. CT–MRI fusion (pre-op and pre-RT) mandatory. OAR priorities: brainstem D1% ≤ 59 Gy (surface ≤ 63 Gy), spinal cord D1% ≤ 54 Gy, optic nerves / chiasm ≤ 54 Gy <sup>[2]</sup>.'
+    },
+    'ge36-m0-res': {
+      title: '≥ 36 months · M0 · Residual — 54 Gy ± boost 5.4 Gy', risk: 'sr', badge: '≥ 36 MO · M0 · RESIDUAL',
+      tags: { age: 'ge36', m: 'M0', arm: 'rt', res: 'res' },
+      def: [ { k: 'Age', v: '≥ 36 months' }, { k: 'Status', v: 'M0' }, { k: 'Residual', v: 'Macroscopic residual' } ],
+      arms: [ {
+        proto: 'SIOPE ATRT01', pc: 'siop', label: 'Part C', ev: 'trial', key: '54 Gy ± 5.4 Gy boost',
+        out: [ { l: 'OS 3–5 y', v: '~55–65 %', c: 'ov-mid' }, { l: 'EFS 3–5 y', v: '~45–55 %', c: 'ov-mid' }, { l: 'Cohort', v: 'ATRT01 Part C' } ], outV: true,
+        chemo: '<strong>Post-RT:</strong> 9 courses EU-RHAB. No concomitant chemotherapy during RT.',
+        rt: {
+          timing: 'Part C, after haematological recovery. Re-assessment MRI at 45 Gy mandatory before boost decision.',
+          vol: [ { l: 'Phase 1', v: 'GTVtb+res_a → CTVtb (+10 mm, 3 mm brainstem) → PTVtb_5400 (+3–5 mm)' }, { l: 'Phase 2 (if boost)', v: 'GTVres_b (residual on 45 Gy MRI) → CTVres_b = GTVres_b → PTVres_b_0540 (+3–5 mm); crop at OAR → PTVres_Eval-OAR' } ],
+          doses: [ { l: 'Phase 1', d: '54.0 Gy / 30 fr / 1.8 Gy' }, { l: 'Optional boost', d: '+5.4 Gy / 3 fr → 59.4 Gy', c: 'esc', s: 'If residual > 5 mm persists in all planes at 45 Gy MRI — individual multidisciplinary decision.' } ]
+        },
+        refs: [ 1, 2 ]
+      } ],
+      notes: 'National board + ATRT01 reference radiation oncologist recommended for boost decisions. QUARTET RTQA mandatory. Protons encouraged.'
+    },
+    'ge36-m-nores': {
+      title: '≥ 36 months · M1–3 · No residual / no bulky metastasis — CSI + tumour-bed boost', risk: 'hr', badge: '≥ 36 MO · M1–3',
+      tags: { age: 'ge36', m: 'M+', arm: 'rt', res: 'none' },
+      def: [ { k: 'Age', v: '≥ 36 months' }, { k: 'Status', v: 'M1–M3' }, { k: 'Residual', v: 'No primary residual, no bulky metastasis' } ],
+      arms: [ {
+        proto: 'SIOPE ATRT01', pc: 'siop', label: 'Part C', ev: 'trial', key: 'CSI 36 Gy + TB 18 Gy (54 Gy)',
+        out: [ { l: 'OS 3–5 y', v: '~30–45 %', c: 'ov-bad' }, { l: 'EFS 3–5 y', v: '~25–35 %', c: 'ov-bad' }, { l: 'Cohort', v: 'historical M+ ATRT' } ], outV: true,
+        chemo: '<strong>Post-RT:</strong> 9 courses EU-RHAB. No concomitant chemotherapy during CSI.',
+        rt: {
+          timing: 'CSI after haematological recovery; if incomplete recovery, start with the local boost before CSI. Brain + whole-spine MRI within 2 weeks before simulation.',
+          vol: [ { l: 'CTV_Brain', v: 'Whole cranial subarachnoid space (cribriform plate, inferior temporal lobes, pituitary fossa, craniotomy meninges)' }, { l: 'CTV_Spine', v: 'Spinal canal + foraminal extensions to thecal sac (caudal limit S1 per source)' }, { l: 'PTV_Brain / Spine_3600', v: 'CTV + 3–5 mm (5–10 mm spine without daily IGRT) + 10 mm caudal' }, { l: 'Boost', v: 'GTVtb → CTVtb (+10 mm, 3 mm brainstem) → PTVtb_1800 (+3–5 mm)' } ],
+          doses: [ { l: 'CSI', d: '36.0 Gy / 20 fr / 1.8 Gy · 5 fr/week' }, { l: 'Tumour-bed boost', d: '+18.0 Gy / 10 fr → 54.0 Gy', c: 'esc', s: 'Photons 4–6 MV (no cobalt) or PBS protons. Growing vertebrae: homogeneous bilateral coverage ≥ 20 Gy, avoid A/P and L/R gradients <sup>[4]</sup>.' } ]
+        },
+        refs: [ 1, 2, 4 ]
+      } ],
+      notes: 'National concertation before RT. OAR: spinal cord D1% ≤ 54 Gy, brainstem D1% ≤ 59–63 Gy, optic nerves / chiasm ≤ 54–56 Gy, cochleae Dmean ≤ 30 Gy (≤ 25 Gy with ototoxic chemotherapy) <sup>[2]</sup>.'
+    },
+    'ge36-m-res': {
+      title: '≥ 36 months · M1–3 · Primary residual — CSI + tumour-bed boost + residual boost', risk: 'hr', badge: '≥ 36 MO · M1–3 · RESIDUAL',
+      tags: { age: 'ge36', m: 'M+', arm: 'rt', res: 'res' },
+      def: [ { k: 'Age', v: '≥ 36 months' }, { k: 'Status', v: 'M1–M3' }, { k: 'Residual', v: 'Primary residual, no bulky metastasis' } ],
+      arms: [ {
+        proto: 'SIOPE ATRT01', pc: 'siop', label: 'Part C', ev: 'trial', key: 'CSI 36 + 18 ± 5.4 Gy',
+        out: [ { l: 'OS 3–5 y', v: '~25–40 %', c: 'ov-bad' }, { l: 'EFS 3–5 y', v: '~20–30 %', c: 'ov-bad' }, { l: 'Cohort', v: 'historical M+ ATRT' } ], outV: true,
+        chemo: '<strong>Post-RT:</strong> 9 courses EU-RHAB. No concomitant chemotherapy during CSI.',
+        rt: {
+          timing: 'CSI after haematological recovery. Brain + spine MRI ≤ 2 weeks before simulation; re-assessment MRI at 45 Gy for the residual.',
+          vol: [ { l: 'CSI', v: 'CTV_Brain + CTV_Spine → PTVs (as for M1–3 without residual)' }, { l: 'Tumour-bed boost', v: 'GTVtb → CTVtb (+10 mm, 3 mm brainstem) → PTVtb_1800' }, { l: 'Residual boost (optional)', v: 'GTVres_b (45 Gy MRI) → CTVres_b = GTVres_b → PTVres_b_0540 (+3–5 mm)' } ],
+          doses: [ { l: 'CSI', d: '36.0 Gy / 20 fr / 1.8 Gy' }, { l: 'Tumour-bed boost', d: '+18.0 Gy / 10 fr → 54.0 Gy', c: 'esc' }, { l: 'Residual boost (optional)', d: '+5.4 Gy / 3 fr → 59.4 Gy', c: 'highesc', s: 'Individual risk analysis after 45 Gy MRI; national discussion recommended.' } ]
+        },
+        refs: [ 1, 2 ]
+      } ],
+      notes: 'Plans cropped at OARs are scored as “justified deviation”. QUARTET RTQA mandatory for all craniospinal irradiation.'
+    },
+    'ge36-m-bulky': {
+      title: '≥ 36 months · M1–3 · Bulky metastases — CSI + multisite boosts', risk: 'hr', badge: '≥ 36 MO · BULKY M+',
+      tags: { age: 'ge36', m: 'M+', arm: 'rt', res: 'bulky' },
+      def: [ { k: 'Age', v: '≥ 36 months' }, { k: 'Status', v: 'M1–M3 with bulky (> 5 mm) cranial and/or spinal metastases' } ],
+      arms: [ {
+        proto: 'SIOPE ATRT01', pc: 'siop', label: 'Part C', ev: 'trial', key: 'CSI 36 + boosts 45–54 Gy',
+        out: [ { l: 'OS 3–5 y', v: '~20–35 %', c: 'ov-bad' }, { l: 'EFS 3–5 y', v: '~15–25 %', c: 'ov-bad' }, { l: 'Cohort', v: 'very limited (M3 ATRT)' } ], outV: true,
+        chemo: '<strong>Post-RT:</strong> 9 courses EU-RHAB. No concomitant chemotherapy during CSI.',
+        rt: {
+          timing: 'Full CSI then boosts to primary bed and bulky metastases. Pre-RT spine MRI for metastasis mapping, brain MRI for intracranial metastases.',
+          vol: [ { l: 'CSI', v: 'CTV_Brain + CTV_Spine → PTVs (standard)' }, { l: 'Spinal metastases', v: 'GTVm_s (lesions > 5 mm) → CTVm_s (+10 mm cranio-caudal, canal + foramina) → PTVm_s_1440 or _0900 (+3–5 mm)' }, { l: 'Brain metastases', v: 'GTVm_b (> 5 mm) → CTVm_b (+5 mm, anatomical barriers) → PTVm_Brain_1440 (+3–5 mm)' }, { l: 'Primary bed', v: 'GTVtb → CTVtb (+10 mm) → PTVtb_1800' } ],
+          doses: [ { l: 'CSI', d: '36.0 Gy / 20 fr / 1.8 Gy' }, { l: 'Primary bed boost', d: '+18.0 Gy → 54.0 Gy', c: 'esc' }, { l: 'Spinal mets ≥ 5 cm', d: '+9.0 Gy / 5 fr → 45.0 Gy', c: 'esc', s: '<span class="chip verify">⚠ verify</span> Source gives the lower boost to the larger lesions — check the size threshold and dose pairing in QUARTET guidelines.' }, { l: 'Spinal mets < 5 cm', d: '+14.4 Gy / 8 fr → 50.4 Gy', c: 'esc' }, { l: 'Brain mets', d: '+14.4 Gy / 8 fr → 50.4 Gy', c: 'highesc', s: 'Optional primary residual boost +5.4 Gy → 59.4 Gy (individual decision).' } ]
+        },
+        refs: [ 1, 2 ]
+      } ],
+      notes: 'Most complex configuration — national multidisciplinary concertation before any decision. RTQA plans ≥ 5 working days before RT start; proton robustness required if PBS.'
+    }
+  },
+  context: [
+    { t: 'RT quality assurance & OAR constraints (QUARTET)', h: '<ul><li>RTQA submission ≥ 5 working days before RT start for all plans <sup>[2]</sup>.</li><li>Brainstem D1% ≤ 59 Gy (surface ≤ 63 Gy) · spinal cord D1% ≤ 54 Gy · optic nerves / chiasm ≤ 54 Gy · cochleae Dmean ≤ 30 Gy (≤ 25 Gy with ototoxic chemotherapy).</li><li>Growing vertebrae: homogeneous dose, avoid steep gradients across vertebral bodies <sup>[4]</sup>.</li><li>Protons (PBS) encouraged in all RT situations; immobilisation / anaesthesia in young children.</li></ul>' },
+    { t: 'Open points to verify in the protocol', h: '<ul><li>Registry identifier (EudraCT 2018-003335-29 per protocol; NCT05058443 in the source tool is an unrelated trial).</li><li>Meaning of “SCA” in the consolidation sequence and exact EU-RHAB post-RT drug list.</li><li>Origin of the outcome ranges (no ATRT01 results published).</li><li>CTV_Spine caudal limit (source states S1 — usually defined by the thecal sac on MRI).</li></ul>' }
+  ],
+  trials: [
+    { id: 'EudraCT 2018-003335-29', st: 'pend', stl: 'VERIFY', t: 'SIOPE ATRT01 — umbrella trial (Parts A/B/C)', m: 'GPOH / SIOPE · Part A randomization RT vs HDCT (12–35 months)' }
+  ],
+  flow: {
+    l: 'SIOPE ATRT01', s: 'Staging + DOX/ICE/VCA ×3', children: [
+      { e: '< 12 mo', l: 'Part B', s: 'Infant', sid: 'lt12' },
+      { e: '12–35 mo', l: 'Part A', s: 'Check SYNC / M', children: [
+        { e: 'SYNC−, M0', l: 'Randomization', s: 'RT vs HDCT', children: [
+          { e: 'RT arm', l: 'Residual?', s: 'pre-simulation MRI', children: [
+            { e: 'none', l: 'Focal 54 Gy', sid: 'r12-rt-nores' },
+            { e: 'residual', l: '54 ± 5.4 Gy', sid: 'r12-rt-res' } ] },
+          { e: 'HDCT arm', l: 'HDCT ×3', sid: 'r12-hdct' } ] },
+        { e: 'M+', l: 'Off protocol', sid: 'r12-mplus' } ] },
+      { e: '≥ 36 mo', l: 'Part C', s: 'RT for all', children: [
+        { e: 'M0', l: 'Residual?', children: [
+          { e: 'none', l: 'Focal 54 Gy', sid: 'ge36-m0-nores' },
+          { e: 'residual', l: '54 ± 5.4 Gy', sid: 'ge36-m0-res' } ] },
+        { e: 'M1–3', l: 'Residual / bulky?', children: [
+          { e: 'none', l: 'CSI 36 + 18', sid: 'ge36-m-nores' },
+          { e: 'primary res.', l: 'CSI + 2 boosts', sid: 'ge36-m-res' },
+          { e: 'bulky mets', l: 'CSI + multisite', sid: 'ge36-m-bulky' } ] } ] }
+    ]
+  }
+};
+
+// ═══ DONNÉES — TUMEURS GERMINALES SNC ═══
+var SIOP_GERM_CHEMO = '<strong>4 courses q21d, alternating:</strong><ul><li>Courses 1 &amp; 3 — Carboplatin 600 mg/m² d1 (max 1200 mg) + Etoposide 100 mg/m²/d d1–3</li><li>Courses 2 &amp; 4 — Ifosfamide 1800 mg/m²/d d1–5 (+ MESNA 2200 mg/m²/d, hydration) + Etoposide 100 mg/m²/d d1–3</li></ul>Reassessment after 4 courses: MRI + serum markers (CSF if doubt) → CR / PR / SD <sup>[6]</sup>.';
+var COG_GERM_CHEMO = '<strong>Carboplatin</strong> d1 + <strong>Etoposide</strong> d1–3, q21d × 4 cycles (doses per COG protocol, not public). Response assessment after cycle 4: brain + spine MRI, serum + CSF hCGβ / AFP <sup>[1]</sup>.';
+var COG_NG_CHEMO = '<strong>6 cycles q21d:</strong> cycles 1, 3, 5 — Carboplatin d1 + Etoposide d1–3; cycles 2, 4, 6 — Ifosfamide d1–5 (+ MESNA) + Etoposide d1–5. G-CSF per institution. Response assessment after cycle 6 <sup>[2]</sup>.';
+var SIOP_PEI = '<strong>PEI (per course):</strong> Cisplatin 20 mg/m²/d d1–5 (+ mannitol unless DI) · Etoposide 100 mg/m²/d d1–3 · Ifosfamide 1500 mg/m²/d d1–5 (+ MESNA 1800 mg/m²/d, hydration 3 L/m²/d) <sup>[6]</sup>.';
+var GCT_PENDING = [ { proto: 'SIOP CNS GCT III', t: 'Slot reserved — protocol data to be integrated side by side when available.' } ];
+
+var GCT = {
+  id: 'gct', name: 'Intracranial Germ Cell Tumours', short: 'CNS GCT', family: 'Germ cell tumours',
+  status: 'ready', flowKind: 'research',
+  desc: 'Germinoma, NGGCT, teratoma and relapse — COG (ACNS2321 / ACNS2021) and SIOP-E (SIOP CNS GCT II / ESCP 2021) side by side.',
+  sources: [ { t: 'COG ACNS2321', c: 'cog' }, { t: 'COG ACNS2021', c: 'cog' }, { t: 'SIOP CNS GCT II · ESCP 2021', c: 'siop' }, { t: 'SIOP CNS GCT III — pending', c: 'pend' }, { t: 'Relapse literature', c: 'lit' } ],
+  pending: GCT_PENDING,
+  identity: [
+    { k: 'Diagnosis without biopsy', v: 'SIOP: AFP > 25 ng/mL and/or HCG > 50 IU/L (serum or CSF) = secreting NGGCT. COG: hCGβ ≤ 50 (≤ 100 if bifocal / pineal + DI) with normal AFP = germinoma <sup>[1,6]</sup>' },
+    { k: 'Mandatory staging', v: 'Brain + whole-spine MRI (before LP / surgery), serum AND CSF markers, lumbar CSF cytology ≥ 10 days post-surgery' },
+    { k: 'Bifocal (pineal + suprasellar)', v: 'Treated as localized (non-metastatic) in both groups <sup>[6,9]</sup>' },
+    { k: 'Units', v: 'hCG: 1 mIU/mL = 1 IU/L. AFP: ng/mL × 0.83 = kU/L' }
+  ],
+  alerts: [
+    { c: 'blue', t: 'Each situation shows <strong>COG and SIOP-E side by side</strong>. A third column is reserved for <strong>SIOP CNS GCT III</strong> once its data are available.' },
+    { c: '', t: 'Response definitions differ: SIOP PR = volume reduction ≥ 50 % (ellipsoid volume). COG strata also depend on marker normalization and second-look surgery findings.' }
+  ],
+  axes: [
+    { id: 'hist', label: 'Histology', opts: [ { v: 'germ', l: 'Germinoma' }, { v: 'ng', l: 'NGGCT' }, { v: 'ter', l: 'Teratoma' } ] },
+    { id: 'ext', label: 'Extent / site', opts: [ { v: 'loc', l: 'Localized midline' }, { v: 'met', l: 'Metastatic' }, { v: 'bgt', l: 'Basal ganglia / thalamus' } ] },
+    { id: 'resp', label: 'Response to induction', opts: [ { v: 'cr', l: 'CR' }, { v: 'pr', l: 'PR' }, { v: 'lt', l: '< PR / viable tumour' } ] },
+    { id: 'phase', label: 'Phase', opts: [ { v: 'first', l: 'First line' }, { v: 'rel', l: 'Relapse' } ] }
+  ],
+  groups: [
+    { t: 'Germinoma — localized midline (incl. bifocal)', ids: [ 'g-loc-cr', 'g-loc-pr', 'g-loc-lt' ] },
+    { t: 'Germinoma — metastatic', ids: [ 'g-met-cr', 'g-met-lt' ] },
+    { t: 'Germinoma — basal ganglia / thalamus', ids: [ 'g-bgt-cr', 'g-bgt-lt' ] },
+    { t: 'NGGCT — first line', ids: [ 'ng-good', 'ng-poor', 'ng-hr', 'ng-met' ] },
+    { t: 'Teratoma', ids: [ 'ter' ] },
+    { t: 'Relapse', ids: [ 'rel-germ', 'rel-ng' ] }
+  ],
+  refs: {
+    1: { a: 'Children’s Oncology Group', t: 'ACNS2321 — Chemotherapy followed by response-based reduced radiation therapy for CNS germinomas (phase II)', j: 'ClinicalTrials.gov NCT06368817 · Recruiting · start 22/10/2024 · n = 240', nct: 'NCT06368817', n: 'Registry outline: all strata at 1.5 Gy/fr (fraction counts: 16 / 20 / 24 / 20 / 24 / 20 / 24 days for strata I–VII).' },
+    2: { a: 'Children’s Oncology Group', t: 'ACNS2021 — Response-based whole ventricular & spinal canal irradiation (WVSCI) for localized NGGCT (phase II)', j: 'ClinicalTrials.gov NCT04684368 · Recruiting · n = 160', nct: 'NCT04684368', n: 'Plan A: 17 + 13 fractions; Plan B: thiotepa/etoposide + PBSC then 20 + 10 fractions.' },
+    3: { a: 'Bartels U, Onar-Thomas A, Patel SK, et al.', t: 'Phase II trial of response-based radiation therapy for patients with localized germinoma: a Children’s Oncology Group study (ACNS1123)', j: 'Neuro Oncol. 2022;24(6):974–983', doi: '10.1093/neuonc/noab270', nct: 'NCT01602666', n: 'CR → 18 Gy WVI + 12 Gy; PR → 24 Gy WVI + 12 Gy. KM 3-y PFS 94.5 % (18 Gy, n = 74) and 93.75 % (24 Gy, n = 16). Formally failed the non-inferiority design (95 % threshold). DOI corrected (source: noab291).' },
+    4: { a: 'Fangusaro J, Wu S, MacDonald S, et al.', t: 'Phase II trial of response-based radiation therapy for patients with localized CNS nongerminomatous germ cell tumors: a COG study (ACNS1123 stratum 1)', j: 'J Clin Oncol. 2019;37(34):3283–3290', doi: '10.1200/JCO.19.00701', n: 'WVI 30.6 Gy + 54 Gy boost: 3-y PFS 87.8 %, OS 92.4 %; 8/66 progressed — 6 isolated distant spinal, 2 local + distant.' },
+    5: { a: 'Goldman S, Bouffet E, Fisher PG, et al.', t: 'Phase II trial assessing the ability of neoadjuvant chemotherapy with or without second-look surgery to eliminate measurable disease for nongerminomatous germ cell tumors (ACNS0122)', j: 'J Clin Oncol. 2015;33(22):2464–2471', doi: '10.1200/JCO.2014.59.5132', nct: 'NCT00047320', n: 'n = 102; CSI 36 Gy + 54 Gy; 5-y EFS 84 %, OS 93 %; raised serum AFP adverse. Citation corrected (source: 33(21):2313–23).' },
+    6: { a: 'Diezi M, Pizer B, Murray M — SIOPE Brain Tumour Group', t: 'Childhood intracranial germ cell tumours — ESCP standard clinical practice document', j: 'SIOP Europe / ERN PaedCan · v1.0 · October 2021 (based on SIOP CNS GCT II protocol v4, 2018)', n: 'European reference for all SIOP columns.' },
+    7: { a: 'Calaminus G, Kortmann R, Worch J, et al.', t: 'SIOP CNS GCT 96: final report of outcome of a prospective, multinational nonrandomized trial for children and adults with intracranial germinoma', j: 'Neuro Oncol. 2013;15(6):788–796', doi: '10.1093/neuonc/not019', n: 'Localized n = 190: CSI alone (125) vs chemo + focal RT (65) — same EFS/OS, PFS 97 % vs 88 %; 6 of 7 relapses after combined treatment were ventricular outside the field → rationale for WVI. Metastatic n = 45: EFS/OS 98 %.' },
+    8: { a: 'Calaminus G, Frappaz D, Kortmann RD, et al.', t: 'Outcome of patients with intracranial non-germinomatous germ cell tumors — lessons from the SIOP-CNS-GCT-96 trial', j: 'Neuro Oncol. 2017;19(12):1661–1672', doi: '10.1093/neuonc/nox122', n: 'Localized n = 116: 5-y PFS 72 %, OS 82 %; 27 relapses (14 local, 6 combined, 7 distant). Metastatic n = 33: PFS 68 %, OS 75 %. AFP > 1000 ng/mL and residual disease = adverse factors.' },
+    9: { a: 'Murray MJ, Bartels U, Nishikawa R, et al.', t: 'Consensus on the management of intracranial germ-cell tumours', j: 'Lancet Oncol. 2015;16(9):e470–e477', doi: '10.1016/S1470-2045(15)00244-2' },
+    10: { a: 'Kanamori M, et al.', t: 'So-called bifocal tumors with diabetes insipidus and negative tumor markers: are they all germinoma?', j: 'Neuro Oncol. 2021;23(2):295–303', doi: '10.1093/neuonc/noaa199', n: 'Low threshold for biopsy in marker-negative bifocal disease. DOI corrected (source: noaa197).' },
+    11: { a: 'Frappaz D, Dhall G, Murray MJ, et al. (EANO, SNO, Euracan)', t: 'EANO, SNO and Euracan consensus review on the current management and future development of intracranial germ cell tumors in adolescents and young adults', j: 'Neuro Oncol. 2022;24(4):516–527', doi: '10.1093/neuonc/noab252' },
+    12: { a: 'Murray MJ, Bailey S, Heinemann K, et al.', t: 'Treatment and outcomes of UK and German patients with relapsed intracranial germ cell tumors following uniform first-line therapy', j: 'Int J Cancer. 2017;141(3):621–635', doi: '10.1002/ijc.30755', n: 'n = 58 relapses (13 germinoma / 45 NGGCT). Relapsed NGGCT with curative intent (n = 32): 5-y OS 9 % — 0 % with standard-dose chemo, 14 % with intended HDC + ASCR. Germinoma group 5-y OS 55 %.' },
+    13: { a: 'Callec L, Lardy-Cleaud A, Guerrini-Rousseau L, et al.', t: 'Relapsing intracranial germ cell tumours warrant retreatment', j: 'Eur J Cancer. 2020;136:186–194', doi: '10.1016/j.ejca.2020.06.012', n: 'n = 44. Germinoma (n = 14): 5-y EFS 79 %, OS 86 %; 1 of 11 re-irradiated patients relapsed again. NGGCT (n = 25): 5-y EFS 56 %, OS 60 %; with vs without HDC 5-y OS 72 % vs 29 %. DOI corrected (source: 10.1016/j.ejca.2020.05.024).' },
+    14: { a: 'Abu-Arja MH, Osorio DS, Lassaletta A, et al.', t: 'Prognostic factors for patients with relapsed central nervous system nongerminomatous germ cell tumors', j: 'Pediatr Blood Cancer. 2022;69(1):e29365', doi: '10.1002/pbc.29365', n: '9 studies, n = 101. Survivors: 71 % with CR/CCR at end of relapse therapy vs 7 %; 48 % with HDC + AuHCR vs 12 %; 60 % with initial AFP ≤ 25 ng/mL vs 28 %. Local relapse, GTR and RT at relapse not associated with outcome.' },
+    15: { a: 'Shatara M, Blue M, Stanek J, …, Finlay JL.', t: 'Final report of the phase II NEXT/CNS-GCT-4 trial: GemPOx followed by marrow-ablative chemotherapy for recurrent intracranial germ cell tumors', j: 'Neurooncol Pract. 2024;11(2):188–198', doi: '10.1093/nop/npad067', nct: 'NCT01270724', n: '9 patients: 7 proceeded to HDC + AuHPCR (5 then received RT), 2 progressed on GemPOx; mean follow-up 44 months, 4 alive without disease. First author corrected (source: Finlay JL).' }
+  },
+  situations: {
+    'g-loc-cr': {
+      title: 'Localized germinoma — complete response after induction', risk: 'lr', badge: 'GERMINOMA · LOC · CR',
+      tags: { hist: 'germ', ext: 'loc', resp: 'cr', phase: 'first' },
+      def: [ { k: 'Disease', v: 'Localized suprasellar and/or pineal germinoma, incl. bifocal; contiguous ventricular / unifocal parenchymal extension accepted (COG)' }, { k: 'Response', v: 'CR / CCR after induction with normalized markers' }, { k: 'COG equivalence', v: 'Also Stratum I: PR or < PR with second-look surgery showing mature teratoma / non-viable tumour' } ],
+      arms: [ {
+        proto: 'COG ACNS2321', pc: 'cog', label: 'Stratum I · primary endpoint', ev: 'trial', key: 'WVI 12 Gy + boost 12 Gy (24 Gy)',
+        out: [ { l: 'ACNS2321 EFS', v: 'pending (accrual to 2033)', c: 'ov-neu' }, { l: 'Benchmark ACNS1123 CR, 18 Gy WVI', v: '3-y PFS 94.5 % (n = 74)', c: 'ov-good' } ], outNote: 'Primary endpoint: EFS at 2 and 3 years vs ACNS1123 stratum 2 <sup>[1,3]</sup>.',
+        chemo: COG_GERM_CHEMO,
+        rt: {
+          timing: 'After cycle 4 and confirmation of CR/CCR (or SLS findings). Once daily, 5 days/week.',
+          vol: [ { l: 'WVI', v: 'Whole ventricular system: lateral, third and fourth ventricles, aqueduct' }, { l: 'Boost', v: 'Pre-treatment tumour volume(s) + margin per institutional convention → CTV/PTV; bifocal: both sites' }, { l: 'Technique', v: '3D-CRT / IMRT or 3D proton / IMPT' } ],
+          doses: [ { l: 'Phase 1 — WVI', d: '12 Gy', s: '1.5 Gy/fr → 8 fr (derived: 16 fractions in total for 24 Gy in the registry outline).' }, { l: 'Phase 2 — boost', d: '+12 Gy → 24 Gy at primary', c: 'esc' } ],
+          verify: 'Per-phase fractionation derived from registry fraction counts — confirm in COG protocol.'
+        },
+        refs: [ 1, 3 ]
+      }, {
+        proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'Localized germinoma', ev: 'cons', key: 'WVI+TB 24 Gy (no boost if single-site CR)',
+        out: [ { l: '3-y EFS (all localized, prelim.)', v: '96 %', c: 'ov-good' }, { l: 'GCT 96 chemo + focal RT', v: 'PFS 88 % — ventricular relapses', c: 'ov-mid' } ], outNote: 'Preliminary SIOP CNS GCT II data as reported in ESCP 2021 <sup>[6]</sup>; GCT 96 pattern of failure <sup>[7]</sup>.',
+        chemo: SIOP_GERM_CHEMO,
+        rt: {
+          timing: 'After 4 courses and response classification.',
+          vol: [ { l: 'Volume', v: 'Whole ventricles + tumour bed (WVI+TB)' } ],
+          doses: [ { l: 'Single-site CR', d: '24 Gy WVI+TB — 16 Gy boost omitted' }, { l: 'Bifocal CR', d: '24 Gy + 16 Gy boost → 40 Gy', c: 'esc', s: 'Boost omission validated only for single-site disease; all bifocal patients receive the boost.' } ],
+          verify: 'Fractionation not stated in source documents — check ESCP / protocol.'
+        },
+        refs: [ 6, 7 ]
+      } ],
+      notes: 'Main divergence: COG reduces WVI to 12 Gy but keeps a 12 Gy boost (24 Gy at primary); SIOP keeps 24 Gy WVI+TB and drops the boost (24 Gy at primary) for single-site CR. Residual after chemotherapy does not worsen prognosis in germinoma — watch-and-wait for small residuals <sup>[6]</sup>.'
+    },
+    'g-loc-pr': {
+      title: 'Localized germinoma — partial response', risk: 'lr', badge: 'GERMINOMA · LOC · PR',
+      tags: { hist: 'germ', ext: 'loc', resp: 'pr', phase: 'first' },
+      def: [ { k: 'Disease', v: 'Localized midline germinoma, incl. bifocal' }, { k: 'Response', v: 'PR with normalized markers; no second-look surgery (COG Stratum II)' } ],
+      arms: [ {
+        proto: 'COG ACNS2321', pc: 'cog', label: 'Stratum II', ev: 'trial', key: 'WVI 18 Gy + boost 12 Gy (30 Gy)',
+        out: [ { l: 'ACNS2321 EFS', v: 'pending', c: 'ov-neu' }, { l: 'ACNS1123 PR (24 Gy WVI + 12)', v: '3-y PFS 93.75 % (n = 16)', c: 'ov-good' } ],
+        chemo: COG_GERM_CHEMO,
+        rt: {
+          timing: 'After cycle 4 with confirmed PR and marker normalization.',
+          vol: [ { l: 'WVI', v: 'Whole ventricular system' }, { l: 'Boost', v: 'Pre-treatment primary tumour volume → CTV/PTV' } ],
+          doses: [ { l: 'Phase 1 — WVI', d: '18 Gy', s: '1.5 Gy/fr → 12 fr (derived: 20 fractions in total).' }, { l: 'Phase 2 — boost', d: '+12 Gy → 30 Gy', c: 'esc' } ],
+          verify: 'In ACNS1123, PR patients received 24 Gy WVI (not 18 Gy) — ACNS2321 Stratum II is itself a dose reduction for PR.'
+        },
+        refs: [ 1, 3 ]
+      }, {
+        proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'Localized germinoma', ev: 'cons', key: 'WVI+TB 24 Gy + boost 16 Gy (40 Gy)',
+        out: [ { l: '3-y EFS (all localized, prelim.)', v: '96 %', c: 'ov-good' } ],
+        chemo: SIOP_GERM_CHEMO,
+        rt: {
+          timing: 'After 4 courses.',
+          vol: [ { l: 'Volume', v: 'WVI + tumour bed; boost to residual / initial tumour per ESCP' } ],
+          doses: [ { l: 'WVI+TB', d: '24 Gy' }, { l: 'Boost', d: '+16 Gy → 40 Gy', c: 'esc', s: 'SIOP CNS GCT 96 historical standard.' } ],
+          verify: 'Fractionation not stated in source documents.'
+        },
+        refs: [ 6 ]
+      } ],
+      notes: 'Dose at primary for PR: 30 Gy (COG) vs 40 Gy (SIOP).'
+    },
+    'g-loc-lt': {
+      title: 'Localized germinoma — less than PR (stable disease)', risk: 'sr', badge: 'GERMINOMA · LOC · < PR',
+      tags: { hist: 'germ', ext: 'loc', resp: 'lt', phase: 'first' },
+      def: [ { k: 'Response', v: 'Less than PR with normalized markers' }, { k: 'COG', v: 'No second-look surgery → Stratum III; SLS with mature teratoma / non-viable → Stratum I; viable tumour or non-normalized markers → off protocol therapy' } ],
+      arms: [ {
+        proto: 'COG ACNS2321', pc: 'cog', label: 'Stratum III', ev: 'trial', key: 'WVI 24 Gy + boost 12 Gy (36 Gy)',
+        out: [ { l: 'ACNS2321 EFS', v: 'pending', c: 'ov-neu' } ],
+        chemo: COG_GERM_CHEMO,
+        rt: {
+          timing: 'After cycle 4.',
+          vol: [ { l: 'WVI', v: 'Whole ventricular system' }, { l: 'Boost', v: 'Pre-treatment primary tumour volume' } ],
+          doses: [ { l: 'Phase 1 — WVI', d: '24 Gy', s: '1.5 Gy/fr → 16 fr (derived: 24 fractions in total). Source tool stated 24 fr × 1 Gy — inconsistent with the registry.' }, { l: 'Phase 2 — boost', d: '+12 Gy → 36 Gy', c: 'esc' } ],
+          verify: 'Confirm fractionation in COG protocol.'
+        },
+        refs: [ 1 ]
+      }, {
+        proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'SD after chemotherapy', ev: 'cons', key: 'Resection if teratoma suspected → 40 Gy or 54 Gy',
+        out: [ { l: 'Specific data', v: 'not reported', c: 'ov-neu' } ],
+        chemo: SIOP_GERM_CHEMO,
+        rt: {
+          timing: 'SD with imaging suggestive of teratoma: <strong>resection before RT</strong>.',
+          vol: [ { l: 'Volume', v: 'WVI + tumour bed; boost to gross disease' } ],
+          doses: [ { l: 'Non-viable / pure germinoma at surgery', d: '24 Gy WVI+TB + 16 Gy → 40 Gy', c: 'esc' }, { l: 'Teratoma + germinoma', d: '24 Gy WVI+TB + 30 Gy → 54 Gy to gross disease', c: 'highesc' } ]
+        },
+        refs: [ 6 ]
+      } ],
+      notes: 'Persistence despite chemotherapy should raise suspicion of a teratomatous component (growing teratoma) — second-look surgery is central in both groups.'
+    },
+    'g-met-cr': {
+      title: 'Metastatic germinoma — complete response', risk: 'lr', badge: 'GERMINOMA · M+ · CR',
+      tags: { hist: 'germ', ext: 'met', resp: 'cr', phase: 'first' },
+      def: [ { k: 'Disease', v: 'Non-contiguous or distant disease (brain, ventricles, spine) and/or positive CSF cytology' }, { k: 'Response (COG)', v: 'CR after induction (± SLS showing mature teratoma / non-viable tumour), markers normalized' } ],
+      arms: [ {
+        proto: 'COG ACNS2321', pc: 'cog', label: 'Stratum IV · exploratory', ev: 'trial', key: 'CSI 18 Gy + boost 12 Gy (30 Gy)',
+        out: [ { l: 'ACNS2321 EFS', v: 'pending', c: 'ov-neu' } ],
+        chemo: COG_GERM_CHEMO,
+        rt: {
+          timing: 'After cycle 4.',
+          vol: [ { l: 'CSI', v: 'Whole brain + entire spinal canal to thecal sac' }, { l: 'Boost', v: 'Pre-treatment primary AND all metastatic sites' } ],
+          doses: [ { l: 'CSI', d: '18 Gy', s: '1.5 Gy/fr → 12 fr (derived: 20 fractions in total).' }, { l: 'Boost (all sites)', d: '+12 Gy → 30 Gy', c: 'esc' } ],
+          verify: 'Confirm fractionation in COG protocol.'
+        },
+        refs: [ 1 ]
+      }, {
+        proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'Metastatic germinoma', ev: 'cons', key: 'CSI 24 Gy + boost 16 Gy — no chemo',
+        out: [ { l: 'GCT 96 metastatic (CSI)', v: 'EFS / OS 98 % (n = 45)', c: 'ov-good' } ],
+        chemo: '<strong>No neoadjuvant chemotherapy</strong> — CSI alone. If CSI is delayed: short “holding” chemotherapy (carboplatin / etoposide, or vinblastine) after discussion with the national GCT team <sup>[6]</sup>.',
+        rt: {
+          timing: 'Upfront CSI (response category not applicable).',
+          vol: [ { l: 'CSI', v: 'Whole neuraxis' }, { l: 'Boost', v: 'All macroscopic metastatic sites (and primary)' } ],
+          doses: [ { l: 'CSI', d: '24 Gy' }, { l: 'Boost', d: '+16 Gy → 40 Gy', c: 'esc' } ],
+          verify: 'Fractionation not stated in source documents.'
+        },
+        refs: [ 6, 7 ]
+      } ],
+      notes: 'Opposite strategies: COG gives chemotherapy first and adapts the CSI dose to response; SIOP treats with CSI alone. Incompletely staged disease (no spine MRI or CSF cytology) → treat as metastatic (SIOP) <sup>[6]</sup>.'
+    },
+    'g-met-lt': {
+      title: 'Metastatic germinoma — less than CR', risk: 'sr', badge: 'GERMINOMA · M+ · < CR',
+      tags: { hist: 'germ', ext: 'met', resp: 'lt', phase: 'first' },
+      def: [ { k: 'Response (COG)', v: 'Less than CR with normalized markers, no second-look surgery' } ],
+      arms: [ {
+        proto: 'COG ACNS2321', pc: 'cog', label: 'Stratum V · exploratory', ev: 'trial', key: 'CSI 24 Gy + boost 12 Gy (36 Gy)',
+        out: [ { l: 'ACNS2321 EFS', v: 'pending', c: 'ov-neu' } ],
+        chemo: COG_GERM_CHEMO,
+        rt: {
+          timing: 'After cycle 4.',
+          vol: [ { l: 'CSI', v: 'Whole brain + spinal canal to thecal sac' }, { l: 'Boost', v: 'Pre-treatment primary + all metastatic sites' } ],
+          doses: [ { l: 'CSI', d: '24 Gy', s: '1.5 Gy/fr → 16 fr (derived: 24 fractions in total).' }, { l: 'Boost (all sites)', d: '+12 Gy → 36 Gy', c: 'esc' } ],
+          verify: 'Confirm fractionation in COG protocol.'
+        },
+        refs: [ 1 ]
+      }, {
+        proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'Metastatic germinoma', ev: 'cons', key: 'CSI 24 Gy + boost 16 Gy — no chemo',
+        out: [ { l: 'GCT 96 metastatic (CSI)', v: 'EFS / OS 98 % (n = 45)', c: 'ov-good' } ],
+        chemo: 'No neoadjuvant chemotherapy (holding chemotherapy only if CSI delayed) <sup>[6]</sup>.',
+        rt: {
+          timing: 'Upfront CSI.',
+          vol: [ { l: 'CSI', v: 'Whole neuraxis' }, { l: 'Boost', v: 'All macroscopic metastatic sites' } ],
+          doses: [ { l: 'CSI', d: '24 Gy' }, { l: 'Boost', d: '+16 Gy → 40 Gy', c: 'esc' } ]
+        },
+        refs: [ 6, 7 ]
+      } ],
+      notes: 'CSI late effects: GH deficiency, thyroid dysfunction, ototoxicity, neurocognition, vertebral growth. Proton CSI preferred when available; endocrine monitoring throughout follow-up.'
+    },
+    'g-bgt-cr': {
+      title: 'Basal ganglia / thalamic germinoma — complete response', risk: 'lr', badge: 'GERMINOMA · BGT · CR',
+      tags: { hist: 'germ', ext: 'bgt', resp: 'cr', phase: 'first' },
+      def: [ { k: 'Disease', v: 'Primary basal ganglia or thalamic germinoma — insidious motor / cognitive onset, ipsilateral hemiatrophy possible; mild hCGβ elevation in a unilateral lesion should prompt GCT work-up' }, { k: 'Response', v: 'CR (± SLS)' } ],
+      arms: [ {
+        proto: 'COG ACNS2321', pc: 'cog', label: 'Stratum VI · exploratory', ev: 'trial', key: 'WBI 18 Gy + boost 12 Gy (30 Gy)',
+        out: [ { l: 'ACNS2321 EFS', v: 'pending', c: 'ov-neu' } ],
+        chemo: COG_GERM_CHEMO,
+        rt: {
+          timing: 'After cycle 4.',
+          vol: [ { l: 'WBI', v: 'Whole brain (parenchymal origin — not WVI)' }, { l: 'Boost', v: 'Pre-treatment BG / thalamic lesion → CTV/PTV' } ],
+          doses: [ { l: 'WBI', d: '18 Gy', s: '1.5 Gy/fr → 12 fr (derived: 20 fractions in total).' }, { l: 'Boost', d: '+12 Gy → 30 Gy', c: 'esc' } ],
+          verify: 'Confirm fractionation in COG protocol.'
+        },
+        refs: [ 1 ]
+      }, {
+        proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'Not separately stratified', ev: 'cons', key: 'Treat as localized or metastatic per staging',
+        out: [ { l: 'Specific data', v: 'not reported', c: 'ov-neu' } ],
+        chemo: 'As localized (CarboE / IE × 4) or metastatic germinoma according to staging <sup>[6]</sup>.',
+        rt: null, noRt: 'No BG/thalamus-specific RT volume in ESCP 2021 — RT according to the localized or metastatic algorithm; volume choice (WVI vs WBI) to discuss in MDT.',
+        refs: [ 6 ]
+      } ],
+      notes: 'Diagnostic mimics: glioma, demyelination, metabolic disease.'
+    },
+    'g-bgt-lt': {
+      title: 'Basal ganglia / thalamic germinoma — less than CR', risk: 'sr', badge: 'GERMINOMA · BGT · < CR',
+      tags: { hist: 'germ', ext: 'bgt', resp: 'lt', phase: 'first' },
+      def: [ { k: 'Response', v: 'Less than CR, normalized markers, no surgery' } ],
+      arms: [ {
+        proto: 'COG ACNS2321', pc: 'cog', label: 'Stratum VII · exploratory', ev: 'trial', key: 'WBI 24 Gy + boost 12 Gy (36 Gy)',
+        out: [ { l: 'ACNS2321 EFS', v: 'pending', c: 'ov-neu' } ],
+        chemo: COG_GERM_CHEMO,
+        rt: {
+          timing: 'After cycle 4.',
+          vol: [ { l: 'WBI', v: 'Whole brain' }, { l: 'Boost', v: 'Pre-treatment lesion' } ],
+          doses: [ { l: 'WBI', d: '24 Gy', s: '1.5 Gy/fr → 16 fr (derived: 24 fractions in total).' }, { l: 'Boost', d: '+12 Gy → 36 Gy', c: 'esc' } ],
+          verify: 'Confirm fractionation in COG protocol.'
+        },
+        refs: [ 1 ]
+      }, {
+        proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'Not separately stratified', ev: 'cons', key: 'Treat as localized / metastatic',
+        out: [ { l: 'Specific data', v: 'not reported', c: 'ov-neu' } ],
+        chemo: 'Per localized or metastatic algorithm <sup>[6]</sup>.',
+        rt: null, noRt: 'RT per localized (PR/SD) or metastatic algorithm — no specific BGT volume.',
+        refs: [ 6 ]
+      } ],
+      notes: ''
+    },
+    'ng-good': {
+      title: 'Localized NGGCT — good response (CR / PR, markers normalized)', risk: 'sr', badge: 'NGGCT · LOC · GOOD RESP.',
+      tags: { hist: 'ng', ext: 'loc', resp: 'cr', phase: 'first' },
+      def: [ { k: 'COG Plan A', v: 'Radiographic CR or PR with marker normalization; or < CR/PR + normalized markers with SLS showing mature teratoma / non-viable tumour' }, { k: 'SIOP standard risk', v: 'AFP ≤ 1000 ng/mL (serum AND CSF) and age ≥ 6 years; CR after 3 PEI, or non-viable / mature teratoma at SLS' } ],
+      arms: [ {
+        proto: 'COG ACNS2021', pc: 'cog', label: 'Plan A — WVSCI', ev: 'trial', key: 'WVSCI 30.6 Gy + TB → 54 Gy',
+        out: [ { l: 'ACNS2021', v: 'accruing', c: 'ov-neu' }, { l: 'ACNS1123 (WVI 30.6, no spine)', v: '3-y PFS 87.8 % · OS 92.4 %', c: 'ov-mid' }, { l: 'ACNS0122 (CSI 36)', v: '5-y EFS 84 % · OS 93 %', c: 'ov-mid' } ], outNote: 'ACNS1123: 6 of 8 failures were isolated spinal relapses → spinal canal re-added <sup>[4,5]</sup>.',
+        chemo: COG_NG_CHEMO,
+        rt: {
+          timing: 'Within 6 weeks of end of induction or second-look surgery.',
+          vol: [ { l: 'WVI', v: 'Lateral, third, fourth ventricles + aqueduct' }, { l: 'Spinal canal', v: 'Foramen magnum to thecal sac (no whole-brain RT)' }, { l: 'Tumour-bed boost', v: 'Pre-treatment tumour + institutional margin → CTV/PTV' }, { l: 'Technique', v: '3D-CRT / IMRT / VMAT or protons; COG contouring atlas' } ],
+          doses: [ { l: 'Phase 1 — WVSCI', d: '30.6 Gy / 17 fr / 1.8 Gy' }, { l: 'Phase 2 — tumour bed', d: '+23.4 Gy / 13 fr → 54 Gy', c: 'esc' } ]
+        },
+        refs: [ 2, 4, 5 ]
+      }, {
+        proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'Standard-risk NGGCT, M0', ev: 'cons', key: 'PEI ×4 → focal 54 Gy',
+        out: [ { l: 'GCT 96 localized', v: '5-y PFS 72 % · OS 82 % (n = 116)', c: 'ov-mid' }, { l: 'GCT II prelim. (all NGGCT)', v: '3-y EFS 70 % · OS 81 %', c: 'ov-mid' } ], outNote: 'Focal RT only: no excess relapses outside the RT field in GCT 96 <sup>[8]</sup>.',
+        chemo: SIOP_PEI + ' <strong>Sequence:</strong> PEI ×3 → reassess. CR → 4th PEI, no surgery. PR/SD → second-look surgery; non-viable / mature teratoma → 4th PEI post-surgery. Carboplatin 600 mg/m² d1 may replace cisplatin if grade ≥ 3 nephro- / ototoxicity.',
+        rt: {
+          timing: 'After PEI ×4 (± surgery).',
+          vol: [ { l: 'Volume', v: 'Tumour bed (TU) only' }, { l: 'Optional WVI', v: '24 Gy may be considered if germinoma component, ventricular seeding at ETV, or HCG 50–200 IU/L — evolving, discuss with experts' } ],
+          doses: [ { l: 'Tumour bed', d: '54 Gy' } ],
+          verify: 'Fractionation not stated in source documents.'
+        },
+        refs: [ 6, 8 ]
+      } ],
+      notes: 'Key divergence: COG irradiates the ventricles + spinal canal prophylactically; SIOP irradiates the tumour bed only. Always measure <strong>both serum and CSF AFP</strong> — CSF AFP can reclassify to SIOP high risk.'
+    },
+    'ng-poor': {
+      title: 'Localized NGGCT — poor response / viable tumour after induction', risk: 'hr', badge: 'NGGCT · LOC · POOR RESP.',
+      tags: { hist: 'ng', ext: 'loc', resp: 'lt', phase: 'first' },
+      def: [ { k: 'COG Plan B', v: 'CR without marker normalization; PR or < PR without normalization (SLS then Plan B regardless); < CR/PR with normalized markers and viable tumour at SLS' }, { k: 'SIOP', v: 'Viable malignant cells at delayed surgery after 3 PEI' } ],
+      arms: [ {
+        proto: 'COG ACNS2021', pc: 'cog', label: 'Plan B — HDCSCR + CSI', ev: 'trial', key: 'Thiotepa/VP16 + PBSC → CSI 36 + TB 54 Gy',
+        out: [ { l: 'ACNS2021 Plan B', v: 'pending', c: 'ov-neu' }, { l: 'ACNS0122 (all patients)', v: '5-y EFS 84 % · OS 93 %', c: 'ov-mid' } ],
+        chemo: COG_NG_CHEMO + ' <strong>Consolidation (HDCSCR):</strong> etoposide + thiotepa IV d−5 to d−3, PBSC transplant d0, G-CSF.',
+        rt: {
+          timing: 'Within 6–9 weeks of end of induction or SLS, after HDCSCR.',
+          vol: [ { l: 'CSI', v: 'Whole brain + spinal canal to thecal sac' }, { l: 'Boost', v: 'Pre-treatment tumour volume' } ],
+          doses: [ { l: 'CSI', d: '36 Gy / 20 fr / 1.8 Gy' }, { l: 'Tumour-bed boost', d: '+18 Gy / 10 fr → 54 Gy', c: 'esc' } ]
+        },
+        refs: [ 2, 5 ]
+      }, {
+        proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'Viable cells at SLS', ev: 'cons', key: '1× HD-PEI + SCT → focal 54 Gy',
+        out: [ { l: 'GCT 96: residual disease', v: 'independent adverse factor', c: 'ov-bad' } ],
+        chemo: SIOP_PEI + ' After 3 PEI + SLS with viable malignant cells → <strong>1 × HD-PEI + SCT</strong> (cisplatin 20 mg/m²/d d1–5, etoposide 300 mg/m²/d d1–5, ifosfamide 2000 mg/m²/d d1–5; SCT d7).',
+        rt: {
+          timing: 'After HD-PEI + SCT.',
+          vol: [ { l: 'Volume', v: 'Tumour bed (M0)' } ],
+          doses: [ { l: 'Tumour bed', d: '54 Gy' } ]
+        },
+        refs: [ 6, 8 ]
+      } ],
+      notes: 'Mature teratoma does not respond to chemotherapy yet is biologically benign — second-look surgery reclassifies apparent poor responders. AFP > 10 ng/mL after induction raises concern for viable malignant elements <sup>[2]</sup>.'
+    },
+    'ng-hr': {
+      title: 'NGGCT — SIOP high risk (AFP > 1000 ng/mL or age < 6 years)', risk: 'hr', badge: 'NGGCT · HIGH RISK',
+      tags: { hist: 'ng', ext: 'loc', resp: 'any', phase: 'first' },
+      def: [ { k: 'SIOP criteria', v: 'Serum OR CSF AFP > 1000 ng/mL at diagnosis, OR age < 6 years (OR viable cells at delayed surgery)' }, { k: 'COG', v: 'No AFP-based risk group — localized NGGCT aged 3–29 years treated by response on ACNS2021' } ],
+      arms: [ {
+        proto: 'COG ACNS2021', pc: 'cog', label: 'No AFP / age stratum', ev: 'trial', key: 'Plan A or B according to response',
+        out: [ { l: 'ACNS0122', v: 'raised serum AFP = negative prognostic factor', c: 'ov-bad' } ],
+        chemo: COG_NG_CHEMO + ' Then Plan A (good response) or Plan B (poor response) — see corresponding situations.',
+        rt: null, noRt: 'RT per Plan A (WVSCI 30.6 Gy + boost 54 Gy) or Plan B (CSI 36 Gy + boost 54 Gy). Age < 3 years not eligible for ACNS2021.',
+        refs: [ 2, 5 ]
+      }, {
+        proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'High-risk NGGCT — dose-intensified', ev: 'cons', key: 'PEI ×2 → HD-PEI + SCT ×2 → 54 Gy (≥ 6 y)',
+        out: [ { l: 'GCT 96 high risk, standard PEI', v: '5-y EFS 32 %', c: 'ov-bad' }, { l: 'HD-PEI', v: 'well tolerated; efficacy unproven', c: 'ov-neu' } ], outNote: 'ESCP: evidence insufficient to definitively recommend HD-PEI; may be offered with consent <sup>[6]</sup>.',
+        chemo: '<strong>Sequence:</strong> PEI ×2 (standard doses; stem-cell harvest after course 1, G-CSF 10 µg/kg/d from d7, target > 1 × 10⁶ CD34+/kg per HD course) → <strong>HD-PEI + SCT</strong> → reassess → <strong>HD-PEI + SCT</strong>.<br><strong>HD-PEI:</strong> cisplatin 20 mg/m²/d d1–5 · etoposide 300 mg/m²/d d1–5 · ifosfamide 2000 mg/m²/d d1–5 · MESNA 2400 mg/m²/24 h · SCT d7.',
+        rt: {
+          timing: 'After dose-intensified chemotherapy, only if age ≥ 6 years (< 6 years: RT deferred / chemotherapy-only attempt).',
+          vol: [ { l: 'M0', v: 'Tumour bed' }, { l: 'M+', v: 'CSI + boost to primary and macroscopic metastases' } ],
+          doses: [ { l: 'M0', d: '54 Gy tumour bed' }, { l: 'M+', d: 'CSI 30 Gy + 24 Gy → 54 Gy', c: 'esc' } ]
+        },
+        refs: [ 6, 8 ]
+      } ],
+      notes: 'AFP > 1000 ng/mL (19/149 patients, 11 relapsed) and residual disease were the independent adverse factors in GCT 96 <sup>[8]</sup>.'
+    },
+    'ng-met': {
+      title: 'Metastatic NGGCT', risk: 'hr', badge: 'NGGCT · M+',
+      tags: { hist: 'ng', ext: 'met', resp: 'any', phase: 'first' },
+      def: [ { k: 'Disease', v: 'Radiological and/or cytological dissemination at diagnosis' } ],
+      arms: [ {
+        proto: 'COG', pc: 'cog', label: 'Not eligible for ACNS2021', ev: 'exp', key: 'No current COG frontline trial',
+        out: [ { l: 'Data', v: 'no current trial', c: 'ov-neu' } ],
+        chemo: 'Metastatic disease excluded from ACNS2021 (localized only). Institutional practice in the ACNS0122 lineage.',
+        rt: null, noRt: 'Source tool: CSI 36 Gy + boost to 54 Gy primary and 45 Gy metastases (ACNS0122 lineage) — not a current COG protocol recommendation.',
+        verifyArm: 'Verify the RT doses against ACNS0122 / institutional COG practice.',
+        refs: [ 2, 5 ]
+      }, {
+        proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'Metastatic NGGCT', ev: 'cons', key: 'PEI → CSI 30 Gy + boost → 54 Gy',
+        out: [ { l: 'GCT 96 metastatic', v: '5-y PFS 68 % · OS 75 % (n = 33)', c: 'ov-bad' } ], outNote: 'Only 1 metastatic patient with recurrence was salvaged in GCT 96 <sup>[8]</sup>.',
+        chemo: SIOP_PEI + ' Risk group (standard vs high) by AFP / age as for M0.',
+        rt: {
+          timing: 'After PEI (± surgery / HD-PEI per risk group).',
+          vol: [ { l: 'CSI', v: 'Whole neuraxis' }, { l: 'Boost', v: 'Primary + all macroscopic metastases' } ],
+          doses: [ { l: 'CSI', d: '30 Gy' }, { l: 'Boost', d: '+24 Gy → 54 Gy', c: 'esc' }, { l: 'Spinal metastases', d: 'boost limited to +14.4 Gy → 45 Gy', c: 'esc' } ]
+        },
+        refs: [ 6, 8 ]
+      } ],
+      notes: 'Chemotherapy + CSI remain the gold standard for metastatic NGGCT <sup>[8]</sup>.'
+    },
+    'ter': {
+      title: 'Teratoma — mature / immature, growing teratoma syndrome', risk: 'sp', badge: 'TERATOMA',
+      tags: { hist: 'ter', ext: 'any', resp: 'any', phase: 'first' },
+      def: [ { k: 'Mature teratoma', v: 'Chemo- and radio-resistant; large residues risk malignant de-differentiation or somatic (sarcomatous) transformation' }, { k: 'Growing teratoma syndrome', v: 'Growth during chemotherapy with marker normalization' } ],
+      arms: [ {
+        proto: 'COG', pc: 'cog', label: 'Eligibility rules', ev: 'trial', key: 'Pure mature teratoma excluded from trials',
+        out: [ { l: 'Specific data', v: 'none', c: 'ov-neu' } ],
+        chemo: 'Pure mature teratoma with negative markers: excluded from ACNS2321 and ACNS2021. Germinoma admixed with mature teratoma: eligible for ACNS2321. Malignant / immature teratoma and mixed GCT: ACNS2021 <sup>[1,2]</sup>.',
+        rt: null, noRt: 'No RT for pure mature teratoma.',
+        refs: [ 1, 2 ]
+      }, {
+        proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'Teratoma', ev: 'cons', key: 'Complete resection — RT only if unresectable',
+        out: [ { l: 'Somatic transformation', v: 'dismal prognosis', c: 'ov-bad' } ],
+        chemo: '<strong>Mature:</strong> complete resection; chemotherapy ineffective. <strong>Immature:</strong> complete resection first; rare chemotherapy responses. <strong>GTS:</strong> surgery is the only known cure; CDK4/6 inhibitor (palbociclib) stabilization reported in case series for truly unresectable progressive GTS — not standard <sup>[6]</sup>.',
+        rt: null, noRt: 'RT not standard first line — consider only for non-resectable residual and/or progression uncontrollable by repeated surgery.',
+        refs: [ 6 ]
+      } ],
+      notes: 'Search intensively for small malignant foci (YST / EC) within teratomas — they change treatment entirely (SALL4 / glypican-3, CD30, SOX2 on IHC).'
+    },
+    'rel-germ': {
+      title: 'Relapsed germinoma', risk: 'sp', badge: 'RELAPSE · GERMINOMA',
+      tags: { hist: 'germ', ext: 'any', resp: 'any', phase: 'rel' },
+      def: [ { k: 'Work-up', v: 'Full restaging: brain + spine MRI, serum AND CSF markers + cytology before any decision; histology if initial diagnosis was marker-based only' }, { k: 'Board', v: 'National GCT experts ± SIOPE BTG CNS GCT working group' } ],
+      arms: [ {
+        proto: 'Option A — SDC + re-irradiation', pc: 'lit', label: 'ESCP 2021 · retrospective series', ev: 'retro', key: 'Platinum / ifosfamide → re-RT',
+        out: [ { l: 'Callec 2020 germinoma (n = 14)', v: '5-y EFS 79 % · OS 86 %', c: 'ov-mid' }, { l: 'After re-irradiation', v: '1 / 11 further relapse', c: 'ov-good' }, { l: 'Murray 2017 germinoma group (n = 11)', v: '5-y OS 55 %', c: 'ov-bad' } ],
+        chemo: 'Platinum + ifosfamide-based standard-dose salvage chemotherapy <sup>[6,12]</sup>.',
+        rt: {
+          timing: 'After salvage chemotherapy.',
+          vol: [ { l: 'Volume', v: 'Relapse site(s); WVI or CSI according to prior fields and relapse pattern' } ],
+          doses: [ { l: 'Not previously irradiated', d: 'WVI 24 Gy + boost 16 Gy', s: 'Re-irradiation doses not standardized — individual MDT decision (cumulative OAR doses).' } ],
+          verify: 'Re-RT doses taken from the source relapse tool — no protocol reference.'
+        },
+        refs: [ 6, 12, 13 ]
+      }, {
+        proto: 'Option B — HDC + SCT ± re-RT', pc: 'lit', label: 'ESCP 2021 · retrospective series', ev: 'retro', key: 'Melphalan- or thiotepa-based HDC',
+        out: [ { l: 'Murray 2017', v: 'SDC + re-RT and HDC + SCT both salvaged patients', c: 'ov-neu' } ],
+        chemo: 'Platinum + ifosfamide re-induction → melphalan- or thiotepa-based HDC + SCT. Both options are considered equally valid in ESCP 2021 <sup>[6,12]</sup>.',
+        rt: null, noRt: 'Re-irradiation optional after HDC — individual decision.',
+        refs: [ 6, 12 ]
+      } ],
+      notes: 'Relapsed germinoma is curable in most cases; re-irradiation appears to play a key role <sup>[13]</sup>. A trend toward better EFS when relapse occurs at a site not initially involved (100 % vs 67 %, p = 0.09) <sup>[13]</sup>.'
+    },
+    'rel-ng': {
+      title: 'Relapsed secreting NGGCT', risk: 'hr', badge: 'RELAPSE · NGGCT',
+      tags: { hist: 'ng', ext: 'any', resp: 'any', phase: 'rel' },
+      def: [ { k: 'Work-up', v: 'Brain + spine MRI, serum AFP / βHCG / LDH, CSF if possible; characterize local / combined / distant / marker-only relapse and interval since end of therapy' }, { k: 'Board', v: 'National (RENOCLIP-LOC / SFCE) and European expert discussion before any treatment' } ],
+      arms: [ {
+        proto: 'Consensus pathway', pc: 'lit', label: 'ESCP 2021 · EANO/SNO/Euracan 2022', ev: 'retro', key: 'GemPOx → thiotepa-based HDC + SCT → RT/SRS per MDT',
+        out: [ { l: 'Callec 2020 NGGCT (n = 25)', v: '5-y EFS 56 % · OS 60 %', c: 'ov-mid' }, { l: 'With vs without HDC', v: '5-y OS 72 % vs 29 %', c: 'ov-mid' }, { l: 'Murray 2017 (curative intent, n = 32)', v: '5-y OS 9 %', c: 'ov-bad' }, { l: 'CR/CCR at end of relapse therapy', v: '71 % vs 7 % survivors', c: 'ov-mid' } ], outNote: 'Wide heterogeneity between series (patient selection) <sup>[12–14]</sup>.',
+        chemo: '<strong>1. Re-induction GemPOx × 2:</strong> paclitaxel 170 mg/m² (3 h) → gemcitabine 800 mg/m² → oxaliplatin 100 mg/m², d1, q14d; G-CSF; liver monitoring. <strong>2. Reassess</strong> (MRI + markers): CR/PR → GemPOx × 2 more (max 4) + stem-cell mobilization (CD34+ ≥ 2 × 10⁶/kg); insufficient response → 3rd line (ICE / TIP) or trial. <strong>3. HDC + SCT:</strong> TEC (thiotepa 300 mg/m²/d × 3 + etoposide 500 mg/m²/d × 3 + carboplatin by AUC) or CarbTE.',
+        rt: {
+          timing: 'After HDC + SCT (MRI + markers at D60–D90) — role not standardized.',
+          vol: [ { l: 'Prior focal 54 Gy', v: 'Limited re-irradiation to discuss (relapse site, cumulative OAR dose)' }, { l: 'Prior CSI', v: 'No craniospinal re-irradiation — SRS / SBRT on limited residual sites only' }, { l: 'Relapse at non-irradiated site', v: 'Focal RT (e.g., isolated spinal relapse)' } ],
+          doses: [ { l: 'Non-irradiated site (focal)', d: '30–36 Gy / 1.5–2 Gy per fr' }, { l: 'SRS / SBRT (limited residual)', d: '15–24 Gy single fraction or 3–5 fr', c: 'esc', s: 'Case-level data only.' } ],
+          verify: 'Doses from the source relapse tool (expert / case level). Abu-Arja 2022: RT at relapse not associated with outcome.'
+        },
+        refs: [ 6, 11, 12, 13, 14, 15 ]
+      } ],
+      notes: 'Three rules: (1) never start salvage without national MDT; (2) CR before HDC is the most discriminant factor <sup>[14]</sup>; (3) a second relapse after HDC is almost always fatal — clinical trial. GemPOx (NEXT/CNS-GCT-4): 7 of 9 proceeded to HDC, 4 alive without disease at 44 months <sup>[15]</sup>.'
+    }
+  },
+  context: [
+    { t: 'Diagnosis — marker thresholds & biopsy rules (COG vs SIOP)', h: '<div class="tbl-wrap"><table class="t"><tr><th>Situation</th><th>COG (ACNS2321 / 2021)</th><th>SIOP-E (ESCP 2021)</th></tr><tr><td class="k">Germinoma without biopsy</td><td>Suprasellar and/or pineal lesion + hCGβ 5–50 mIU/mL + normal AFP (≤ 10 ng/mL if no institutional normal)</td><td>Not standard — biopsy unless bifocal exception</td></tr><tr><td class="k">Bifocal / pineal + DI</td><td>hCGβ ≤ 100 mIU/mL + normal AFP (serum and CSF) — no biopsy</td><td>Age > 8–10 y + DI + bifocal + AFP ≤ 25 + HCG ≤ 50 → germinoma; low threshold for biopsy <sup>[10]</sup></td></tr><tr><td class="k">Biopsy required</td><td>hCGβ 51–100 mIU/mL with normal AFP</td><td>Non-secreting tumours</td></tr><tr><td class="k">Secreting NGGCT (no biopsy)</td><td>AFP > institutional normal or > 10 ng/mL, or hCGβ > 100 mIU/mL</td><td>AFP > 25 ng/mL and/or HCG > 50 IU/L (serum or CSF)</td></tr><tr><td class="k">Mixed GCT</td><td>Any malignant NGGCT element → ACNS2021</td><td>Any YST / EC / CHC → NGGCT; teratoma + germinoma only → germinoma</td></tr></table></div><p>hCGβ assay must detect free β-subunits; half-life 12–36 h (AFP 5–7 days). AFP is physiologically high below 2 years. hCG-secreting tumours can cause false-positive pregnancy tests.</p>' },
+    { t: 'Staging, imaging & response criteria', h: '<ul><li>Spine MRI with gadolinium <strong>before</strong> lumbar puncture and surgery; post-operative MRI within 24–48 h (≤ 72 h).</li><li>Lumbar CSF preferred over ventricular for cytology; ≥ 10 days after surgery (false-positive cytology earlier). Collect CSF markers first when diversion and biopsy are combined.</li><li>CSF diversion preference: ETV > EVD > VP shunt. Endoscopic findings of ventricular seeding should trigger M+ consideration.</li></ul><div class="tbl-wrap"><table class="t"><tr><th>Response (SIOP)</th><th>Definition</th></tr><tr><td class="k">CR</td><td>No residual or recurrent tumour, no meningeal dissemination</td></tr><tr><td class="k">PR</td><td>Volume reduction ≥ 50 % (A × B × C × ½; sum of 5 largest lesions)</td></tr><tr><td class="k">SD</td><td>Between 50 % decrease and 25 % increase</td></tr><tr><td class="k">PD</td><td>> 25 % increase or new lesion</td></tr></table></div>' },
+    { t: 'Minimum IHC panel (marker-negative GCT)', h: '<div class="tbl-wrap"><table class="t"><tr><th>Subtype</th><th>PLAP</th><th>AFP</th><th>HCG</th><th>OCT3/4</th><th>NANOG</th><th>SOX2</th><th>KIT</th><th>CD30</th><th>Gly3 / SALL4</th></tr><tr><td class="k">Germinoma</td><td>+</td><td>−</td><td>± (sync.)</td><td>+</td><td>+</td><td>−</td><td>+/−</td><td>−/+</td><td>−</td></tr><tr><td class="k">Embryonal carcinoma</td><td>+/−</td><td>−/+</td><td>−/+</td><td>+</td><td>+</td><td>+</td><td>−/+</td><td>+/−</td><td>−</td></tr><tr><td class="k">Yolk sac tumour</td><td>+/−</td><td>++</td><td>−/+</td><td>−</td><td>−</td><td>−</td><td>−</td><td>−</td><td>+</td></tr><tr><td class="k">Choriocarcinoma</td><td>+/−</td><td>−/+</td><td>++</td><td>−</td><td>−</td><td>−</td><td>−</td><td>−</td><td>−</td></tr><tr><td class="k">Teratoma (mature)</td><td>−</td><td>±</td><td>−</td><td>−</td><td>−</td><td>+</td><td>+</td><td>+</td><td>± (immature)</td></tr></table></div><p>SOX2 separates EC (+) from germinoma (−); CD30 rules EC in/out; glypican-3 + SALL4 detect small YST islands <sup>[6]</sup>. Panel reproduced from the source tool — verify against ESCP.</p>' },
+    { t: 'Chemotherapy regimens — reference table', h: '<div class="tbl-wrap"><table class="t"><tr><th>Regimen</th><th>Group</th><th>Agents &amp; doses</th><th>Use</th></tr><tr><td class="k">Carbo / VP16 × 4</td><td><span class="chip cog">COG</span></td><td>Carboplatin d1 + etoposide d1–3 q21d (doses per protocol)</td><td>Germinoma induction (ACNS2321)</td></tr><tr><td class="k">CarboE / IE × 6</td><td><span class="chip cog">COG</span></td><td>Cycles 1,3,5 carbo d1 + VP16 d1–3; cycles 2,4,6 ifosfamide d1–5 + VP16 d1–5</td><td>NGGCT induction (ACNS0122 → 1123 → 2021)</td></tr><tr><td class="k">HDCSCR</td><td><span class="chip cog">COG</span></td><td>Thiotepa + etoposide d−5 to d−3, PBSC d0</td><td>ACNS2021 Plan B</td></tr><tr><td class="k">CarboE / IE × 4</td><td><span class="chip siop">SIOP</span></td><td>Carbo 600 mg/m² d1 + VP16 100 mg/m²/d d1–3 / ifosfamide 1800 mg/m²/d d1–5 + VP16 100 d1–3</td><td>Localized germinoma</td></tr><tr><td class="k">PEI</td><td><span class="chip siop">SIOP</span></td><td>Cisplatin 20 mg/m²/d d1–5 · VP16 100 mg/m²/d d1–3 · ifosfamide 1500 mg/m²/d d1–5</td><td>NGGCT (3–4 courses)</td></tr><tr><td class="k">HD-PEI + SCT</td><td><span class="chip siop">SIOP</span></td><td>Cisplatin 20 d1–5 · VP16 300 d1–5 · ifosfamide 2000 d1–5 · SCT d7</td><td>High-risk NGGCT; viable cells at SLS</td></tr><tr><td class="k">GemPOx</td><td><span class="chip lit">Relapse</span></td><td>Paclitaxel 170 · gemcitabine 800 · oxaliplatin 100 mg/m² d1, q14d, max 4</td><td>NGGCT relapse re-induction <sup>[15]</sup></td></tr><tr><td class="k">TEC</td><td><span class="chip lit">Relapse</span></td><td>Thiotepa 300 mg/m²/d × 3 + etoposide 500 mg/m²/d × 3 + carboplatin (AUC)</td><td>HDC at relapse (French reference)</td></tr></table></div><p><span class="chip verify">⚠ verify</span> GemPOx and TEC doses are reproduced from the source relapse tool; they were not checked against the original publications.</p>' },
+    { t: 'COG vs SIOP-E — key differences', h: '<div class="tbl-wrap"><table class="t"><tr><th>Parameter</th><th>COG</th><th>SIOP-E</th></tr><tr><td class="k">Germinoma induction</td><td>Carbo + VP16 × 4</td><td>CarboE / IE × 4 (adds ifosfamide)</td></tr><tr><td class="k">Germinoma CR — dose at primary</td><td>WVI 12 + boost 12 = 24 Gy</td><td>WVI+TB 24 Gy, no boost (single site)</td></tr><tr><td class="k">Germinoma PR</td><td>WVI 18 + 12 = 30 Gy</td><td>24 + 16 = 40 Gy</td></tr><tr><td class="k">Metastatic germinoma</td><td>Chemo → CSI 18 (CR) / 24 Gy (< CR) + 12 Gy all sites</td><td>CSI 24 + 16 Gy, no chemo</td></tr><tr><td class="k">BG / thalamus</td><td>Strata VI–VII: WBI 18–24 + 12 Gy</td><td>Not separately stratified</td></tr><tr><td class="k">NGGCT stratification</td><td>Response to induction (Plan A / B)</td><td>AFP 1000 ng/mL + age 6 years</td></tr><tr><td class="k">NGGCT M0 RT volume</td><td>WVSCI 30.6 Gy + TB 54 Gy</td><td>Tumour bed 54 Gy only</td></tr><tr><td class="k">NGGCT induction</td><td>CarboE / IE × 6</td><td>PEI × 3–4</td></tr><tr><td class="k">NGGCT metastatic</td><td>Excluded from ACNS2021</td><td>CSI 30 + 24 Gy (spine ≤ 45 Gy)</td></tr></table></div><p>Corrected vs source tools: the COG germinoma induction is carbo/VP16 × 4 (not the 6-cycle CarboE/IE used for NGGCT), and ACNS2021 excludes metastatic disease.</p>' }
+  ],
+  trials: [
+    { id: 'NCT06368817', st: 'rec', stl: 'RECRUITING', t: 'COG ACNS2321 — response-based reduced RT, CNS germinoma', m: 'Phase II · n = 240 · 3–29 y · USA, Canada, Australia · primary completion 2033' },
+    { id: 'NCT04684368', st: 'rec', stl: 'RECRUITING', t: 'COG ACNS2021 — WVSCI for localized NGGCT', m: 'Phase II · n = 160 · Plan A WVSCI / Plan B HDCSCR + CSI' },
+    { id: 'NCT01602666', st: 'done', stl: 'COMPLETED', t: 'COG ACNS1123 — response-based RT, localized GCT', m: 'Germinoma: Bartels 2022 · NGGCT: Fangusaro 2019' },
+    { id: 'NCT00047320', st: 'done', stl: 'COMPLETED', t: 'COG ACNS0122 — NGGCT, CSI 36 Gy', m: 'Goldman 2015 · 5-y EFS 84 %, OS 93 %' },
+    { id: 'NCT01270724', st: 'done', stl: 'COMPLETED', t: 'NEXT / CNS-GCT-4 — GemPOx → HDC for recurrent GCT', m: 'Shatara 2024 · n = 9' },
+    { id: 'SIOP CNS GCT III', st: 'pend', stl: 'PENDING', t: 'Next European protocol', m: 'Data to integrate as third column in every situation' }
+  ],
+  flow: {
+    l: 'CNS GCT', s: 'MRI brain + spine · serum + CSF markers', children: [
+      { e: 'germinoma', l: 'Germinoma', s: 'site / extent', children: [
+        { e: 'localized', l: 'Response?', s: 'after induction', children: [
+          { e: 'CR', l: 'COG I · SIOP 24 Gy', sid: 'g-loc-cr' },
+          { e: 'PR', l: 'COG II · SIOP 40 Gy', sid: 'g-loc-pr' },
+          { e: '< PR', l: 'COG III · SIOP SLS', sid: 'g-loc-lt' } ] },
+        { e: 'metastatic', l: 'Response?', s: 'COG only', children: [
+          { e: 'CR', l: 'CSI 18 / CSI 24', sid: 'g-met-cr' },
+          { e: '< CR', l: 'CSI 24 / CSI 24', sid: 'g-met-lt' } ] },
+        { e: 'BG / thalamus', l: 'Response?', children: [
+          { e: 'CR', l: 'WBI 18 + 12', sid: 'g-bgt-cr' },
+          { e: '< CR', l: 'WBI 24 + 12', sid: 'g-bgt-lt' } ] } ] },
+      { e: 'NGGCT', l: 'NGGCT', s: 'AFP / age / M', children: [
+        { e: 'M0', l: 'Response?', s: 'markers + SLS', children: [
+          { e: 'good', l: 'WVSCI / TB 54', sid: 'ng-good' },
+          { e: 'poor / viable', l: 'HDC → CSI / TB', sid: 'ng-poor' } ] },
+        { e: 'AFP>1000 / <6 y', l: 'SIOP high risk', sid: 'ng-hr' },
+        { e: 'M+', l: 'CSI 30 + 24', sid: 'ng-met' } ] },
+      { e: 'teratoma', l: 'Surgery', sid: 'ter' },
+      { e: 'relapse', l: 'Relapse', children: [
+        { e: 'germinoma', l: 'SDC+reRT / HDC', sid: 'rel-germ' },
+        { e: 'NGGCT', l: 'GemPOx → HDC', sid: 'rel-ng' } ] }
+    ]
+  }
+};
+
+// ═══ DONNÉES — ENTITÉS PLANIFIÉES ═══
+var PLANNED = [
+  { name: 'ETMR', family: 'Embryonal tumours (non-MB)', desc: 'From RareNeuroOnco review — situations to build.' },
+  { name: 'Pineoblastoma', family: 'Embryonal tumours (non-MB)', desc: 'Age < 3 / ≥ 3 years × M0 / M+.' },
+  { name: 'Ependymoma', family: 'Glial', desc: 'PF-A, PF-B, ST-ZFTA, ST-YAP1, infant, spinal MYCN, relapse.' },
+  { name: 'Choroid Plexus Tumours', family: 'Choroid plexus', desc: 'Existing decision algorithm (CPP / aCPP / CPC × TP53 × age) to convert.' },
+  { name: 'Craniopharyngioma', family: 'Sellar region', desc: 'GTR, STR + RT, cystic, relapse, BRAF V600E.' },
+  { name: 'Low-Grade Glioma', family: 'Glial', desc: 'NF1, BRAF fusion, V600E, RT by age / site, progression.' },
+  { name: 'High-Grade Glioma', family: 'Glial', desc: 'H3 G34, IDH, infant-type HGG, re-irradiation.' },
+  { name: 'DIPG / DMG H3 K27', family: 'Glial', desc: 'Frontline 54 Gy, non-pontine DMG, re-irradiation, ONC201.' },
+  { name: 'Intracranial Sarcomas', family: 'Mesenchymal', desc: 'From RareNeuroOnco review — sequences to convert.' }
+];
+
+var CHANGELOG = [
+  'ATRT01 — NCT05058443 cited in the source tool is an unrelated (denosumab) trial; protocol EudraCT kept, flagged for verification.',
+  'ATRT01 — reference “Nicolaides T, Lancet Oncol 2021” could not be found in PubMed and was removed; Frühwald review corrected to Neuro Oncol 2016;18(6):764–778.',
+  'ATRT01 — outcome ranges flagged as approximate historical figures (not trial results).',
+  'ACNS2321 — the registry implies 1.5 Gy/fraction in all strata (16 / 20 / 24 fractions in total); the source tool’s 0.75 / 0.9 / 1 Gy per fraction was inconsistent and has been replaced.',
+  'ACNS1123 germinoma — PR patients received 24 Gy WVI (not “not clearly stratified”); endpoint was PFS (94.5 %), and the trial formally failed its non-inferiority design. DOI corrected (noab270).',
+  'ACNS0122 — citation corrected to J Clin Oncol 2015;33(22):2464–2471, doi:10.1200/JCO.2014.59.5132.',
+  'SIOP CNS GCT 96 germinoma — the combined arm used focal RT (not WVI 24 + 16 Gy); ventricular relapses outside the field motivated WVI.',
+  'Relapse — Callec 2020 DOI corrected (ejca.2020.06.012); NGGCT 5-y EFS 56 % / OS 60 % belong to Callec, not Murray 2017 (Murray: 5-y OS 9 %); Murray 2017 DOI is ijc.30755.',
+  'Relapse — Abu-Arja 2022: initial AFP ≤ 25 ng/mL WAS associated with survival (source tool stated the opposite).',
+  'Relapse — GemPOx phase II first author is Shatara M (Finlay JL senior author), Neurooncol Pract 2024;11(2):188–198.',
+  'Relapse — NCT05650749 (GPC2 CAR-T) is a neuroblastoma / retinoblastoma trial, not a CNS GCT trial — removed.',
+  'ACNS2021 — registry status is RECRUITING (one source tool said “not recruiting”); the source’s mention of “EU-RHAB registry” for NGGCT salvage was erroneous and dropped.'
+];
+
+var ENTITIES = { atrt: ATRT, gct: GCT };
+
+// ═══ THÈME ═══
+var THEME_KEY = 'theme-neuro-onco-atlas';
+function initTheme() {
+  try { if (localStorage.getItem(THEME_KEY) === 'light') applyTheme('light'); } catch (e) {}
+}
+function toggleTheme() {
+  applyTheme(document.body.classList.contains('light') ? 'dark' : 'light');
+}
+function applyTheme(mode) {
+  var btn = document.getElementById('btn-theme');
+  if (mode === 'light') {
+    document.body.classList.add('light');
+    btn.textContent = '☀'; btn.title = 'Switch to dark mode';
+    try { localStorage.setItem(THEME_KEY, 'light'); } catch (e) {}
+  } else {
+    document.body.classList.remove('light');
+    btn.textContent = '◑'; btn.title = 'Switch to light mode';
+    try { localStorage.setItem(THEME_KEY, 'dark'); } catch (e) {}
+  }
+}
+
+// ═══ ROUTAGE ═══
+var FILTERS = {};
+function go(h) { if (location.hash === h) { route(); } else { location.hash = h; } }
+function fixLayout() {
+  var hh = document.querySelector('header').offsetHeight;
+  document.getElementById('crumbs').style.top = hh + 'px';
+}
+function route() {
+  var h = location.hash.replace(/^#\/?/, '');
+  var p = h ? h.split('/') : [];
+  document.getElementById('tt').style.display = 'none';
+  if (p[0] === 'e' && ENTITIES[p[1]]) {
+    if (p[2] === 's' && ENTITIES[p[1]].situations[p[3]]) renderSit(p[1], p[3]);
+    else renderEntity(p[1], p[2] === 'flow' ? 'flow' : 'map');
+  } else {
+    renderHome();
+  }
+  window.scrollTo(0, 0);
+}
+function setCrumbs(items) {
+  var html = '<a onclick="go(\'#/\')">Atlas</a>';
+  items.forEach(function(it) {
+    html += '<span class="sep">›</span>' + (it.h ? '<a onclick="go(\'' + it.h + '\')">' + it.t + '</a>' : '<span class="cur">' + it.t + '</span>');
+  });
+  document.getElementById('crumbs').innerHTML = html;
+}
+
+// ═══ RENDU — ACCUEIL ═══
+function renderHome() {
+  setCrumbs([]);
+  var cards = '';
+  Object.keys(ENTITIES).forEach(function(k) {
+    var e = ENTITIES[k];
+    var n = Object.keys(e.situations).length;
+    cards += '<div class="ent-card" onclick="go(\'#/e/' + k + '\')">'
+      + '<div class="ent-fam">' + e.family + '</div>'
+      + '<div class="ent-name">' + e.name + '</div>'
+      + '<div class="ent-desc">' + e.desc + '</div>'
+      + '<div class="ent-meta"><span class="chip">' + n + ' situations</span>'
+      + e.sources.map(function(s) { return '<span class="chip ' + s.c + '">' + s.t + '</span>'; }).join('')
+      + '</div></div>';
+  });
+  PLANNED.forEach(function(e) {
+    cards += '<div class="ent-card planned"><div class="ent-fam">' + e.family + '</div>'
+      + '<div class="ent-name">' + e.name + '</div><div class="ent-desc">' + e.desc + '</div>'
+      + '<div class="ent-meta"><span class="chip pend">planned</span></div></div>';
+  });
+  var riskRows = Object.keys(RISK).map(function(k) {
+    return '<div class="legend-row"><span class="risk-badge ' + k + '">' + k.toUpperCase() + '</span>' + RISK[k] + '</div>';
+  }).join('');
+  var evRows = Object.keys(EVIDENCE).map(function(k) {
+    return '<div class="legend-row"><span class="ev ' + k + '">' + EVIDENCE[k].l + '</span>' + EVIDENCE[k].d + '</div>';
+  }).join('');
+  document.getElementById('view').innerHTML =
+    '<div class="hero"><h1>One clinical situation, one card.</h1>'
+    + '<p>Each entity opens on a <strong>decision map</strong> of its final clinical situations. Every situation card follows the same template — definition, outcomes, chemotherapy, radiotherapy (timing · volumes · doses), notes, references — with competing protocols shown <strong>side by side</strong>. Research protocols also keep an interactive flowchart.</p></div>'
+    + '<div class="section-label">Entities</div><div class="ent-grid">' + cards + '</div>'
+    + '<div class="section-label">Reading keys</div><div class="legend">'
+    + '<div class="legend-box"><div class="r-label">Situation colour</div>' + riskRows + '</div>'
+    + '<div class="legend-box"><div class="r-label">Level of evidence (per protocol column)</div>' + evRows + '</div></div>'
+    + '<div class="section-label">Source audit — v0.1</div>'
+    + '<details class="ctx"><summary>Corrections made vs the original HTML tools (' + CHANGELOG.length + ')</summary><div class="ctx-body"><ul>'
+    + CHANGELOG.map(function(c) { return '<li>' + c + '</li>'; }).join('')
+    + '</ul><p>References checked against PubMed and trial identifiers against ClinicalTrials.gov (October 2026). Items marked <span class="chip verify">⚠ verify</span> in the cards still need checking against the protocols.</p></div></details>'
+    + '<div class="print-footer">Pediatric Neuro-Oncology Atlas — decision support, does not replace the official protocols or MDT judgement.</div>';
+}
+
+// ═══ RENDU — ENTITÉ ═══
+function tagMatch(sit, f) {
+  for (var ax in f) {
+    if (!f[ax]) continue;
+    var v = sit.tags[ax];
+    if (v !== 'any' && v !== f[ax]) return false;
+  }
+  return true;
+}
+function setFilter(eid, ax, v) {
+  FILTERS[eid] = FILTERS[eid] || {};
+  FILTERS[eid][ax] = FILTERS[eid][ax] === v ? null : v;
+  renderEntity(eid, 'map', true);
+}
+function resetFilters(eid) { FILTERS[eid] = {}; renderEntity(eid, 'map', true); }
+
+function renderEntity(eid, tab, keepScroll) {
+  var e = ENTITIES[eid];
+  setCrumbs([ { t: e.name } ]);
+  var f = FILTERS[eid] || {};
+  var html = '<div class="ent-head"><div><div class="ent-fam">' + e.family + '</div><h1>' + e.name + '</h1><div class="sub">' + e.desc + '</div></div>'
+    + '<div class="ent-srcs">' + e.sources.map(function(s) { return '<span class="chip ' + s.c + '">' + s.t + '</span>'; }).join('') + '</div></div>';
+  html += '<div class="id-strip">' + e.identity.map(function(i) { return '<div class="id-cell"><div class="id-k">' + i.k + '</div><div class="id-v">' + i.v + '</div></div>'; }).join('') + '</div>';
+  html += e.alerts.map(function(a) { return '<div class="alert ' + a.c + '">' + a.t + '</div>'; }).join('');
+  html += '<div class="view-tabs"><button class="view-tab' + (tab === 'map' ? ' active' : '') + '" onclick="go(\'#/e/' + eid + '\')">⬡ Decision map</button>'
+    + (e.flow ? '<button class="view-tab' + (tab === 'flow' ? ' active' : '') + '" onclick="go(\'#/e/' + eid + '/flow\')">⬡ Interactive flowchart</button>' : '') + '</div>';
+
+  if (tab === 'flow') {
+    html += '<div class="flow-hint">Hover a final node for the summary · click it to open the full situation card · drag / pinch to pan and zoom</div>'
+      + '<div id="flowHost"><svg id="chart"></svg><button class="btn-reset-zoom" id="btnReset">⊙ Recentre</button>'
+      + '<div class="flow-legend"><div class="leg-it"><div class="leg-dot" style="background:#1a5fa8"></div>Decision</div>'
+      + '<div class="leg-it"><div class="leg-dot" style="background:#2d7a3a"></div>Low risk</div><div class="leg-it"><div class="leg-dot" style="background:#388bfd"></div>Standard</div>'
+      + '<div class="leg-it"><div class="leg-dot" style="background:#c0392b"></div>High risk</div><div class="leg-it"><div class="leg-dot" style="background:#a0720a"></div>Special</div>'
+      + '<div class="leg-it"><div class="leg-dot" style="background:#6b3fa0"></div>Infant / HDCT</div><div class="leg-it"><div class="leg-dot" style="background:#888"></div>Off protocol</div></div></div>';
+    document.getElementById('view').innerHTML = html;
+    var hh = document.querySelector('header').offsetHeight + document.getElementById('crumbs').offsetHeight;
+    document.getElementById('flowHost').style.height = Math.max(480, window.innerHeight - hh - 60) + 'px';
+    buildFlow(e);
+    return;
+  }
+
+  // Filtres
+  html += '<div class="filters">' + e.axes.map(function(ax) {
+    return '<div class="f-row"><span class="f-lbl">' + ax.label + '</span>' + ax.opts.map(function(o) {
+      return '<button class="f-btn' + (f[ax.id] === o.v ? ' on' : '') + '" onclick="setFilter(\'' + eid + '\',\'' + ax.id + '\',\'' + o.v + '\')">' + o.l + '</button>';
+    }).join('') + '</div>';
+  }).join('') + '<div class="f-row"><button class="f-reset" onclick="resetFilters(\'' + eid + '\')">reset filters</button></div></div>';
+
+  // Carte des situations
+  e.groups.forEach(function(g) {
+    html += '<div class="grp"><div class="grp-title">' + g.t + '</div><div class="tiles">';
+    g.ids.forEach(function(sid) {
+      var s = e.situations[sid];
+      var dim = tagMatch(s, f) ? '' : ' dim';
+      html += '<div class="sit-tile ' + s.risk + dim + '" onclick="go(\'#/e/' + eid + '/s/' + sid + '\')">'
+        + '<div class="tile-top"><div class="tile-title">' + s.title + '</div><span class="risk-badge ' + s.risk + '">' + s.risk.toUpperCase() + '</span></div>'
+        + '<div class="tile-arms">' + s.arms.map(function(a) {
+            return '<div class="tile-arm"><span class="chip ' + a.pc + '">' + shortProto(a.proto) + '</span><span class="k">' + a.key + '</span></div>';
+          }).join('') + '</div></div>';
+    });
+    html += '</div></div>';
+  });
+
+  // Contexte
+  html += '<div class="section-label">Reference sections</div>';
+  e.context.forEach(function(c) { html += '<details class="ctx"><summary>' + c.t + '</summary><div class="ctx-body">' + c.h + '</div></details>'; });
+  html += '<details class="ctx"><summary>Clinical trials</summary><div class="ctx-body"><div class="trial-grid">' + e.trials.map(function(t) {
+    var link = /^NCT\d{8}$/.test(t.id) ? '<a class="nct" href="https://clinicaltrials.gov/study/' + t.id + '" target="_blank">' + t.id + '</a>' : '<span class="nct">' + t.id + '</span>';
+    return '<div class="trial-card"><div class="trial-top">' + link + '<span class="st ' + t.st + '">' + t.stl + '</span></div><div class="trial-title">' + t.t + '</div><div class="trial-meta">' + t.m + '</div></div>';
+  }).join('') + '</div></div></details>';
+  html += '<details class="ctx"><summary>References</summary><div class="ctx-body">' + refsHtml(e, Object.keys(e.refs)) + '</div></details>';
+  document.getElementById('view').innerHTML = html;
+}
+function shortProto(p) {
+  if (p.indexOf('SIOP CNS GCT II') === 0) return 'SIOP GCT II';
+  if (p.indexOf('Option A') === 0) return 'Option A';
+  if (p.indexOf('Option B') === 0) return 'Option B';
+  if (p.indexOf('Consensus') === 0) return 'Consensus';
+  return p;
+}
+
+// ═══ RENDU — CARTE SITUATION ═══
+function outcomesHtml(a) {
+  var rows = a.out.map(function(o) {
+    return '<div class="outcome-row"><span class="outcome-label">' + o.l + '</span><span class="outcome-val ' + (o.c || 'ov-neu') + '">' + o.v + '</span></div>';
+  }).join('');
+  return '<div class="blk"><div class="r-label">Efficacy data ' + (a.refs ? '<sup>[' + a.refs.join(',') + ']</sup>' : '') + '</div>'
+    + '<div class="outcomes-block">' + rows + '</div>'
+    + (a.outV ? '<div class="o-note"><span class="chip verify">⚠ verify</span> approximate historical ranges — not trial results</div>' : '')
+    + (a.outNote ? '<div class="o-note">' + a.outNote + '</div>' : '') + '</div>';
+}
+function rtHtml(a) {
+  if (!a.rt) return '<div class="blk"><div class="r-label">Radiotherapy</div><div class="no-rt-box">' + a.noRt + '</div></div>';
+  var r = a.rt;
+  return '<div class="blk"><div class="rt-block"><div class="rt-block-title">Radiotherapy — Timing · Volumes · Doses</div>'
+    + '<div class="rt-section"><div class="rt-section-hdr">Timing</div><div class="rt-note">' + r.timing + '</div></div>'
+    + '<div class="rt-section"><div class="rt-section-hdr">Target volumes</div>' + r.vol.map(function(v) {
+        return '<div class="rt-box"><div class="rt-box-label">' + v.l + '</div><div class="rt-box-val">' + v.v + '</div></div>';
+      }).join('') + '</div>'
+    + '<div class="rt-section"><div class="rt-section-hdr">Prescribed doses</div>' + r.doses.map(function(d) {
+        return '<div class="rt-box"><div class="rt-box-label">' + d.l + '</div><div class="rt-box-val"><span class="rt-dose ' + (d.c || '') + '">' + d.d + '</span>'
+          + (d.s ? '<div class="rt-sub">' + d.s + '</div>' : '') + '</div></div>';
+      }).join('') + '</div>'
+    + (r.verify ? '<div class="rt-section"><span class="chip verify">⚠ verify</span> <span class="rt-sub">' + r.verify + '</span></div>' : '')
+    + '</div></div>';
+}
+function armHtml(a) {
+  return '<div class="arm"><div class="arm-head ' + a.pc + '"><div><div class="arm-proto">' + a.proto + '</div><div class="arm-sub">' + a.label + '</div></div>'
+    + '<span class="ev ' + a.ev + '" title="' + EVIDENCE[a.ev].d + '">' + EVIDENCE[a.ev].l + '</span></div>'
+    + '<div class="arm-body">' + outcomesHtml(a)
+    + '<div class="blk"><div class="r-label">Chemotherapy</div><div class="r-val">' + a.chemo + '</div></div>'
+    + rtHtml(a)
+    + (a.verifyArm ? '<div class="blk"><span class="chip verify">⚠ verify</span> <span class="rt-sub">' + a.verifyArm + '</span></div>' : '')
+    + '</div></div>';
+}
+function refsHtml(e, ids) {
+  return ids.map(function(n) {
+    var r = e.refs[n];
+    if (!r) return '';
+    var links = [];
+    if (r.doi) links.push('<a href="https://doi.org/' + r.doi + '" target="_blank">doi:' + r.doi + '</a>');
+    if (r.nct) links.push('<a href="https://clinicaltrials.gov/study/' + r.nct + '" target="_blank">' + r.nct + '</a>');
+    return '<div class="ref-item"><span class="ref-num">' + n + '</span><div><div class="ref-authors">' + r.a + '</div>'
+      + '<div class="ref-title-text">' + r.t + '</div><div class="ref-journal">' + r.j + (links.length ? ' · ' + links.join(' · ') : '') + '</div>'
+      + (r.n ? '<div class="ref-note">' + r.n + '</div>' : '') + '</div></div>';
+  }).join('');
+}
+function sitOrder(e) {
+  var ids = [];
+  e.groups.forEach(function(g) { ids = ids.concat(g.ids); });
+  return ids;
+}
+function renderSit(eid, sid) {
+  var e = ENTITIES[eid], s = e.situations[sid];
+  setCrumbs([ { t: e.name, h: '#/e/' + eid }, { t: s.badge } ]);
+  var order = sitOrder(e), i = order.indexOf(sid);
+  var refIds = [];
+  s.arms.forEach(function(a) { (a.refs || []).forEach(function(r) { if (refIds.indexOf(r) < 0) refIds.push(r); }); });
+  var noteRefs = (s.notes || '').match(/\[(\d+)/g) || [];
+  noteRefs.forEach(function(m) { var n = parseInt(m.slice(1), 10); if (refIds.indexOf(n) < 0) refIds.push(n); });
+  refIds.sort(function(a, b) { return a - b; });
+  var arms = s.arms.map(armHtml).join('');
+  if (e.pending) arms += e.pending.map(function(p) {
+    return '<div class="arm pending"><div class="arm-head"><div><div class="arm-proto">' + p.proto + '</div><div class="arm-sub">future column</div></div><span class="ev pend">' + EVIDENCE.pend.l + '</span></div><div class="arm-body">' + p.t + '</div></div>';
+  }).join('');
+  var html = '<button class="btn-back" onclick="go(\'#/e/' + eid + '\')">← Decision map</button>'
+    + '<div class="sit-card ' + s.risk + '"><div class="sit-head"><div><div class="sit-ent">' + e.name + '</div><div class="sit-title">' + s.title + '</div></div>'
+    + '<span class="risk-badge ' + s.risk + '">' + s.badge + '</span></div><div class="sit-body">'
+    + '<div class="r-label">Situation definition</div><div class="def-grid">' + s.def.map(function(d) {
+        return '<div class="def-cell"><div class="def-k">' + d.k + '</div><div class="def-v">' + d.v + '</div></div>';
+      }).join('') + '</div>'
+    + '<div class="r-label">Treatment ' + (s.arms.length > 1 || e.pending ? '— protocols side by side' : '') + '</div>'
+    + '<div class="arms">' + arms + '</div>'
+    + (s.notes ? '<div class="common"><div class="r-label">⚠ Clinical notes</div><div class="note-box">' + s.notes + '</div></div>' : '')
+    + '<div class="refs-list"><div class="r-label">References</div>' + refsHtml(e, refIds) + '</div>'
+    + '<div class="sit-actions"><div style="display:flex;gap:8px">'
+    + '<button class="btn" ' + (i > 0 ? 'onclick="go(\'#/e/' + eid + '/s/' + order[i - 1] + '\')"' : 'disabled') + '>← Previous</button>'
+    + '<button class="btn" ' + (i < order.length - 1 ? 'onclick="go(\'#/e/' + eid + '/s/' + order[i + 1] + '\')"' : 'disabled') + '>Next →</button></div>'
+    + '<button class="btn" onclick="window.print()">⬇ Export PDF</button></div>'
+    + '<div class="print-footer">Pediatric Neuro-Oncology Atlas — ' + e.name + ' — decision support, does not replace the official protocols or MDT judgement.</div>'
+    + '</div></div>';
+  document.getElementById('view').innerHTML = html;
+}
+
+// ═══ LOGIGRAMME D3 ═══
+var NODE_STYLE = {
+  d:   { fill: '#dce8f5', stroke: '#1a5fa8', tc: '#0a1020' },
+  lr:  { fill: '#d5edd8', stroke: '#2d7a3a', tc: '#0a1a0a' },
+  sr:  { fill: '#d5e4f5', stroke: '#388bfd', tc: '#0a1020' },
+  hr:  { fill: '#f5d8d5', stroke: '#c0392b', tc: '#200505' },
+  sp:  { fill: '#f5ead5', stroke: '#a0720a', tc: '#201000' },
+  inf: { fill: '#ece0f5', stroke: '#6b3fa0', tc: '#100020' },
+  off: { fill: '#e8e8e8', stroke: '#888888', tc: '#333333' }
+};
+function buildFlow(e) {
+  var host = document.getElementById('flowHost');
+  var W = host.clientWidth || window.innerWidth, H = host.clientHeight || 600;
+  var NW = 132, NH = 44, DY = 112;
+  var svg = d3.select('#chart').attr('width', W).attr('height', H);
+  svg.selectAll('*').remove();
+  svg.append('defs').append('marker').attr('id', 'arr').attr('viewBox', '0 -5 10 10').attr('refX', 9).attr('refY', 0)
+    .attr('markerWidth', 6).attr('markerHeight', 6).attr('orient', 'auto')
+    .append('path').attr('d', 'M0,-5L10,0L0,5').attr('fill', '#6e7681');
+  var g = svg.append('g');
+  var root = d3.hierarchy(e.flow, function(d) { return d.children; });
+  d3.tree().nodeSize([NW + 18, DY]).separation(function(a, b) { return a.parent === b.parent ? 1 : 1.15; })(root);
+
+  root.links().forEach(function(l) {
+    var sx = l.source.x, sy = l.source.y + NH / 2, tx = l.target.x, ty = l.target.y - NH / 2, my = (sy + ty) / 2;
+    g.append('path').attr('d', 'M' + sx + ',' + sy + ' C' + sx + ',' + my + ' ' + tx + ',' + my + ' ' + tx + ',' + ty)
+      .attr('fill', 'none').attr('stroke', '#6e7681').attr('stroke-width', 1.3).attr('marker-end', 'url(#arr)');
+    if (l.target.data.e) {
+      var lx = tx, ly = ty - 12;
+      g.append('text').attr('x', lx).attr('y', ly).attr('text-anchor', 'middle').attr('font-size', '8.5')
+        .attr('font-family', 'DM Mono, monospace').attr('fill', '#8b949e').text(l.target.data.e);
+    }
+  });
+
+  var tt = document.getElementById('tt');
+  root.descendants().forEach(function(n) {
+    var sid = n.data.sid, sit = sid ? e.situations[sid] : null;
+    var st = NODE_STYLE[sit ? sit.risk : 'd'];
+    var grp = g.append('g').attr('transform', 'translate(' + (n.x - NW / 2) + ',' + (n.y - NH / 2) + ')').style('cursor', sit ? 'pointer' : 'default');
+    grp.append('rect').attr('width', NW).attr('height', NH).attr('rx', sit ? 8 : 4)
+      .attr('fill', st.fill).attr('stroke', st.stroke).attr('stroke-width', sit ? 2 : 1.4);
+    grp.append('text').attr('x', NW / 2).attr('y', n.data.s ? 18 : 26).attr('text-anchor', 'middle')
+      .attr('font-size', '10').attr('font-family', 'DM Mono, monospace').attr('font-weight', '500').attr('fill', st.tc).text(n.data.l);
+    if (n.data.s) grp.append('text').attr('x', NW / 2).attr('y', 32).attr('text-anchor', 'middle')
+      .attr('font-size', '8.5').attr('font-family', 'DM Sans, sans-serif').attr('fill', st.tc).text(n.data.s);
+    if (sit) {
+      grp.on('mousemove', function(ev) { showTT(ev, sit); })
+        .on('mouseleave', function() { tt.style.display = 'none'; })
+        .on('click', function() { tt.style.display = 'none'; go('#/e/' + e.id + '/s/' + sid); });
+    }
+  });
+
+  var ns = root.descendants();
+  var minX = d3.min(ns, function(n) { return n.x; }) - NW, maxX = d3.max(ns, function(n) { return n.x; }) + NW;
+  var minY = -NH - 10, maxY = d3.max(ns, function(n) { return n.y; }) + NH + 20;
+  var sc = Math.min(W / (maxX - minX), H / (maxY - minY), 1.2) * 0.92;
+  var initT = d3.zoomIdentity.translate(W / 2 - (minX + maxX) / 2 * sc, H / 2 - (minY + maxY) / 2 * sc).scale(sc);
+  var zoom = d3.zoom().scaleExtent([0.15, 3]).on('zoom', function(ev) { g.attr('transform', ev.transform); });
+  svg.call(zoom); svg.call(zoom.transform, initT);
+  document.getElementById('btnReset').onclick = function() { svg.transition().duration(600).call(zoom.transform, initT); };
+
+  function showTT(ev, s) {
+    var html = '<div class="tt-title">' + s.badge + '</div><div class="tt-q">' + s.title + '</div>';
+    s.arms.forEach(function(a) {
+      var first = a.out && a.out.length ? a.out[0].l + ': ' + a.out[0].v : '';
+      html += '<div class="tt-section"><div class="tt-section-lbl">' + a.proto + ' · ' + a.label + '</div>'
+        + '<div class="tt-val">' + a.key + '</div>' + (first ? '<div class="tt-out">' + first + '</div>' : '') + '</div>';
+    });
+    html += '<div class="tt-hint">Click to open the full card</div>';
+    tt.innerHTML = html; tt.style.display = 'block';
+    var x = ev.clientX + 16, y = ev.clientY - 10;
+    if (x + 330 > window.innerWidth) x = ev.clientX - 340;
+    if (y + tt.offsetHeight > window.innerHeight) y = window.innerHeight - tt.offsetHeight - 10;
+    tt.style.left = x + 'px'; tt.style.top = Math.max(10, y) + 'px';
+  }
+}
+
+// ═══ INIT ═══
+initTheme();
+fixLayout();
+window.addEventListener('resize', fixLayout);
+window.addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>
