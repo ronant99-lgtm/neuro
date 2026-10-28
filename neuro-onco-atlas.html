@@ -1218,11 +1218,11 @@ var EPEN = {
   id: 'epen', name: 'Ependymoma', short: 'EPN', family: 'Glial tumours', status: 'ready',
   desc: 'Site, extent of resection, grade, age and dissemination — COG ACNS0121 / ACNS0831 evidence, SIOP Ependymoma II column reserved.',
   sources: [ { t: 'COG ACNS0121 · ACNS0831', c: 'cog' }, { t: 'SIOP Ependymoma II — pending', c: 'pend' }, { t: 'Proton series', c: 'lit' } ],
-  pending: [ { proto: 'SIOP Ependymoma II', t: 'NCT02265770 (Centre Léon Bérard, recruiting) — protocol data to be integrated side by side.' } ],
+  pending: [ { proto: 'SIOP Ependymoma II', t: 'NCT02265770 (Centre Léon Bérard, recruiting) — protocol not public; column reserved.' } ],
   identity: [
     { k: 'Molecular groups', v: 'PF-A, PF-B, ST-ZFTA (formerly RELA), ST-YAP1, spinal groups <sup>[5]</sup>' },
     { k: 'Main prognostic factor', v: 'Extent of resection (GTR / NTR vs STR) <sup>[1,2,3]</sup>' },
-    { k: 'Infratentorial 1q gain', v: '5-y EFS 47.4 % vs 82.8 % without (ACNS0121) <sup>[2]</sup>' },
+    { k: 'PF 1q gain / 6q loss', v: 'ACNS0831: 5-y EFS 34 % (1q+) vs 71 %; 19 % (6q−) vs 64 % <sup>[3]</sup>. ACNS0121: 47.4 % vs 82.8 % <sup>[2]</sup>' },
     { k: 'Chemotherapy', v: 'No benefit of post-RT maintenance in ACNS0831 <sup>[3]</sup>' }
   ],
   alerts: [ { c: '', t: 'Corrected vs source: ACNS0831 is published (2026, negative); the trial called “ACNS1123 molecular RT for ependymoma, NCT02265978” does not exist (ACNS1123 is a GCT trial; NCT02265978 is unrelated); SIOP EP-II is NCT02265770, not NCT02589652.' } ],
@@ -1235,7 +1235,7 @@ var EPEN = {
   refs: {
     1: { a: 'Merchant TE, Li C, Xiong X, et al.', t: 'Conformal radiotherapy after surgery for paediatric ependymoma: a prospective study', j: 'Lancet Oncol. 2009;10(3):258–266', doi: '10.1016/S1470-2045(08)70342-5', n: 'n = 153; 59.4 Gy (n = 131) or 54 Gy (n = 22), 10 mm margin. 7-y LC 87.3 %, EFS 69.1 %, OS 81.0 %; brainstem necrosis 1.6 %, secondary brain tumour 2.3 %. Corrected (source: LC 84 %, n = 88 + 153).' },
     2: { a: 'Merchant TE, Bendel AE, Sabin ND, et al.', t: 'Conformal radiation therapy for pediatric ependymoma, chemotherapy for incompletely resected ependymoma, and observation for completely resected, supratentorial ependymoma (ACNS0121)', j: 'J Clin Oncol. 2019;37(12):974–983', doi: '10.1200/JCO.18.01765', n: 'n = 356, 1–21 y; CTV margin 1.0 cm; 59.4 Gy except GTR < 18 months (54 Gy). 5-y EFS: observation 61.4 %, STR 37.2 %, NTR/GTR + CRT 68.5 %.' },
-    3: { a: 'Smith, et al. — Children’s Oncology Group', t: 'Phase 3 randomized trial of postirradiation chemotherapy in patients with newly diagnosed ependymoma (ACNS0831)', j: 'Neuro Oncol. 2026;28(5):1286–1297', doi: '10.1093/neuonc/noaf285', nct: 'NCT01096368', n: 'Randomized GTR/NTR/CR (n = 325): 5-y EFS 63.7 % RT vs 69.2 % RT-chemo (NS); OS 86.9 % vs 88.3 %. STR → RT-chemo: EFS 33.6 %, OS 74 %. Supratentorial grade 2 GTR observed: EFS 66.9 %, OS 100 %.' },
+    3: { a: 'Smith, et al. — Children’s Oncology Group', t: 'Phase 3 randomized trial of postirradiation chemotherapy in patients with newly diagnosed ependymoma (ACNS0831)', j: 'Neuro Oncol. 2026;28(5):1286–1297', doi: '10.1093/neuonc/noaf285', nct: 'NCT01096368', n: 'Randomized GTR/NTR/CR (n = 325): 5-y EFS 63.7 % RT vs 69.2 % RT-chemo (NS); OS 86.9 % vs 88.3 %. STR → RT-chemo: EFS 33.6 %, OS 74 %. Supratentorial grade 2 GTR observed: EFS 66.9 %, OS 100 %. RT 59.4 Gy (54 Gy if < 18 months and GTR), CTV margin 0.5 cm for all. PF-A 1q gain: 5-y EFS 34 % / OS 62 % vs 71 % / 92 %.' },
     4: { a: 'Indelicato DJ, et al.', t: 'Proton therapy for pediatric ependymoma: mature results from a bicentric study', j: 'Int J Radiat Oncol Biol Phys. 2021;110(3):815–820', doi: '10.1016/j.ijrobp.2021.01.027', n: 'n = 386; median 55.8 Gy RBE. 7-y LC 77 %, PFS 63.8 %, OS 82.2 %; STR LC 59 % vs 80 %; hearing aids 5.4 %. Citation corrected (source: 110(1):155–165).' },
     5: { a: 'Pajtler KW, Witt H, Sill M, et al.', t: 'Molecular classification of ependymal tumors across all CNS compartments, histopathological grades, and age groups', j: 'Cancer Cell. 2015;27(5):728–743', doi: '10.1016/j.ccell.2015.04.002' }
   },
@@ -1250,9 +1250,9 @@ var EPEN = {
         chemo: 'None — post-RT maintenance (cisplatin, etoposide, vincristine, cyclophosphamide) did not improve EFS or OS in ACNS0831 <sup>[3]</sup>.',
         rt: {
           timing: 'Immediate post-operative.',
-          vol: [ { l: 'GTV', v: 'Tumour bed + any residual' }, { l: 'CTV', v: 'GTV + 1.0 cm (ACNS0121); 0.5 cm in ACNS0831 per source tool' }, { l: 'Posterior fossa', v: 'Cover lateral recess / foramen of Luschka extension carefully' } ],
+          vol: [ { l: 'GTV', v: 'Tumour bed + any residual' }, { l: 'CTV', v: 'GTV + 0.5 cm (ACNS0831, all patients); 1.0 cm in ACNS0121' }, { l: 'Posterior fossa', v: 'Cover lateral recess / foramen of Luschka extension carefully' } ],
           doses: [ { l: 'Focal', d: '59.4 Gy / 33 fr / 1.8 Gy' } ],
-          verify: 'ACNS0831 CTV margin (0.5 cm) and OAR limits (cord D10 % < 57 Gy, brainstem D10 % ≤ 63 Gy, per source) to confirm in protocol.'
+          verify: 'COG OAR limits (cord D10 % < 57 Gy, brainstem D10 % ≤ 63 Gy) come from the source tool — not reported in the ACNS0831 paper.'
         },
         refs: [ 2, 3 ]
       }, {
@@ -1266,7 +1266,7 @@ var EPEN = {
         },
         refs: [ 4 ]
       } ],
-      notes: 'Molecular group (PF-A with 1q gain, ST-ZFTA) carries the worst outcomes; PF-B the best — not yet used to modulate dose outside trials.'
+      notes: 'PF-A with 1q gain and / or 6q loss is a prospectively confirmed high-risk group (ACNS0831: 5-y EFS 34 % with 1q gain, 19 % with 6q loss); PF-B has the best outcome. A new COG trial will target PF-A 1q+/6q− <sup>[3]</sup>.'
     },
     'ep-young': {
       title: 'Ependymoma 12–18 months — GTR', risk: 'inf', badge: 'EPN · 12–18 MO',
