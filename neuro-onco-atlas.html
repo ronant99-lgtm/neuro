@@ -85,6 +85,7 @@ body.light .ent-card, body.light .sit-tile, body.light .sit-card, body.light .ar
 .chip.siop { color: var(--blue); border-color: rgba(56,139,253,.4); background: rgba(56,139,253,.08); }
 .chip.lit { color: var(--purple); border-color: rgba(163,113,247,.4); background: rgba(163,113,247,.08); }
 .chip.pend { color: var(--text3); border-style: dashed; }
+.chip.siop3 { color: var(--cyan); border-color: rgba(57,197,207,.45); background: rgba(57,197,207,.08); }
 .chip.verify { color: var(--yellow); border-color: rgba(210,153,34,.45); background: rgba(210,153,34,.08); }
 .ev { font-family: 'DM Mono', monospace; font-size: 9px; padding: 2px 8px; border-radius: 20px; white-space: nowrap; display: inline-block; border: 1px solid; }
 .ev.rct { color: var(--green); border-color: rgba(63,185,80,.45); }
@@ -194,7 +195,7 @@ table.t tr:hover td { background: var(--surface2); }
 .arms { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); align-items: start; }
 .arm { background: var(--surface); border: 1px solid var(--border2); border-radius: 8px; overflow: hidden; }
 .arm-head { padding: 10px 13px; background: var(--surface2); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; align-items: center; }
-.arm-head.cog { border-top: 3px solid var(--orange); } .arm-head.siop { border-top: 3px solid var(--blue); } .arm-head.lit { border-top: 3px solid var(--purple); }
+.arm-head.cog { border-top: 3px solid var(--orange); } .arm-head.siop { border-top: 3px solid var(--blue); } .arm-head.lit { border-top: 3px solid var(--purple); } .arm-head.siop3 { border-top: 3px solid var(--cyan); }
 .arm-proto { font-weight: 600; font-size: 13px; }
 .arm-sub { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text2); }
 .arm-body { padding: 12px 13px; }
@@ -537,22 +538,32 @@ var SIOP_GERM_CHEMO = '<strong>4 courses q21d, alternating:</strong><ul><li>Cour
 var COG_GERM_CHEMO = '<strong>Carboplatin</strong> d1 + <strong>Etoposide</strong> d1–3, q21d × 4 cycles (doses per COG protocol, not public). Response assessment after cycle 4: brain + spine MRI, serum + CSF hCGβ / AFP <sup>[1]</sup>.';
 var COG_NG_CHEMO = '<strong>6 cycles q21d:</strong> cycles 1, 3, 5 — Carboplatin d1 + Etoposide d1–3; cycles 2, 4, 6 — Ifosfamide d1–5 (+ MESNA) + Etoposide d1–5. G-CSF per institution. Response assessment after cycle 6 <sup>[2]</sup>.';
 var SIOP_PEI = '<strong>PEI (per course):</strong> Cisplatin 20 mg/m²/d d1–5 (+ mannitol unless DI) · Etoposide 100 mg/m²/d d1–3 · Ifosfamide 1500 mg/m²/d d1–5 (+ MESNA 1800 mg/m²/d, hydration 3 L/m²/d) <sup>[6]</sup>.';
-var GCT_PENDING = [ { proto: 'SIOP CNS GCT III', t: 'Slot reserved — protocol data to be integrated side by side when available.' } ];
+var GCT_PENDING = [ { proto: 'SIOPE GCT III', pc: 'siop3', t: 'Germinoma schema integrated; NGGCT, teratoma and relapse arms not yet available — slot reserved.' } ];
+var GCT3_CHEMO = '<strong>Carboplatin 600 mg/m² d1 + Etoposide 150 mg/m² d1–3</strong>, every 3 weeks × 4 cycles (single regimen, no ifosfamide; etoposide dose increased vs SIOP CNS GCT II). Central imaging review and RTQA <sup>[16]</sup>.';
+function gct3(label, key, vol, doses) {
+  return { proto: 'SIOPE GCT III', pc: 'siop3', label: label, ev: 'trial', key: key,
+    out: [ { l: 'SIOPE GCT III', v: 'ongoing — results pending', c: 'ov-neu' } ],
+    chemo: GCT3_CHEMO,
+    rt: { timing: 'After 4 cycles and response assessment (± surgery for residual disease).', vol: vol, doses: doses,
+      verify: 'Fractionation is not shown on the trial schema — confirm in the SIOPE GCT III protocol.' },
+    refs: [ 16 ] };
+}
 
 var GCT = {
   id: 'gct', name: 'Intracranial Germ Cell Tumours', short: 'CNS GCT', family: 'Germ cell tumours',
   status: 'ready', flowKind: 'research',
   desc: 'Germinoma, NGGCT, teratoma and relapse — COG (ACNS2321 / ACNS2021) and SIOP-E (SIOP CNS GCT II / ESCP 2021) side by side.',
-  sources: [ { t: 'COG ACNS2321', c: 'cog' }, { t: 'COG ACNS2021', c: 'cog' }, { t: 'SIOP CNS GCT II · ESCP 2021', c: 'siop' }, { t: 'SIOP CNS GCT III — pending', c: 'pend' }, { t: 'Relapse literature', c: 'lit' } ],
+  sources: [ { t: 'COG ACNS2321', c: 'cog' }, { t: 'COG ACNS2021', c: 'cog' }, { t: 'SIOP CNS GCT II · ESCP 2021', c: 'siop' }, { t: 'SIOPE GCT III (germinoma)', c: 'siop3' }, { t: 'Relapse literature', c: 'lit' } ],
   pending: GCT_PENDING,
   identity: [
     { k: 'Diagnosis without biopsy', v: 'SIOP: AFP > 25 ng/mL and/or HCG > 50 IU/L (serum or CSF) = secreting NGGCT. COG: hCGβ ≤ 50 (≤ 100 if bifocal / pineal + DI) with normal AFP = germinoma <sup>[1,6]</sup>' },
     { k: 'Mandatory staging', v: 'Brain + whole-spine MRI (before LP / surgery), serum AND CSF markers, lumbar CSF cytology ≥ 10 days post-surgery' },
     { k: 'Bifocal (pineal + suprasellar)', v: 'Treated as localized (non-metastatic) in both groups <sup>[6,9]</sup>' },
+    { k: 'SIOPE GCT III germinoma entry', v: 'Radiological or histological pure germinoma with hCG ≤ 100 and AFP ≤ 10 <sup>[16]</sup>' },
     { k: 'Units', v: 'hCG: 1 mIU/mL = 1 IU/L. AFP: ng/mL × 0.83 = kU/L' }
   ],
   alerts: [
-    { c: 'blue', t: 'Each situation shows <strong>COG and SIOP-E side by side</strong>. A third column is reserved for <strong>SIOP CNS GCT III</strong> once its data are available.' },
+    { c: 'blue', t: 'Each situation shows <strong>COG and SIOP-E side by side</strong>. A third column shows <strong>SIOPE GCT III</strong> for germinoma (trial schema 2026); for NGGCT, teratoma and relapse it remains reserved.' },
     { c: '', t: 'Response definitions differ: SIOP PR = volume reduction ≥ 50 % (ellipsoid volume). COG strata also depend on marker normalization and second-look surgery findings.' }
   ],
   axes: [
@@ -584,7 +595,8 @@ var GCT = {
     12: { a: 'Murray MJ, Bailey S, Heinemann K, et al.', t: 'Treatment and outcomes of UK and German patients with relapsed intracranial germ cell tumors following uniform first-line therapy', j: 'Int J Cancer. 2017;141(3):621–635', doi: '10.1002/ijc.30755', n: 'n = 58 relapses (13 germinoma / 45 NGGCT). Relapsed NGGCT with curative intent (n = 32): 5-y OS 9 % — 0 % with standard-dose chemo, 14 % with intended HDC + ASCR. Germinoma group 5-y OS 55 %.' },
     13: { a: 'Callec L, Lardy-Cleaud A, Guerrini-Rousseau L, et al.', t: 'Relapsing intracranial germ cell tumours warrant retreatment', j: 'Eur J Cancer. 2020;136:186–194', doi: '10.1016/j.ejca.2020.06.012', n: 'n = 44. Germinoma (n = 14): 5-y EFS 79 %, OS 86 %; 1 of 11 re-irradiated patients relapsed again. NGGCT (n = 25): 5-y EFS 56 %, OS 60 %; with vs without HDC 5-y OS 72 % vs 29 %. DOI corrected (source: 10.1016/j.ejca.2020.05.024).' },
     14: { a: 'Abu-Arja MH, Osorio DS, Lassaletta A, et al.', t: 'Prognostic factors for patients with relapsed central nervous system nongerminomatous germ cell tumors', j: 'Pediatr Blood Cancer. 2022;69(1):e29365', doi: '10.1002/pbc.29365', n: '9 studies, n = 101. Survivors: 71 % with CR/CCR at end of relapse therapy vs 7 %; 48 % with HDC + AuHCR vs 12 %; 60 % with initial AFP ≤ 25 ng/mL vs 28 %. Local relapse, GTR and RT at relapse not associated with outcome.' },
-    15: { a: 'Shatara M, Blue M, Stanek J, …, Finlay JL.', t: 'Final report of the phase II NEXT/CNS-GCT-4 trial: GemPOx followed by marrow-ablative chemotherapy for recurrent intracranial germ cell tumors', j: 'Neurooncol Pract. 2024;11(2):188–198', doi: '10.1093/nop/npad067', nct: 'NCT01270724', n: '9 patients: 7 proceeded to HDC + AuHPCR (5 then received RT), 2 progressed on GemPOx; mean follow-up 44 months, 4 alive without disease. First author corrected (source: Finlay JL).' }
+    15: { a: 'Shatara M, Blue M, Stanek J, …, Finlay JL.', t: 'Final report of the phase II NEXT/CNS-GCT-4 trial: GemPOx followed by marrow-ablative chemotherapy for recurrent intracranial germ cell tumors', j: 'Neurooncol Pract. 2024;11(2):188–198', doi: '10.1093/nop/npad067', nct: 'NCT01270724', n: '9 patients: 7 proceeded to HDC + AuHPCR (5 then received RT), 2 progressed on GemPOx; mean follow-up 44 months, 4 alive without disease. First author corrected (source: Finlay JL).' },
+    16: { a: 'SIOP Europe Brain Tumour Group', t: 'SIOPE GCT III — germinoma treatment schema', j: 'Trial flowchart, 2026 (protocol not public)', n: 'Entry: radiological or histological pure germinoma, hCG ≤ 100, AFP ≤ 10. Carboplatin 600 mg/m² d1 + etoposide 150 mg/m² d1–3 × 4. RT by site, stage and response; any scenario not described → trial MDT.' }
   },
   situations: {
     'g-loc-cr': {
@@ -613,8 +625,8 @@ var GCT = {
           verify: 'Fractionation not stated in source documents — check ESCP / protocol.'
         },
         refs: [ 6, 7 ]
-      } ],
-      notes: 'Main divergence: COG reduces WVI to 12 Gy but keeps a 12 Gy boost (24 Gy at primary); SIOP keeps 24 Gy WVI+TB and drops the boost (24 Gy at primary) for single-site CR. Residual after chemotherapy does not worsen prognosis in germinoma — watch-and-wait for small residuals <sup>[6]</sup>.'
+      }, gct3('Unifocal · CR (or PR + complete resection)', 'WVI 12 Gy + boost 12 Gy (24 Gy)', [ { l: 'WVI', v: 'Whole ventricular system' }, { l: 'Boost', v: 'Primary tumour' } ], [ { l: 'WVI', d: '12 Gy' }, { l: 'Boost', d: '+12 Gy → 24 Gy at primary', c: 'esc' } ]) ],
+      notes: 'Main divergence: COG reduces WVI to 12 Gy but keeps a 12 Gy boost (24 Gy at primary); SIOP CNS GCT II keeps 24 Gy WVI+TB and drops the boost (24 Gy at primary) for single-site CR. SIOPE GCT III now converges with COG (WVI 12 Gy + boost 12 Gy) <sup>[16]</sup>. Residual after chemotherapy does not worsen prognosis in germinoma — watch-and-wait for small residuals <sup>[6]</sup>.'
     },
     'g-loc-pr': {
       title: 'Localized germinoma — partial response', risk: 'lr', badge: 'GERMINOMA · LOC · PR',
@@ -642,8 +654,8 @@ var GCT = {
           verify: 'Fractionation not stated in source documents.'
         },
         refs: [ 6 ]
-      } ],
-      notes: 'Dose at primary for PR: 30 Gy (COG) vs 40 Gy (SIOP).'
+      }, gct3('Unifocal · PR', 'WVI 12 Gy + boost 18 Gy (30 Gy)', [ { l: 'WVI', v: 'Whole ventricular system' }, { l: 'Boost', v: 'Primary tumour' } ], [ { l: 'WVI', d: '12 Gy' }, { l: 'Boost', d: '+18 Gy → 30 Gy at primary', c: 'esc', s: 'PR followed by complete resection of the residual → treated as CR (12 + 12 Gy).' } ]) ],
+      notes: 'Dose at primary for PR: 30 Gy in COG ACNS2321 and SIOPE GCT III (with WVI 18 vs 12 Gy) vs 40 Gy in SIOP CNS GCT II.'
     },
     'g-loc-lt': {
       title: 'Localized germinoma — less than PR (stable disease)', risk: 'sr', badge: 'GERMINOMA · LOC · < PR',
@@ -670,7 +682,7 @@ var GCT = {
           doses: [ { l: 'Non-viable / pure germinoma at surgery', d: '24 Gy WVI+TB + 16 Gy → 40 Gy', c: 'esc' }, { l: 'Teratoma + germinoma', d: '24 Gy WVI+TB + 30 Gy → 54 Gy to gross disease', c: 'highesc' } ]
         },
         refs: [ 6 ]
-      } ],
+      }, gct3('Unifocal · PR with unresected teratoma', 'WVI 12 Gy + boost 42 Gy (54 Gy)', [ { l: 'WVI', v: 'Whole ventricular system' }, { l: 'Boost', v: 'Residual (unresected teratoma)' } ], [ { l: 'Unresected teratoma', d: 'WVI 12 Gy + boost 42 Gy → 54 Gy', c: 'highesc' }, { l: 'Stable disease / other scenarios', d: 'Trial MDT decision', s: 'Scenarios not described on the schema are decided after discussion with the trial MDT.' } ]) ],
       notes: 'Persistence despite chemotherapy should raise suspicion of a teratomatous component (growing teratoma) — second-look surgery is central in both groups.'
     },
     'g-bifocal': {
@@ -698,8 +710,8 @@ var GCT = {
           doses: [ { l: 'Any response, incl. CR', d: '24 Gy WVI+TB + 16 Gy boost → 40 Gy', c: 'esc', s: 'Boost omission is validated only for single-site CR — insufficient data for bifocal disease.' } ]
         },
         refs: [ 6 ]
-      } ],
-      notes: 'Divergence at CR: COG 24 Gy at the primaries (12 + 12) vs SIOP 40 Gy (24 + 16). Treat bifocal disease as metastatic only if staging (spine MRI, CSF cytology) shows dissemination.'
+      }, gct3('Bifocal', 'WVI 12 Gy + boost 12 or 18 Gy to both sites', [ { l: 'WVI', v: 'Whole ventricular system' }, { l: 'Boost', v: 'Both sites' } ], [ { l: 'CR', d: 'WVI 12 Gy + boost 12 Gy to both sites → 24 Gy' }, { l: 'PR at ≥ 1 site', d: 'WVI 12 Gy + boost 18 Gy to both sites → 30 Gy', c: 'esc' } ]) ],
+      notes: 'Divergence at CR: COG and SIOPE GCT III give 24 Gy at the primaries (12 + 12) vs 40 Gy in SIOP CNS GCT II (24 + 16). Treat bifocal disease as metastatic only if staging (spine MRI, CSF cytology) shows dissemination.'
     },
     'g-met-cr': {
       title: 'Metastatic germinoma — complete response', risk: 'lr', badge: 'GERMINOMA · M+ · CR',
@@ -727,7 +739,7 @@ var GCT = {
           verify: 'Fractionation not stated in source documents.'
         },
         refs: [ 6, 7 ]
-      } ],
+      }, gct3('Metastatic · CR', 'CSI 12 Gy + boost 12 Gy (primary + all mets)', [ { l: 'CSI', v: 'Whole neuraxis' }, { l: 'Boost', v: 'Primary and all metastatic sites' } ], [ { l: 'CSI', d: '12 Gy' }, { l: 'Boost', d: '+12 Gy → 24 Gy to primary and all mets', c: 'esc' } ]) ],
       notes: 'Opposite strategies: COG gives chemotherapy first and adapts the CSI dose to response; SIOP treats with CSI alone. Incompletely staged disease (no spine MRI or CSF cytology) → treat as metastatic (SIOP) <sup>[6]</sup>.'
     },
     'g-met-lt': {
@@ -755,7 +767,7 @@ var GCT = {
           doses: [ { l: 'CSI', d: '24 Gy' }, { l: 'Boost', d: '+16 Gy → 40 Gy', c: 'esc' } ]
         },
         refs: [ 6, 7 ]
-      } ],
+      }, gct3('Metastatic · PR at any site', 'CSI 12 Gy + boost 18 Gy (primary + all mets)', [ { l: 'CSI', v: 'Whole neuraxis' }, { l: 'Boost', v: 'Primary and all metastatic sites' } ], [ { l: 'CSI', d: '12 Gy' }, { l: 'Boost', d: '+18 Gy → 30 Gy to primary and all mets', c: 'esc' } ]) ],
       notes: 'CSI late effects: GH deficiency, thyroid dysfunction, ototoxicity, neurocognition, vertebral growth. Proton CSI preferred when available; endocrine monitoring throughout follow-up.'
     },
     'g-bgt-cr': {
@@ -779,7 +791,7 @@ var GCT = {
         chemo: 'As localized (CarboE / IE × 4) or metastatic germinoma according to staging <sup>[6]</sup>.',
         rt: null, noRt: 'No BG/thalamus-specific RT volume in ESCP 2021 — RT according to the localized or metastatic algorithm; volume choice (WVI vs WBI) to discuss in MDT.',
         refs: [ 6 ]
-      } ],
+      }, gct3('Atypical site · irrespective of response', 'WBI 24 Gy + boost 12 Gy (36 Gy)', [ { l: 'WBI', v: 'Whole brain' }, { l: 'Boost', v: 'Primary (basal ganglia / thalamus)' } ], [ { l: 'Localized', d: 'WBI 24 Gy + boost 12 Gy → 36 Gy', c: 'esc' }, { l: 'Metastatic', d: 'CSI 24 Gy + boost 12 Gy to primary and all mets', c: 'esc' } ]) ],
       notes: 'Diagnostic mimics: glioma, demyelination, metabolic disease.'
     },
     'g-bgt-lt': {
@@ -803,7 +815,7 @@ var GCT = {
         chemo: 'Per localized or metastatic algorithm <sup>[6]</sup>.',
         rt: null, noRt: 'RT per localized (PR/SD) or metastatic algorithm — no specific BGT volume.',
         refs: [ 6 ]
-      } ],
+      }, gct3('Atypical site · irrespective of response', 'WBI 24 Gy + boost 12 Gy (36 Gy)', [ { l: 'WBI', v: 'Whole brain' }, { l: 'Boost', v: 'Primary (basal ganglia / thalamus)' } ], [ { l: 'Localized', d: 'WBI 24 Gy + boost 12 Gy → 36 Gy', c: 'esc' }, { l: 'Metastatic', d: 'CSI 24 Gy + boost 12 Gy to primary and all mets', c: 'esc' } ]) ],
       notes: ''
     },
     'ng-good': {
@@ -2090,7 +2102,7 @@ function renderSit(eid, sid) {
   noteRefs.forEach(function(m) { var n = parseInt(m.slice(1), 10); if (refIds.indexOf(n) < 0) refIds.push(n); });
   refIds.sort(function(a, b) { return a - b; });
   var arms = s.arms.map(armHtml).join('');
-  if (e.pending) arms += e.pending.map(function(p) {
+  if (e.pending) arms += e.pending.filter(function(p) { return !s.arms.some(function(a) { return p.pc && a.pc === p.pc; }); }).map(function(p) {
     return '<div class="arm pending"><div class="arm-head"><div><div class="arm-proto">' + p.proto + '</div><div class="arm-sub">future column</div></div><span class="ev pend">' + EVIDENCE.pend.l + '</span></div><div class="arm-body">' + p.t + '</div></div>';
   }).join('');
   var html = '<button class="btn-back" onclick="go(\'#/e/' + eid + '\')">← Decision map</button>'
