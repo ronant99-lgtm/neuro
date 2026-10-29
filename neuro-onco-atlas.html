@@ -610,7 +610,8 @@ var GCT = {
     13: { a: 'Callec L, Lardy-Cleaud A, Guerrini-Rousseau L, et al.', t: 'Relapsing intracranial germ cell tumours warrant retreatment', j: 'Eur J Cancer. 2020;136:186–194', doi: '10.1016/j.ejca.2020.06.012', n: 'n = 44. Germinoma (n = 14): 5-y EFS 79 %, OS 86 %; 1 of 11 re-irradiated patients relapsed again. NGGCT (n = 25): 5-y EFS 56 %, OS 60 %; with vs without HDC 5-y OS 72 % vs 29 %. DOI corrected (source: 10.1016/j.ejca.2020.05.024).' },
     14: { a: 'Abu-Arja MH, Osorio DS, Lassaletta A, et al.', t: 'Prognostic factors for patients with relapsed central nervous system nongerminomatous germ cell tumors', j: 'Pediatr Blood Cancer. 2022;69(1):e29365', doi: '10.1002/pbc.29365', n: '9 studies, n = 101. Survivors: 71 % with CR/CCR at end of relapse therapy vs 7 %; 48 % with HDC + AuHCR vs 12 %; 60 % with initial AFP ≤ 25 ng/mL vs 28 %. Local relapse, GTR and RT at relapse not associated with outcome.' },
     15: { a: 'Shatara M, Blue M, Stanek J, …, Finlay JL.', t: 'Final report of the phase II NEXT/CNS-GCT-4 trial: GemPOx followed by marrow-ablative chemotherapy for recurrent intracranial germ cell tumors', j: 'Neurooncol Pract. 2024;11(2):188–198', doi: '10.1093/nop/npad067', nct: 'NCT01270724', n: '9 patients: 7 proceeded to HDC + AuHPCR (5 then received RT), 2 progressed on GemPOx; mean follow-up 44 months, 4 alive without disease. First author corrected (source: Finlay JL).' },
-    16: { a: 'Embring A, Blomstrand M, Asklid A, et al.', t: 'Re-irradiation in paediatric tumours of the central nervous system: national guidelines from the Swedish Workgroup of Paediatric Radiotherapy', j: 'Clin Oncol (R Coll Radiol). 2023;35(9):571–575', doi: '10.1016/j.clon.2023.05.007', n: 'National guidelines in use since 2019 (DIPG, ependymoma, germinoma, medulloblastoma). Ependymoma re-RT: ≥ 9 months, CSI 36 Gy + 54 Gy if not local-only; cumulative brainstem Dmax 91.5 / D2cc 82.6 GyEQD2. Germinoma: ≥ 6 months, CSI 24 Gy + boost 40 Gy. DIPG: ≥ 3 months, 2 Gy × 10.' }
+    16: { a: 'Embring A, Blomstrand M, Asklid A, et al.', t: 'Re-irradiation in paediatric tumours of the central nervous system: national guidelines from the Swedish Workgroup of Paediatric Radiotherapy', j: 'Clin Oncol (R Coll Radiol). 2023;35(9):571–575', doi: '10.1016/j.clon.2023.05.007', n: 'National guidelines in use since 2019 (DIPG, ependymoma, germinoma, medulloblastoma). Ependymoma re-RT: ≥ 9 months, CSI 36 Gy + 54 Gy if not local-only; cumulative brainstem Dmax 91.5 / D2cc 82.6 GyEQD2. Germinoma: ≥ 6 months, CSI 24 Gy + boost 40 Gy. DIPG: ≥ 3 months, 2 Gy × 10.' },
+    17: { a: 'Calaminus G, Alapetite C, Kortmann RD, et al.', t: 'Final report of the SIOP-CNS-GCT II protocol for germinoma: omitting radiotherapy boost is safe in localized disease in complete remission after chemotherapy', j: 'Neuro Oncol. 2026;28(9):2234–2247', doi: '10.1093/neuonc/noag127', n: '2012–2018, n = 227. Localized (n = 166): carboPEI × 4 → CR 24 Gy WVRT alone (64 / 65; 2 relapses, 3.1 %), PR 24 Gy + 16 Gy boost (88 / 90; 2 relapses, 2.3 %), SD 24 + 16 (7) or 24 + 30 Gy if teratoma (1), no relapse; 5-y EFS 94 %, OS 98 %. Metastatic (n = 61): CSI 24 Gy + 16 Gy, 5-y EFS 98 %, OS 100 % (1 relapse).' }
   },
   situations: {
     'g-loc-cr': {
@@ -629,8 +630,8 @@ var GCT = {
         },
         refs: [ 1, 3 ]
       }, {
-        proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'Localized germinoma', ev: 'cons', key: 'WVI+TB 24 Gy (no boost if single-site CR)',
-        out: [ { l: '3-y EFS (all localized, prelim.)', v: '96 %', c: 'ov-good' }, { l: 'GCT 96 chemo + focal RT', v: 'PFS 88 % — ventricular relapses', c: 'ov-mid' } ], outNote: 'Preliminary SIOP CNS GCT II data as reported in ESCP 2021 <sup>[6]</sup>; GCT 96 pattern of failure <sup>[7]</sup>.',
+        proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'Localized germinoma · final report', ev: 'trial', key: 'WVI 24 Gy alone — no boost after CR',
+        out: [ { l: 'CR → 24 Gy WVRT (n = 64)', v: '2 relapses (3.1 %)', c: 'ov-good' }, { l: 'All localized 5-y EFS / OS', v: '94 % / 98 %', c: 'ov-good' }, { l: 'GCT 96 chemo + focal RT', v: 'PFS 88 % — ventricular relapses', c: 'ov-mid' } ], outNote: 'Final SIOP-CNS-GCT II report: omitting the boost is safe in localized germinoma in CR after carboPEI <sup>[17]</sup>; GCT 96 pattern of failure <sup>[7]</sup>.',
         chemo: SIOP_GERM_CHEMO,
         rt: {
           timing: 'After 4 courses and response classification.',
@@ -658,8 +659,8 @@ var GCT = {
         },
         refs: [ 1, 3 ]
       }, {
-        proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'Localized germinoma', ev: 'cons', key: 'WVI+TB 24 Gy + boost 16 Gy (40 Gy)',
-        out: [ { l: '3-y EFS (all localized, prelim.)', v: '96 %', c: 'ov-good' } ],
+        proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'Localized germinoma · final report', ev: 'trial', key: 'WVI+TB 24 Gy + boost 16 Gy (40 Gy)',
+        out: [ { l: 'PR → 24 + 16 Gy (n = 88)', v: '2 relapses (2.3 %)', c: 'ov-good' }, { l: 'All localized 5-y EFS / OS', v: '94 % / 98 %', c: 'ov-good' } ],
         chemo: SIOP_GERM_CHEMO,
         rt: {
           timing: 'After 4 courses.',
@@ -688,7 +689,7 @@ var GCT = {
         refs: [ 1 ]
       }, {
         proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'SD after chemotherapy', ev: 'cons', key: 'Resection if teratoma suspected → 40 Gy or 54 Gy',
-        out: [ { l: 'Specific data', v: 'not reported', c: 'ov-neu' } ],
+        out: [ { l: 'SD (n = 8): 24 + 16 Gy (7), 24 + 30 Gy teratoma (1)', v: 'no relapse', c: 'ov-good' } ], outNote: 'SIOP-CNS-GCT II final report <sup>[17]</sup>.',
         chemo: SIOP_GERM_CHEMO,
         rt: {
           timing: 'SD with imaging suggestive of teratoma: <strong>resection before RT</strong>.',
@@ -716,7 +717,7 @@ var GCT = {
         refs: [ 1 ]
       }, {
         proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'Localized germinoma', ev: 'cons', key: 'WVI+TB 24 Gy + boost 16 Gy — always',
-        out: [ { l: '3-y EFS (all localized, prelim.)', v: '96 %', c: 'ov-good' } ],
+        out: [ { l: 'All localized 5-y EFS / OS (final)', v: '94 % / 98 %', c: 'ov-good' } ],
         chemo: SIOP_GERM_CHEMO,
         rt: {
           timing: 'After 4 courses.',
@@ -743,8 +744,8 @@ var GCT = {
         },
         refs: [ 1 ]
       }, {
-        proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'Metastatic germinoma', ev: 'cons', key: 'CSI 24 Gy + boost 16 Gy — no chemo',
-        out: [ { l: 'GCT 96 metastatic (CSI)', v: 'EFS / OS 98 % (n = 45)', c: 'ov-good' } ],
+        proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'Metastatic germinoma · final report', ev: 'trial', key: 'CSI 24 Gy + boost 16 Gy — no chemo',
+        out: [ { l: 'GCT II metastatic (n = 61) 5-y EFS / OS', v: '98 % / 100 %', c: 'ov-good' }, { l: 'GCT 96 metastatic (CSI)', v: 'EFS / OS 98 % (n = 45)', c: 'ov-good' } ],
         chemo: '<strong>No neoadjuvant chemotherapy</strong> — CSI alone. If CSI is delayed: short “holding” chemotherapy (carboplatin / etoposide, or vinblastine) after discussion with the national GCT team <sup>[6]</sup>.',
         rt: {
           timing: 'Upfront CSI (response category not applicable).',
@@ -772,8 +773,8 @@ var GCT = {
         },
         refs: [ 1 ]
       }, {
-        proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'Metastatic germinoma', ev: 'cons', key: 'CSI 24 Gy + boost 16 Gy — no chemo',
-        out: [ { l: 'GCT 96 metastatic (CSI)', v: 'EFS / OS 98 % (n = 45)', c: 'ov-good' } ],
+        proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'Metastatic germinoma · final report', ev: 'trial', key: 'CSI 24 Gy + boost 16 Gy — no chemo',
+        out: [ { l: 'GCT II metastatic (n = 61) 5-y EFS / OS', v: '98 % / 100 %', c: 'ov-good' }, { l: 'GCT 96 metastatic (CSI)', v: 'EFS / OS 98 % (n = 45)', c: 'ov-good' } ],
         chemo: 'No neoadjuvant chemotherapy (holding chemotherapy only if CSI delayed) <sup>[6]</sup>.',
         rt: {
           timing: 'Upfront CSI.',
