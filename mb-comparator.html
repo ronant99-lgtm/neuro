@@ -217,7 +217,7 @@ header {
 /* ── 3-COL GRID ── */
 .col-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   margin-bottom: 22px;
   animation: fadeUp 0.4s ease;
@@ -284,7 +284,7 @@ header {
   display: flex; align-items: center; gap: 6px;
 }
 .cmp-cells {
-  display: grid; grid-template-columns: repeat(4, 1fr);
+  display: grid; grid-template-columns: repeat(3, 1fr);
 }
 @media (max-width: 1000px) { .cmp-cells { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 560px)  { .cmp-cells { grid-template-columns: 1fr; } }
@@ -365,13 +365,12 @@ header {
   <div class="logo-mark">≡</div>
   <div class="header-info">
     <div class="header-title">Comparateur — Médulloblastomes</div>
-    <div class="header-sub">ARIA (SJCRH/COG) · SIOP-Europe · SFCE 2026 · SIOPE-MB6 · Analyse en parallèle</div>
+    <div class="header-sub">ARIA (SJCRH/COG) · SIOP-Europe · SFCE 2026 · Analyse en parallèle</div>
   </div>
   <div class="header-badges">
     <span class="badge aria">ARIA</span>
     <span class="badge siop">SIOP</span>
     <span class="badge sfce">SFCE</span>
-    <span class="badge mb6">MB6</span>
     <button class="btn-reset" onclick="reset()">↺ Réinitialiser</button>
   </div>
 </header>
@@ -384,7 +383,7 @@ header {
   <div id="breadcrumb" class="breadcrumb"></div>
   <div id="app"></div>
   <div class="disclaimer">
-    Outil comparatif à visée pédagogique · ARIA Stratum C (SJCRH/COG) · SIOP-Europe MB 2024 · SFCE Janvier 2026 · SIOPE-MB6 Draft V1.0 (14-Mar-2025)<br>
+    Outil comparatif à visée pédagogique · ARIA Stratum C (SJCRH/COG) · SIOP-Europe MB 2024 · SFCE Janvier 2026<br>
     Ne se substitue pas aux décisions personnalisées en RCP/RCPPI. Contraintes OAR et techniques RT communes aux trois référentiels.
   </div>
 </div>
@@ -576,88 +575,9 @@ function computeAll() {
     aria: computeARIA(a),
     siop: computeSIOP(a),
     sfce: computeSFCE(a),
-    mb6:  computeMB6(a),
   };
 }
 
-// ── SIOPE-MB6 (Draft V1.0, standard-risk umbrella trial) ──
-function computeMB6(a) {
-  const isInfant  = a.age === 'lt36';
-  const isMid     = a.age === 'bt36_60';   // 36–59 mo
-  const isOlder   = a.age === 'gte60';
-  const adult     = a.exact_age === 'gte16';
-  const isWNT     = a.mol === 'wnt';
-  const isSHHwt   = a.mol === 'shh_wt';
-  const isSHHmut  = a.mol === 'shh_mut';
-  const isNon     = a.mol === 'non';
-  const isDN      = a.histo === 'dmb_mben';
-  const isLCA     = a.histo === 'lca';
-  const isMeta    = a.stage === 'mplus';
-  const isRplus   = a.resid === 'rplus';
-  const isMYC     = a.myc === 'myc_pos';
-  const isMYCN    = a.myc === 'mycn_pos';
-
-  // Off-study gates (MB6 = clinically standard-risk; HR → SIOP-HR-MB)
-  if (isInfant)
-    return { risk:'—', off:true, protocol:'Hors MB6', csi:'Protocole nourrisson', boost:'—', chemo:'Hors champ (âge < 36 mois)',
-      notes:['MB6 exige un âge ≥ 3 ans (≥ 5 ans si SHH). < 3 ans → protocole nourrisson.'] };
-  if (isMid && isSHHwt)
-    return { risk:'—', off:true, protocol:'Hors MB6', csi:'—', boost:'—', chemo:'Hors champ (SHH < 5 ans)',
-      notes:['La phase à irradiation MB6 exige ≥ 5 ans en SHH-activé.'] };
-  if (isLCA)
-    return { risk:'HR', off:true, protocol:'→ SIOP-HR-MB', csi:'Hors MB6', boost:'—', chemo:'→ SIOP-HR-MB',
-      notes:['LCA = marqueur HR systématique, exclu de MB6.'] };
-  if (isSHHmut)
-    return { risk:'HR', off:true, protocol:'→ SIOP-HR-MB', csi:'Hors MB6', boost:'—', chemo:'→ SIOP-HR-MB',
-      notes:['SHH-TP53muté = très haut risque, exclu de MB6.'] };
-  if (isMYC)
-    return { risk:'HR', off:true, protocol:'→ SIOP-HR-MB', csi:'Hors MB6', boost:'—', chemo:'→ SIOP-HR-MB',
-      notes:['MYC-amplifié = HR, exclu de MB6.'] };
-  if (isMYCN && !isNon)
-    return { risk:'HR', off:true, protocol:'→ SIOP-HR-MB', csi:'Hors MB6', boost:'—', chemo:'→ SIOP-HR-MB',
-      notes:['MYCN-amplifié hors Groupe 4 = HR, exclu de MB6.'] };
-
-  // Metastatic
-  if (isMeta) {
-    if (isWNT)
-      return { risk:'HR', protocol:'WNT-HR+R', csi: adult ? '36 Gy / 20 fr' : '36 Gy (à confirmer coordinateur RT)', boost:'54 Gy (+ 59,4 si résidu) + boosts méta',
-        chemo:'SJMB12 ×4', notes:['WNT métastatique = bras WNT-HR+R (rare).', adult ? '≥ 16 ans → 36 Gy.' : 'Dose < 16 ans à valider avec le coordinateur RT national.'] };
-    if (adult)
-      return { risk:'HR', protocol:'Bras HR MB6 (M+ ≥ 16 ans)', csi:'36 Gy / 20 fr', boost:'54 Gy (+ 59,4 si résidu) + boosts méta',
-        chemo:'SJMB12 ×4', notes:['Adulte métastatique géré dans MB6 (36 Gy).','Boosts méta : spinal 45 Gy · intracrânien 50,4 Gy (≥ 16 ans).'] };
-    return { risk:'HR', off:true, protocol:'→ SIOP-HR-MB', csi:'Hors MB6', boost:'—', chemo:'→ SIOP-HR-MB',
-      notes:['M+ non-WNT < 16 ans = HR, exclu de MB6.'] };
-  }
-
-  // M0 risk-stratified arms
-  if (isWNT) {
-    if (adult)
-      return { risk:'SR→spécifique', protocol:'WNT-HR+R (≥ 16 ans)', csi:'23,4 Gy / 13 fr', boost: isRplus ? '54 Gy → résidu 59,4 Gy' : '54 Gy (lit tumoral)',
-        chemo:'SJMB12 ×4', notes:['WNT ≥ 16 ans : pronostic favorable non applicable → niveau SR (23,4 Gy).'] };
-    if (isRplus)
-      return { risk:'SR→spécifique', protocol:'WNT-HR+R (STRrad)', csi:'18 Gy / 10 fr', boost:'54 Gy → résidu 59,4 Gy',
-        chemo:'SJMB12 ×4', notes:['VFR + STRrad isolé → CSI escaladée à 18 Gy + boost résiduel 59,4 Gy.','APC constitutionnel inclus (surveillance SMN renforcée).'] };
-    return { risk:'LR', protocol:'Bras VFR (bras unique)', csi:'14,4 Gy / 8 fr', boost:'+ 39,6/22 → 54 Gy (lit tumoral)',
-      chemo:'Induction carbo/VP16 → Cycle B (CPM/VCR ×4)', notes:['Dé-escalade CSI à 14,4 Gy — spécificité MB6 (vs 18 Gy en PNET5 LR).','APC constitutionnel inclus.'] };
-  }
-  if (isSHHwt) {
-    if (isRplus)
-      return { risk:'SR→spécifique', protocol:'WNT-HR+R (STRrad)', csi:'23,4 Gy / 13 fr', boost:'54 Gy → résidu 59,4 Gy',
-        chemo:'SJMB12 ×4', notes:['FR + STRrad isolé → CSI 23,4 Gy + boost résiduel 59,4 Gy.','Exclure variant constitutionnel PTCH1/SUFU.'] };
-    return { risk:'SR', protocol:'Bras FR (bras unique)', csi:'18 Gy / 10 fr', boost:'+ 36/20 → 54 Gy (lit tumoral)',
-      chemo:'Induction carbo/VP16 → SJMB12 ×3', notes:['SHH-TP53wt (≥ 5 ans) = marqueur favorable → 18 Gy.'] };
-  }
-  // Non-WNT / Non-SHH
-  if (isNon) {
-    // favourable molecular profile is not captured by the comparator wizard → treat as SR by default, note the FR possibility
-    if (isRplus)
-      return { risk:'SR', protocol:'Bras SR (randomisé) · STRrad', csi:'23,4 Gy / 13 fr', boost:'54 Gy → résidu 59,4 Gy',
-        chemo:'Rando : SJMB12 ×4  vs  thiotépa HD ×2 + TMZ ×6', notes:['Non-WNT/Non-SHH : bras SR randomisé (std vs thiotépa HD).','Si profil moléculaire favorable (subtype VII / ACW favorables) → bras FR (18 Gy).', isMYCN ? 'MYCN-amp conservé (Groupe 4, non-HR).' : ''].filter(Boolean) };
-    return { risk:'SR', protocol:'Bras SR (randomisé)', csi:'23,4 Gy / 13 fr', boost:'+ 30,6/17 → 54 Gy (lit tumoral)',
-      chemo:'Rando : SJMB12 ×4  vs  thiotépa HD ×2 + TMZ ×6', notes:['Non-WNT/Non-SHH sans marqueur favorable → bras SR randomisé.','Si profil favorable (subtype VII et/ou aberrations chromosomiques favorables) → bras FR (18 Gy, bras unique).', isMYCN ? 'MYCN-amp conservé (Groupe 4, non-HR per MB6).' : ''].filter(Boolean) };
-  }
-  return { risk:'SR', protocol:'MB6', csi:'23,4 Gy', boost:'54 Gy', chemo:'—', notes:[] };
-}
 
 // ── ARIA (SJCRH / COG Stratum C) ──
 function computeARIA(a) {
@@ -883,11 +803,6 @@ function renderResult() {
           <div class="cmp-cell-val">${d.sfce}</div>
           ${d.sfce_sub ? `<div class="cmp-cell-sub">${d.sfce_sub}</div>` : ''}
         </div>
-        <div class="cmp-cell">
-          <div class="cmp-cell-inst mb6">SIOPE-MB6</div>
-          <div class="cmp-cell-val">${d.mb6}</div>
-          ${d.mb6_sub ? `<div class="cmp-cell-sub">${d.mb6_sub}</div>` : ''}
-        </div>
       </div>
     </div>`;
   });
@@ -899,7 +814,6 @@ function renderResult() {
     { key:'aria', label:'ARIA · SJCRH/COG', cls:'aria', src:'COG / Stratum C Dec 2025', r: res.aria },
     { key:'siop', label:'SIOP-Europe',      cls:'siop', src:'SIOP-Europe MB 2024',     r: res.siop },
     { key:'sfce', label:'SFCE 2026',        cls:'sfce', src:'SFCE Jan 2026 · RENOCLIP', r: res.sfce },
-    { key:'mb6',  label:'SIOPE-MB6',        cls:'mb6',  src:'MB6 Draft V1.0 · 2025',   r: res.mb6 },
   ].forEach(inst => {
     html += `<div class="inst-col">
       <div class="inst-col-header">
@@ -936,7 +850,7 @@ function statusIcon(s) {
 // CONSTRUCTION DES DOMAINES COMPARATIFS
 // ═══════════════════════════════════════════════════════
 function buildDomains(res) {
-  const { aria, siop, sfce, mb6 } = res;
+  const { aria, siop, sfce } = res;
 
   // Concordance n-aire : agree = 1 valeur unique ; differ = toutes distinctes ; partial sinon.
   function status(vals) {
@@ -952,47 +866,43 @@ function buildDomains(res) {
   // 1. Groupe de risque
   domains.push({
     label: 'Groupe de risque',
-    aria: riskLabel(aria.risk), siop: riskLabel(siop.risk), sfce: riskLabel(sfce.risk), mb6: riskLabel(mb6.risk),
-    aria_sub: aria.protocol, siop_sub: siop.protocol, sfce_sub: sfce.protocol, mb6_sub: mb6.protocol,
-    status: status([cleanRisk(aria.risk), cleanRisk(siop.risk), cleanRisk(sfce.risk), cleanRisk(mb6.risk)])
+    aria: riskLabel(aria.risk), siop: riskLabel(siop.risk), sfce: riskLabel(sfce.risk),
+    aria_sub: aria.protocol, siop_sub: siop.protocol, sfce_sub: sfce.protocol,
+    status: status([cleanRisk(aria.risk), cleanRisk(siop.risk), cleanRisk(sfce.risk)])
   });
 
   // 2. Dose CSI
   domains.push({
     label: 'Dose CSI',
-    aria: aria.csi, siop: siop.csi, sfce: sfce.csi, mb6: mb6.csi,
-    status: status([csiKey(aria.csi), csiKey(siop.csi), csiKey(sfce.csi), csiKey(mb6.csi)])
+    aria: aria.csi, siop: siop.csi, sfce: sfce.csi,
+    status: status([csiKey(aria.csi), csiKey(siop.csi), csiKey(sfce.csi)])
   });
 
   // 3. Boost / dose totale
   domains.push({
     label: 'Dose boost (lit tumoral)',
-    aria: aria.boost, siop: siop.boost, sfce: sfce.boost, mb6: mb6.boost,
-    status: status([boostKey(aria.boost), boostKey(siop.boost), boostKey(sfce.boost), boostKey(mb6.boost)])
+    aria: aria.boost, siop: siop.boost, sfce: sfce.boost,
+    status: status([boostKey(aria.boost), boostKey(siop.boost), boostKey(sfce.boost)])
   });
 
   // 4. Chimiothérapie
   domains.push({
     label: 'Protocole chimiothérapie',
-    aria: aria.chemo, siop: siop.chemo, sfce: sfce.chemo, mb6: mb6.chemo,
-    aria_sub: '', siop_sub: '', sfce_sub: '', mb6_sub: '',
-    status: chemoStatus([aria.chemo, siop.chemo, sfce.chemo, mb6.chemo])
+    aria: aria.chemo, siop: siop.chemo, sfce: sfce.chemo,
+    aria_sub: '', siop_sub: '', sfce_sub: '',
+    status: chemoStatus([aria.chemo, siop.chemo, sfce.chemo])
   });
 
-  // 5. Seuil d'âge appliqué (les 4 référentiels divergent)
+  // 5. Seuil d'âge appliqué (les 3 référentiels divergent)
   const a = answers;
   const ariaAge = a.age === 'lt36' ? '< 36 mois' : '≥ 36 mois';
   const siopAge = a.age === 'lt36' ? '< 36 mois' : '≥ 36 mois';
   const sfceAge = (a.age === 'lt36' || a.age === 'bt36_60') ? '< 5 ans' : '≥ 5 ans';
-  const mb6Age  = a.mol === 'shh_wt' || a.mol === 'shh_mut'
-      ? '≥ 5 ans (SHH)'
-      : (a.age === 'lt36' ? '< 3 ans' : '≥ 3 ans');
   domains.push({
     label: 'Seuil d\'âge appliqué',
-    aria: ariaAge, siop: siopAge, sfce: sfceAge, mb6: mb6Age,
+    aria: ariaAge, siop: siopAge, sfce: sfceAge,
     aria_sub: '36 mois', siop_sub: '36 mois', sfce_sub: '60 mois (< 5 ans)',
-    mb6_sub: (a.mol==='shh_wt'||a.mol==='shh_mut') ? '≥ 5 ans si SHH' : '≥ 3 ans (non-SHH)',
-    status: status([ariaAge, siopAge, sfceAge, mb6Age])
+    status: status([ariaAge, siopAge, sfceAge])
   });
 
   return domains;
