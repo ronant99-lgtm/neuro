@@ -333,36 +333,28 @@ var ESTRO_CSI = function(extra) {
 };
 
 var ATRT = {
-  id: 'atrt', name: 'Atypical Teratoid / Rhabdoid Tumour', short: 'ATRT', family: 'Embryonal tumours (non-MB)',
-  status: 'ready', flowKind: 'research',
-  desc: 'SIOPE ATRT01 umbrella trial — 10 final situations, side by side with the ESTRO-SIOPE 2024 guideline; outcomes from the EU-RHAB registry.',
-  sources: [ { t: 'SIOPE ATRT01 · v1.5 (2023)', c: 'siop' }, { t: 'QUARTET RTQA v1.3', c: 'siop' }, { t: 'ESTRO-SIOPE 2024', c: 'lit' }, { t: 'EU-RHAB registry', c: 'lit' }, { t: 'SFCE 2026', c: 'nat' }  ],
+  id: 'atrt', name: 'Atypical Teratoid / Rhabdoid Tumour', short: 'ATRT', family: 'Embryonal tumours (non-MB)', status: 'ready',
+  desc: 'ESTRO-SIOPE 2024 radiotherapy guideline and SFCE 2026 national recommendations side by side; outcomes from the EU-RHAB registry. SIOPE ATRT01 column reserved.',
+  sources: [ { t: 'ESTRO-SIOPE 2024', c: 'lit' }, { t: 'EU-RHAB registry', c: 'lit' }, { t: 'SIOPE ATRT01 — pending', c: 'pend' }, { t: 'SFCE 2026', c: 'nat' }  ],
+  pending: [ { proto: 'SIOPE ATRT01', pc: 'siop', t: 'Open European trial — protocol not public; column reserved.' } ],
   identity: [
     { k: 'Biology', v: 'SMARCB1 (INI1) loss; SMARCA4 more rarely. Most common malignant CNS tumour below 6 months of age <sup>[3]</sup>' },
-    { k: 'Staging before consolidation', v: 'Brain + whole-spine MRI, SMARCB1 confirmation on biopsy, CSF staging' },
-    { k: 'Induction (all parts)', v: '3 courses DOX / ICE / VCA (EU-RHAB backbone) <sup>[1]</sup>' },
     { k: 'Molecular / germline', v: 'ATRT-TYR, -SHH, -MYC; germline SMARCB1 alteration in 26 % (EU-RHAB) <sup>[5]</sup>' },
     { k: 'EU-RHAB risk model', v: '< 1 y + non-TYR: 5-y OS 0 % · intermediate: 32.5 % · ≥ 1 y + TYR: 71.5 % <sup>[5]</sup>' },
-    { k: 'Stratification axes', v: 'Age at consolidation · M status · SYNC status · randomized arm · residual disease' }
+    { k: 'Staging', v: 'Brain + whole-spine MRI, CSF; extracranial rhabdoid tumour search; oncogenetics' }
   ],
-  alerts: [
-    { c: 'red', t: 'Outcomes shown come from the <strong>EU-RHAB registry (2009–2017, n = 143)</strong> — they are not ATRT01 results; Part A randomization data are not mature. A second column gives the ESTRO-SIOPE 2024 guideline for patients treated outside trials.' },
-    { c: '', t: 'Registry: EudraCT 2018-003335-29 (not on ClinicalTrials.gov). The NCT05058443 cited in the source tool is an unrelated trial.' }
-  ],
+  alerts: [ { c: '', t: 'Outcomes come from the EU-RHAB registry (2009–2017, n = 143). Inclusion in open trials (SIOPE ATRT01) is recommended where available.' } ],
   axes: [
     { id: 'age', label: 'Age at consolidation', opts: [ { v: 'lt12', l: '< 12 months' }, { v: '12to35', l: '12–35 months' }, { v: 'ge36', l: '≥ 36 months' } ] },
     { id: 'm', label: 'Metastatic status', opts: [ { v: 'M0', l: 'M0' }, { v: 'M+', l: 'M1–M3' } ] },
-    { id: 'arm', label: 'Consolidation', opts: [ { v: 'rt', l: 'Radiotherapy' }, { v: 'hdct', l: 'HDCT, no RT' }, { v: 'mdt', l: 'Off-protocol / MDT' } ] },
     { id: 'res', label: 'Residual disease', opts: [ { v: 'none', l: 'No residual' }, { v: 'res', l: 'Residual primary' }, { v: 'bulky', l: 'Bulky metastases' } ] }
   ],
   groups: [
-    { t: '< 12 months — Part B', ids: [ 'lt12' ] },
-    { t: '12–35 months — Part A (SYNC−, M0: randomization RT vs HDCT)', ids: [ 'r12-rt-nores', 'r12-rt-res', 'r12-hdct', 'r12-mplus' ] },
-    { t: '≥ 36 months — Part C (RT for all)', ids: [ 'ge36-m0-nores', 'ge36-m0-res', 'ge36-m-nores', 'ge36-m-res', 'ge36-m-bulky' ] }
+    { t: '< 12 months', ids: [ 'lt12' ] },
+    { t: '12–35 months', ids: [ 'r12-rt-nores', 'r12-rt-res', 'r12-mplus' ] },
+    { t: '≥ 36 months', ids: [ 'ge36-m0-nores', 'ge36-m0-res', 'ge36-m-nores', 'ge36-m-res', 'ge36-m-bulky' ] }
   ],
   refs: {
-    1: { a: 'Timmermann B, et al.', t: 'SIOPE ATRT01 — An international prospective umbrella trial for children with atypical teratoid/rhabdoid tumours', j: 'GPOH / SIOPE, 2023 · Protocol version 1.5 · EudraCT 2018-003335-29 (not on ClinicalTrials.gov)', n: 'Basis of all ATRT situations.' },
-    2: { a: 'SIOPE / EORTC / QUARTET', t: 'SIOPE ATRT01 QUARTET Radiotherapy Quality Assurance Guidelines, v1.3', j: '28/09/2023 · www.siope.eu/quartet', n: 'Volumes, OAR constraints, RTQA timelines.' },
     3: { a: 'Frühwald MC, Biegel JA, Bourdeaut F, Roberts CWM, Chi SN.', t: 'Atypical teratoid/rhabdoid tumors — current concepts, advances in biology, and potential future therapies', j: 'Neuro Oncol. 2016;18(6):764–778', doi: '10.1093/neuonc/nov264', n: 'Corrected: the source tool cited this review as Neuro-Oncology 2020;22(9) doi:10.1093/neuonc/noaa033.' },
     5: { a: 'Frühwald MC, Hasselblatt M, Nemes K, et al.', t: 'Age and DNA methylation subgroup as potential independent risk factors for treatment stratification in children with atypical teratoid/rhabdoid tumors', j: 'Neuro Oncol. 2020;22(7):1006–1017', doi: '10.1093/neuonc/noz244', n: 'EU-RHAB 2009–2017, n = 143: 5-y OS 34.7 %, EFS 30.5 %; < 1 y 16.7 % vs 45.3 % ≥ 1 y; M0 43 % vs M+ 16.9 %. Germline SMARCB1 26 %. Independent factors: age < 1 y and non-TYR subgroup.' },
     6: { a: 'Timmermann B, Alapetite C, Dieckmann K, et al.', t: 'ESTRO-SIOPE guideline: clinical management of radiotherapy in atypical teratoid/rhabdoid tumors (AT/RTs)', j: 'Radiother Oncol. 2024;196:110227', doi: '10.1016/j.radonc.2024.110227', n: 'For patients not enrolled in trials: focal 54 Gy (50.4 Gy individually < 36 mo; + 5.4 Gy for residual), CTV 10 mm; CSI 35.2–36 Gy ≥ 36 mo M+ with metastasis boosts 45–50.4 Gy; CSI < 36 mo only after tumour board (23.4–24 Gy).' },
@@ -372,243 +364,122 @@ var ATRT = {
   },
   situations: {
     'lt12': {
-      title: 'Infant < 12 months — HDCT according to chemosensitivity (Part B)', risk: 'inf', badge: '< 12 MONTHS',
-      tags: { age: 'lt12', m: 'any', arm: 'hdct', res: 'any' },
-      def: [ { k: 'Age', v: '< 12 months at consolidation' }, { k: 'Part', v: 'ATRT01 Part B' } ],
-      arms: [ {
-        proto: 'SIOPE ATRT01', pc: 'siop', label: 'Part B', ev: 'trial', key: 'HDCT ×3 — no RT',
-        out: [ { l: 'EU-RHAB < 1 y, 5-y OS', v: '16.7 % (n = 50)', c: 'ov-bad' }, { l: '< 1 y + non-TYR, 5-y OS', v: '0 %', c: 'ov-bad' }, { l: 'ATRT01 Part B', v: 'pending', c: 'ov-neu' } ], outNote: 'EU-RHAB registry 2009–2017 (n = 143) — not ATRT01 results <sup>[5]</sup>.',
-        chemo: '<strong>Induction:</strong> 3 courses DOX / ICE / VCA. <strong>If chemosensitive (SD or better):</strong> 1–2(3) courses EU-RHAB + SCA → HDCT ×3 (busulfan–thiotepa). <strong>If chemoresistant:</strong> off protocol.',
-        rt: null, noRt: 'NO RT — age < 12 months: RT considered contraindicated because of unacceptable neurocognitive toxicity in infants. HDCT is the consolidation option.',
-        refs: [ 1, 5 ]
-      }, estro('Off-trial guideline', 'RT below 18 months only in particular circumstances', null, 'Focal RT recommended above 12–18 months; below 18 months only in particular circumstances (age, site, extent, progression, available technique) <sup>[6]</sup>.'),
+      title: 'Infant < 12 months', risk: 'inf', badge: '< 12 MONTHS',
+      tags: { age: 'lt12', m: 'any', res: 'any' },
+      def: [ { k: 'Age', v: '< 12 months at consolidation' } ],
+      arms: [ (function(a) { a.out = a.out.concat([ { l: 'EU-RHAB registry, 5-y OS', v: '16.7 % (&lt; 1 y)', c: 'ov-bad' } ]); a.outNote = 'EU-RHAB registry 2009–2017 (n = 143) <sup>[5]</sup>.'; return a; })(estro('Off-trial guideline', 'RT below 18 months only in particular circumstances', null, 'Focal RT recommended above 12–18 months; below 18 months only in particular circumstances (age, site, extent, progression, available technique) <sup>[6]</sup>.')),
       { proto: 'SFCE 2026', pc: 'nat', label: '&lt; 3 y, M0 — focal RT not feasible yet', ev: 'cons', key: 'EU-RHAB induction → carboplatin-thiotepa × 3',
         out: [ { l: 'EU-RHAB registry (n = 143)', v: '5-y OS 34.7 %', c: 'ov-mid' }, { l: 'Recommendation', v: 'trial inclusion first', c: 'ov-neu' } ],
         chemo: 'EU-RHAB induction (Dox / ICE / VCA with age-adapted intraventricular MTX — 0.5 mg &lt; 2 y, 1 mg 2–3 y, 2 mg &gt; 3 y; intrathecal if no reservoir; stopped when RT starts). No high-dose chemotherapy after RT. HDC = carboplatin-thiotepa (CCG99703 doses, as in ATRT01) because of EU-RHAB triple-course toxicity <sup>[7]</sup>.',
         rt: null, noRt: 'Focal RT not before 12–18 months (posterior fossa); M+ → carboplatin-thiotepa ± focal RT after discussion in the national embryonal group.',
         refs: [ 7, 5 ] }  ],
-      notes: 'Multidisciplinary discussion mandatory. Intensive neurodevelopmental follow-up. Progression on HDCT: experimental options only (early-phase targeted agents such as EZH2 inhibitors — trial setting).'
+      notes: ''
     },
     'r12-rt-nores': {
-      title: '12–35 months · RT arm · No residual — focal RT 54 Gy', risk: 'sr', badge: 'RT ARM · M0',
-      tags: { age: '12to35', m: 'M0', arm: 'rt', res: 'none' },
-      def: [ { k: 'Age', v: '12–35 months' }, { k: 'Status', v: 'SYNC− (no synchronous extra-CNS rhabdoid tumour), M0' }, { k: 'Arm', v: 'Randomized to RT arm (Part A)' }, { k: 'Residual', v: 'No macroscopic residual on pre-simulation MRI (T1+Gd, T2, FLAIR)' } ],
-      arms: [ {
-        proto: 'SIOPE ATRT01', pc: 'siop', label: 'Part A — RT arm', ev: 'rct', key: '54 Gy / 30 fr focal',
-        out: [ { l: 'EU-RHAB ≥ 1 y, 5-y OS', v: '45.3 % (n = 93)', c: 'ov-mid' }, { l: 'EU-RHAB M0, 5-y OS', v: '43 % (n = 100)', c: 'ov-mid' }, { l: 'ATRT01 Part A', v: 'pending', c: 'ov-neu' } ], outNote: 'EU-RHAB registry 2009–2017 (n = 143) — not ATRT01 results <sup>[5]</sup>.',
-        chemo: '<strong>Pre-RT:</strong> 1–2(3) courses EU-RHAB + SCA. <strong>Post-RT:</strong> 9 courses EU-RHAB (vincristine, actinomycin-D, carboplatin, etoposide, cyclophosphamide). No concomitant chemotherapy during RT.',
-        rt: {
-          timing: 'After 1–2(3) courses EU-RHAB + SCA, once haematological recovery: ANC > 500/µL, Hb > 8 g/dL, platelets > 50 000/µL.',
-          vol: [ { l: 'GTVtb', v: 'Post-operative / post-chemo tumour bed on MRI (T1+Gd, T2, FLAIR)' }, { l: 'GTVtb+res', v: '= GTVtb (no residual)' }, { l: 'CTVtb', v: 'GTVtb+res + 10 mm isotropic (max 3 mm into brainstem; respect calvarium / tentorium)' }, { l: 'PTVtb_5400', v: 'CTVtb + 3–5 mm according to technique' } ],
-          doses: [ { l: 'Tumour bed', d: '54.0 Gy / 30 fr / 1.8 Gy · 5 fr/week', s: 'Photons 4–6 MV or protons (PBS) if available; IMRT/VMAT acceptable; no cobalt. MRI at 45 Gy: no persistent residual → no boost.' } ]
-        },
-        refs: [ 1, 2, 5 ]
-      }, estro('Off-trial guideline · M0', 'Focal 54 Gy (50.4 Gy individually < 36 mo)', ESTRO_FOCAL(false)),
+      title: '12–35 months · M0 · no residual', risk: 'sr', badge: '12–35 MO · M0',
+      tags: { age: '12to35', m: 'M0', res: 'none' },
+      def: [ { k: 'Age', v: '12–35 months' }, { k: 'Status', v: 'M0, no residual' } ],
+      arms: [ (function(a) { a.out = a.out.concat([ { l: 'EU-RHAB registry, 5-y OS', v: '45.3 % (≥ 1 y) · M0 43 %', c: 'ov-mid' } ]); a.outNote = 'EU-RHAB registry 2009–2017 (n = 143) <sup>[5]</sup>.'; return a; })(estro('Off-trial guideline · M0', 'Focal 54 Gy (50.4 Gy individually < 36 mo)', ESTRO_FOCAL(false))),
       { proto: 'SFCE 2026', pc: 'nat', label: '&lt; 3 y, M0', ev: 'cons', key: 'EU-RHAB induction → focal RT if feasible + conventional chemo · otherwise carboplatin-thiotepa × 3',
         out: [ { l: 'EU-RHAB registry (n = 143)', v: '5-y OS 34.7 %', c: 'ov-mid' }, { l: 'Recommendation', v: 'trial inclusion first', c: 'ov-neu' } ],
         chemo: 'EU-RHAB induction (Dox / ICE / VCA with age-adapted intraventricular MTX — 0.5 mg &lt; 2 y, 1 mg 2–3 y, 2 mg &gt; 3 y; intrathecal if no reservoir; stopped when RT starts). No high-dose chemotherapy after RT. HDC = carboplatin-thiotepa (CCG99703 doses, as in ATRT01) because of EU-RHAB triple-course toxicity <sup>[7]</sup>.',
-        rt: { timing: 'After induction, from 12–18 months for posterior fossa tumours (supratentorial: by age, site and field size).', vol: [ { l: 'Focal', v: 'Tumour bed ± residual' } ], doses: [ { l: 'Focal', d: '50.4–54 Gy' }, { l: 'Residual (ATRT01 schema)', d: '→ 59.4 Gy', c: 'esc' } ] },
+        rt: { timing: 'After induction, from 12–18 months for posterior fossa tumours (supratentorial: by age, site and field size).', vol: [ { l: 'Focal', v: 'Tumour bed ± residual' } ], doses: [ { l: 'Focal', d: '50.4–54 Gy' }, { l: 'Residual (SFCE schema)', d: '→ 59.4 Gy', c: 'esc' } ] },
         refs: [ 7, 5 ] }  ],
-      notes: 'QUARTET RTQA mandatory, submitted ≥ 5 working days before RT start. Protons strongly encouraged. Systematic immobilisation / anaesthesia in young children. Portal verification D1–D3 then twice weekly.'
+      notes: ''
     },
     'r12-rt-res': {
-      title: '12–35 months · RT arm · Macroscopic residual — 54 Gy ± boost 5.4 Gy', risk: 'sr', badge: 'RT ARM · RESIDUAL',
-      tags: { age: '12to35', m: 'M0', arm: 'rt', res: 'res' },
-      def: [ { k: 'Age', v: '12–35 months' }, { k: 'Status', v: 'SYNC−, M0' }, { k: 'Arm', v: 'Randomized to RT arm (Part A)' }, { k: 'Residual', v: 'Macroscopic residual on simulation MRI' } ],
-      arms: [ {
-        proto: 'SIOPE ATRT01', pc: 'siop', label: 'Part A — RT arm', ev: 'rct', key: '54 Gy ± 5.4 Gy boost (59.4 Gy)',
-        out: [ { l: 'EU-RHAB ≥ 1 y, 5-y OS', v: '45.3 % (n = 93)', c: 'ov-mid' }, { l: 'EU-RHAB M0, 5-y OS', v: '43 % (n = 100)', c: 'ov-mid' }, { l: 'ATRT01 Part A', v: 'pending', c: 'ov-neu' } ], outNote: 'EU-RHAB registry 2009–2017 (n = 143) — not ATRT01 results <sup>[5]</sup>.',
-        chemo: '<strong>Pre-RT:</strong> 1–2(3) courses EU-RHAB + SCA. <strong>Post-RT:</strong> 9 courses EU-RHAB. No concomitant chemotherapy during RT.',
-        rt: {
-          timing: 'After 1–2(3) courses EU-RHAB + SCA; haematological recovery required. Re-assessment MRI at 45 Gy before any boost decision.',
-          vol: [ { l: 'GTVtb', v: 'Pre-op / post-chemo tumour bed' }, { l: 'GTVres_a (GTV2)', v: 'Macroscopic residual on simulation MRI (T1+Gd, T2); GTVtb+res_a = union' }, { l: 'CTVtb → PTVtb_5400', v: 'GTVtb+res_a + 10 mm (3 mm brainstem) → + 3–5 mm' }, { l: 'Boost (if residual at 45 Gy MRI)', v: 'GTVres_b → CTVres_b = GTVres_b (no CTV margin) → PTVres_b_0540 = CTVres_b + 3–5 mm' } ],
-          doses: [ { l: 'Phase 1', d: '54.0 Gy / 30 fr / 1.8 Gy' }, { l: 'Optional boost', d: '+5.4 Gy / 3 fr → 59.4 Gy', c: 'esc', s: 'Only if residual > 5 mm persists in all planes at 45 Gy MRI. Individual risk analysis (site, age, neurological status, number of surgeries); national board + ATRT01 reference radiation oncologist.' } ]
-        },
-        refs: [ 1, 2, 5 ]
-      }, estro('Off-trial guideline · M0 · residual', 'Focal 54 Gy ± 5.4 Gy', ESTRO_FOCAL(true)),
+      title: '12–35 months · M0 · macroscopic residual', risk: 'sr', badge: '12–35 MO · M0 · RESIDUAL',
+      tags: { age: '12to35', m: 'M0', res: 'res' },
+      def: [ { k: 'Age', v: '12–35 months' }, { k: 'Status', v: 'M0, macroscopic residual' } ],
+      arms: [ (function(a) { a.out = a.out.concat([ { l: 'EU-RHAB registry, 5-y OS', v: '45.3 % (≥ 1 y) · M0 43 %', c: 'ov-mid' } ]); a.outNote = 'EU-RHAB registry 2009–2017 (n = 143) <sup>[5]</sup>.'; return a; })(estro('Off-trial guideline · M0 · residual', 'Focal 54 Gy ± 5.4 Gy', ESTRO_FOCAL(true))),
       { proto: 'SFCE 2026', pc: 'nat', label: '&lt; 3 y, M0', ev: 'cons', key: 'EU-RHAB induction → focal RT if feasible + conventional chemo · otherwise carboplatin-thiotepa × 3',
         out: [ { l: 'EU-RHAB registry (n = 143)', v: '5-y OS 34.7 %', c: 'ov-mid' }, { l: 'Recommendation', v: 'trial inclusion first', c: 'ov-neu' } ],
         chemo: 'EU-RHAB induction (Dox / ICE / VCA with age-adapted intraventricular MTX — 0.5 mg &lt; 2 y, 1 mg 2–3 y, 2 mg &gt; 3 y; intrathecal if no reservoir; stopped when RT starts). No high-dose chemotherapy after RT. HDC = carboplatin-thiotepa (CCG99703 doses, as in ATRT01) because of EU-RHAB triple-course toxicity <sup>[7]</sup>.',
-        rt: { timing: 'After induction, from 12–18 months for posterior fossa tumours (supratentorial: by age, site and field size).', vol: [ { l: 'Focal', v: 'Tumour bed ± residual' } ], doses: [ { l: 'Focal', d: '50.4–54 Gy' }, { l: 'Residual (ATRT01 schema)', d: '→ 59.4 Gy', c: 'esc' } ] },
+        rt: { timing: 'After induction, from 12–18 months for posterior fossa tumours (supratentorial: by age, site and field size).', vol: [ { l: 'Focal', v: 'Tumour bed ± residual' } ], doses: [ { l: 'Focal', d: '50.4–54 Gy' }, { l: 'Residual (SFCE schema)', d: '→ 59.4 Gy', c: 'esc' } ] },
         refs: [ 7, 5 ] }  ],
-      notes: 'PTVres_b_0540 may be cropped at OARs (provide standard PTVres_b_0540 + PTVres_Eval-OAR). QUARTET RTQA mandatory.'
-    },
-    'r12-hdct': {
-      title: '12–35 months · HDCT arm — 3 high-dose courses, no RT', risk: 'inf', badge: 'HDCT ARM · M0',
-      tags: { age: '12to35', m: 'M0', arm: 'hdct', res: 'any' },
-      def: [ { k: 'Age', v: '12–35 months' }, { k: 'Status', v: 'SYNC−, M0' }, { k: 'Arm', v: 'Randomized to HDCT arm (Part A)' } ],
-      arms: [ {
-        proto: 'SIOPE ATRT01', pc: 'siop', label: 'Part A — HDCT arm', ev: 'rct', key: 'HDCT ×3 + ASCT — no RT',
-        out: [ { l: 'OS', v: 'not mature', c: 'ov-neu' }, { l: 'EFS', v: 'not mature', c: 'ov-neu' }, { l: 'Cohort', v: 'ATRT01 Part A randomization' } ],
-        chemo: '<strong>Induction:</strong> 3 courses DOX / ICE / VCA. <strong>If chemosensitive:</strong> 1–2(3) courses EU-RHAB + SCA then <strong>3 × HDCT</strong> (busulfan–thiotepa or melphalan–thiotepa per protocol), autologous stem-cell rescue after each course.',
-        rt: null, noRt: 'NO RT in the HDCT arm — comparator arm of the Part A randomization (question: HDCT vs focal RT at 12–35 months). RT discussed only at local relapse.',
-        refs: [ 1 ]
-      },
-      { proto: 'SFCE 2026', pc: 'nat', label: '&lt; 3 y, M0', ev: 'cons', key: 'EU-RHAB induction → focal RT if feasible + conventional chemo · otherwise carboplatin-thiotepa × 3',
-        out: [ { l: 'EU-RHAB registry (n = 143)', v: '5-y OS 34.7 %', c: 'ov-mid' }, { l: 'Recommendation', v: 'trial inclusion first', c: 'ov-neu' } ],
-        chemo: 'EU-RHAB induction (Dox / ICE / VCA with age-adapted intraventricular MTX — 0.5 mg &lt; 2 y, 1 mg 2–3 y, 2 mg &gt; 3 y; intrathecal if no reservoir; stopped when RT starts). No high-dose chemotherapy after RT. HDC = carboplatin-thiotepa (CCG99703 doses, as in ATRT01) because of EU-RHAB triple-course toxicity <sup>[7]</sup>.',
-        rt: { timing: 'After induction, from 12–18 months for posterior fossa tumours (supratentorial: by age, site and field size).', vol: [ { l: 'Focal', v: 'Tumour bed ± residual' } ], doses: [ { l: 'Focal', d: '50.4–54 Gy' }, { l: 'Residual (ATRT01 schema)', d: '→ 59.4 Gy', c: 'esc' } ] },
-        refs: [ 7, 5 ] }  ],
-      notes: 'Intensive neuropsychological follow-up. HDCT failure: discussion with reference centre — no standardized salvage RT in the protocol.'
+      notes: ''
     },
     'r12-mplus': {
-      title: '12–35 months · M+ — off protocol (not eligible for Part A)', risk: 'off', badge: 'OFF PROTOCOL',
-      tags: { age: '12to35', m: 'M+', arm: 'mdt', res: 'any' },
-      def: [ { k: 'Age', v: '12–35 months' }, { k: 'Status', v: 'M+ (Part A requires SYNC−, M0)' } ],
-      arms: [ {
-        proto: 'SIOPE ATRT01', pc: 'siop', label: 'Outside Part A', ev: 'exp', key: 'Individual MDT decision',
-        out: [ { l: 'Prognosis', v: 'very poor', c: 'ov-bad' }, { l: 'Data', v: 'isolated cases' } ],
-        chemo: 'Contact the trial coordinating centre and the national therapeutic board; individualized treatment discussed case by case.',
-        rt: null, noRt: 'RT not standardized — national multidisciplinary discussion. CSI may be considered in selected cases below 36 months, but benefit at this age is poorly documented.',
-        refs: [ 1 ]
-      }, estro('Off-trial guideline · 12–36 mo M+', 'CSI only after tumour board — 23.4 / 24 Gy', { timing: 'Individual tumour board decision, after discussion with parents.', vol: [ { l: 'CSI', v: 'Whole neuraxis' } ], doses: [ { l: 'CSI if indicated', d: '23.4–24 Gy', s: 'EU-RHAB: 24 Gy in 1.6 Gy fractions (up to 18 months); ACNS0333: 23.4 Gy.' } ] }),
+      title: '12–35 months · M+', risk: 'hr', badge: '12–35 MO · M+',
+      tags: { age: '12to35', m: 'M+', res: 'any' },
+      def: [ { k: 'Age', v: '12–35 months' }, { k: 'Status', v: 'M1–M3' } ],
+      arms: [ (function(a) { a.out = a.out.concat([ { l: 'EU-RHAB registry, 5-y OS', v: 'M+ 16.9 %', c: 'ov-bad' } ]); a.outNote = 'EU-RHAB registry 2009–2017 (n = 143) <sup>[5]</sup>.'; return a; })(estro('Off-trial guideline · 12–36 mo M+', 'CSI only after tumour board — 23.4 / 24 Gy', { timing: 'Individual tumour board decision, after discussion with parents.', vol: [ { l: 'CSI', v: 'Whole neuraxis' } ], doses: [ { l: 'CSI if indicated', d: '23.4–24 Gy', s: 'EU-RHAB: 24 Gy in 1.6 Gy fractions (up to 18 months); ACNS0333: 23.4 Gy.' } ] })),
       { proto: 'SFCE 2026', pc: 'nat', label: '&lt; 3 y, M+', ev: 'cons', key: 'EU-RHAB induction → carboplatin-thiotepa ± focal RT (national embryonal group)',
         out: [ { l: 'EU-RHAB registry (n = 143)', v: '5-y OS 34.7 %', c: 'ov-mid' }, { l: 'Recommendation', v: 'trial inclusion first', c: 'ov-neu' } ],
         chemo: 'EU-RHAB induction (Dox / ICE / VCA with age-adapted intraventricular MTX — 0.5 mg &lt; 2 y, 1 mg 2–3 y, 2 mg &gt; 3 y; intrathecal if no reservoir; stopped when RT starts). No high-dose chemotherapy after RT. HDC = carboplatin-thiotepa (CCG99703 doses, as in ATRT01) because of EU-RHAB triple-course toxicity <sup>[7]</sup>.',
         rt: null, noRt: 'CSI not recommended before 3 years; focal RT to be discussed.',
         refs: [ 7, 5 ] }  ],
-      notes: 'Contact the SIOPE ATRT01 Trial Office before any therapeutic decision.'
+      notes: ''
     },
     'ge36-m0-nores': {
-      title: '≥ 36 months · M0 · No residual — focal RT 54 Gy (Part C)', risk: 'sr', badge: '≥ 36 MO · M0',
-      tags: { age: 'ge36', m: 'M0', arm: 'rt', res: 'none' },
-      def: [ { k: 'Age', v: '≥ 36 months' }, { k: 'Status', v: 'M0' }, { k: 'Residual', v: 'None' } ],
-      arms: [ {
-        proto: 'SIOPE ATRT01', pc: 'siop', label: 'Part C', ev: 'trial', key: '54 Gy / 30 fr focal',
-        out: [ { l: 'EU-RHAB M0, 5-y OS', v: '43 % (n = 100)', c: 'ov-mid' }, { l: '≥ 1 y + ATRT-TYR, 5-y OS', v: '71.5 %', c: 'ov-mid' }, { l: '≥ 1 y + non-TYR, 5-y OS', v: '32.5 %', c: 'ov-bad' } ], outNote: 'EU-RHAB registry 2009–2017 (n = 143) — not ATRT01 results <sup>[5]</sup>.',
-        chemo: '<strong>Post-RT:</strong> 9 courses EU-RHAB (vincristine, actinomycin-D, carboplatin, etoposide, cyclophosphamide). No concomitant chemotherapy during RT.',
-        rt: {
-          timing: 'After haematological recovery post-induction; coordination with post-RT EU-RHAB.',
-          vol: [ { l: 'GTVtb', v: 'Post-op / post-chemo tumour bed on MRI' }, { l: 'CTVtb', v: 'GTVtb + 10 mm (3 mm brainstem)' }, { l: 'PTVtb_5400', v: 'CTVtb + 3–5 mm (technique / IGRT)' } ],
-          doses: [ { l: 'Tumour bed', d: '54.0 Gy / 30 fr / 1.8 Gy · 5 fr/week', s: 'Photons 4–6 MV or protons. MRI at 45 Gy recommended; no boost without persistent residual.' } ]
-        },
-        refs: [ 1, 2, 5 ]
-      }, estro('Off-trial guideline · M0', 'Focal 54 Gy', ESTRO_FOCAL(false)),
+      title: '≥ 36 months · M0 · no residual', risk: 'sr', badge: '≥ 36 MO · M0',
+      tags: { age: 'ge36', m: 'M0', res: 'none' },
+      def: [ { k: 'Age', v: '≥ 36 months' }, { k: 'Status', v: 'M0, no residual' } ],
+      arms: [ (function(a) { a.out = a.out.concat([ { l: 'EU-RHAB registry, 5-y OS', v: '45.3 % (≥ 1 y) · M0 43 %', c: 'ov-mid' } ]); a.outNote = 'EU-RHAB registry 2009–2017 (n = 143) <sup>[5]</sup>.'; return a; })(estro('Off-trial guideline · M0', 'Focal 54 Gy', ESTRO_FOCAL(false))),
       { proto: 'SFCE 2026', pc: 'nat', label: '&gt; 3 y, M0', ev: 'cons', key: 'EU-RHAB induction → focal RT 50.4–54 Gy + conventional chemotherapy',
         out: [ { l: 'EU-RHAB registry (n = 143)', v: '5-y OS 34.7 %', c: 'ov-mid' }, { l: 'Recommendation', v: 'trial inclusion first', c: 'ov-neu' } ],
         chemo: 'EU-RHAB induction (Dox / ICE / VCA with age-adapted intraventricular MTX — 0.5 mg &lt; 2 y, 1 mg 2–3 y, 2 mg &gt; 3 y; intrathecal if no reservoir; stopped when RT starts). No high-dose chemotherapy after RT. HDC = carboplatin-thiotepa (CCG99703 doses, as in ATRT01) because of EU-RHAB triple-course toxicity <sup>[7]</sup>.',
-        rt: { timing: 'After induction (EU-RHAB: RT within the conventional chemotherapy sequence).', vol: [ { l: 'Focal', v: 'Tumour bed ± residual' } ], doses: [ { l: 'Focal', d: '50.4–54 Gy' }, { l: 'Residual (ATRT01 schema)', d: '→ 59.4 Gy', c: 'esc' } ] },
+        rt: { timing: 'After induction (EU-RHAB: RT within the conventional chemotherapy sequence).', vol: [ { l: 'Focal', v: 'Tumour bed ± residual' } ], doses: [ { l: 'Focal', d: '50.4–54 Gy' }, { l: 'Residual (SFCE schema)', d: '→ 59.4 Gy', c: 'esc' } ] },
         refs: [ 7, 5 ] }  ],
-      notes: 'Protons strongly encouraged ≥ 36 months. CT–MRI fusion (pre-op and pre-RT) mandatory. OAR priorities: brainstem D1% ≤ 59 Gy (surface ≤ 63 Gy), spinal cord D1% ≤ 54 Gy, optic nerves / chiasm ≤ 54 Gy <sup>[2]</sup>.'
+      notes: ''
     },
     'ge36-m0-res': {
-      title: '≥ 36 months · M0 · Residual — 54 Gy ± boost 5.4 Gy', risk: 'sr', badge: '≥ 36 MO · M0 · RESIDUAL',
-      tags: { age: 'ge36', m: 'M0', arm: 'rt', res: 'res' },
-      def: [ { k: 'Age', v: '≥ 36 months' }, { k: 'Status', v: 'M0' }, { k: 'Residual', v: 'Macroscopic residual' } ],
-      arms: [ {
-        proto: 'SIOPE ATRT01', pc: 'siop', label: 'Part C', ev: 'trial', key: '54 Gy ± 5.4 Gy boost',
-        out: [ { l: 'EU-RHAB M0, 5-y OS', v: '43 % (n = 100)', c: 'ov-mid' }, { l: '≥ 1 y + ATRT-TYR, 5-y OS', v: '71.5 %', c: 'ov-mid' }, { l: '≥ 1 y + non-TYR, 5-y OS', v: '32.5 %', c: 'ov-bad' } ], outNote: 'EU-RHAB registry 2009–2017 (n = 143) — not ATRT01 results <sup>[5]</sup>.',
-        chemo: '<strong>Post-RT:</strong> 9 courses EU-RHAB. No concomitant chemotherapy during RT.',
-        rt: {
-          timing: 'Part C, after haematological recovery. Re-assessment MRI at 45 Gy mandatory before boost decision.',
-          vol: [ { l: 'Phase 1', v: 'GTVtb+res_a → CTVtb (+10 mm, 3 mm brainstem) → PTVtb_5400 (+3–5 mm)' }, { l: 'Phase 2 (if boost)', v: 'GTVres_b (residual on 45 Gy MRI) → CTVres_b = GTVres_b → PTVres_b_0540 (+3–5 mm); crop at OAR → PTVres_Eval-OAR' } ],
-          doses: [ { l: 'Phase 1', d: '54.0 Gy / 30 fr / 1.8 Gy' }, { l: 'Optional boost', d: '+5.4 Gy / 3 fr → 59.4 Gy', c: 'esc', s: 'If residual > 5 mm persists in all planes at 45 Gy MRI — individual multidisciplinary decision.' } ]
-        },
-        refs: [ 1, 2, 5 ]
-      }, estro('Off-trial guideline · M0 · residual', 'Focal 54 Gy ± 5.4 Gy', ESTRO_FOCAL(true)),
+      title: '≥ 36 months · M0 · residual', risk: 'sr', badge: '≥ 36 MO · M0 · RESIDUAL',
+      tags: { age: 'ge36', m: 'M0', res: 'res' },
+      def: [ { k: 'Age', v: '≥ 36 months' }, { k: 'Status', v: 'M0, macroscopic residual' } ],
+      arms: [ (function(a) { a.out = a.out.concat([ { l: 'EU-RHAB registry, 5-y OS', v: '45.3 % (≥ 1 y) · M0 43 %', c: 'ov-mid' } ]); a.outNote = 'EU-RHAB registry 2009–2017 (n = 143) <sup>[5]</sup>.'; return a; })(estro('Off-trial guideline · M0 · residual', 'Focal 54 Gy ± 5.4 Gy', ESTRO_FOCAL(true))),
       { proto: 'SFCE 2026', pc: 'nat', label: '&gt; 3 y, M0', ev: 'cons', key: 'EU-RHAB induction → focal RT 50.4–54 Gy + conventional chemotherapy',
         out: [ { l: 'EU-RHAB registry (n = 143)', v: '5-y OS 34.7 %', c: 'ov-mid' }, { l: 'Recommendation', v: 'trial inclusion first', c: 'ov-neu' } ],
         chemo: 'EU-RHAB induction (Dox / ICE / VCA with age-adapted intraventricular MTX — 0.5 mg &lt; 2 y, 1 mg 2–3 y, 2 mg &gt; 3 y; intrathecal if no reservoir; stopped when RT starts). No high-dose chemotherapy after RT. HDC = carboplatin-thiotepa (CCG99703 doses, as in ATRT01) because of EU-RHAB triple-course toxicity <sup>[7]</sup>.',
-        rt: { timing: 'After induction (EU-RHAB: RT within the conventional chemotherapy sequence).', vol: [ { l: 'Focal', v: 'Tumour bed ± residual' } ], doses: [ { l: 'Focal', d: '50.4–54 Gy' }, { l: 'Residual (ATRT01 schema)', d: '→ 59.4 Gy', c: 'esc' } ] },
+        rt: { timing: 'After induction (EU-RHAB: RT within the conventional chemotherapy sequence).', vol: [ { l: 'Focal', v: 'Tumour bed ± residual' } ], doses: [ { l: 'Focal', d: '50.4–54 Gy' }, { l: 'Residual (SFCE schema)', d: '→ 59.4 Gy', c: 'esc' } ] },
         refs: [ 7, 5 ] }  ],
-      notes: 'National board + ATRT01 reference radiation oncologist recommended for boost decisions. QUARTET RTQA mandatory. Protons encouraged.'
+      notes: ''
     },
     'ge36-m-nores': {
-      title: '≥ 36 months · M1–3 · No residual / no bulky metastasis — CSI + tumour-bed boost', risk: 'hr', badge: '≥ 36 MO · M1–3',
-      tags: { age: 'ge36', m: 'M+', arm: 'rt', res: 'none' },
-      def: [ { k: 'Age', v: '≥ 36 months' }, { k: 'Status', v: 'M1–M3' }, { k: 'Residual', v: 'No primary residual, no bulky metastasis' } ],
-      arms: [ {
-        proto: 'SIOPE ATRT01', pc: 'siop', label: 'Part C', ev: 'trial', key: 'CSI 36 Gy + TB 18 Gy (54 Gy)',
-        out: [ { l: 'EU-RHAB M+, 5-y OS', v: '16.9 %', c: 'ov-bad' }, { l: 'ATRT01 Part C', v: 'pending', c: 'ov-neu' } ], outNote: 'EU-RHAB registry 2009–2017 (n = 143) — not ATRT01 results <sup>[5]</sup>.',
-        chemo: '<strong>Post-RT:</strong> 9 courses EU-RHAB. No concomitant chemotherapy during CSI.',
-        rt: {
-          timing: 'CSI after haematological recovery; if incomplete recovery, start with the local boost before CSI. Brain + whole-spine MRI within 2 weeks before simulation.',
-          vol: [ { l: 'CTV_Brain', v: 'Whole cranial subarachnoid space (cribriform plate, inferior temporal lobes, pituitary fossa, craniotomy meninges)' }, { l: 'CTV_Spine', v: 'Spinal canal + foraminal extensions to thecal sac (caudal limit S1 per source)' }, { l: 'PTV_Brain / Spine_3600', v: 'CTV + 3–5 mm (5–10 mm spine without daily IGRT) + 10 mm caudal' }, { l: 'Boost', v: 'GTVtb → CTVtb (+10 mm, 3 mm brainstem) → PTVtb_1800 (+3–5 mm)' } ],
-          doses: [ { l: 'CSI', d: '36.0 Gy / 20 fr / 1.8 Gy · 5 fr/week' }, { l: 'Tumour-bed boost', d: '+18.0 Gy / 10 fr → 54.0 Gy', c: 'esc', s: 'Photons 4–6 MV (no cobalt) or PBS protons. Growing vertebrae: homogeneous bilateral coverage ≥ 20 Gy, avoid A/P and L/R gradients <sup>[4]</sup>.' } ]
-        },
-        refs: [ 1, 2, 4, 5 ]
-      }, estro('Off-trial guideline · ≥ 36 mo M+', 'CSI 35.2–36 Gy + primary 54 Gy + mets 45–50.4 Gy', ESTRO_CSI(false)),
+      title: '≥ 36 months · M1–3 · no residual', risk: 'hr', badge: '≥ 36 MO · M+',
+      tags: { age: 'ge36', m: 'M+', res: 'none' },
+      def: [ { k: 'Age', v: '≥ 36 months' }, { k: 'Status', v: 'M1–M3, no residual primary' } ],
+      arms: [ (function(a) { a.out = a.out.concat([ { l: 'EU-RHAB registry, 5-y OS', v: 'M+ 16.9 %', c: 'ov-bad' } ]); a.outNote = 'EU-RHAB registry 2009–2017 (n = 143) <sup>[5]</sup>.'; return a; })(estro('Off-trial guideline · ≥ 36 mo M+', 'CSI 35.2–36 Gy + primary 54 Gy + mets 45–50.4 Gy', ESTRO_CSI(false))),
       { proto: 'SFCE 2026', pc: 'nat', label: '&gt; 3 y, M+', ev: 'cons', key: 'EU-RHAB induction → CSI + conventional chemotherapy (above 3–5 y; national webconference)',
         out: [ { l: 'EU-RHAB registry (n = 143)', v: '5-y OS 34.7 %', c: 'ov-mid' }, { l: 'Recommendation', v: 'trial inclusion first', c: 'ov-neu' }, { l: 'CSI after good response', v: 'benefit debated', c: 'ov-neu' } ],
         chemo: 'EU-RHAB induction (Dox / ICE / VCA with age-adapted intraventricular MTX — 0.5 mg &lt; 2 y, 1 mg 2–3 y, 2 mg &gt; 3 y; intrathecal if no reservoir; stopped when RT starts). No high-dose chemotherapy after RT. HDC = carboplatin-thiotepa (CCG99703 doses, as in ATRT01) because of EU-RHAB triple-course toxicity <sup>[7]</sup>.',
-        rt: { timing: 'After induction; indication discussed at the national webconference.', vol: [ { l: 'CSI', v: 'Whole craniospinal axis' }, { l: 'Boost', v: 'Tumour bed, residual, bulky metastases' } ], doses: [ { l: 'CSI (ATRT01 schema)', d: '36 Gy', c: 'esc' }, { l: 'Tumour bed / residual', d: '54 / 59.4 Gy', c: 'esc' }, { l: 'Bulky metastases', d: '45–50.4 Gy', c: 'highesc' } ] },
+        rt: { timing: 'After induction; indication discussed at the national webconference.', vol: [ { l: 'CSI', v: 'Whole craniospinal axis' }, { l: 'Boost', v: 'Tumour bed, residual, bulky metastases' } ], doses: [ { l: 'CSI (SFCE schema)', d: '36 Gy', c: 'esc' }, { l: 'Tumour bed / residual', d: '54 / 59.4 Gy', c: 'esc' }, { l: 'Bulky metastases', d: '45–50.4 Gy', c: 'highesc' } ] },
         refs: [ 7, 8, 5 ] }  ],
-      notes: 'National concertation before RT. OAR: spinal cord D1% ≤ 54 Gy, brainstem D1% ≤ 59–63 Gy, optic nerves / chiasm ≤ 54–56 Gy, cochleae Dmean ≤ 30 Gy (≤ 25 Gy with ototoxic chemotherapy) <sup>[2]</sup>.'
+      notes: ''
     },
     'ge36-m-res': {
-      title: '≥ 36 months · M1–3 · Primary residual — CSI + tumour-bed boost + residual boost', risk: 'hr', badge: '≥ 36 MO · M1–3 · RESIDUAL',
-      tags: { age: 'ge36', m: 'M+', arm: 'rt', res: 'res' },
-      def: [ { k: 'Age', v: '≥ 36 months' }, { k: 'Status', v: 'M1–M3' }, { k: 'Residual', v: 'Primary residual, no bulky metastasis' } ],
-      arms: [ {
-        proto: 'SIOPE ATRT01', pc: 'siop', label: 'Part C', ev: 'trial', key: 'CSI 36 + 18 ± 5.4 Gy',
-        out: [ { l: 'EU-RHAB M+, 5-y OS', v: '16.9 %', c: 'ov-bad' }, { l: 'ATRT01 Part C', v: 'pending', c: 'ov-neu' } ], outNote: 'EU-RHAB registry 2009–2017 (n = 143) — not ATRT01 results <sup>[5]</sup>.',
-        chemo: '<strong>Post-RT:</strong> 9 courses EU-RHAB. No concomitant chemotherapy during CSI.',
-        rt: {
-          timing: 'CSI after haematological recovery. Brain + spine MRI ≤ 2 weeks before simulation; re-assessment MRI at 45 Gy for the residual.',
-          vol: [ { l: 'CSI', v: 'CTV_Brain + CTV_Spine → PTVs (as for M1–3 without residual)' }, { l: 'Tumour-bed boost', v: 'GTVtb → CTVtb (+10 mm, 3 mm brainstem) → PTVtb_1800' }, { l: 'Residual boost (optional)', v: 'GTVres_b (45 Gy MRI) → CTVres_b = GTVres_b → PTVres_b_0540 (+3–5 mm)' } ],
-          doses: [ { l: 'CSI', d: '36.0 Gy / 20 fr / 1.8 Gy' }, { l: 'Tumour-bed boost', d: '+18.0 Gy / 10 fr → 54.0 Gy', c: 'esc' }, { l: 'Residual boost (optional)', d: '+5.4 Gy / 3 fr → 59.4 Gy', c: 'highesc', s: 'Individual risk analysis after 45 Gy MRI; national discussion recommended.' } ]
-        },
-        refs: [ 1, 2, 5 ]
-      }, estro('Off-trial guideline · ≥ 36 mo M+', 'CSI 35.2–36 Gy + 54 Gy ± residual 59.4 Gy', ESTRO_CSI(true)),
+      title: '≥ 36 months · M1–3 · primary residual', risk: 'hr', badge: '≥ 36 MO · M+ · RESIDUAL',
+      tags: { age: 'ge36', m: 'M+', res: 'res' },
+      def: [ { k: 'Age', v: '≥ 36 months' }, { k: 'Status', v: 'M1–M3 with residual primary' } ],
+      arms: [ (function(a) { a.out = a.out.concat([ { l: 'EU-RHAB registry, 5-y OS', v: 'M+ 16.9 %', c: 'ov-bad' } ]); a.outNote = 'EU-RHAB registry 2009–2017 (n = 143) <sup>[5]</sup>.'; return a; })(estro('Off-trial guideline · ≥ 36 mo M+', 'CSI 35.2–36 Gy + 54 Gy ± residual 59.4 Gy', ESTRO_CSI(true))),
       { proto: 'SFCE 2026', pc: 'nat', label: '&gt; 3 y, M+', ev: 'cons', key: 'EU-RHAB induction → CSI + conventional chemotherapy (above 3–5 y; national webconference)',
         out: [ { l: 'EU-RHAB registry (n = 143)', v: '5-y OS 34.7 %', c: 'ov-mid' }, { l: 'Recommendation', v: 'trial inclusion first', c: 'ov-neu' }, { l: 'CSI after good response', v: 'benefit debated', c: 'ov-neu' } ],
         chemo: 'EU-RHAB induction (Dox / ICE / VCA with age-adapted intraventricular MTX — 0.5 mg &lt; 2 y, 1 mg 2–3 y, 2 mg &gt; 3 y; intrathecal if no reservoir; stopped when RT starts). No high-dose chemotherapy after RT. HDC = carboplatin-thiotepa (CCG99703 doses, as in ATRT01) because of EU-RHAB triple-course toxicity <sup>[7]</sup>.',
-        rt: { timing: 'After induction; indication discussed at the national webconference.', vol: [ { l: 'CSI', v: 'Whole craniospinal axis' }, { l: 'Boost', v: 'Tumour bed, residual, bulky metastases' } ], doses: [ { l: 'CSI (ATRT01 schema)', d: '36 Gy', c: 'esc' }, { l: 'Tumour bed / residual', d: '54 / 59.4 Gy', c: 'esc' }, { l: 'Bulky metastases', d: '45–50.4 Gy', c: 'highesc' } ] },
+        rt: { timing: 'After induction; indication discussed at the national webconference.', vol: [ { l: 'CSI', v: 'Whole craniospinal axis' }, { l: 'Boost', v: 'Tumour bed, residual, bulky metastases' } ], doses: [ { l: 'CSI (SFCE schema)', d: '36 Gy', c: 'esc' }, { l: 'Tumour bed / residual', d: '54 / 59.4 Gy', c: 'esc' }, { l: 'Bulky metastases', d: '45–50.4 Gy', c: 'highesc' } ] },
         refs: [ 7, 8, 5 ] }  ],
-      notes: 'Plans cropped at OARs are scored as “justified deviation”. QUARTET RTQA mandatory for all craniospinal irradiation.'
+      notes: ''
     },
     'ge36-m-bulky': {
-      title: '≥ 36 months · M1–3 · Bulky metastases — CSI + multisite boosts', risk: 'hr', badge: '≥ 36 MO · BULKY M+',
-      tags: { age: 'ge36', m: 'M+', arm: 'rt', res: 'bulky' },
-      def: [ { k: 'Age', v: '≥ 36 months' }, { k: 'Status', v: 'M1–M3 with bulky (> 5 mm) cranial and/or spinal metastases' } ],
-      arms: [ {
-        proto: 'SIOPE ATRT01', pc: 'siop', label: 'Part C', ev: 'trial', key: 'CSI 36 + boosts 45–54 Gy',
-        out: [ { l: 'EU-RHAB M+, 5-y OS', v: '16.9 %', c: 'ov-bad' }, { l: 'ATRT01 Part C', v: 'pending', c: 'ov-neu' } ], outNote: 'EU-RHAB registry 2009–2017 (n = 143) — not ATRT01 results <sup>[5]</sup>.',
-        chemo: '<strong>Post-RT:</strong> 9 courses EU-RHAB. No concomitant chemotherapy during CSI.',
-        rt: {
-          timing: 'Full CSI then boosts to primary bed and bulky metastases. Pre-RT spine MRI for metastasis mapping, brain MRI for intracranial metastases.',
-          vol: [ { l: 'CSI', v: 'CTV_Brain + CTV_Spine → PTVs (standard)' }, { l: 'Spinal metastases', v: 'GTVm_s (lesions > 5 mm) → CTVm_s (+10 mm cranio-caudal, canal + foramina) → PTVm_s_1440 or _0900 (+3–5 mm)' }, { l: 'Brain metastases', v: 'GTVm_b (> 5 mm) → CTVm_b (+5 mm, anatomical barriers) → PTVm_Brain_1440 (+3–5 mm)' }, { l: 'Primary bed', v: 'GTVtb → CTVtb (+10 mm) → PTVtb_1800' } ],
-          doses: [ { l: 'CSI', d: '36.0 Gy / 20 fr / 1.8 Gy' }, { l: 'Primary bed boost', d: '+18.0 Gy → 54.0 Gy', c: 'esc' }, { l: 'Spinal mets ≥ 5 cm', d: '+9.0 Gy / 5 fr → 45.0 Gy', c: 'esc', s: '<span class="chip verify">⚠ verify</span> Source gives the lower boost to the larger lesions — check the size threshold and dose pairing in QUARTET guidelines.' }, { l: 'Spinal mets < 5 cm', d: '+14.4 Gy / 8 fr → 50.4 Gy', c: 'esc' }, { l: 'Brain mets', d: '+14.4 Gy / 8 fr → 50.4 Gy', c: 'highesc', s: 'Optional primary residual boost +5.4 Gy → 59.4 Gy (individual decision).' } ]
-        },
-        refs: [ 1, 2, 5 ]
-      }, estro('Off-trial guideline · ≥ 36 mo M+', 'CSI 35.2–36 Gy + primary 54 Gy + mets 45–50.4 Gy', ESTRO_CSI(false)),
+      title: '≥ 36 months · M1–3 · bulky metastases', risk: 'hr', badge: '≥ 36 MO · BULKY M+',
+      tags: { age: 'ge36', m: 'M+', res: 'bulky' },
+      def: [ { k: 'Age', v: '≥ 36 months' }, { k: 'Status', v: 'M1–M3 with bulky cranial and / or spinal metastases' } ],
+      arms: [ (function(a) { a.out = a.out.concat([ { l: 'EU-RHAB registry, 5-y OS', v: 'M+ 16.9 %', c: 'ov-bad' } ]); a.outNote = 'EU-RHAB registry 2009–2017 (n = 143) <sup>[5]</sup>.'; return a; })(estro('Off-trial guideline · ≥ 36 mo M+', 'CSI 35.2–36 Gy + primary 54 Gy + mets 45–50.4 Gy', ESTRO_CSI(false))),
       { proto: 'SFCE 2026', pc: 'nat', label: '&gt; 3 y, M+', ev: 'cons', key: 'EU-RHAB induction → CSI + conventional chemotherapy (above 3–5 y; national webconference)',
         out: [ { l: 'EU-RHAB registry (n = 143)', v: '5-y OS 34.7 %', c: 'ov-mid' }, { l: 'Recommendation', v: 'trial inclusion first', c: 'ov-neu' }, { l: 'CSI after good response', v: 'benefit debated', c: 'ov-neu' } ],
         chemo: 'EU-RHAB induction (Dox / ICE / VCA with age-adapted intraventricular MTX — 0.5 mg &lt; 2 y, 1 mg 2–3 y, 2 mg &gt; 3 y; intrathecal if no reservoir; stopped when RT starts). No high-dose chemotherapy after RT. HDC = carboplatin-thiotepa (CCG99703 doses, as in ATRT01) because of EU-RHAB triple-course toxicity <sup>[7]</sup>.',
-        rt: { timing: 'After induction; indication discussed at the national webconference.', vol: [ { l: 'CSI', v: 'Whole craniospinal axis' }, { l: 'Boost', v: 'Tumour bed, residual, bulky metastases' } ], doses: [ { l: 'CSI (ATRT01 schema)', d: '36 Gy', c: 'esc' }, { l: 'Tumour bed / residual', d: '54 / 59.4 Gy', c: 'esc' }, { l: 'Bulky metastases', d: '45–50.4 Gy', c: 'highesc' } ] },
+        rt: { timing: 'After induction; indication discussed at the national webconference.', vol: [ { l: 'CSI', v: 'Whole craniospinal axis' }, { l: 'Boost', v: 'Tumour bed, residual, bulky metastases' } ], doses: [ { l: 'CSI (SFCE schema)', d: '36 Gy', c: 'esc' }, { l: 'Tumour bed / residual', d: '54 / 59.4 Gy', c: 'esc' }, { l: 'Bulky metastases', d: '45–50.4 Gy', c: 'highesc' } ] },
         refs: [ 7, 8, 5 ] }  ],
-      notes: 'Most complex configuration — national multidisciplinary concertation before any decision. RTQA plans ≥ 5 working days before RT start; proton robustness required if PBS.'
+      notes: ''
     }
   },
   context: [
-    { t: 'Dose constraints — ESTRO-SIOPE 2024 (Table 2)', h: '<div class="tbl-wrap"><table class="t"><tr><th>Organ</th><th>Mean (Gy)</th><th>D1 % (Gy)</th></tr><tr><td class="k">Brainstem</td><td>54</td><td>59 (63*)</td></tr><tr><td class="k">Brainstem centre (2–3 mm)</td><td>54</td><td>56</td></tr><tr><td class="k">Spinal cord (below C1)</td><td>50.4</td><td>54</td></tr><tr><td class="k">Optic nerves / chiasm</td><td>54</td><td>54 (56*)</td></tr><tr><td class="k">Cochlea</td><td>30</td><td>45</td></tr><tr><td class="k">Cochlea, ototoxic chemotherapy</td><td>25</td><td>30</td></tr><tr><td class="k">Lens</td><td>5</td><td>7</td></tr><tr><td class="k">Temporal lobes</td><td colspan="2">30 % vol &lt; 25 Gy · 60 % vol &lt; 20 Gy</td></tr><tr><td class="k">Hippocampus</td><td colspan="2">30 % vol &lt; 30 Gy · 60 % vol &lt; 25 Gy</td></tr><tr><td class="k">Pituitary</td><td>36</td><td>—</td></tr><tr><td class="k">Vertebrae (CSI, growing child)</td><td colspan="2">Full vertebral bodies ≥ 20 Gy to avoid growth asymmetry</td></tr></table></div><p>* Only in high-risk scenarios, individually <sup>[6]</sup>.</p>' },
-    { t: 'RT quality assurance & OAR constraints (QUARTET)', h: '<ul><li>RTQA submission ≥ 5 working days before RT start for all plans <sup>[2]</sup>.</li><li>Brainstem D1% ≤ 59 Gy (surface ≤ 63 Gy) · spinal cord D1% ≤ 54 Gy · optic nerves / chiasm ≤ 54 Gy · cochleae Dmean ≤ 30 Gy (≤ 25 Gy with ototoxic chemotherapy).</li><li>Growing vertebrae: homogeneous dose, avoid steep gradients across vertebral bodies <sup>[4]</sup>.</li><li>Protons (PBS) encouraged in all RT situations; immobilisation / anaesthesia in young children.</li></ul>' },
-    { t: 'Open points to verify in the protocol', h: '<ul><li>Meaning of “SCA” in the consolidation sequence and exact EU-RHAB post-RT drug list.</li><li>CTV_Spine caudal limit (source states S1 — usually defined by the thecal sac on MRI).</li></ul>' }
+    { t: 'Dose constraints — ESTRO-SIOPE 2024 (Table 2)', h: '<div class="tbl-wrap"><table class="t"><tr><th>Organ</th><th>Mean (Gy)</th><th>D1 % (Gy)</th></tr><tr><td class="k">Brainstem</td><td>54</td><td>59 (63*)</td></tr><tr><td class="k">Brainstem centre (2–3 mm)</td><td>54</td><td>56</td></tr><tr><td class="k">Spinal cord (below C1)</td><td>50.4</td><td>54</td></tr><tr><td class="k">Optic nerves / chiasm</td><td>54</td><td>54 (56*)</td></tr><tr><td class="k">Cochlea</td><td>30</td><td>45</td></tr><tr><td class="k">Cochlea, ototoxic chemotherapy</td><td>25</td><td>30</td></tr><tr><td class="k">Lens</td><td>5</td><td>7</td></tr><tr><td class="k">Temporal lobes</td><td colspan="2">30 % vol &lt; 25 Gy · 60 % vol &lt; 20 Gy</td></tr><tr><td class="k">Hippocampus</td><td colspan="2">30 % vol &lt; 30 Gy · 60 % vol &lt; 25 Gy</td></tr><tr><td class="k">Pituitary</td><td>36</td><td>—</td></tr><tr><td class="k">Vertebrae (CSI, growing child)</td><td colspan="2">Full vertebral bodies ≥ 20 Gy to avoid growth asymmetry</td></tr></table></div><p>* Only in high-risk scenarios, individually <sup>[6]</sup>.</p>' }
   ],
   trials: [
-    { id: 'EudraCT 2018-003335-29', st: 'rec', stl: 'EU TRIAL', t: 'SIOPE ATRT01 — umbrella trial (Parts A/B/C)', m: 'GPOH / SIOPE · Part A randomization RT vs HDCT (12–35 months)' }
-  ],
-  flow: {
-    l: 'SIOPE ATRT01', s: 'Staging + DOX/ICE/VCA ×3', children: [
-      { e: '< 12 mo', l: 'Part B', s: 'Infant', sid: 'lt12' },
-      { e: '12–35 mo', l: 'Part A', s: 'Check SYNC / M', children: [
-        { e: 'SYNC−, M0', l: 'Randomization', s: 'RT vs HDCT', children: [
-          { e: 'RT arm', l: 'Residual?', s: 'pre-simulation MRI', children: [
-            { e: 'none', l: 'Focal 54 Gy', sid: 'r12-rt-nores' },
-            { e: 'residual', l: '54 ± 5.4 Gy', sid: 'r12-rt-res' } ] },
-          { e: 'HDCT arm', l: 'HDCT ×3', sid: 'r12-hdct' } ] },
-        { e: 'M+', l: 'Off protocol', sid: 'r12-mplus' } ] },
-      { e: '≥ 36 mo', l: 'Part C', s: 'RT for all', children: [
-        { e: 'M0', l: 'Residual?', children: [
-          { e: 'none', l: 'Focal 54 Gy', sid: 'ge36-m0-nores' },
-          { e: 'residual', l: '54 ± 5.4 Gy', sid: 'ge36-m0-res' } ] },
-        { e: 'M1–3', l: 'Residual / bulky?', children: [
-          { e: 'none', l: 'CSI 36 + 18', sid: 'ge36-m-nores' },
-          { e: 'primary res.', l: 'CSI + 2 boosts', sid: 'ge36-m-res' },
-          { e: 'bulky mets', l: 'CSI + multisite', sid: 'ge36-m-bulky' } ] } ] }
-    ]
-  }
+    { id: 'EudraCT 2018-003335-29', st: 'rec', stl: 'EU TRIAL', t: 'SIOPE ATRT01 — umbrella trial', m: 'GPOH / SIOPE · open in some centres' }
+  ]
 };
+
 
 // ═══ DONNÉES — TUMEURS GERMINALES SNC ═══
 var SIOP_GERM_CHEMO = '<strong>4 courses q21d, alternating:</strong><ul><li>Courses 1 &amp; 3 — Carboplatin 600 mg/m² d1 (max 1200 mg) + Etoposide 100 mg/m²/d d1–3</li><li>Courses 2 &amp; 4 — Ifosfamide 1800 mg/m²/d d1–5 (+ MESNA 2200 mg/m²/d, hydration) + Etoposide 100 mg/m²/d d1–3</li></ul>Reassessment after 4 courses: MRI + serum markers (CSF if doubt) → CR / PR / SD <sup>[6]</sup>.';
