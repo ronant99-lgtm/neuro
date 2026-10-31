@@ -360,7 +360,8 @@ var ATRT = {
     6: { a: 'Timmermann B, Alapetite C, Dieckmann K, et al.', t: 'ESTRO-SIOPE guideline: clinical management of radiotherapy in atypical teratoid/rhabdoid tumors (AT/RTs)', j: 'Radiother Oncol. 2024;196:110227', doi: '10.1016/j.radonc.2024.110227', n: 'For patients not enrolled in trials: focal 54 Gy (50.4 Gy individually < 36 mo; + 5.4 Gy for residual), CTV 10 mm; CSI 35.2–36 Gy ≥ 36 mo M+ with metastasis boosts 45–50.4 Gy; CSI < 36 mo only after tumour board (23.4–24 Gy).' },
     4: { a: 'Hoeben BA, et al. — SIOPE Radiotherapy Working Group', t: 'Management of vertebral radiotherapy dose in paediatric patients with cancer: consensus recommendations', j: 'Lancet Oncol. 2019;20(3):e155–e166', doi: '10.1016/S1470-2045(19)30034-8', n: 'Vertebral dose homogeneity in growing children.' },
     7: { a: 'SFCE — groupe tumeurs embryonnaires du SNC (Bourdeaut F)', t: 'Recommandations du groupe TC : ATRT', j: 'SFCE, January 2026 (public document)', n: 'Inclusion in open trials (SIOPE ATRT01) preferred; otherwise EU-RHAB first line (Dox / ICE / VCA + age-adapted intra-Ommaya MTX, stopped when RT starts). Focal RT 50.4–54 Gy for localized ATRT from 12–18 months (posterior fossa); CSI not before 3 years and only for M+ above 3–5 years; no HDC after RT. No systematic risk grouping outside trials.' },
-    8: { a: 'Aridgides PD, Mahajan A, Eaton B, et al.', t: 'Focal versus craniospinal radiation for disseminated atypical teratoid / rhabdoid tumor following favorable response to systemic therapy', j: 'Pediatr Blood Cancer. 2023;70(7):e30351', n: 'Cited by SFCE 2026 (PMID 37073482): benefit of CSI debated in M+ ATRT with good response to chemotherapy.' }
+    8: { a: 'Aridgides PD, Mahajan A, Eaton B, et al.', t: 'Focal versus craniospinal radiation for disseminated atypical teratoid / rhabdoid tumor following favorable response to systemic therapy', j: 'Pediatr Blood Cancer. 2023;70(7):e30351', n: 'Cited by SFCE 2026 (PMID 37073482): benefit of CSI debated in M+ ATRT with good response to chemotherapy.' },
+    9: { a: 'Reddy AT, Strother DR, Judkins AR, et al.', t: 'Efficacy of High-Dose Chemotherapy and Three-Dimensional Conformal Radiation for Atypical Teratoid/Rhabdoid Tumor: A Report From the Children’s Oncology Group Trial ACNS0333', j: 'J Clin Oncol. 2020;38(11):1175–1185', doi: '10.1200/JCO.19.01776', n: 'n = 65 (54 < 36 mo): 2 induction cycles, 3 HDCT with stem-cell rescue + involved-field RT (photons or protons): 50.4 Gy < 36 mo, 54 Gy older. 4-y EFS 37 %, OS 43 %; EFS better than historical cohort for < 36 mo (HR 0.43); RT timing (before vs after HDCT) did not affect survival; 4 toxic deaths.' }
   },
   situations: {
     'lt12': {
@@ -384,7 +385,12 @@ var ATRT = {
         out: [ { l: 'EU-RHAB registry (n = 143)', v: '5-y OS 34.7 %', c: 'ov-mid' }, { l: 'Recommendation', v: 'trial inclusion first', c: 'ov-neu' } ],
         chemo: 'EU-RHAB induction (Dox / ICE / VCA with age-adapted intraventricular MTX — 0.5 mg &lt; 2 y, 1 mg 2–3 y, 2 mg &gt; 3 y; intrathecal if no reservoir; stopped when RT starts). No high-dose chemotherapy after RT. HDC = carboplatin-thiotepa (CCG99703 doses, as in ATRT01) because of EU-RHAB triple-course toxicity <sup>[7]</sup>.',
         rt: { timing: 'After induction, from 12–18 months for posterior fossa tumours (supratentorial: by age, site and field size).', vol: [ { l: 'Focal', v: 'Tumour bed ± residual' } ], doses: [ { l: 'Focal', d: '50.4–54 Gy' }, { l: 'Residual (SFCE schema)', d: '→ 59.4 Gy', c: 'esc' } ] },
-        refs: [ 7, 5 ] }  ],
+        refs: [ 7, 5 ] },
+      { proto: 'COG ACNS0333', pc: 'cog', label: 'Induction → HDCT ×3 + involved-field RT', ev: 'trial', key: 'Focal 50.4 Gy (< 36 mo) · 54 Gy (≥ 36 mo)',
+        out: [ { l: '4-y EFS / OS (n = 65)', v: '37 % / 43 %', c: 'ov-bad' }, { l: 'RT timing (pre / post HDCT)', v: 'no survival effect', c: 'ov-neu' } ],
+        chemo: '2 induction cycles then 3 HDCT courses with stem-cell rescue <sup>[9]</sup>.',
+        rt: { timing: 'Between induction and consolidation if ≥ 6 mo (infratentorial) / ≥ 12 mo (supratentorial); after consolidation if younger or M+.', vol: [ { l: 'Target', v: 'Involved field (tumour bed + residual)' } ], doses: [ { l: '< 36 months', d: '50.4 Gy' }, { l: '≥ 36 months', d: '54 Gy' } ] },
+        refs: [ 9 ] }   ],
       notes: ''
     },
     'r12-rt-res': {
@@ -396,7 +402,12 @@ var ATRT = {
         out: [ { l: 'EU-RHAB registry (n = 143)', v: '5-y OS 34.7 %', c: 'ov-mid' }, { l: 'Recommendation', v: 'trial inclusion first', c: 'ov-neu' } ],
         chemo: 'EU-RHAB induction (Dox / ICE / VCA with age-adapted intraventricular MTX — 0.5 mg &lt; 2 y, 1 mg 2–3 y, 2 mg &gt; 3 y; intrathecal if no reservoir; stopped when RT starts). No high-dose chemotherapy after RT. HDC = carboplatin-thiotepa (CCG99703 doses, as in ATRT01) because of EU-RHAB triple-course toxicity <sup>[7]</sup>.',
         rt: { timing: 'After induction, from 12–18 months for posterior fossa tumours (supratentorial: by age, site and field size).', vol: [ { l: 'Focal', v: 'Tumour bed ± residual' } ], doses: [ { l: 'Focal', d: '50.4–54 Gy' }, { l: 'Residual (SFCE schema)', d: '→ 59.4 Gy', c: 'esc' } ] },
-        refs: [ 7, 5 ] }  ],
+        refs: [ 7, 5 ] },
+      { proto: 'COG ACNS0333', pc: 'cog', label: 'Induction → HDCT ×3 + involved-field RT', ev: 'trial', key: 'Focal 50.4 Gy (< 36 mo) · 54 Gy (≥ 36 mo)',
+        out: [ { l: '4-y EFS / OS (n = 65)', v: '37 % / 43 %', c: 'ov-bad' }, { l: 'RT timing (pre / post HDCT)', v: 'no survival effect', c: 'ov-neu' } ],
+        chemo: '2 induction cycles then 3 HDCT courses with stem-cell rescue <sup>[9]</sup>.',
+        rt: { timing: 'Between induction and consolidation if ≥ 6 mo (infratentorial) / ≥ 12 mo (supratentorial); after consolidation if younger or M+.', vol: [ { l: 'Target', v: 'Involved field (tumour bed + residual)' } ], doses: [ { l: '< 36 months', d: '50.4 Gy' }, { l: '≥ 36 months', d: '54 Gy' } ] },
+        refs: [ 9 ] }   ],
       notes: ''
     },
     'r12-mplus': {
@@ -420,7 +431,12 @@ var ATRT = {
         out: [ { l: 'EU-RHAB registry (n = 143)', v: '5-y OS 34.7 %', c: 'ov-mid' }, { l: 'Recommendation', v: 'trial inclusion first', c: 'ov-neu' } ],
         chemo: 'EU-RHAB induction (Dox / ICE / VCA with age-adapted intraventricular MTX — 0.5 mg &lt; 2 y, 1 mg 2–3 y, 2 mg &gt; 3 y; intrathecal if no reservoir; stopped when RT starts). No high-dose chemotherapy after RT. HDC = carboplatin-thiotepa (CCG99703 doses, as in ATRT01) because of EU-RHAB triple-course toxicity <sup>[7]</sup>.',
         rt: { timing: 'After induction (EU-RHAB: RT within the conventional chemotherapy sequence).', vol: [ { l: 'Focal', v: 'Tumour bed ± residual' } ], doses: [ { l: 'Focal', d: '50.4–54 Gy' }, { l: 'Residual (SFCE schema)', d: '→ 59.4 Gy', c: 'esc' } ] },
-        refs: [ 7, 5 ] }  ],
+        refs: [ 7, 5 ] },
+      { proto: 'COG ACNS0333', pc: 'cog', label: 'Induction → HDCT ×3 + involved-field RT', ev: 'trial', key: 'Focal 50.4 Gy (< 36 mo) · 54 Gy (≥ 36 mo)',
+        out: [ { l: '4-y EFS / OS (n = 65)', v: '37 % / 43 %', c: 'ov-bad' }, { l: 'RT timing (pre / post HDCT)', v: 'no survival effect', c: 'ov-neu' } ],
+        chemo: '2 induction cycles then 3 HDCT courses with stem-cell rescue <sup>[9]</sup>.',
+        rt: { timing: 'Between induction and consolidation if ≥ 6 mo (infratentorial) / ≥ 12 mo (supratentorial); after consolidation if younger or M+.', vol: [ { l: 'Target', v: 'Involved field (tumour bed + residual)' } ], doses: [ { l: '< 36 months', d: '50.4 Gy' }, { l: '≥ 36 months', d: '54 Gy' } ] },
+        refs: [ 9 ] }   ],
       notes: ''
     },
     'ge36-m0-res': {
@@ -432,7 +448,12 @@ var ATRT = {
         out: [ { l: 'EU-RHAB registry (n = 143)', v: '5-y OS 34.7 %', c: 'ov-mid' }, { l: 'Recommendation', v: 'trial inclusion first', c: 'ov-neu' } ],
         chemo: 'EU-RHAB induction (Dox / ICE / VCA with age-adapted intraventricular MTX — 0.5 mg &lt; 2 y, 1 mg 2–3 y, 2 mg &gt; 3 y; intrathecal if no reservoir; stopped when RT starts). No high-dose chemotherapy after RT. HDC = carboplatin-thiotepa (CCG99703 doses, as in ATRT01) because of EU-RHAB triple-course toxicity <sup>[7]</sup>.',
         rt: { timing: 'After induction (EU-RHAB: RT within the conventional chemotherapy sequence).', vol: [ { l: 'Focal', v: 'Tumour bed ± residual' } ], doses: [ { l: 'Focal', d: '50.4–54 Gy' }, { l: 'Residual (SFCE schema)', d: '→ 59.4 Gy', c: 'esc' } ] },
-        refs: [ 7, 5 ] }  ],
+        refs: [ 7, 5 ] },
+      { proto: 'COG ACNS0333', pc: 'cog', label: 'Induction → HDCT ×3 + involved-field RT', ev: 'trial', key: 'Focal 50.4 Gy (< 36 mo) · 54 Gy (≥ 36 mo)',
+        out: [ { l: '4-y EFS / OS (n = 65)', v: '37 % / 43 %', c: 'ov-bad' }, { l: 'RT timing (pre / post HDCT)', v: 'no survival effect', c: 'ov-neu' } ],
+        chemo: '2 induction cycles then 3 HDCT courses with stem-cell rescue <sup>[9]</sup>.',
+        rt: { timing: 'Between induction and consolidation if ≥ 6 mo (infratentorial) / ≥ 12 mo (supratentorial); after consolidation if younger or M+.', vol: [ { l: 'Target', v: 'Involved field (tumour bed + residual)' } ], doses: [ { l: '< 36 months', d: '50.4 Gy' }, { l: '≥ 36 months', d: '54 Gy' } ] },
+        refs: [ 9 ] }   ],
       notes: ''
     },
     'ge36-m-nores': {
@@ -535,7 +556,15 @@ var GCT = {
     14: { a: 'Abu-Arja MH, Osorio DS, Lassaletta A, et al.', t: 'Prognostic factors for patients with relapsed central nervous system nongerminomatous germ cell tumors', j: 'Pediatr Blood Cancer. 2022;69(1):e29365', doi: '10.1002/pbc.29365', n: '9 studies, n = 101. Survivors: 71 % with CR/CCR at end of relapse therapy vs 7 %; 48 % with HDC + AuHCR vs 12 %; 60 % with initial AFP ≤ 25 ng/mL vs 28 %. Local relapse, GTR and RT at relapse not associated with outcome.' },
     15: { a: 'Shatara M, Blue M, Stanek J, …, Finlay JL.', t: 'Final report of the phase II NEXT/CNS-GCT-4 trial: GemPOx followed by marrow-ablative chemotherapy for recurrent intracranial germ cell tumors', j: 'Neurooncol Pract. 2024;11(2):188–198', doi: '10.1093/nop/npad067', nct: 'NCT01270724', n: '9 patients: 7 proceeded to HDC + AuHPCR (5 then received RT), 2 progressed on GemPOx; mean follow-up 44 months, 4 alive without disease. First author corrected (source: Finlay JL).' },
     16: { a: 'Embring A, Blomstrand M, Asklid A, et al.', t: 'Re-irradiation in paediatric tumours of the central nervous system: national guidelines from the Swedish Workgroup of Paediatric Radiotherapy', j: 'Clin Oncol (R Coll Radiol). 2023;35(9):571–575', doi: '10.1016/j.clon.2023.05.007', n: 'National guidelines in use since 2019 (DIPG, ependymoma, germinoma, medulloblastoma). Ependymoma re-RT: ≥ 9 months, CSI 36 Gy + 54 Gy if not local-only; cumulative brainstem Dmax 91.5 / D2cc 82.6 GyEQD2. Germinoma: ≥ 6 months, CSI 24 Gy + boost 40 Gy. DIPG: ≥ 3 months, 2 Gy × 10.' },
-    17: { a: 'Calaminus G, Alapetite C, Kortmann RD, et al.', t: 'Final report of the SIOP-CNS-GCT II protocol for germinoma: omitting radiotherapy boost is safe in localized disease in complete remission after chemotherapy', j: 'Neuro Oncol. 2026;28(9):2234–2247', doi: '10.1093/neuonc/noag127', n: '2012–2018, n = 227. Localized (n = 166): carboPEI × 4 → CR 24 Gy WVRT alone (64 / 65; 2 relapses, 3.1 %), PR 24 Gy + 16 Gy boost (88 / 90; 2 relapses, 2.3 %), SD 24 + 16 (7) or 24 + 30 Gy if teratoma (1), no relapse; 5-y EFS 94 %, OS 98 %. Metastatic (n = 61): CSI 24 Gy + 16 Gy, 5-y EFS 98 %, OS 100 % (1 relapse).' }
+    17: { a: 'Calaminus G, Alapetite C, Kortmann RD, et al.', t: 'Final report of the SIOP-CNS-GCT II protocol for germinoma: omitting radiotherapy boost is safe in localized disease in complete remission after chemotherapy', j: 'Neuro Oncol. 2026;28(9):2234–2247', doi: '10.1093/neuonc/noag127', n: '2012–2018, n = 227. Localized (n = 166): carboPEI × 4 → CR 24 Gy WVRT alone (64 / 65; 2 relapses, 3.1 %), PR 24 Gy + 16 Gy boost (88 / 90; 2 relapses, 2.3 %), SD 24 + 16 (7) or 24 + 30 Gy if teratoma (1), no relapse; 5-y EFS 94 %, OS 98 %. Metastatic (n = 61): CSI 24 Gy + 16 Gy, 5-y EFS 98 %, OS 100 % (1 relapse).' },
+    18: { a: 'Power PC, Liu KX, Chi SN, et al.', t: 'Treatment approach for metastatic intracranial germinoma: a multi-institutional experience', j: 'Pediatr Blood Cancer. 2025;72(5):e31628', doi: '10.1002/pbc.31628', n: 'BCH / DFCI / BWH / MGH 1998–2023, n = 27 metastatic germinoma: 21 induction chemotherapy + CSI (median 21 Gy, range 18–36) + involved-field boost (median 36 Gy, 30–51.6); 6 CSI alone. Median follow-up 11.3 y: no recurrence, no death; frequent endocrinopathies and CNS vasculopathy.' },
+    19: { a: 'Foo JC, Yaman Bajin I, Marushchak O, et al.', t: 'Time to dismiss boost? Outcomes of children with localized and metastatic germinoma', j: 'J Neurooncol. 2023;162(2):443–448', doi: '10.1007/s11060-023-04307-5', n: 'SickKids 2000–2021: 29 / 46 children (25 localized, 4 metastatic) received chemotherapy + 23.4 Gy (VI 23, WBI 5, CSI 1) without primary boost, even without CR. 5-y PFS 91 %, OS 100 %; no local relapse (2 distant relapses after VI).' },
+    20: { a: 'Zhou Z, Liu J, Yue Q, et al.', t: 'Optimal treatment approach for intracranial germinoma: a systematic review and meta-analysis', j: 'BMC Cancer. 2025;25(1):26', doi: '10.1186/s12885-024-13323-1', n: '37 studies. Recurrence higher with focal RT than CSI (RR 7.1), WBRT (RR 4.1) or WVRT (RR 3.4); WBRT and WVRT also higher than CSI, with no difference between them. Reduced-dose CSI ± chemotherapy effective in metastatic / disseminated germinoma.' },
+    21: { a: 'Morana G, Shaw D, MacDonald SM, et al.', t: 'Imaging response assessment for CNS germ cell tumours: consensus recommendations from the European Society for Paediatric Oncology Brain Tumour Group and North American Children’s Oncology Group', j: 'Lancet Oncol. 2022;23(5):e218–e228', doi: '10.1016/S1470-2045(22)00063-8', n: 'SIOPE BTG / COG consensus: CR = disappearance of target lesions allowing pituitary stalk < 0.3 cm at insertion and < 0.4 cm near the chiasm, or solid enhancing pineal ≤ 1 cm; PR = ≥ 50 % decrease of the sum of up to 4 target lesions with per-lesion description; growing teratoma syndrome to exclude before calling PD.' },
+    22: { a: 'Li B, Feng J, Chen L, et al.', t: 'Relapse pattern and quality of life in patients with localized basal ganglia germinoma receiving focal radiotherapy, whole-brain radiotherapy, or craniospinal irradiation', j: 'Radiother Oncol. 2021;158:90–96', doi: '10.1016/j.radonc.2021.02.009', n: 'n = 161 localized BG germinomas: 5-y DFS focal RT 74.3 %, WBRT + boost 97.2 %, CSI + boost 100 %; focal relapses periventricular or frontal; CSI lower mental QoL scores than WBRT — WBRT proposed as optimal volume.' },
+    23: { a: 'Graham RT, Abu-Arja MH, Stanek JR, et al.', t: 'Multi-institutional analysis of treatment modalities in basal ganglia and thalamic germinoma', j: 'Pediatr Blood Cancer. 2021;68(10):e29172', doi: '10.1002/pbc.29172', n: '18 institutions, n = 43 non-metastatic BGT germinomas: 5-y / 10-y EFS 85.8 % / 81.0 %, OS 100 % / 95.5 %. Median doses: CSI 22.5 Gy, WBI 23.4 Gy, WVI 23.4 Gy, focal 36 Gy; no relapse after CSI or WBI; chemotherapy alone inferior (salvageable with RT).' },
+    24: { a: 'Lee JW, Lim DH, Sung KW, et al.', t: 'Induction Chemotherapy Reduces Radiation Therapy Dose and Volume in the Treatment of Intracranial Germinoma: Results of the SMC-G13 Trial', j: 'Int J Radiat Oncol Biol Phys. 2020;108(3):649–656', doi: '10.1016/j.ijrobp.2020.05.051', n: 'Prospective (NCT02782754), β-hCG < 200 mIU/mL, n = 41: 4 cycles carboplatin / etoposide alternating with cyclophosphamide / etoposide, then 18 Gy (WVI; WBI for basal ganglia; CSI if M+) + 12.6 Gy boost to primary bed. CR 33, PR 8; 1 event at 3.4 y.' },
+    25: { a: 'Byun HK, Yoon HI, Cho J, et al.', t: 'Optimization of Intracranial Germinoma Treatment: Radiotherapy Alone with Reduced Volume and Dose', j: 'Int J Radiat Oncol Biol Phys. 2020;108(3):657–666', doi: '10.1016/j.ijrobp.2020.05.019', n: 'Yonsei 1971–2017, n = 213, 10-y DFS 91.6 %, OS 95.6 %. Recurrence: RT alone 6.6 %, chemo + RT 5.5 %, chemo alone 3 / 3; by volume: focal 34.5 %, WV / WB 5.9 %, CSI 0 %. Since 2012 RT alone with WV / WB 18 Gy + primary 36 Gy (localized): 2 / 33 recurrences.' }
   },
   situations: {
     'g-loc-cr': {
@@ -564,7 +593,12 @@ var GCT = {
           verify: 'Fractionation not stated in source documents — check ESCP / protocol.'
         },
         refs: [ 6, 7 ]
-      } ],
+      },
+      { proto: 'Reduced-dose series', pc: 'lit', label: 'Korean prospective / institutional series', ev: 'trial', key: 'Chemo → 18 Gy WVI + 12.6 Gy boost (SMC-G13) · or RT alone WV 18 Gy + 36 Gy',
+        out: [ { l: 'SMC-G13 (n = 41) events', v: '1 at 3.4 y', c: 'ov-good' }, { l: 'Yonsei recurrence by volume', v: 'focal 34.5 % · WV / WB 5.9 % · CSI 0 %', c: 'ov-mid' }, { l: 'Chemotherapy alone', v: '3 / 3 relapsed', c: 'ov-bad' } ],
+        chemo: '4 cycles carboplatin / etoposide alternating with cyclophosphamide / etoposide (SMC-G13) <sup>[24]</sup>.',
+        rt: { timing: 'After induction (SMC-G13) or as sole treatment (Yonsei since 2012).', vol: [ { l: 'WVI', v: 'Whole ventricles (WBI for basal ganglia, CSI if M+)' }, { l: 'Boost', v: 'Primary tumour bed' } ], doses: [ { l: 'SMC-G13', d: '18 Gy + 12.6 Gy boost (30.6 Gy)' }, { l: 'Yonsei RT alone', d: 'WV / WB 18 Gy + primary 36 Gy' } ], verify: 'Short follow-up for SMC-G13 (median 3.4 y).' },
+        refs: [ 24, 25 ] }  ],
       notes: 'Main divergence: COG reduces WVI to 12 Gy but keeps a 12 Gy boost (24 Gy at primary); SIOP keeps 24 Gy WVI+TB and drops the boost (24 Gy at primary) for single-site CR. Residual after chemotherapy does not worsen prognosis in germinoma — watch-and-wait for small residuals <sup>[6]</sup>.'
     },
     'g-loc-pr': {
@@ -593,7 +627,12 @@ var GCT = {
           verify: 'Fractionation not stated in source documents.'
         },
         refs: [ 6 ]
-      } ],
+      },
+      { proto: 'Reduced-dose series', pc: 'lit', label: 'Korean prospective / institutional series', ev: 'trial', key: 'Chemo → 18 Gy WVI + 12.6 Gy boost (SMC-G13) · or RT alone WV 18 Gy + 36 Gy',
+        out: [ { l: 'SMC-G13 (n = 41) events', v: '1 at 3.4 y', c: 'ov-good' }, { l: 'Yonsei recurrence by volume', v: 'focal 34.5 % · WV / WB 5.9 % · CSI 0 %', c: 'ov-mid' }, { l: 'Chemotherapy alone', v: '3 / 3 relapsed', c: 'ov-bad' } ],
+        chemo: '4 cycles carboplatin / etoposide alternating with cyclophosphamide / etoposide (SMC-G13) <sup>[24]</sup>.',
+        rt: { timing: 'After induction (SMC-G13) or as sole treatment (Yonsei since 2012).', vol: [ { l: 'WVI', v: 'Whole ventricles (WBI for basal ganglia, CSI if M+)' }, { l: 'Boost', v: 'Primary tumour bed' } ], doses: [ { l: 'SMC-G13', d: '18 Gy + 12.6 Gy boost (30.6 Gy)' }, { l: 'Yonsei RT alone', d: 'WV / WB 18 Gy + primary 36 Gy' } ], verify: 'Short follow-up for SMC-G13 (median 3.4 y).' },
+        refs: [ 24, 25 ] }  ],
       notes: 'Dose at primary for PR: 30 Gy (COG) vs 40 Gy (SIOP).'
     },
     'g-loc-lt': {
@@ -678,7 +717,12 @@ var GCT = {
           verify: 'Fractionation not stated in source documents.'
         },
         refs: [ 6, 7 ]
-      } ],
+      },
+      { proto: 'Literature', pc: 'lit', label: 'Chemotherapy + reduced-dose CSI', ev: 'retro', key: 'Induction chemo → CSI ~21–24 Gy + involved-field boost to ~36 Gy',
+        out: [ { l: 'Power 2025 (n = 27)', v: 'no recurrence at 11.3 y', c: 'ov-good' }, { l: 'Meta-analysis', v: 'CSI < recurrence than WBRT / WVRT / focal', c: 'ov-good' }, { l: 'Foo 2023 (4 M+ without boost)', v: 'no local relapse', c: 'ov-good' } ],
+        chemo: 'Platinum-based induction chemotherapy before CSI <sup>[18]</sup>.',
+        rt: { timing: 'After induction chemotherapy.', vol: [ { l: 'CSI', v: 'Whole neuraxis — preferred over WBI / WVI for diffuse intracranial disease' }, { l: 'Boost', v: 'Involved fields (primary + macroscopic deposits); omission explored when CR (Foo 2023)' } ], doses: [ { l: 'CSI', d: 'median 21 Gy (18–36)', c: 'esc' }, { l: 'Involved-field boost', d: '→ median 36 Gy (30–51.6)', c: 'esc' } ] },
+        refs: [ 18, 19, 20 ] }  ],
       notes: 'Opposite strategies: COG gives chemotherapy first and adapts the CSI dose to response; SIOP treats with CSI alone. Incompletely staged disease (no spine MRI or CSF cytology) → treat as metastatic (SIOP) <sup>[6]</sup>.'
     },
     'g-met-lt': {
@@ -706,7 +750,12 @@ var GCT = {
           doses: [ { l: 'CSI', d: '24 Gy' }, { l: 'Boost', d: '+16 Gy → 40 Gy', c: 'esc' } ]
         },
         refs: [ 6, 7 ]
-      } ],
+      },
+      { proto: 'Literature', pc: 'lit', label: 'Chemotherapy + reduced-dose CSI', ev: 'retro', key: 'Induction chemo → CSI ~21–24 Gy + involved-field boost to ~36 Gy',
+        out: [ { l: 'Power 2025 (n = 27)', v: 'no recurrence at 11.3 y', c: 'ov-good' }, { l: 'Meta-analysis', v: 'CSI < recurrence than WBRT / WVRT / focal', c: 'ov-good' }, { l: 'Foo 2023 (4 M+ without boost)', v: 'no local relapse', c: 'ov-good' } ],
+        chemo: 'Platinum-based induction chemotherapy before CSI <sup>[18]</sup>.',
+        rt: { timing: 'After induction chemotherapy.', vol: [ { l: 'CSI', v: 'Whole neuraxis — preferred over WBI / WVI for diffuse intracranial disease' }, { l: 'Boost', v: 'Involved fields (primary + macroscopic deposits); omission explored when CR (Foo 2023)' } ], doses: [ { l: 'CSI', d: 'median 21 Gy (18–36)', c: 'esc' }, { l: 'Involved-field boost', d: '→ median 36 Gy (30–51.6)', c: 'esc' } ] },
+        refs: [ 18, 19, 20 ] }  ],
       notes: 'CSI late effects: GH deficiency, thyroid dysfunction, ototoxicity, neurocognition, vertebral growth. Proton CSI preferred when available; endocrine monitoring throughout follow-up.'
     },
     'g-bgt-cr': {
@@ -730,7 +779,12 @@ var GCT = {
         chemo: 'As localized (CarboE / IE × 4) or metastatic germinoma according to staging <sup>[6]</sup>.',
         rt: null, noRt: 'No BG/thalamus-specific RT volume in ESCP 2021 — RT according to the localized or metastatic algorithm; volume choice (WVI vs WBI) to discuss in MDT.',
         refs: [ 6 ]
-      } ],
+      },
+      { proto: 'BGT series', pc: 'lit', label: 'Basal ganglia / thalamic germinoma — volume', ev: 'retro', key: 'WBI (or CSI) rather than focal RT · chemo alone inferior',
+        out: [ { l: 'Li 2021 5-y DFS focal / WBRT / CSI', v: '74.3 % / 97.2 % / 100 %', c: 'ov-mid' }, { l: 'Graham 2021 relapses after CSI or WBI', v: 'none', c: 'ov-good' }, { l: 'Chemotherapy alone', v: 'inferior EFS', c: 'ov-bad' } ],
+        chemo: 'Platinum-based induction in most series; chemotherapy alone not sufficient <sup>[23]</sup>.',
+        rt: { timing: 'After induction chemotherapy (or RT alone in Asian series).', vol: [ { l: 'Volume', v: 'Whole brain (± CSI) + boost to primary; focal RT associated with periventricular / frontal relapse' } ], doses: [ { l: 'WBI', d: 'median 23.4 Gy (18–30)' }, { l: 'CSI', d: 'median 22.5 Gy (19.8–24)' }, { l: 'Boost', d: 'focal median 36 Gy (Graham) · 12.6 Gy after 18 Gy WBI (Lee)' } ], verify: 'CSI gave lower mental QoL scores than WBRT in Li 2021.' },
+        refs: [ 22, 23, 24 ] }  ],
       notes: 'Diagnostic mimics: glioma, demyelination, metabolic disease.'
     },
     'g-bgt-lt': {
@@ -754,7 +808,12 @@ var GCT = {
         chemo: 'Per localized or metastatic algorithm <sup>[6]</sup>.',
         rt: null, noRt: 'RT per localized (PR/SD) or metastatic algorithm — no specific BGT volume.',
         refs: [ 6 ]
-      } ],
+      },
+      { proto: 'BGT series', pc: 'lit', label: 'Basal ganglia / thalamic germinoma — volume', ev: 'retro', key: 'WBI (or CSI) rather than focal RT · chemo alone inferior',
+        out: [ { l: 'Li 2021 5-y DFS focal / WBRT / CSI', v: '74.3 % / 97.2 % / 100 %', c: 'ov-mid' }, { l: 'Graham 2021 relapses after CSI or WBI', v: 'none', c: 'ov-good' }, { l: 'Chemotherapy alone', v: 'inferior EFS', c: 'ov-bad' } ],
+        chemo: 'Platinum-based induction in most series; chemotherapy alone not sufficient <sup>[23]</sup>.',
+        rt: { timing: 'After induction chemotherapy (or RT alone in Asian series).', vol: [ { l: 'Volume', v: 'Whole brain (± CSI) + boost to primary; focal RT associated with periventricular / frontal relapse' } ], doses: [ { l: 'WBI', d: 'median 23.4 Gy (18–30)' }, { l: 'CSI', d: 'median 22.5 Gy (19.8–24)' }, { l: 'Boost', d: 'focal median 36 Gy (Graham) · 12.6 Gy after 18 Gy WBI (Lee)' } ], verify: 'CSI gave lower mental QoL scores than WBRT in Li 2021.' },
+        refs: [ 22, 23, 24 ] }  ],
       notes: ''
     },
     'ng-good': {
@@ -925,7 +984,9 @@ var GCT = {
     { t: 'Staging, imaging & response criteria', h: '<ul><li>Spine MRI with gadolinium <strong>before</strong> lumbar puncture and surgery; post-operative MRI within 24–48 h (≤ 72 h).</li><li>Lumbar CSF preferred over ventricular for cytology; ≥ 10 days after surgery (false-positive cytology earlier). Collect CSF markers first when diversion and biopsy are combined.</li><li>CSF diversion preference: ETV > EVD > VP shunt. Endoscopic findings of ventricular seeding should trigger M+ consideration.</li></ul><div class="tbl-wrap"><table class="t"><tr><th>Response (SIOP)</th><th>Definition</th></tr><tr><td class="k">CR</td><td>No residual or recurrent tumour, no meningeal dissemination</td></tr><tr><td class="k">PR</td><td>Volume reduction ≥ 50 % (A × B × C × ½; sum of 5 largest lesions)</td></tr><tr><td class="k">SD</td><td>Between 50 % decrease and 25 % increase</td></tr><tr><td class="k">PD</td><td>> 25 % increase or new lesion</td></tr></table></div>' },
     { t: 'Minimum IHC panel (marker-negative GCT)', h: '<div class="tbl-wrap"><table class="t"><tr><th>Subtype</th><th>PLAP</th><th>AFP</th><th>HCG</th><th>OCT3/4</th><th>NANOG</th><th>SOX2</th><th>KIT</th><th>CD30</th><th>Gly3 / SALL4</th></tr><tr><td class="k">Germinoma</td><td>+</td><td>−</td><td>± (sync.)</td><td>+</td><td>+</td><td>−</td><td>+/−</td><td>−/+</td><td>−</td></tr><tr><td class="k">Embryonal carcinoma</td><td>+/−</td><td>−/+</td><td>−/+</td><td>+</td><td>+</td><td>+</td><td>−/+</td><td>+/−</td><td>−</td></tr><tr><td class="k">Yolk sac tumour</td><td>+/−</td><td>++</td><td>−/+</td><td>−</td><td>−</td><td>−</td><td>−</td><td>−</td><td>+</td></tr><tr><td class="k">Choriocarcinoma</td><td>+/−</td><td>−/+</td><td>++</td><td>−</td><td>−</td><td>−</td><td>−</td><td>−</td><td>−</td></tr><tr><td class="k">Teratoma (mature)</td><td>−</td><td>±</td><td>−</td><td>−</td><td>−</td><td>+</td><td>+</td><td>+</td><td>± (immature)</td></tr></table></div><p>SOX2 separates EC (+) from germinoma (−); CD30 rules EC in/out; glypican-3 + SALL4 detect small YST islands <sup>[6]</sup>. Panel reproduced from the source tool — verify against ESCP.</p>' },
     { t: 'Chemotherapy regimens — reference table', h: '<div class="tbl-wrap"><table class="t"><tr><th>Regimen</th><th>Group</th><th>Agents &amp; doses</th><th>Use</th></tr><tr><td class="k">Carbo / VP16 × 4</td><td><span class="chip cog">COG</span></td><td>Carboplatin d1 + etoposide d1–3 q21d (doses per protocol)</td><td>Germinoma induction (ACNS2321)</td></tr><tr><td class="k">CarboE / IE × 6</td><td><span class="chip cog">COG</span></td><td>Cycles 1,3,5 carbo d1 + VP16 d1–3; cycles 2,4,6 ifosfamide d1–5 + VP16 d1–5</td><td>NGGCT induction (ACNS0122 → 1123 → 2021)</td></tr><tr><td class="k">HDCSCR</td><td><span class="chip cog">COG</span></td><td>Thiotepa + etoposide d−5 to d−3, PBSC d0</td><td>ACNS2021 Plan B</td></tr><tr><td class="k">CarboE / IE × 4</td><td><span class="chip siop">SIOP</span></td><td>Carbo 600 mg/m² d1 + VP16 100 mg/m²/d d1–3 / ifosfamide 1800 mg/m²/d d1–5 + VP16 100 d1–3</td><td>Localized germinoma</td></tr><tr><td class="k">PEI</td><td><span class="chip siop">SIOP</span></td><td>Cisplatin 20 mg/m²/d d1–5 · VP16 100 mg/m²/d d1–3 · ifosfamide 1500 mg/m²/d d1–5</td><td>NGGCT (3–4 courses)</td></tr><tr><td class="k">HD-PEI + SCT</td><td><span class="chip siop">SIOP</span></td><td>Cisplatin 20 d1–5 · VP16 300 d1–5 · ifosfamide 2000 d1–5 · SCT d7</td><td>High-risk NGGCT; viable cells at SLS</td></tr><tr><td class="k">GemPOx</td><td><span class="chip lit">Relapse</span></td><td>Paclitaxel 170 · gemcitabine 800 · oxaliplatin 100 mg/m² d1, q14d, max 4</td><td>NGGCT relapse re-induction <sup>[15]</sup></td></tr><tr><td class="k">TEC</td><td><span class="chip lit">Relapse</span></td><td>Thiotepa 300 mg/m²/d × 3 + etoposide 500 mg/m²/d × 3 + carboplatin (AUC)</td><td>HDC at relapse (French reference)</td></tr></table></div><p><span class="chip verify">⚠ verify</span> GemPOx and TEC doses are reproduced from the source relapse tool; they were not checked against the original publications.</p>' },
-    { t: 'COG vs SIOP-E — key differences', h: '<div class="tbl-wrap"><table class="t"><tr><th>Parameter</th><th>COG</th><th>SIOP-E</th></tr><tr><td class="k">Germinoma induction</td><td>Carbo + VP16 × 4</td><td>CarboE / IE × 4 (adds ifosfamide)</td></tr><tr><td class="k">Germinoma CR — dose at primary</td><td>WVI 12 + boost 12 = 24 Gy</td><td>WVI+TB 24 Gy, no boost (single site)</td></tr><tr><td class="k">Germinoma PR</td><td>WVI 18 + 12 = 30 Gy</td><td>24 + 16 = 40 Gy</td></tr><tr><td class="k">Metastatic germinoma</td><td>Chemo → CSI 18 (CR) / 24 Gy (< CR) + 12 Gy all sites</td><td>CSI 24 + 16 Gy, no chemo</td></tr><tr><td class="k">BG / thalamus</td><td>Strata VI–VII: WBI 18–24 + 12 Gy</td><td>Not separately stratified</td></tr><tr><td class="k">NGGCT stratification</td><td>Response to induction (Plan A / B)</td><td>AFP 1000 ng/mL + age 6 years</td></tr><tr><td class="k">NGGCT M0 RT volume</td><td>WVSCI 30.6 Gy + TB 54 Gy</td><td>Tumour bed 54 Gy only</td></tr><tr><td class="k">NGGCT induction</td><td>CarboE / IE × 6</td><td>PEI × 3–4</td></tr><tr><td class="k">NGGCT metastatic</td><td>Excluded from ACNS2021</td><td>CSI 30 + 24 Gy (spine ≤ 45 Gy)</td></tr></table></div><p>Corrected vs source tools: the COG germinoma induction is carbo/VP16 × 4 (not the 6-cycle CarboE/IE used for NGGCT), and ACNS2021 excludes metastatic disease.</p>' }
+    { t: 'COG vs SIOP-E — key differences', h: '<div class="tbl-wrap"><table class="t"><tr><th>Parameter</th><th>COG</th><th>SIOP-E</th></tr><tr><td class="k">Germinoma induction</td><td>Carbo + VP16 × 4</td><td>CarboE / IE × 4 (adds ifosfamide)</td></tr><tr><td class="k">Germinoma CR — dose at primary</td><td>WVI 12 + boost 12 = 24 Gy</td><td>WVI+TB 24 Gy, no boost (single site)</td></tr><tr><td class="k">Germinoma PR</td><td>WVI 18 + 12 = 30 Gy</td><td>24 + 16 = 40 Gy</td></tr><tr><td class="k">Metastatic germinoma</td><td>Chemo → CSI 18 (CR) / 24 Gy (< CR) + 12 Gy all sites</td><td>CSI 24 + 16 Gy, no chemo</td></tr><tr><td class="k">BG / thalamus</td><td>Strata VI–VII: WBI 18–24 + 12 Gy</td><td>Not separately stratified</td></tr><tr><td class="k">NGGCT stratification</td><td>Response to induction (Plan A / B)</td><td>AFP 1000 ng/mL + age 6 years</td></tr><tr><td class="k">NGGCT M0 RT volume</td><td>WVSCI 30.6 Gy + TB 54 Gy</td><td>Tumour bed 54 Gy only</td></tr><tr><td class="k">NGGCT induction</td><td>CarboE / IE × 6</td><td>PEI × 3–4</td></tr><tr><td class="k">NGGCT metastatic</td><td>Excluded from ACNS2021</td><td>CSI 30 + 24 Gy (spine ≤ 45 Gy)</td></tr></table></div><p>Corrected vs source tools: the COG germinoma induction is carbo/VP16 × 4 (not the 6-cycle CarboE/IE used for NGGCT), and ACNS2021 excludes metastatic disease.</p>' },
+    { t: 'Boost volumes for metastatic germinoma — what is (not) published', h: '<ul><li>No GCT protocol (SIOP CNS GCT II / 96, ACNS2321) publishes a CTV margin for boosting intracranial metastatic deposits; SIOP GCT II boosts the primary and all intracranial metastases to the same dose (24 + 16 Gy).</li><li>Primary-site boost in COG ACNS1123 (public protocol): CTV = GTV + 5 mm, anatomically confined.</li><li>COG embryonal protocols (ACNS0332, SJYC07 / NCT00602667) use GTV + 0.5–1 cm or + 5 mm for macroscopic metastases, and may ignore deposits ≤ 5 mm — <em>extrapolated</em>, not validated in germinoma.</li><li>For very diffuse intracranial disease: rely on CSI with an involved-field boost rather than multi-lesion focal contouring <sup>[18,20]</sup>; boost omission after good response is supported by one cohort <sup>[19]</sup>.</li></ul><p><span class="chip verify">⚠ verify</span> Protocol margins as reported in the internal review (germinome_M2_boost_contourage, June 2026) — protocol PDFs not re-read in this session.</p>' },
+    { t: 'Response assessment — SIOPE BTG / COG consensus (Morana 2022)', h: '<ul><li><strong>CR</strong>: disappearance of target lesions, allowing pituitary stalk &lt; 0.3 cm at the pituitary insertion and &lt; 0.4 cm near the optic chiasm, or a solid enhancing pineal gland ≤ 1 cm in all dimensions.</li><li><strong>PR</strong>: ≥ 50 % decrease of the sum of 2D or 3D measurements (up to 4 target lesions), with each lesion described when responses diverge.</li><li>Before calling PD in NGGCT with falling markers: consider <strong>growing teratoma syndrome</strong> → surgery.</li><li>Surgery recommended for germinoma with poor response (suspected teratoma component) and for residual NGGCT after induction, before RT.</li></ul><p>These definitions determine which RT column applies (CR vs PR vs less than PR) <sup>[21]</sup>.</p>' }  
   ],
   trials: [
     { id: 'NCT06368817', st: 'rec', stl: 'RECRUITING', t: 'COG ACNS2321 — response-based reduced RT, CNS germinoma', m: 'Phase II · n = 240 · 3–29 y · USA, Canada, Australia · primary completion 2033' },
@@ -990,7 +1051,8 @@ var ETMR = {
   refs: { 1: { a: 'Sturm D, Orr BA, Toprak UH, et al.', t: 'New brain tumor entities emerge from molecular classification of CNS-PNETs', j: 'Cell. 2016;164(5):1060–1072', doi: '10.1016/j.cell.2016.01.015', n: 'Defined CNS NB-FOXR2, EFT-CIC, HGNET-MN1 and HGNET-BCOR among former CNS-PNETs (ETMR was already a recognised group; the source tool described this paper as “defining C19MC-ETMR”).' }, 2: REF_WHO, 3: REF_HWANG, 4: REF_SCHU,
     5: { a: 'Krisch JM, Ermoian RP, Indelicato DJ, et al.', t: 'Outcomes following radiation therapy for embryonal tumor with multilayered rosettes (ETMR): results from the Pediatric Proton/Photon Consortium Registry (PPCR)', j: 'J Neurooncol. 2025;174:369–380', doi: '10.1007/s11060-025-05065-2', nct: 'NCT01696721', n: 'n = 18 (M0, no prior RT), median age at RT 3.0 y (1.7–12.2), median FU 55.5 mo. Focal RT 89 % (median 54 Gy, 53–57.6), CSI 2 (30.6–36 Gy + 54 Gy). 4-y LC 81 %, EFS 54.2 %, OS 59.6 %. Focal RT: 1 local-only, 3 distant-only failures. No radionecrosis; 1 RT-induced HGG at 71 mo.' },
     6: { a: 'Jaramillo S, Grosshans DR, Philip N, et al.', t: 'Radiation for ETMR: literature review and case series of patients treated with proton therapy', j: 'Clin Transl Radiat Oncol. 2019;15:31–37', doi: '10.1016/j.ctro.2018.11.002', n: 'MD Anderson n = 7 (median age at RT 42 mo): CSI 36 Gy RBE + primary median 53.1 Gy (n = 5), focal 50.4–54 Gy (n = 2); median OS 16 mo. Literature 204 cases: median OS 10 mo; 17 / 18 long-term survivors (≥ 36 mo) received RT, 14 CSI + boost.' },
-    7: { a: 'SFCE — groupe tumeurs embryonnaires du SNC (Simbozel M, Dufour C)', t: 'Recommandations du groupe TC : ETMR', j: 'SFCE, January 2026 (public document)', n: 'Head Start II/IV induction × 3 → reassessment → good response: HDC etoposide-carboplatin-thiotepa × 1 → RT (CSI preferred, by age); SD / PD: RT straight away. Second-look surgery at any time. Poor prognosis: M+, brainstem; better: complete resection, early RT (CSI if M+), intensive chemotherapy. The RT dose schema announced in the document is missing (blank page).' } },
+    7: { a: 'SFCE — groupe tumeurs embryonnaires du SNC (Simbozel M, Dufour C)', t: 'Recommandations du groupe TC : ETMR', j: 'SFCE, January 2026 (public document)', n: 'Head Start II/IV induction × 3 → reassessment → good response: HDC etoposide-carboplatin-thiotepa × 1 → RT (CSI preferred, by age); SD / PD: RT straight away. Second-look surgery at any time. Poor prognosis: M+, brainstem; better: complete resection, early RT (CSI if M+), intensive chemotherapy. The RT dose schema announced in the document is missing (blank page).' },
+    8: { a: 'Horwitz M, Dufour C, Leblond P, et al.', t: 'Embryonal tumors with multilayered rosettes in children: the SFCE experience', j: 'Childs Nerv Syst. 2016;32(2):299–305', doi: '10.1007/s00381-015-2920-2', n: 'n = 38 (ETANTR 17, medulloepithelioma 13, ETMR 8), median age 31 mo, 18.4 % M+; 30 treated as PNET-HR. 1-y EFS 36 %, OS 45 %. Multivariable OS: radiotherapy RR 41.8, complete resection RR 7.9, HDCT RR 3.5.' } },
   situations: {
     'etmr-ge3': {
       title: 'ETMR ≥ 3 years — CSI + boost (high-risk embryonal paradigm)', risk: 'hr', badge: 'ETMR · ≥ 3 Y',
@@ -1018,7 +1080,12 @@ var ETMR = {
         out: [ { l: 'Retrospective 5-y PFS / OS', v: '15–20 % / 20–25 %', c: 'ov-bad' }, { l: 'Intensive multimodal (P-HIT)', v: 'OS up to 60 %', c: 'ov-mid' } ],
         chemo: 'Head Start II/IV induction × 3 (vincristine, cisplatin, cyclophosphamide, etoposide, HD-MTX) → reassessment → good response: 1 course HDC etoposide-carboplatin-thiotepa + ASCR; stable / progressive: RT straight away. Second-look surgery (also of extensive residual metastases) at any time <sup>[7]</sup>.',
         rt: null, noRt: 'After HDC, or immediately if no response to induction; target volume (CSI preferred) and dose by age, site tolerance and extent — case by case. The SFCE dose schema is missing from the document.',
-        verifyArm: 'SFCE ETMR dose schema absent (blank page in the PDF).', refs: [ 7 ] }  ],
+        verifyArm: 'SFCE ETMR dose schema absent (blank page in the PDF).', refs: [ 7 ] },
+      { proto: 'SFCE 2016 series', pc: 'lit', label: 'French retrospective (n = 38)', ev: 'retro', key: 'RT, GTR and HDCT all independently associated with survival',
+        out: [ { l: '1-y EFS / OS', v: '36 % / 45 %', c: 'ov-bad' }, { l: 'RT (multivariable RR for OS)', v: '41.8', c: 'ov-good' }, { l: 'Complete resection RR', v: '7.9', c: 'ov-good' } ],
+        chemo: 'PNET-HR-type regimen with HDCT in most <sup>[8]</sup>.',
+        rt: null, noRt: 'Doses not detailed; supports including RT whenever age allows (see SFCE 2026 column for doses).',
+        refs: [ 8 ] }   ],
       notes: 'Molecular confirmation is essential: in ACNS0332, a large share of histological CNS-PNET were in fact HGG with very poor outcome <sup>[3]</sup>.'
     },
     'etmr-lt3-m0': {
@@ -1046,7 +1113,12 @@ var ETMR = {
         out: [ { l: 'Retrospective 5-y PFS / OS', v: '15–20 % / 20–25 %', c: 'ov-bad' }, { l: 'Intensive multimodal (P-HIT)', v: 'OS up to 60 %', c: 'ov-mid' } ],
         chemo: 'Head Start II/IV induction × 3 (vincristine, cisplatin, cyclophosphamide, etoposide, HD-MTX) → reassessment → good response: 1 course HDC etoposide-carboplatin-thiotepa + ASCR; stable / progressive: RT straight away. Second-look surgery (also of extensive residual metastases) at any time <sup>[7]</sup>.',
         rt: null, noRt: 'After HDC, or immediately if no response to induction; target volume (CSI preferred) and dose by age, site tolerance and extent — case by case. The SFCE dose schema is missing from the document.',
-        verifyArm: 'SFCE ETMR dose schema absent (blank page in the PDF).', refs: [ 7 ] }  ],
+        verifyArm: 'SFCE ETMR dose schema absent (blank page in the PDF).', refs: [ 7 ] },
+      { proto: 'SFCE 2016 series', pc: 'lit', label: 'French retrospective (n = 38)', ev: 'retro', key: 'RT, GTR and HDCT all independently associated with survival',
+        out: [ { l: '1-y EFS / OS', v: '36 % / 45 %', c: 'ov-bad' }, { l: 'RT (multivariable RR for OS)', v: '41.8', c: 'ov-good' }, { l: 'Complete resection RR', v: '7.9', c: 'ov-good' } ],
+        chemo: 'PNET-HR-type regimen with HDCT in most <sup>[8]</sup>.',
+        rt: null, noRt: 'Doses not detailed; supports including RT whenever age allows (see SFCE 2026 column for doses).',
+        refs: [ 8 ] }   ],
       notes: 'Discuss in national MDT; register in ETMR One (NCT04794686). After focal RT, 3 / 16 PPCR patients failed distantly only — CSI benefit unknown <sup>[5]</sup>.'
     },
     'etmr-lt3-mp': {
@@ -1115,7 +1187,13 @@ var PINEO = {
   ],
   groups: [ { t: '≥ 3 years', ids: [ 'pb-ge3-m0', 'pb-ge3-mp' ] }, { t: '< 3 years and syndromic', ids: [ 'pb-lt3', 'pb-trilat' ] }, { t: 'Other pineal parenchymal tumours', ids: [ 'pb-pptid' ] } ],
   refs: { 1: { a: 'Li BK, Vasiljevic A, Dufour C, et al.', t: 'Pineoblastoma segregates into molecular sub-groups with distinct clinico-pathologic features: a Rare Brain Tumor Consortium registry study', j: 'Acta Neuropathol. 2020;139(2):223–241', doi: '10.1007/s00401-019-02111-y', n: '72 molecularly confirmed PB, 5 groups. DOI corrected (source: …02112-5).' }, 2: REF_HWANG, 3: REF_SCHU,
-    4: { a: 'Liu APY, Li BK, Vasiljevic A, et al.', t: 'SNO-EANO-EURACAN consensus on management of pineal parenchymal tumors', j: 'Neuro Oncol. 2024;26(12):2159–2173', doi: '10.1093/neuonc/noae128', n: 'Table 2 recommendations by entity / age / extent. PB-miRNA1 / miRNA2: 5-y PFS/OS 57 %/70 % and 86 %/100 %; PB-MYC/FOXR2 17 %/24 %; PB-RB1 19 %/30 %. SJMB03 PB: AR 5-y PFS/OS 100 %/100 %, HR 56.5 %/60.3 %. ACNS0332 PB: 5-y EFS/OS 62.8 %/78.5 %. Metastatic PB 5-y OS 50–55 %.' } },
+    4: { a: 'Liu APY, Li BK, Vasiljevic A, et al.', t: 'SNO-EANO-EURACAN consensus on management of pineal parenchymal tumors', j: 'Neuro Oncol. 2024;26(12):2159–2173', doi: '10.1093/neuonc/noae128', n: 'Table 2 recommendations by entity / age / extent. PB-miRNA1 / miRNA2: 5-y PFS/OS 57 %/70 % and 86 %/100 %; PB-MYC/FOXR2 17 %/24 %; PB-RB1 19 %/30 %. SJMB03 PB: AR 5-y PFS/OS 100 %/100 %, HR 56.5 %/60.3 %. ACNS0332 PB: 5-y EFS/OS 62.8 %/78.5 %. Metastatic PB 5-y OS 50–55 %.' },
+    5: { a: 'Mallick S, Benson R, Rath GK.', t: 'Patterns of care and survival outcomes in patients with pineal parenchymal tumor of intermediate differentiation: an individual patient data analysis', j: 'Radiother Oncol. 2016;121(2):204–208', doi: '10.1016/j.radonc.2016.10.025', n: '29 studies, n = 127; median age 33 y. Median PFS 5.17 y, OS 14 y. Relapses: 62.5 % spinal / leptomeningeal, 37.5 % local. Female sex and adjuvant RT associated with better OS (univariate); STR should receive adjuvant RT.' },
+    6: { a: 'Chalif EJ, Murray RD, Mozaffari K, et al.', t: 'Malignant pineal parenchymal tumors in adults: a National Cancer Database analysis', j: 'Neurosurgery. 2022;90(6):807–815', doi: '10.1227/neu.0000000000001915', n: 'NCDB 2007–2016, n = 251 (172 PPTID). RT benefit confirmed for grade 3 PPTID after STR; no survival benefit of adjuvant RT for grade 2 PPTID after STR.' },
+    7: { a: 'Yu T, Sun X, Wang J, et al.', t: 'Twenty-seven cases of pineal parenchymal tumours of intermediate differentiation: mitotic count, Ki-67 labelling index and extent of resection predict prognosis', j: 'J Neurol Neurosurg Psychiatry. 2016;87(4):386–395', doi: '10.1136/jnnp-2014-309805', n: 'Mitotic count + Ki-67 stratification predicted OS / PFS better than WHO grade; GTR 59 %; high-risk residual: 3 / 6 irradiated free of local recurrence, early recurrence without adjuvant therapy.' },
+    8: { a: 'Takase H, Tanoshima R, Singla N, et al.', t: 'Pineal parenchymal tumor of intermediate differentiation: a systematic review and contemporary management of 389 cases reported during the last two decades', j: 'Neurosurg Rev. 2022;45(2):1135–1155', doi: '10.1007/s10143-021-01674-3', n: 'Strategy for grade 3 and aggressive PPTID controversial; maximal resection + chemotherapy + RT proposed as first line.' },
+    9: { a: 'Liu APY, Gudenas B, Lin T, et al.', t: 'Risk-adapted therapy and biological heterogeneity in pineoblastoma: integrated clinico-pathological analysis from the prospective, multi-center SJMB03 and SJYC07 trials', j: 'Acta Neuropathol. 2020;139(2):259–271', doi: '10.1007/s00401-019-02106-9', n: 'n = 58. SJMB03 (≥ 3 y): CSI 23.4 Gy (average risk) or 36 Gy (high risk) + primary boost + chemo: 5-y PFS 100 % vs 56.5 %. SJYC07 (< 3 y): 2-y PFS 14.3 % (focal RT) and 0 %. Subgroups PB-A, PB-B, PB-B-like, PB-FOXR2; DICER1 / DROSHA / DGCR8 alterations.' },
+    10: { a: 'Pfaff E, Aichmüller C, Sill M, et al.', t: 'Molecular subgrouping of primary pineal parenchymal tumors reveals distinct subtypes correlated with clinical parameters and genetic alterations', j: 'Acta Neuropathol. 2020;139(2):243–257', doi: '10.1007/s00401-019-02101-0', n: 'DNA methylation of 195 pineal tumours: pineocytoma, PPTID, PTPR and PB with three core PB subtypes (miRNA-processing alterations in ~2 / 3), Pin-RB (trilateral RB and RB1-altered) and PB-MYC.' } },
   situations: {
     'pb-ge3-m0': {
       title: 'Pineoblastoma ≥ 3 years, M0', risk: 'sr', badge: 'PB · ≥ 3 Y · M0',
@@ -1142,7 +1220,12 @@ var PINEO = {
           doses: [ { l: 'PB-miRNA1/2, GTR / NTR', d: 'CSI 23.4 Gy + tumour bed → 54 Gy' }, { l: 'Other subgroups / STR or less', d: 'CSI 23.4 or 36 Gy (age, clinical status) + tumour bed → 54 Gy', c: 'esc' } ]
         },
         refs: [ 4 ]
-      } ],
+      },
+      { proto: 'St Jude SJMB03', pc: 'lit', label: 'Average risk (M0, GTR / NTR)', ev: 'trial', key: 'CSI 23.4 Gy + primary boost + chemotherapy',
+        out: [ { l: '5-y PFS average risk', v: '100 % (17 / 18 without progression)', c: 'ov-good' } ],
+        chemo: '4 cycles of high-dose cisplatin / cyclophosphamide / vincristine with autologous stem-cell rescue (SJMB03) <sup>[9]</sup>.',
+        rt: { timing: 'Post-operative, ≥ 3 years.', vol: [ { l: 'CSI', v: 'Whole neuraxis' }, { l: 'Boost', v: 'Primary site' } ], doses: [ { l: 'CSI', d: '23.4 Gy' }, { l: 'Primary', d: 'focal boost (total dose not stated in the source)' } ], verify: 'Small cohort; reduced CSI not yet standard for pineoblastoma in Europe.' },
+        refs: [ 9 ] }  ],
       notes: 'De-escalation (abbreviated SDC and / or 23.4 Gy CSI) is acceptable for PB-miRNA1/2 with GTR / NTR and M0; only local failures in pooled PB-miRNA2 <sup>[4]</sup>. Metastatic relapses reported after reduced-dose CSI or focal RT for localized PB with residual disease <sup>[4]</sup>.'
     },
     'pb-ge3-mp': {
@@ -1166,7 +1249,12 @@ var PINEO = {
           verify: 'Response-adapted doses from the source tool — no reference given.'
         },
         refs: [ 1 ]
-      } ],
+      },
+      { proto: 'St Jude SJMB03', pc: 'lit', label: 'High risk (M+ or residual)', ev: 'trial', key: 'CSI 36 Gy + boost + chemotherapy',
+        out: [ { l: '5-y PFS high risk', v: '56.5 %', c: 'ov-mid' } ],
+        chemo: 'Adjuvant SJMB03 chemotherapy <sup>[9]</sup>.',
+        rt: { timing: 'Post-operative.', vol: [ { l: 'CSI', v: 'Whole neuraxis' }, { l: 'Boost', v: 'Primary site + metastases' } ], doses: [ { l: 'CSI', d: '36 Gy' }, { l: 'Primary', d: 'focal boost (total dose not stated in the source)' } ] },
+        refs: [ 9 ] }  ],
       notes: 'COG ACNS0332 eligibility included high-risk PB; metastatic patients there received CSI 36 Gy <sup>[2]</sup>.'
     },
     'pb-lt3': {
@@ -1184,7 +1272,12 @@ var PINEO = {
           verify: 'Doses from the source tool.'
         },
         refs: [ 1, 3 ]
-      } ],
+      },
+      { proto: 'St Jude SJYC07', pc: 'lit', label: 'Children < 3 years', ev: 'trial', key: 'Chemotherapy ± focal RT — poor outcome',
+        out: [ { l: '2-y PFS intermediate / high risk', v: '14.3 % / 0 %', c: 'ov-bad' } ],
+        chemo: 'Induction, consolidation (focal RT or chemotherapy), metronomic maintenance <sup>[9]</sup>.',
+        rt: null, noRt: 'Focal RT in intermediate risk did not prevent early progression; supports more intensive strategies or CSI when age allows.',
+        refs: [ 9 ] }  ],
       notes: 'Tension between RT avoidance in infants and the adverse effect of RT omission — individual MDT decision. Consensus: no standard regimen below 3 y; HDC-containing regimens, consider focal RT in localized disease (very limited evidence); offer early trial enrolment <sup>[4]</sup>.'
     },
     'pb-trilat': {
@@ -1216,11 +1309,17 @@ var PINEO = {
         chemo: 'None standard (PTPR: bevacizumab / mTOR inhibitors anecdotal).',
         rt: { timing: 'If total removal impossible, or at relapse.', vol: [ { l: 'Pineocytoma', v: 'Focal RT or SRS' }, { l: 'PTPR', v: 'Focal RT if STR, Ki-67 ≥ 10 % or relapse' } ], doses: [ { l: 'Dose', d: 'Not specified in consensus' } ] },
         refs: [ 4 ]
-      } ],
-      notes: 'Pineal cysts: observation; surgery only if symptomatic <sup>[4]</sup>.'
+      },
+      { proto: 'PPTID series', pc: 'lit', label: 'Grade 3 or high mitotic / Ki-67 index', ev: 'retro', key: 'Adjuvant focal RT after STR (grade 3); grade 2 after STR: no proven benefit',
+        out: [ { l: 'IPD meta-analysis (n = 127) median PFS / OS', v: '5.17 y / 14 y', c: 'ov-mid' }, { l: 'Relapse pattern', v: '62.5 % spinal / leptomeningeal', c: 'ov-bad' }, { l: 'NCDB grade 3 STR', v: 'RT improves OS', c: 'ov-good' }, { l: 'NCDB grade 2 STR', v: 'no RT benefit', c: 'ov-neu' } ],
+        chemo: 'Chemotherapy not standardised (22.8 % in the IPD series); embryonal-type regimens if metastatic. Risk better stratified by mitotic count + Ki-67 than by WHO grade alone <sup>[7]</sup>.',
+        rt: { timing: 'Post-operative.', vol: [ { l: 'Localized', v: 'Focal (tumour bed + residual)' }, { l: 'Metastatic', v: 'CSI + focal boost' } ], doses: [ { l: 'Grade 3 after STR', d: 'Focal RT (dose per SNO-EANO-EURACAN: 54–59.4 Gy)', c: 'esc' }, { l: 'Grade 2 after STR / GTR', d: 'Observation can be discussed' }, { l: 'Dissemination', d: 'CSI + boost', c: 'highesc' } ], verify: 'Retrospective series give no dose-response data; doses from the 2024 consensus.' },
+        refs: [ 5, 6, 7, 8 ] }  ],
+      notes: 'Pineal cysts: observation; surgery only if symptomatic <sup>[4]</sup>. PPTID relapses are mostly leptomeningeal and can be late — craniospinal MRI follow-up for ≥ 10 years <sup>[5]</sup>.'
     }
   },
-  context: [],
+  context: [
+    { t: 'Molecular subgroups of pineoblastoma (Liu 2020, Pfaff 2020)', h: '<ul><li><strong>St Jude (Liu 2020)</strong>: four methylation subgroups — PB-A, PB-B, PB-B-like and PB-FOXR2; DICER1 / DROSHA / DGCR8 alterations are recurrent and mutually exclusive in PB-B and PB-B-like; FOXR2 overexpression defines PB-FOXR2. Subgroups differ in age, propensity for metastasis and outcome.</li><li><strong>Heidelberg (Pfaff 2020, n = 195 pineal tumours)</strong>: three core PB subtypes (miRNA-processing alterations in about two thirds), plus Pin-RB (trilateral retinoblastoma and sporadic RB1-altered tumours, younger patients) and PB-MYC (younger, group-3-medulloblastoma-like, poor outcome).</li></ul><p>Age and subgroup are prognostic and inform how intensive the treatment (CSI) should be <sup>[9,10]</sup>.</p>' } ],
   trials: [ { id: 'NCT00392327', st: 'done', stl: 'COMPLETED', t: 'COG ACNS0332 — HR medulloblastoma / PNET incl. pineoblastoma', m: 'PNET/PB cohort: Hwang 2018' } ]
 };
 
@@ -1249,7 +1348,12 @@ var EPEN = {
     3: { a: 'Smith, et al. — Children’s Oncology Group', t: 'Phase 3 randomized trial of postirradiation chemotherapy in patients with newly diagnosed ependymoma (ACNS0831)', j: 'Neuro Oncol. 2026;28(5):1286–1297', doi: '10.1093/neuonc/noaf285', nct: 'NCT01096368', n: 'Randomized GTR/NTR/CR (n = 325): 5-y EFS 63.7 % RT vs 69.2 % RT-chemo (NS); OS 86.9 % vs 88.3 %. STR → RT-chemo: EFS 33.6 %, OS 74 %. Supratentorial grade 2 GTR observed: EFS 66.9 %, OS 100 %. RT 59.4 Gy (54 Gy if < 18 months and GTR), CTV margin 0.5 cm for all. PF-A 1q gain: 5-y EFS 34 % / OS 62 % vs 71 % / 92 %.' },
     4: { a: 'Indelicato DJ, et al.', t: 'Proton therapy for pediatric ependymoma: mature results from a bicentric study', j: 'Int J Radiat Oncol Biol Phys. 2021;110(3):815–820', doi: '10.1016/j.ijrobp.2021.01.027', n: 'n = 386; median 55.8 Gy RBE. 7-y LC 77 %, PFS 63.8 %, OS 82.2 %; STR LC 59 % vs 80 %; hearing aids 5.4 %. Citation corrected (source: 110(1):155–165).' },
     5: { a: 'Pajtler KW, Witt H, Sill M, et al.', t: 'Molecular classification of ependymal tumors across all CNS compartments, histopathological grades, and age groups', j: 'Cancer Cell. 2015;27(5):728–743', doi: '10.1016/j.ccell.2015.04.002' },
-    6: { a: 'Embring A, Blomstrand M, Asklid A, et al.', t: 'Re-irradiation in paediatric tumours of the central nervous system: national guidelines from the Swedish Workgroup of Paediatric Radiotherapy', j: 'Clin Oncol (R Coll Radiol). 2023;35(9):571–575', doi: '10.1016/j.clon.2023.05.007', n: 'National guidelines in use since 2019 (DIPG, ependymoma, germinoma, medulloblastoma). Ependymoma re-RT: ≥ 9 months, CSI 36 Gy + 54 Gy if not local-only; cumulative brainstem Dmax 91.5 / D2cc 82.6 GyEQD2. Germinoma: ≥ 6 months, CSI 24 Gy + boost 40 Gy. DIPG: ≥ 3 months, 2 Gy × 10.' }
+    6: { a: 'Embring A, Blomstrand M, Asklid A, et al.', t: 'Re-irradiation in paediatric tumours of the central nervous system: national guidelines from the Swedish Workgroup of Paediatric Radiotherapy', j: 'Clin Oncol (R Coll Radiol). 2023;35(9):571–575', doi: '10.1016/j.clon.2023.05.007', n: 'National guidelines in use since 2019 (DIPG, ependymoma, germinoma, medulloblastoma). Ependymoma re-RT: ≥ 9 months, CSI 36 Gy + 54 Gy if not local-only; cumulative brainstem Dmax 91.5 / D2cc 82.6 GyEQD2. Germinoma: ≥ 6 months, CSI 24 Gy + boost 40 Gy. DIPG: ≥ 3 months, 2 Gy × 10.' },
+    7: { a: 'Massimino M, Miceli R, Giangaspero F, et al.', t: 'Final results of the second prospective AIEOP protocol for pediatric intracranial ependymoma', j: 'Neuro Oncol. 2016;18(10):1451–1460', doi: '10.1093/neuonc/now108', n: 'n = 160 (2002–2014): NED grade II → 59.4 Gy; NED grade III → 59.4 Gy + 4 VEC; ED → VEC, second look, 59.4 Gy + 8 Gy / 2 fr boost on residue (24 / 40: PFS 58.1 %, OS 68.7 %). Whole series 5-y PFS 65.4 %, OS 81.1 %.' },
+    8: { a: 'Peters S, Merta J, Schmidt L, et al.', t: 'Evaluation of dose, volume, and outcome in children with localized, intracranial ependymoma treated with proton therapy within the prospective KiProReg Study', j: 'Neuro Oncol. 2022;24(7):1193–1202', doi: '10.1093/neuonc/noab301', n: 'Essen, n = 105, median age 2.8 y; median 59.4 Gy RBE (54–62). 3-y OS 93.7 %, LC 74.1 %, PFS 55.6 %; multiple surgeries → lower PFS; 11 new grade ≥ 3 late toxicities.' },
+    9: { a: 'Howe GN, Edmonston DY, Dirks GC, et al.', t: 'Conformal Radiation Therapy for Ependymoma at Age ≤3 Years: A 25-Year Experience', j: 'Int J Radiat Oncol Biol Phys. 2023;116(4):869–877', doi: '10.1016/j.ijrobp.2023.01.016', n: 'St Jude 1997–2018, n = 101 aged < 3.1 y, 54–59.4 Gy; 10-y EFS 58.5 %, OS 72.6 % (median FU 18.4 y); 23 secondary tumours (6 fatal HGG); 98 % of adult survivors completed high school.' },
+    10: { a: 'Régnier E, Laprie A, Ducassou A, et al.', t: 'Re-irradiation of locally recurrent pediatric intracranial ependymoma: Experience of the French society of children’s cancer', j: 'Radiother Oncol. 2019;132:1–7', doi: '10.1016/j.radonc.2018.11.009', n: '9 French centres, 33 full-dose re-irradiations in 31 children (IMRT 55 %, SRT 30 %, radiosurgery 12 %; CSI in 12 %), mean 34.9 Gy EQD2: median local-recurrence-free survival 31 mo, OS 34 mo (better with surgery first); brainstem max BED 106 Gy₃; no acute toxicity > grade 2, 1 radionecrosis after SRS.' },
+    11: { a: 'Bouffet E, Hawkins CE, Ballourah W, et al.', t: 'Survival benefit for pediatric patients with recurrent ependymoma treated with reirradiation', j: 'Int J Radiat Oncol Biol Phys. 2012;83(5):1541–1548', doi: '10.1016/j.ijrobp.2011.10.039', n: 'Toronto 1986–2010: 47 / 113 relapsed; 18 received full-dose re-RT (54 Gy focal and / or CSI): 3-y OS 81 % vs 7 % without re-RT; time to second progression longer than to first; IQ decline after re-RT.' }
   },
   situations: {
     'ep-gtr': {
@@ -1277,7 +1381,17 @@ var EPEN = {
           doses: [ { l: 'Prescription', d: '50.4–59.4 Gy RBE (median 55.8)' } ]
         },
         refs: [ 4 ]
-      } ],
+      },
+      { proto: 'AIEOP-2 (Italy)', pc: 'lit', label: 'Prospective national protocol', ev: 'trial', key: '59.4 Gy focal · grade III → 4 VEC after RT',
+        out: [ { l: '5-y PFS / OS (n = 160)', v: '65.4 % / 81.1 %', c: 'ov-mid' } ],
+        chemo: 'Grade III NED: 4 VEC (vincristine, etoposide, cyclophosphamide) after RT; grade II NED aged 1–3 y could receive 6 VEC alone <sup>[7]</sup>.',
+        rt: { timing: 'Post-operative.', vol: [ { l: 'Target', v: 'Focal (tumour bed + residual)' } ], doses: [ { l: 'Focal', d: '59.4 Gy / 33 fr' } ] },
+        refs: [ 7 ] },
+      { proto: 'KiProReg protons', pc: 'lit', label: 'Prospective registry (Essen)', ev: 'trial', key: 'Median 59.4 Gy RBE (54–62)',
+        out: [ { l: '3-y OS / LC / PFS', v: '93.7 % / 74.1 % / 55.6 %', c: 'ov-mid' }, { l: 'Grade ≥ 3 late toxicity', v: '11 / 105', c: 'ov-mid' } ],
+        chemo: 'Per national protocols (median age 2.8 y) <sup>[8]</sup>.',
+        rt: { timing: 'Post-operative.', vol: [ { l: 'Target', v: 'Tumour bed + residual (focal)' } ], doses: [ { l: 'Protons', d: 'median 59.4 Gy RBE (54–62)' } ], verify: 'Most younger children received 54 Gy RBE.' },
+        refs: [ 8 ] }   ],
       notes: 'PF-A with 1q gain and / or 6q loss is a prospectively confirmed high-risk group (ACNS0831: 5-y EFS 34 % with 1q gain, 19 % with 6q loss); PF-B has the best outcome. A new COG trial will target PF-A 1q+/6q− <sup>[3]</sup>.'
     },
     'ep-young': {
@@ -1294,7 +1408,17 @@ var EPEN = {
           doses: [ { l: 'Focal', d: '54 Gy (not 59.4 Gy)' } ]
         },
         refs: [ 2 ]
-      } ],
+      },
+      { proto: 'KiProReg protons', pc: 'lit', label: 'Prospective registry (Essen)', ev: 'trial', key: 'Median 59.4 Gy RBE (54–62)',
+        out: [ { l: '3-y OS / LC / PFS', v: '93.7 % / 74.1 % / 55.6 %', c: 'ov-mid' }, { l: 'Grade ≥ 3 late toxicity', v: '11 / 105', c: 'ov-mid' } ],
+        chemo: 'Per national protocols (median age 2.8 y) <sup>[8]</sup>.',
+        rt: { timing: 'Post-operative.', vol: [ { l: 'Target', v: 'Tumour bed + residual (focal)' } ], doses: [ { l: 'Protons', d: 'median 59.4 Gy RBE (54–62)' } ], verify: 'Most younger children received 54 Gy RBE.' },
+        refs: [ 8 ] },
+      { proto: 'St Jude ≤ 3 years', pc: 'lit', label: '25-year conformal photon experience', ev: 'trial', key: '54–59.4 Gy at 1.8 Gy · median age 2.1 y',
+        out: [ { l: '10-y EFS / OS', v: '58.5 % / 72.6 %', c: 'ov-mid' }, { l: 'Fatal secondary HGG', v: '6 / 101', c: 'ov-bad' } ],
+        chemo: 'None systematically.',
+        rt: { timing: 'Median 10 weeks from diagnosis.', vol: [ { l: 'Target', v: 'Conformal / IMRT focal' } ], doses: [ { l: 'Dose', d: '54–59.4 Gy / 1.8 Gy' } ] },
+        refs: [ 9 ] }   ],
       notes: 'Practice-changing result: immediate RT from 12 months gives EFS comparable to older children <sup>[2]</sup>.'
     },
     'ep-st-g2': {
@@ -1342,7 +1466,12 @@ var EPEN = {
           verify: 'Residual boost policy differs between groups (SIOP EP-II tests a boost) — integrate SIOP data.'
         },
         refs: [ 2, 3 ]
-      } ],
+      },
+      { proto: 'AIEOP-2 (Italy)', pc: 'lit', label: 'Residual disease (ED)', ev: 'trial', key: 'VEC → second look → 59.4 Gy + 8 Gy / 2 fr boost on residue',
+        out: [ { l: 'Boosted ED patients PFS / OS', v: '58.1 % / 68.7 %', c: 'ov-mid' } ],
+        chemo: '1–4 VEC courses before second-look surgery <sup>[7]</sup>.',
+        rt: { timing: 'After second-look surgery.', vol: [ { l: 'Target', v: 'Tumour bed + residual' }, { l: 'Boost', v: 'Still-measurable residue' } ], doses: [ { l: 'Focal', d: '59.4 Gy' }, { l: 'Boost', d: '+ 8 Gy / 2 fr (→ 67.4 Gy)', c: 'highesc' } ] },
+        refs: [ 7 ] }  ],
       notes: 'STR is the dominant adverse factor (proton series LC 59 % vs 80 %) <sup>[4]</sup>.'
     },
     'ep-mp': {
@@ -1377,7 +1506,17 @@ var EPEN = {
           doses: [ { l: 'CSI', d: '36 Gy / 20 × 1.8 Gy' }, { l: 'Local (intracranial or spinal)', d: '54 Gy / 30 × 1.8 Gy', c: 'esc' }, { l: 'Brainstem (cumulative)', d: 'Dmax 91.5 · D2cc 82.6 GyEQD2 · V59 ≤ 7.5 cc', c: 'highesc' }, { l: 'Spinal cord (cumulative)', d: 'D2% 70 GyEQD2 partial · 66 GyEQD2 full circumference', c: 'highesc' }, { l: 'Global', d: 'Cumulative max ≤ 113.4 Gy (RBE); brainstem ≤ prescribed re-RT dose', c: 'highesc' } ]
         },
         refs: [ 6 ]
-      } ],
+      },
+      { proto: 'French series (SFCE)', pc: 'lit', label: 'Full-dose re-irradiation, 9 centres', ev: 'retro', key: 'Mean 34.9 Gy EQD2 · IMRT / SRT / SRS · surgery first when possible',
+        out: [ { l: 'Median local-recurrence-free survival', v: '31 mo', c: 'ov-mid' }, { l: 'Median OS', v: '34 mo', c: 'ov-mid' }, { l: 'Acute toxicity > grade 2', v: 'none', c: 'ov-good' } ],
+        chemo: 'None systematically <sup>[10]</sup>.',
+        rt: { timing: 'Local recurrence; better outcome after re-resection first.', vol: [ { l: 'Technique', v: 'IMRT 55 % · stereotactic RT 30 % · radiosurgery 12 %' }, { l: 'CSI', v: 'added in 12 %' } ], doses: [ { l: 'Re-RT', d: 'mean 34.9 Gy EQD2 (normo-, hypo- or very hypofractionated)' }, { l: 'Brainstem cumulative', d: 'max BED ≈ 106 Gy₃ tolerated short term', c: 'esc' } ] },
+        refs: [ 10 ] },
+      { proto: 'Toronto', pc: 'lit', label: 'Population-based series', ev: 'retro', key: 'Full-dose 54 Gy focal and / or CSI',
+        out: [ { l: '3-y OS re-RT vs none', v: '81 % vs 7 %', c: 'ov-good' }, { l: 'Neurocognition', v: 'IQ decline after re-RT', c: 'ov-bad' } ],
+        chemo: 'With or without surgery at recurrence <sup>[11]</sup>.',
+        rt: { timing: 'At relapse.', vol: [ { l: 'Target', v: 'Focal and / or craniospinal' } ], doses: [ { l: 'Re-RT', d: '54 Gy focal ± CSI' } ] },
+        refs: [ 11 ] }   ],
       notes: 'Brainstem constraints adopted from the French SFCE re-irradiation series. Toxicity of the first course and age decide the target volume.'
     }
   },
@@ -1402,7 +1541,7 @@ var CPT = {
     { k: 'TP53', v: 'Germline TP53 / Li-Fraumeni testing in every CPC. TP53-immunopositive CPC 5-y survival 0 % vs 82 % <sup>[2]</sup>' },
     { k: 'Reference chemotherapy', v: 'CarbEV — superior to CycEV in the only RCT <sup>[1]</sup>' }
   ],
-  alerts: [ { c: 'red', t: '<strong>Li-Fraumeni: avoid RT</strong> unless absolutely necessary (2-y OS 18 % with RT vs 58 % without, p = 0.056, n = 28) <sup>[3]</sup>.' }, { c: '', t: 'Corrected vs source: registry paper first author is Fiedler (not Wolff); the “Akade 2020 aCPP pooled analysis” could not be found and was removed; CPT-SIOP-2009 (NCT01014767) is listed as terminated, not an active registry.' } ],
+  alerts: [ { c: 'red', t: '<strong>Li-Fraumeni: avoid RT</strong> unless absolutely necessary (2-y OS 18 % with RT vs 58 % without, p = 0.056, n = 28) <sup>[3]</sup>.' }, { c: '', t: 'Corrected vs source: registry paper first author is Fiedler (not Wolff); the “Akade 2020 aCPP pooled analysis” is in fact Tavallaii et al. 2020 (Neurooncol Adv, vdaa139) — now cited; CPT-SIOP-2009 (NCT01014767) is listed as terminated, not an active registry.' } ],
   axes: [
     { id: 'gr', label: 'Grade', opts: [ { v: 'cpp', l: 'CPP' }, { v: 'acpp', l: 'aCPP' }, { v: 'cpc', l: 'CPC' } ] },
     { id: 'tp53', label: 'TP53', opts: [ { v: 'wt', l: 'Wild-type' }, { v: 'mut', l: 'Mutated / LFS' } ] },
@@ -1417,14 +1556,22 @@ var CPT = {
     5: { a: 'Thomas C, Hasselblatt M.', t: 'Molecular genetics and diversity of choroid plexus tumors', j: 'Neurooncol Adv. 2024;6(1):vdae101', doi: '10.1093/noajnl/vdae101' },
     6: { a: 'Osorio DS, Yankelevich M, Lafay-Cousin L, Zaky W.', t: 'An overview of the diagnosis and management of choroid plexus tumors', j: 'Adv Cancer Res. 2025;167:103–139', doi: '10.1016/bs.acr.2025.08.008', n: '5-y EFS 0–25 % TP53-mutant vs 70–80 % TP53-wild-type CPC; TP53-mutant patients may benefit more from myeloablative chemotherapy than from RT. New PNOC prospective study in development.' },
     7: { a: 'Wolff JE, Sajedi M, Brant R, Coppes MJ, Egeler RM.', t: 'Choroid plexus tumours', j: 'Br J Cancer. 2002;87(10):1086–1091', doi: '10.1038/sj.bjc.6600609', n: 'Meta-analysis n = 566: 1/5/10-y survival CPP 90/81/77 %, CPC 71/41/35 %; RT associated with better survival in CPC.' },
-    8: { a: 'Yuan L, Park DJ, Persad ARL, et al.', t: 'Recurrent choroid plexus carcinoma treated with CyberKnife radiosurgery: illustrative case', j: 'J Neurosurg Case Lessons. 2024;8(2):CASE23748', doi: '10.3171/CASE23748', n: 'Single case: local control 41 months, later fatal recurrence.' }
+    8: { a: 'Yuan L, Park DJ, Persad ARL, et al.', t: 'Recurrent choroid plexus carcinoma treated with CyberKnife radiosurgery: illustrative case', j: 'J Neurosurg Case Lessons. 2024;8(2):CASE23748', doi: '10.3171/CASE23748', n: 'Single case: local control 41 months, later fatal recurrence.' },
+    9: { a: 'Zhang M, Park DJ, Marianayagam NJ, et al.', t: 'CyberKnife radiosurgery for treatment of residual or recurrent grade 1 choroid plexus papilloma: a single-institution experience', j: 'World Neurosurg. 2023;178:e122–e127', doi: '10.1016/j.wneu.2023.07.003', n: '3 adults, 5 lesions (4th ventricle / foramen of Luschka); 1 fraction (4 lesions) or 3 fractions (1); median follow-up 26 months; local control 80 %; no radiation toxicity.' },
+    10: { a: 'Tavallaii A, Keykhosravi E, Rezaee H, Kianbakht C.', t: 'Role of available adjuvant therapies following surgical resection of atypical choroid plexus papilloma — a systematic review and pooled analysis', j: 'Neurooncol Adv. 2020;2(1):vdaa139', doi: '10.1093/noajnl/vdaa139', n: '14 studies, n = 144: adjuvant therapy reduced recurrence, metastasis and re-operation and improved survival after STR, not after GTR; adults more aggressive.' },
+    11: { a: 'Siegfried A, Morin S, Munzer C, et al.', t: 'A French retrospective study on clinical outcome in 102 choroid plexus tumors in children', j: 'J Neurooncol. 2017;135(1):151–160', doi: '10.1007/s11060-017-2561-2', n: '2000–2012: 54 CPP, 26 aCPP, 22 CPC. 5-y OS 100 % / 96.2 % / 64.7 % (CPC EFS 25.2 %). Localized disease: EFS 88.9 % after complete vs 41.6 % after partial resection. RT in 2 aCPP and 9 CPC.' }
   },
   situations: {
     'cpp-gtr': { title: 'CPP — gross-total resection', risk: 'lr', badge: 'CPP · GTR', tags: { gr: 'cpp', tp53: 'any', age: 'any' },
       def: [ { k: 'Histology', v: 'CPP, WHO grade 1' }, { k: 'Resection', v: 'GTR, M0' } ],
       arms: [ { proto: 'CPT-SIOP-2000 / registry', pc: 'siop', label: 'Surveillance', ev: 'retro', key: 'MRI surveillance only',
         out: [ { l: 'CPP 5/10-y OS', v: '100 % / 97 %', c: 'ov-good' }, { l: 'CPP 5-y EFS', v: '92 %', c: 'ov-good' } ],
-        chemo: 'None.', rt: null, noRt: 'NO RT — curable by surgery alone. MRI surveillance (lifelong; late recurrence possible).', refs: [ 1, 4 ] } ],
+        chemo: 'None.', rt: null, noRt: 'NO RT — curable by surgery alone. MRI surveillance (lifelong; late recurrence possible).', refs: [ 1, 4 ] },
+      { proto: 'French series', pc: 'lit', label: 'Children, nationwide (n = 102)', ev: 'retro', key: 'Surveillance after GTR',
+        out: [ { l: 'CPP 5-y OS', v: '100 %', c: 'ov-good' }, { l: 'Complete vs partial resection EFS (localized)', v: '88.9 % vs 41.6 %', c: 'ov-mid' } ],
+        chemo: 'None after GTR.',
+        rt: null, noRt: 'No RT after complete resection of CPP.',
+        refs: [ 11 ] }  ],
       notes: 'Pediatric B methylation group or residual tumour lowers PFS even in papillomas <sup>[4]</sup>.' },
     'cpp-res': { title: 'CPP — residual, recurrence or metastatic', risk: 'sp', badge: 'CPP · RESIDUAL / M+', tags: { gr: 'cpp', tp53: 'any', age: 'any' },
       def: [ { k: 'Situation', v: 'Residual or recurrent CPP' } ],
@@ -1435,7 +1582,12 @@ var CPT = {
         refs: [ 1 ] },
       { proto: 'Expert practice', pc: 'lit', label: 'MDT', ev: 'exp', key: 'Re-resection · SRS to discuss',
         out: [ { l: 'Data', v: 'case series only', c: 'ov-neu' } ],
-        chemo: 'Not standard.', rt: null, noRt: 'Re-resection first. SRS for small residual / recurrence to discuss — no standard dose (case-level data).', refs: [] } ],
+        chemo: 'Not standard.', rt: null, noRt: 'Re-resection first. SRS for small residual / recurrence to discuss — no standard dose (case-level data).', refs: [] },
+      { proto: 'SRS series', pc: 'lit', label: 'Residual / recurrent grade 1 CPP (adults)', ev: 'retro', key: 'SRS 1 or 3 fractions — local control 80 %',
+        out: [ { l: 'Local control (5 lesions)', v: '80 % at 26 months', c: 'ov-good' }, { l: 'Toxicity', v: 'none', c: 'ov-good' } ],
+        chemo: 'None.',
+        rt: { timing: 'Residual or recurrent CPP not suitable for re-resection.', vol: [ { l: 'Target', v: 'Residual / recurrent nodule' } ], doses: [ { l: 'SRS', d: 'single fraction or 3 fractions (dose not standardised)' } ], verify: 'Very small series (n = 3) — discuss in national MDT.' },
+        refs: [ 9 ] }  ],
       notes: '' },
     'acpp-gtr': { title: 'Atypical CPP — GTR, M0', risk: 'lr', badge: 'aCPP · GTR', tags: { gr: 'acpp', tp53: 'any', age: 'any' },
       def: [ { k: 'Histology', v: 'aCPP, WHO grade 2' }, { k: 'Resection', v: 'GTR, M0' } ],
@@ -1452,7 +1604,12 @@ var CPT = {
         rt: { timing: 'After 2 cycles of chemotherapy; RT only after the 3rd birthday <sup>[1]</sup>.',
           vol: [ { l: 'M0 / STR', v: 'Focal — tumour bed + residual' }, { l: 'M+', v: 'CSI + local boost' } ],
           doses: [ { l: 'Focal (M0 with residual)', d: '54 Gy / 30 fr / 1.8 Gy' }, { l: 'CSI', d: '35.2 Gy / 22 fr / 1.6 Gy' }, { l: 'Primary boost', d: '+19.8 Gy / 11 fr / 1.8 Gy → 55 Gy', c: 'esc', s: 'Suppl. Table 1b gives 55 Gy (35.2 + 19.8); the article text states “up to a total of 54 Gy”.' }, { l: 'Metastases boost', d: '+14.4 Gy / 8 fr → 49.6 Gy', c: 'esc' } ] },
-        refs: [ 1 ] } ],
+        refs: [ 1 ] },
+      { proto: 'Pooled analysis', pc: 'lit', label: 'aCPP — adjuvant therapy after STR', ev: 'retro', key: 'Adjuvant therapy (RT and / or chemotherapy) favoured after STR, not after GTR',
+        out: [ { l: 'aCPP pooled (n = 144)', v: 'benefit after STR only', c: 'ov-mid' }, { l: 'French series aCPP 5-y OS', v: '96.2 %', c: 'ov-good' } ],
+        chemo: 'Chemotherapy and / or RT according to age; more aggressive behaviour in adults <sup>[10]</sup>.',
+        rt: null, noRt: 'Pooled analysis does not specify RT doses; local 54 Gy / 30 fr is the usual adult practice (see other columns).',
+        refs: [ 10, 11 ] }  ],
       notes: '' },
     'cpc-wt-ge3': { title: 'CPC, TP53 wild-type, ≥ 3 years', risk: 'hr', badge: 'CPC · TP53 WT · ≥ 3 Y', tags: { gr: 'cpc', tp53: 'wt', age: 'ge3' },
       def: [ { k: 'Histology', v: 'CPC, WHO grade 3' }, { k: 'TP53', v: 'Wild-type (germline and tumour)' }, { k: 'Age', v: '≥ 3 years, M0' } ],
@@ -1586,7 +1743,12 @@ var CRANIO = {
     3: { a: 'Beddok A, Scher N, Alapetite C, et al.', t: 'Proton therapy for adult craniopharyngioma: experience of a single institution in 91 consecutive patients', j: 'Neuro Oncol. 2023;25(4):710–719', doi: '10.1093/neuonc/noac210', n: 'Adults (≥ 18 y), Institut Curie 2006–2018, double-scattering PT. 54 Gy RBE / 30 fr (n = 57) or 52.2 Gy RBE / 29 fr to spare the chiasm (n = 34). Median FU 39 mo: 5-y LRFS 92.0 %, OS 100 %; all 5 LR in-field (GTV); 0 / 11 LR after GTR + PT. Imaging during PT in 31 pts, adaptation for cyst growth in 5 (3 of them relapsed, p = 0.084). In pts asymptomatic before PT: corticotropin / thyrotropin deficiency 46.7 % / 36.8 % (median onset 13 / 19 mo), visual disorder 9.8 %, memory impairment 11.3 % (GTV > 3.7 cc, p = 0.029).' },
     4: { a: 'Eveslage M, Calaminus G, Warmuth-Metz M, et al.', t: 'The postoperative quality of life in children and adolescents with craniopharyngioma', j: 'Dtsch Arztebl Int. 2019;116(18):321–328', doi: '10.3238/arztebl.2019.0321', nct: 'NCT01272622', n: 'KRANIOPHARYNGEOM 2007: randomization (age ≥ 5 y, incomplete resection, 3 mo after surgery) of immediate RT vs RT at progression; primary endpoint PEDQOL at 3 y. Interim ITT (n = 24): only minor QoL differences between arms. Exploratory (n = 131): anterior / posterior hypothalamic involvement or surgical damage, complete resection and RT at progression associated with lower QoL. No evidence-based recommendation on RT timing after incomplete resection.' },
     5: { a: 'Hoffman LM, Jaimes C, Mankad K, et al.', t: 'Response assessment in pediatric craniopharyngioma: recommendations from the Response Assessment in Pediatric Neuro-Oncology (RAPNO) Working Group', j: 'Neuro Oncol. 2023;25(2):224–233', doi: '10.1093/neuonc/noac221', n: 'MRI; 2-D measurements of solid and cystic components; neuro-endocrine and visual endpoints in response definitions; cystic growth progressive only if associated with new / progressive functional impairment.' },
-    6: { a: 'Kilday JP, Caldarelli M, Massimi L, et al.', t: 'Intracystic interferon-alpha in pediatric craniopharyngioma patients: an international multicenter assessment on behalf of SIOPE and ISPN', j: 'Neuro Oncol. 2017;19(10):1398–1407', doi: '10.1093/neuonc/nox056', n: '56 children (median 6.3 y), 21 centres, retrospective. Progression after IFN-α in 42 (median 14 mo); estimated median time to definitive therapy 5.8 y (1.8–9.7); few attributable side effects.' }
+    6: { a: 'Kilday JP, Caldarelli M, Massimi L, et al.', t: 'Intracystic interferon-alpha in pediatric craniopharyngioma patients: an international multicenter assessment on behalf of SIOPE and ISPN', j: 'Neuro Oncol. 2017;19(10):1398–1407', doi: '10.1093/neuonc/nox056', n: '56 children (median 6.3 y), 21 centres, retrospective. Progression after IFN-α in 42 (median 14 mo); estimated median time to definitive therapy 5.8 y (1.8–9.7); few attributable side effects.' },
+    7: { a: 'Gan HW, Morillon P, Albanese A, et al.', t: 'National UK guidelines for the management of paediatric craniopharyngioma', j: 'Lancet Diabetes Endocrinol. 2023;11(9):694–706', doi: '10.1016/S2213-8587(23)00162-6', n: 'GRADE + Delphi. No adjuvant RT after confirmed GTR (strong); consider upfront RT after incomplete resection (moderate); defer RT case by case in very young children / minimal residual. GTV = postoperative solid + cystic complex, CTV 5 mm to natural barriers, 50.4–54 Gy in 28–30 fr; consider protons. STR + RT 5-y PFS 73 % vs GTR 77 %.' },
+    8: { a: 'Cuny T, Reynaud R, Raverot G, et al.', t: 'Diagnosis and management of children and adult craniopharyngiomas: A French Endocrine Society/French Society for Paediatric Endocrinology & Diabetes Consensus Statement', j: 'Ann Endocrinol (Paris). 2025;86(1):101631', doi: '10.1016/j.ando.2024.07.002', n: 'Normofractionated conformal RT (IMRT or protons) is the gold standard; GTV solid + cystic + calcified, CTV 5 mm, PTV 3–7 mm, 50.4–54 Gy; repeat imaging during RT if cystic; mean left hippocampus ≤ 30 Gy suggested; stereotactic 12–15 Gy × 1, 18–21 Gy / 3 fr or 25 Gy / 5 fr only for small lesions away from OARs; no systematic RT after GTR; intracystic treatments only in trials.' },
+    9: { a: 'Bischoff M, Khalil DA, Frisch S, et al.', t: 'Outcome After Modern Proton Beam Therapy in Childhood Craniopharyngioma: Results of the Prospective Registry Study KiProReg', j: 'Int J Radiat Oncol Biol Phys. 2024;120(1):137–148', doi: '10.1016/j.ijrobp.2024.03.015', n: 'Essen, n = 74 (75.7 % at progression / recurrence), PBS 85 %; median 54 Gy RBE; CTV 0.5 cm (0–0.3 cm at barriers). 3-y OS 98.2 %, PFS 94.7 %, cystic-failure-free 76.8 %; all 3 local failures in-field and after PBT at progression; no grade ≥ 3 new visual or cognitive toxicity.' },
+    10: { a: 'Jalali R, Ghosh S, Chatterjee A, et al.', t: 'High-precision radiotherapy achieves excellent long-term control and preserves function in pediatric craniopharyngioma-Subset analysis of a randomized trial', j: 'Neuro Oncol. 2025;27(8):2147–2157', doi: '10.1093/neuonc/noaf049', n: 'Tata Memorial RCT (NCT00517959), n = 82: stereotactic conformal RT (SCRT) vs conventional RT, 54 Gy / 30 fr. 10-y OS 86.4 %, LC 92.7 % (no difference). SCRT: better full-scale IQ slope (+ 3.3 points / y), freedom from cognitive decline at 5 y 66.6 % vs 38.2 %, new neuroendocrine dysfunction 25.7 % vs 48.8 %.' },
+    11: { a: 'Miao Y, Wu D, Li Y, et al.', t: 'Radiation therapy for childhood-onset craniopharyngioma: systematic review and meta-analysis', j: 'J Neurooncol. 2025;172(1):89–98', doi: '10.1007/s11060-024-04914-w', n: '22 studies: pooled progression 10 % (photons 14 %, protons 4 %; modality not significant on meta-regression); pooled vasculopathy 6 %, similar for photons and protons; GHD 81 %, TSH 88 %, ACTH 69 %, DI frequent.' }
   },
   situations: {
     'crp-rt': { title: 'Limited surgery + RT', risk: 'lr', badge: 'CP · LIMITED SURGERY + RT', tags: { eor: 'lim', hist: 'acp' },
@@ -1611,7 +1773,22 @@ var CRANIO = {
         rt: { timing: 'Adjuvant after STR (61) or at recurrence (27); cyst aspiration / marsupialization before PT for giant cysts.',
           vol: [ { l: 'GTV', v: 'Solid + cystic + calcified tumour' }, { l: 'CTV', v: 'GTV + 5 mm, limited to 2–3 mm into normal-appearing brain' }, { l: 'PTV', v: 'CTV + 2 mm' }, { l: 'Cystic tumours', v: 'MRI / CT every 2 weeks during PT; re-plan if cyst growth' } ],
           doses: [ { l: 'Prescription', d: '54 Gy RBE / 30 fr / 1.8 Gy' }, { l: 'Chiasm-sparing', d: '52.2 Gy RBE / 29 fr', c: 'esc' }, { l: 'OAR (D0.03 cc)', d: 'chiasm < 52.2 · optic nerves < 55 · brainstem < 54 Gy RBE', c: 'esc' } ] },
-        refs: [ 3 ] } ],
+        refs: [ 3 ] },
+      { proto: 'UK 2023 · French 2025 guidelines', pc: 'lit', label: 'National guidelines (GRADE / Delphi)', ev: 'cons', key: '50.4–54 Gy / 28–30 fr · CTV 5 mm · PTV 3–7 mm',
+        out: [ { l: 'STR + RT vs GTR, 5-y PFS', v: '73 % vs 77 %', c: 'ov-good' }, { l: 'Meta-analysis progression after RT', v: '10 % (photons 14 %, protons 4 %)', c: 'ov-good' }, { l: 'Vasculopathy', v: '6 %', c: 'ov-mid' } ],
+        chemo: 'None; intracystic therapies only within studies (French consensus) <sup>[8]</sup>.',
+        rt: { timing: 'After limited (hypothalamus-sparing) surgery when resection is incomplete; may be deferred in very young children or minimal residual.', vol: [ { l: 'GTV', v: 'Postoperative solid + cystic (+ calcified) complex' }, { l: 'CTV', v: 'GTV + 5 mm, modified to natural barriers' }, { l: 'PTV', v: '3–7 mm (technique-dependent)' } ], doses: [ { l: 'Standard', d: '50.4–54 Gy / 28–30 fr (photons IMRT or protons)' }, { l: 'Hippocampus (left)', d: 'mean ≤ 30 Gy suggested' }, { l: 'SRS / hypofractionated (small lesion, away from OARs)', d: '12–15 Gy × 1 · 18–21 Gy / 3 · 25 Gy / 5' } ], verify: 'Repeat MRI / CT during RT for cystic tumours and adapt contours (both guidelines).' },
+        refs: [ 7, 8, 11 ] },
+      { proto: 'KiProReg (Essen)', pc: 'lit', label: 'Prospective registry · protons', ev: 'trial', key: '54 Gy RBE · CTV 0.5 cm (0–0.3 cm at barriers)',
+        out: [ { l: '3-y OS', v: '98.2 %', c: 'ov-good' }, { l: '3-y PFS', v: '94.7 %', c: 'ov-good' }, { l: '3-y cystic-failure-free', v: '76.8 %', c: 'ov-mid' } ],
+        chemo: 'None.',
+        rt: { timing: '75.7 % irradiated at progression / recurrence; all local failures occurred in this group.', vol: [ { l: 'CTV', v: 'GTV + 0.5 cm, 0–0.3 cm at non-invaded barriers; resected cyst walls may be excluded' }, { l: 'Robustness', v: '3.5 % range / 0.3 cm setup (PBS)' } ], doses: [ { l: 'PBT', d: '54 Gy RBE (median)' } ] },
+        refs: [ 9 ] },
+      { proto: 'Tata Memorial RCT', pc: 'lit', label: 'Stereotactic conformal vs conventional RT', ev: 'rct', key: '54 Gy / 30 fr · SCRT preserves IQ and endocrine function',
+        out: [ { l: '10-y OS / LC', v: '86.4 % / 92.7 %', c: 'ov-good' }, { l: 'Free of cognitive decline at 5 y (SCRT vs conv.)', v: '66.6 % vs 38.2 %', c: 'ov-good' }, { l: 'New neuroendocrine dysfunction', v: '25.7 % vs 48.8 %', c: 'ov-good' } ],
+        chemo: 'None.',
+        rt: { timing: 'Post-operative or at progression.', vol: [ { l: 'Technique', v: 'Stereotactic conformal RT (SCRT) vs conventional RT, randomised' } ], doses: [ { l: 'Dose', d: '54 Gy / 30 fr' } ] },
+        refs: [ 10 ] }    ],
       notes: 'Protons did not improve survival vs photons but improved cognitive outcomes <sup>[1]</sup>. IMRT/VMAT remain acceptable. The Curie series is adult — volumes and constraints transferable, outcomes not.' },
     'crp-gtr': { title: 'Radical (gross-total) resection — observation', risk: 'lr', badge: 'CP · GTR', tags: { eor: 'rad', hist: 'acp' },
       def: [ { k: 'Surgery', v: 'GTR achieved without hypothalamic injury' } ],
@@ -1620,7 +1797,12 @@ var CRANIO = {
         chemo: 'None.', rt: null, noRt: 'Observation after radical resection (stratum of NCT01419067 / NCT02792582); RT at progression.', refs: [ 1 ] },
       { proto: 'KRANIOPHARYNGEOM 2007', pc: 'siop', label: 'Surveillance stratum', ev: 'trial', key: 'MRI follow-up — RT at relapse',
         out: [ { l: 'Exploratory QoL', v: 'lower after complete resection', c: 'ov-mid' } ],
-        chemo: 'None.', rt: null, noRt: 'Complete resection → surveillance; relapse → re-surgery when appropriate, then RT 54 Gy / 30 fr.', refs: [ 4 ] } ],
+        chemo: 'None.', rt: null, noRt: 'Complete resection → surveillance; relapse → re-surgery when appropriate, then RT 54 Gy / 30 fr.', refs: [ 4 ] },
+      { proto: 'UK 2023 · French 2025 guidelines', pc: 'lit', label: 'After confirmed gross-total resection', ev: 'cons', key: 'No adjuvant RT; re-operate before RT at recurrence if feasible',
+        out: [ { l: 'Adjuvant RT after GTR', v: 'no added benefit', c: 'ov-neu' } ],
+        chemo: 'None.',
+        rt: null, noRt: 'Defer RT when complete resection is confirmed on postoperative imaging (strong); for recurrence after GTR without prior RT, offer further surgery to reduce the field before RT (UK).',
+        refs: [ 7, 8 ] }  ],
       notes: 'Radical surgery should not be pursued at the cost of hypothalamic morbidity. In KRANIOPHARYNGEOM 2007, complete resection was associated with lower QoL than incomplete resection <sup>[4]</sup>; in the Curie adult series, 0 / 11 relapses when PT followed GTR for recurrence <sup>[3]</sup>.' },
     'crp-cyst': { title: 'Cystic craniopharyngioma — cyst control during RT', risk: 'sp', badge: 'CP · CYSTIC', tags: { eor: 'lim', hist: 'acp' },
       def: [ { k: 'Situation', v: 'Predominantly cystic tumour' } ],
@@ -1686,7 +1868,8 @@ var LGG = {
     5: { a: 'Brisson, et al.', t: 'Long-term outcomes following proton therapy for pediatric spinal low-grade glioma', j: 'Pediatr Blood Cancer. 2024;71(12):e31341', doi: '10.1002/pbc.31341', n: 'n = 8; mostly 45–50.4 Gy RBE; 10-y LC 85 %, freedom from distant metastases 88 %, freedom from progression 73 %, OS 55 %.' },
     6: { a: 'Damodharan, et al.', t: 'Intratumoral and intracranial hemorrhage associated with MAPK-pathway targeted therapy: a systematic review and mechanistic synthesis', j: 'J Neurooncol. 2026;178(3)', doi: '10.1007/s11060-026-05714-0' },
     7: { a: 'Nysom, et al.', t: 'Radiographic and visual response to the type II RAF inhibitor tovorafenib in children with relapsed/refractory optic pathway glioma in the FIREFLY-1 trial', j: 'Neuro Oncol. 2025;27(5):1341–1355', doi: '10.1093/neuonc/noae274', n: 'OPG subgroup n = 42: visual acuity preserved in 80 % of patients.' },
-    8: { a: 'Bouffet E, Hansford JR, Garrè ML, et al.', t: 'Dabrafenib plus trametinib in pediatric glioma with BRAF V600 mutations', j: 'N Engl J Med. 2023;389(12):1108–1120', doi: '10.1056/NEJMoa2303815', nct: 'NCT02684058', n: 'Randomized phase 2, first line, 2:1 (n = 110). ORR 47 % vs 11 % (carboplatin + vincristine); clinical benefit 86 % vs 46 %; median PFS 20.1 vs 7.4 mo (HR 0.31); grade ≥ 3 AE 47 % vs 94 %. Pyrexia 68 %; weight gain (≥ 2 BMI percentiles) in 32 / 73.' }
+    8: { a: 'Bouffet E, Hansford JR, Garrè ML, et al.', t: 'Dabrafenib plus trametinib in pediatric glioma with BRAF V600 mutations', j: 'N Engl J Med. 2023;389(12):1108–1120', doi: '10.1056/NEJMoa2303815', nct: 'NCT02684058', n: 'Randomized phase 2, first line, 2:1 (n = 110). ORR 47 % vs 11 % (carboplatin + vincristine); clinical benefit 86 % vs 46 %; median PFS 20.1 vs 7.4 mo (HR 0.31); grade ≥ 3 AE 47 % vs 94 %. Pyrexia 68 %; weight gain (≥ 2 BMI percentiles) in 32 / 73.' },
+    9: { a: 'Roka K, Scheinemann K, Avula S, et al. (ERN PaedCan / SIOPE ESCP)', t: 'European standard clinical practice recommendations for primary pediatric low-grade gliomas', j: 'EJC Paediatric Oncology. 2024;4:100169', doi: '10.1016/j.ejcped.2024.100169', n: 'RT now salvage or selected first-line treatment; 50.4–54 Gy (< 54 Gy may reduce vasculopathy); < 5 y highest risk of moyamoya and cognitive decline, < 7 y and left temporal / hippocampal dose limit first-line RT; upfront RT after MDT if older with diffuse astrocytoma or midbrain / thalamic site. SIOP LGG 2004 first-line RT: 5-y PFS 80 %.' }
   },
   situations: {
     'lgg-nf1': { title: 'NF1-associated LGG requiring treatment', risk: 'sp', badge: 'LGG · NF1', tags: { bio: 'nf1', tx: 'sys' },
@@ -1726,7 +1909,12 @@ var LGG = {
         rt: { timing: 'At progression after systemic options.',
           vol: [ { l: 'GTV', v: 'T2/FLAIR + enhancing tumour' }, { l: 'CTV', v: 'GTV + 5 mm (reduced at optic apparatus)' }, { l: 'Technique', v: 'Protons preferred; for optic pathway gliomas compare proton vs photon plans case by case (source)' } ],
           doses: [ { l: 'Prescription', d: '54 Gy / 30 fr / 1.8 Gy' } ] },
-        refs: [ 1 ] } ],
+        refs: [ 1 ] },
+      { proto: 'SIOPE ESCP 2024', pc: 'siop', label: 'European standard clinical practice', ev: 'cons', key: '50.4–54 Gy · delayed in young children',
+        out: [ { l: 'SIOP LGG 2004 first-line RT, 5-y PFS', v: '80 %', c: 'ov-good' } ],
+        chemo: 'Carboplatin–vincristine (81 weeks, European schedule) first in most young children <sup>[9]</sup>.',
+        rt: { timing: 'Salvage, or first line after MDT in older children (diffuse astrocytoma, midbrain / thalamus, high morbidity if growth).', vol: [ { l: 'Technique', v: 'High-precision photons or protons' } ], doses: [ { l: 'Dose', d: '50.4–54 Gy' }, { l: '< 54 Gy', d: 'may reduce vasculopathy risk' } ], verify: 'Highest risk of moyamoya / cognitive decline below 5 years and with supratentorial midline sites.' },
+        refs: [ 9 ] }  ],
       notes: '' },
     'lgg-spine': { title: 'Spinal LGG — proton therapy', risk: 'sr', badge: 'LGG · SPINE', tags: { bio: 'any', tx: 'rt' },
       def: [ { k: 'Site', v: 'Intramedullary spinal LGG, progressive after surgery' } ],
@@ -1759,14 +1947,15 @@ var HGG = {
     { k: 'NCDB (n = 498)', v: 'Median 59.4 Gy; 1-y / 3-y OS 78.4 % / 40.4 % <sup>[1]</sup>' },
     { k: 'Re-irradiation risk', v: 'PENTEC review of brain / brainstem necrosis after re-RT <sup>[4]</sup>' }
   ],
-  alerts: [ { c: '', t: 'Removed from source: “Tsang 2019 re-irradiation n = 40” could not be found in PubMed.' } ],
+  alerts: [ { c: '', t: 'Corrected: the source cited “Tsang 2019 re-irradiation, n = 40”; the paper (Tsang DS et al., J Neurooncol 2019;145(1):107–114, PMID 31468270) reports n = 14 re-irradiated children (median OS 12.4 months), so the n = 40 figure was removed.' } ],
   axes: [ { id: 'grp', label: 'Group', opts: [ { v: 'std', l: 'H3 G34 / H3-IDH wt' }, { v: 'v600', l: 'BRAF V600E' }, { v: 'inf', l: 'Infant-type' } ] }, { id: 'ph', label: 'Phase', opts: [ { v: 'first', l: 'First line' }, { v: 'rel', l: 'Relapse' } ] } ],
   groups: [ { t: 'First line', ids: [ 'hgg-std', 'hgg-v600', 'hgg-inf' ] }, { t: 'Relapse', ids: [ 'hgg-rert' ] } ],
   refs: {
     1: { a: 'Williamson, et al.', t: 'The impact of radiation therapy variables on pediatric high-grade glioma outcomes: a National Cancer Database analysis', j: 'Pediatr Blood Cancer. 2023;71(1):e30751', doi: '10.1002/pbc.30751', n: 'n = 498; median 59.4 Gy; 14 proton patients; 1-y / 3-y OS 78.4 % / 40.4 %.' },
     2: REF_WHO,
     3: { a: 'Bouffet E, Geoerger B, Moertel C, et al.', t: 'Efficacy and safety of trametinib monotherapy or in combination with dabrafenib in pediatric BRAF V600-mutant low-grade glioma', j: 'J Clin Oncol. 2023;41(3):664–674', doi: '10.1200/JCO.22.01000', n: 'Paediatric dosing of dabrafenib + trametinib. FDA tumour-agnostic accelerated approval for BRAF V600E solid tumours ≥ 6 y (June 2022 — regulatory, per source).' },
-    4: { a: 'Ajithkumar, et al.', t: 'Brain and brain stem necrosis after reirradiation for recurrent childhood primary central nervous system tumors: a PENTEC comprehensive review', j: 'Int J Radiat Oncol Biol Phys. 2024;119(2):655–668', doi: '10.1016/j.ijrobp.2023.12.043' }
+    4: { a: 'Ajithkumar, et al.', t: 'Brain and brain stem necrosis after reirradiation for recurrent childhood primary central nervous system tumors: a PENTEC comprehensive review', j: 'Int J Radiat Oncol Biol Phys. 2024;119(2):655–668', doi: '10.1016/j.ijrobp.2023.12.043' },
+    5: { a: 'Szychot E, Giraud G, Hargrave D, et al. (ERN PaedCan / SIOPE ESCP)', t: 'European standard clinical practice recommendations for paediatric high-grade gliomas', j: 'EJC Paediatric Oncology. 2025;5:100210', doi: '10.1016/j.ejcped.2024.100210', n: 'ERN PaedCan / SIOPE consensus (Delphi, 43 experts, 33 countries). Hemispheric pedHGG ≥ 3 y: focal 54 Gy ± 5.4 Gy boost to residual (SIB 54 / 60 Gy possible), CTV = GTV + 15 mm (10 mm if non-enhancing), PTV 2–5 mm; concomitant TMZ then 6–12 cycles. Infant-type HGG (< 2 y): RT rarely, at relapse only.' }
   },
   situations: {
     'hgg-std': { title: 'Hemispheric HGG (H3 G34-mutant or H3 / IDH wild-type)', risk: 'hr', badge: 'HGG · FIRST LINE', tags: { grp: 'std', ph: 'first' },
@@ -1775,7 +1964,12 @@ var HGG = {
         out: [ { l: 'NCDB 1-y / 3-y OS', v: '78.4 % / 40.4 %', c: 'ov-bad' } ],
         chemo: 'Concurrent and adjuvant temozolomide (adult analogy, per source) or molecular trials: ribociclib + everolimus (cell-cycle / PI3K) or ribociclib + temozolomide (H3 G34) — NCT05843253.',
         rt: { timing: 'Post-operative.', vol: [ { l: 'Target', v: 'T1+Gd ± T2 signal, 3D-CRT / IMRT' } ], doses: [ { l: 'Prescription', d: '54–60 Gy / 30–33 fr (1.8–2 Gy)' } ], verify: 'Proton benefit not established (14 proton patients in NCDB).' },
-        refs: [ 1 ] } ],
+        refs: [ 1 ] },
+      { proto: 'SIOPE ESCP 2025', pc: 'siop', label: 'European standard clinical practice', ev: 'cons', key: 'Focal 54 Gy ± 5.4 Gy residual boost · CTV GTV + 15 mm · TMZ',
+        out: [ { l: 'Evidence level', v: 'consensus — dose / volume never studied prospectively', c: 'ov-neu' } ],
+        chemo: 'Concomitant TMZ 75 mg/m²/d, then after a ~4-week break 6–12 cycles of TMZ 150–200 mg/m²/d d1–5 q28d, irrespective of MGMT status (60 % Delphi agreement); clinical trial preferred when available <sup>[5]</sup>.',
+        rt: { timing: '≥ 3 years; start within 4–6 weeks of surgery.', vol: [ { l: 'GTV', v: 'Surgical cavity + residual on T1-contrast (T2 / FLAIR if non-enhancing)' }, { l: 'CTV', v: 'GTV + 15 mm (10 mm if non-enhancing), limited by anatomical barriers' }, { l: 'PTV', v: 'CTV + 2–5 mm (institutional)' } ], doses: [ { l: 'Focal', d: '54 Gy / 30 fr' }, { l: 'Residual boost', d: '+ 5.4 Gy (→ 59.4 Gy)', c: 'esc' }, { l: 'IMRT SIB option', d: '54 Gy (1.8 Gy) / 60 Gy (2 Gy) to residual', c: 'esc' } ] },
+        refs: [ 5 ] }  ],
       notes: 'Molecular confirmation avoids treating misclassified tumours (cf. ACNS0332 CNS-PNET cohort).' },
     'hgg-v600': { title: 'BRAF V600E-mutant HGG', risk: 'sr', badge: 'HGG · BRAF V600E', tags: { grp: 'v600', ph: 'first' },
       def: [ { k: 'Biology', v: 'BRAF V600E (often with CDKN2A loss)' } ],
@@ -1790,7 +1984,12 @@ var HGG = {
       arms: [ { proto: 'Targeted therapy', pc: 'lit', label: 'Trial setting', ev: 'pend', key: 'Fusion-targeted TKI (e.g., lorlatinib)',
         out: [ { l: 'NCT06333899', v: 'recruiting', c: 'ov-neu' } ],
         chemo: 'Fusion-directed inhibitor (lorlatinib pilot for ROS1 / ALK, NCT06333899) ± chemotherapy.',
-        rt: null, noRt: 'RT individualized — not detailed in the source tools.', refs: [ 2 ] } ],
+        rt: null, noRt: 'RT individualized — not detailed in the source tools.', refs: [ 2 ] },
+      { proto: 'SIOPE ESCP 2025', pc: 'siop', label: 'Infant-type hemispheric glioma (< 2 y)', ev: 'cons', key: 'Surgery + systemic / targeted therapy; RT only at relapse in selected cases',
+        out: [ { l: 'Evidence level', v: 'no specific RT recommendation', c: 'ov-neu' } ],
+        chemo: 'Chemotherapy and / or targeted therapy (ALK / ROS1 / NTRK / MET) <sup>[5]</sup>.',
+        rt: null, noRt: 'Radiotherapy rarely considered in infants because of late effects; option at relapse depending on age, prior treatment and molecular subtype.',
+        refs: [ 5 ] }  ],
       notes: 'Placeholder situation — to complete with infant HGG literature.' },
     'hgg-rert': { title: 'Recurrent HGG — re-irradiation', risk: 'sp', badge: 'HGG · RE-RT', tags: { grp: 'any', ph: 'rel' },
       def: [ { k: 'Situation', v: 'Progression after first RT' } ],
@@ -1798,7 +1997,12 @@ var HGG = {
         out: [ { l: 'Necrosis risk', v: 'see PENTEC review', c: 'ov-neu' } ],
         chemo: 'Clinical trials (radioligand LU-TARGET NCT07223034, CAR-T CD70 NCT06946680, ¹⁸⁶Re CED NCT07061626).',
         rt: { timing: 'Longer interval since first RT associated with better outcome (source).', vol: [ { l: 'Target', v: 'Recurrent disease' } ], doses: [ { l: 'Re-RT', d: '30–54 Gy' } ], verify: 'Doses from the source tool; supporting reference not found.' },
-        refs: [ 4 ] } ],
+        refs: [ 4 ] },
+      { proto: 'SIOPE ESCP 2025', pc: 'siop', label: 'Non-pontine HGG / DMG re-irradiation', ev: 'cons', key: 'Optimal dose unknown — adult data 35 Gy / 10 fr (+ bevacizumab) or 36 Gy / 2 Gy',
+        out: [ { l: 'Evidence level', v: 'retrospective; safe, palliative benefit', c: 'ov-neu' } ],
+        chemo: 'Bevacizumab in the adult 35 Gy / 10 fr series (no survival gain) <sup>[5]</sup>.',
+        rt: { timing: 'At progression.', vol: [ { l: 'Target', v: 'GTV + PTV margin' } ], doses: [ { l: 'Option', d: '35 Gy / 10 fr' }, { l: 'Option (stereotactic)', d: '36 Gy / 2 Gy' } ], verify: 'Extrapolated from adult series.' },
+        refs: [ 5 ] }  ],
       notes: '' }
   },
   context: [],
@@ -1837,7 +2041,8 @@ var DMG = {
     7: { a: 'Alex, et al.', t: 'Re-irradiation in pediatric diffuse midline glioma: a multi-institutional retrospective study', j: 'Pediatr Blood Cancer. 2026;73(9):e70498', doi: '10.1002/1545-5017.70498', n: 'n = 167 (54 RT2): median OS from progression 0.59 vs 0.21 y; RT2 ≥ 1 y after RT1 better; trend for ≥ 30.6 Gy.' },
     8: { a: 'Shariff, et al.', t: 'Three and four courses of radiation for children with recurrent diffuse intrinsic pontine glioma', j: 'Pediatr Blood Cancer. 2025;72(11):e31695', doi: '10.1002/pbc.31695', n: 'n = 5; 18–21.6 Gy / 10–12 fr; median OS from RT1 26 months; cumulative brainstem D0.03cc median 104 Gy; partial neurological recovery 80 %.' },
     9: { a: 'Monje M, et al.', t: 'Intravenous and intracranial GD2-CAR T cells for H3K27M-mutant diffuse midline gliomas', j: 'Nature. 2025;637(8046):708–715', doi: '10.1038/s41586-024-08171-9', nct: 'NCT04196413', n: 'Phase I: 11 patients received IV GD2-CAR T; DL1 = maximum tolerated IV dose; 9 received intracerebroventricular infusions.' },
-    10: { a: 'Embring A, Blomstrand M, Asklid A, et al.', t: 'Re-irradiation in paediatric tumours of the central nervous system: national guidelines from the Swedish Workgroup of Paediatric Radiotherapy', j: 'Clin Oncol (R Coll Radiol). 2023;35(9):571–575', doi: '10.1016/j.clon.2023.05.007', n: 'National guidelines in use since 2019 (DIPG, ependymoma, germinoma, medulloblastoma). Ependymoma re-RT: ≥ 9 months, CSI 36 Gy + 54 Gy if not local-only; cumulative brainstem Dmax 91.5 / D2cc 82.6 GyEQD2. Germinoma: ≥ 6 months, CSI 24 Gy + boost 40 Gy. DIPG: ≥ 3 months, 2 Gy × 10.' }
+    10: { a: 'Embring A, Blomstrand M, Asklid A, et al.', t: 'Re-irradiation in paediatric tumours of the central nervous system: national guidelines from the Swedish Workgroup of Paediatric Radiotherapy', j: 'Clin Oncol (R Coll Radiol). 2023;35(9):571–575', doi: '10.1016/j.clon.2023.05.007', n: 'National guidelines in use since 2019 (DIPG, ependymoma, germinoma, medulloblastoma). Ependymoma re-RT: ≥ 9 months, CSI 36 Gy + 54 Gy if not local-only; cumulative brainstem Dmax 91.5 / D2cc 82.6 GyEQD2. Germinoma: ≥ 6 months, CSI 24 Gy + boost 40 Gy. DIPG: ≥ 3 months, 2 Gy × 10.' },
+    11: { a: 'Szychot E, Giraud G, Hargrave D, et al. (ERN PaedCan / SIOPE ESCP)', t: 'European standard clinical practice recommendations for paediatric high-grade gliomas', j: 'EJC Paediatric Oncology. 2025;5:100210', doi: '10.1016/j.ejcped.2024.100210', n: 'Pontine DMG: 54 Gy / 1.8 Gy or 39 Gy / 13 fr (non-inferior, no concomitant therapy); no role for hyperfractionation; GTV T1-contrast + T2 + FLAIR, CTV + 10 mm, PTV 2–5 mm. M+ at diagnosis: CSI 36 Gy / 20 fr + 18 Gy / 10 fr boost (option). Re-RT pDMG ≥ 3 months after RT1: ≥ 20 Gy (1.8–2 Gy), GTV + 2–5 mm. Spinal HGG 45–50.4 Gy, CTV up to 20 mm cranio-caudal.' }
   },
   situations: {
     'dmg-front': { title: 'Newly diagnosed DIPG / DMG — radiotherapy', risk: 'hr', badge: 'DMG · FRONTLINE', tags: { ph: 'first' },
@@ -1846,7 +2051,12 @@ var DMG = {
         out: [ { l: 'Median OS', v: '~11 months', c: 'ov-bad' } ],
         chemo: 'No proven concurrent agent; post-RT trials (ACTION — dordaviprone vs placebo; ribociclib combinations; AZD1390 with RT).',
         rt: { timing: 'At diagnosis.', vol: [ { l: 'CTV', v: 'GTV + 1 cm (source)' } ], doses: [ { l: 'Prescription', d: '54 Gy / 30 fr / 1.8 Gy' } ] },
-        refs: [ 1, 3, 4 ] } ],
+        refs: [ 1, 3, 4 ] },
+      { proto: 'SIOPE ESCP 2025', pc: 'siop', label: 'European standard clinical practice', ev: 'cons', key: '54 Gy / 30 fr or 39 Gy / 13 fr · CTV GTV + 10 mm',
+        out: [ { l: 'Hypofractionation', v: 'non-inferior to 54 Gy', c: 'ov-neu' }, { l: 'Hyperfractionation', v: 'no role', c: 'ov-bad' } ],
+        chemo: 'No concomitant therapy with 39 Gy / 13 fr; trial or ONC201 access per national pathways <sup>[11]</sup>.',
+        rt: { timing: 'Rapid start desirable; a short delay (≤ 2 weeks) does not change survival.', vol: [ { l: 'GTV', v: 'T1-contrast + T2 + FLAIR abnormality' }, { l: 'CTV', v: 'GTV + 10 mm, limited by bony calvarium and tentorium' }, { l: 'PTV', v: 'CTV + 2–5 mm' } ], doses: [ { l: 'Standard', d: '54 Gy / 30 fr' }, { l: 'Hypofractionated (Lansky 50–70, burden)', d: '39 Gy / 13 fr (3 Gy)' }, { l: 'M+ at diagnosis (option)', d: 'CSI 36 Gy / 20 fr + 18 Gy / 10 fr boost → 54 Gy', c: 'highesc' }, { l: 'Spinal-cord HGG', d: '45–50.4 Gy · CTV up to 20 mm cranio-caudal' } ] },
+        refs: [ 11 ] }  ],
       notes: 'Hypofractionation / split-course RT under study (SPORT-DMG, NCT05077735).' },
     'dmg-rt2': { title: 'First progression — re-irradiation (RT2)', risk: 'sp', badge: 'DMG · RT2', tags: { ph: 'rel' },
       def: [ { k: 'Selection', v: 'Progression after a response / stable interval; best if RT1–RT2 interval ≥ 1 year' } ],
@@ -1864,7 +2074,12 @@ var DMG = {
           out: [ { l: 'Evidence', v: 'national protocol, prospective registry (Radtox)', c: 'ov-neu' } ],
           chemo: '—',
           rt: { timing: '≥ 3 months after primary RT; not if brainstem radionecrosis.', vol: [ { l: 'PTV', v: 'GTV + 5 mm' }, { l: 'Technique', v: 'Photons (VMAT / tomotherapy)' } ], doses: [ { l: 'Standard', d: '20 Gy / 10 × 2 Gy' }, { l: '> 12 months, good PS', d: '36 Gy / 20 × 1.8 Gy', c: 'esc' }, { l: 'Second re-RT', d: '20 Gy / 10 × 2 Gy if benefit from first re-RT, > 3 months, above foramen magnum', c: 'highesc' }, { l: 'Constraints', d: 'No brain / brainstem restriction; assess cumulative chiasm and cochlea' } ] },
-          refs: [ 10 ] } ],
+          refs: [ 10 ] },
+      { proto: 'SIOPE ESCP 2025', pc: 'siop', label: 'pDMG re-irradiation', ev: 'cons', key: '≥ 20 Gy at 1.8–2 Gy · GTV + 2–5 mm · ≥ 3 months after RT1',
+        out: [ { l: 'Clinical benefit', v: '> 2 / 3 of patients', c: 'ov-mid' } ],
+        chemo: 'Best candidates: response to first RT and ≥ 3 months since RT1 <sup>[11]</sup>.',
+        rt: { timing: 'First progression.', vol: [ { l: 'PTV', v: 'GTV + 2–5 mm, limited CTV at the discretion of the radiation oncologist' } ], doses: [ { l: 'Re-RT', d: '≥ 20 Gy (1.8–2 Gy)' }, { l: 'Benefit of up to 36 Gy', d: 'unknown', c: 'esc' } ] },
+        refs: [ 11 ] }  ],
       notes: 'Selection bias is strong in all re-RT series (longer RT1–progression interval in RT2 patients).' },
     'dmg-rt3': { title: 'Second / third progression — RT3 / RT4 (palliative)', risk: 'off', badge: 'DMG · RT3/4', tags: { ph: 'rel' },
       def: [ { k: 'Selection', v: 'Highly selected patients with prior benefit from RT2' } ],
@@ -1942,6 +2157,9 @@ var MB = {
   axes: [
     { id: 'age', label: 'Age', opts: [ { v: 'inf', l: '< 3 years' }, { v: 'yc', l: '3–5 years' }, { v: 'ch', l: '≥ 3–5 years' }, { v: 'ado', l: '≥ 16 years' } ] },
     { id: 'risk', label: 'Risk', opts: [ { v: 'lr', l: 'Low' }, { v: 'sr', l: 'Standard' }, { v: 'hr', l: 'High' } ] },
+    { id: 'grp', label: 'Molecular group', opts: [ { v: 'wnt', l: 'WNT' }, { v: 'shh', l: 'SHH TP53-wt' }, { v: 'shhp53', l: 'SHH TP53-mut' }, { v: 'nwns', l: 'Non-WNT / non-SHH (G3 / G4)' } ] },
+    { id: 'res', label: 'Residual', opts: [ { v: 'r0', l: 'R0 (< 1.5 cm²)' }, { v: 'rp', l: 'R+ (≥ 1.5 cm²)' } ] },
+    { id: 'm', label: 'Metastatic status', opts: [ { v: 'M0', l: 'M0' }, { v: 'M+', l: 'M+' } ] },
     { id: 'ph', label: 'Phase', opts: [ { v: 'first', l: 'First line' }, { v: 'rel', l: 'Relapse' } ] }
   ],
   groups: [ { t: '≥ 3–5 years — low / standard risk', ids: [ 'mb-wnt-lr', 'mb-sr', 'mb-rplus', 'mb-yc' ] }, { t: '≥ 3–5 years — high risk', ids: [ 'mb-mplus', 'mb-lca-myc', 'mb-shh-tp53', 'mb-wnt-hr', 'mb-ado' ] },
@@ -1967,10 +2185,15 @@ var MB = {
     18: { a: 'Embring A, Blomstrand M, Asklid A, et al.', t: 'Re-irradiation in paediatric tumours of the central nervous system: national guidelines from the Swedish Workgroup of Paediatric Radiotherapy', j: 'Clin Oncol (R Coll Radiol). 2023;35(9):571–575', doi: '10.1016/j.clon.2023.05.007', n: 'MB: re-CSI 27 Gy / 15 fr after prior 18–23.4 Gy; boosts to 40–45 Gy; spinal cumulative ≤ 66 GyEQD2; overall cumulative 100–135 GyEQD2; little gain in recurrent SHH; prior high-risk treatment → palliative intent.' },
     19: { a: 'Erker C, Mynarek M, Simbozel M, et al.', t: 'Salvage therapies for first relapse of SHH medulloblastoma in early childhood', j: 'Neuro Oncol. 2025;27(8):2158–2169', doi: '10.1093/neuonc/noaf092', n: 'n = 147 relapsed ND / SHH iMB without initial CSI. 3-y post-relapse survival 61.6 %; CSI at relapse HR 0.33; local relapse often treated with surgery, low-dose CSI (≤ 24 Gy) or focal RT.' },
     20: { a: 'Goschzik T, Schwalbe EC, Hicks D, et al.', t: 'Prognostic effect of whole chromosomal aberration signatures in standard-risk, non-WNT/non-SHH medulloblastoma (HIT-SIOP PNET 4)', j: 'Lancet Oncol. 2018;19(12):1602–1616', doi: '10.1016/S1470-2045(18)30532-1', n: 'Non-WNT / non-SHH SR: ≥ 2 of chr 7 gain, chr 8 loss, chr 11 loss → favourable (5-y EFS 100 % vs 68 %). All SHH relapses had TP53 mutation or 17p loss.' },
-    21: { a: 'Winnicki C, Leblond P, Bourdeaut F, et al.', t: 'Retrospective national “real life” experience of the SFCE with the metronomic MEMMAT and MEMMAT-like protocol', j: 'J Clin Med. 2023;12(4):1415', doi: '10.3390/jcm12041415', n: 'n = 41 (22 MB): clinical benefit 34 %, median OS 26 mo; best used at first relapse / as maintenance.' }
+    21: { a: 'Winnicki C, Leblond P, Bourdeaut F, et al.', t: 'Retrospective national “real life” experience of the SFCE with the metronomic MEMMAT and MEMMAT-like protocol', j: 'J Clin Med. 2023;12(4):1415', doi: '10.3390/jcm12041415', n: 'n = 41 (22 MB): clinical benefit 34 %, median OS 26 mo; best used at first relapse / as maintenance.' },
+    22: { a: 'Keeling C, Davies S, Goddard J, et al.', t: 'The clinical significance of sub-total surgical resection in childhood medulloblastoma: a multi-cohort analysis of 1100 patients', j: 'EClinicalMedicine. 2024;69:102469', doi: '10.1016/j.eclinm.2024.102469', n: 'n = 1110 (UK CCLG + published cohorts); STR (> 1.5 cm²) in 20 %. Prognostic on univariable analysis only; not independent on multivariable analysis; not prognostic in M0 patients receiving upfront CSI — STR as sole feature should not drive intensification.' },
+    23: { a: 'Carrie C, Kieffer V, Figarella-Branger D, et al.', t: 'Exclusive Hyperfractionated Radiation Therapy and Reduced Boost Volume for Standard-Risk Medulloblastoma: Pooled Analysis of the 2 French Multicentric Studies MSFOP98 and MSFOP 2007 and Correlation With Molecular Subgroups', j: 'Int J Radiat Oncol Biol Phys. 2020;108(5):1204–1217', doi: '10.1016/j.ijrobp.2020.07.2324', n: 'n = 114, no chemotherapy: HFRT CSI 36 Gy (1 Gy b.i.d.) + boost to 68 Gy restricted to tumour bed (1.5 cm margin), online QA. 5-y OS 84 %, PFS 74 %; WNT favourable, SHH worse; shallower IQ decline than normofractionated RT + chemotherapy.' },
+    24: { a: 'Adolph JE, Fleischhack G, Tschirner S, et al.', t: 'Radiotherapy for Recurrent Medulloblastoma in Children and Adolescents: Survival after Re-Irradiation and First-Time Irradiation', j: 'Cancers (Basel). 2024;16(11):1955', doi: '10.3390/cancers16111955', n: 'HIT-REZ: 42 re-irradiated vs 42 matched controls: median PFS 21.0 vs 12.0 mo, OS 31.5 vs 20.0 mo; 10-y OS 8 % vs 0 %; largest gain without re-resection. RT-naïve at recurrence: CSI improved PFS 25.0 vs 6.6 mo and OS 40.2 vs 12.4 mo.' },
+    25: { a: 'Baroni LV, Freytes C, Fernández Ponce N, et al.', t: 'Craniospinal irradiation as part of re-irradiation for children with recurrent medulloblastoma', j: 'J Neurooncol. 2021;155(1):53–61', doi: '10.1007/s11060-021-03842-3', n: 'Garrahan 2009–2020, n = 24: re-CSI 21.6 Gy (19.8 Gy in one) in 15 vs focal in 9; 3-y OS after re-RT 25 % vs 0 %, PFS 31 % vs 0 %; no symptomatic necrosis; median IQ 58 in survivors.' },
+    26: { a: 'Tsang DS, Sarhan N, Ramaswamy V, et al.', t: 'Re-irradiation for children with recurrent medulloblastoma in Toronto, Canada: a 20-year experience', j: 'J Neurooncol. 2019;145(1):107–114', doi: '10.1007/s11060-019-03272-2', n: 'n = 14: median OS 12.4 mo; focal intracranial re-RT better than spinal re-RT for diffuse disease (p = 0.02); distant failure predominant; long survival in WNT and group 4.' }
   },
   situations: {
-    'mb-wnt-lr': { title: 'WNT-activated, < 16 years, M0, no residual — low risk', risk: 'lr', badge: 'MB · WNT · LOW RISK', tags: { age: 'ch', risk: 'lr', ph: 'first' },
+    'mb-wnt-lr': { title: 'WNT-activated, < 16 years, M0, no residual — low risk', risk: 'lr', badge: 'MB · WNT · LOW RISK', tags: { age: 'ch', risk: 'lr', ph: 'first', grp: 'wnt', res: 'r0', m: 'M0' },
       def: [ { k: 'Biology', v: 'WNT (β-catenin IHC + CTNNB1 mutation ± monosomy 6), non-LC/A, MYC / MYCN not amplified' }, { k: 'Stage', v: 'M0, residual < 1.5 cm², age < 16 y' } ],
       arms: [ { proto: 'COG · ARIA', pc: 'cog', label: 'Standard-dose CSI (ARIA stratum C)', ev: 'trial', key: 'CSI 23.4 Gy + tumour-bed boost → 54 Gy',
         out: [ { l: 'WNT 5-y EFS (ARIA)', v: '~95 %', c: 'ov-good' }, { l: 'ACNS1422: CSI 18 Gy + reduced chemo', v: 'results pending', c: 'ov-neu' } ],
@@ -1988,7 +2211,7 @@ var MB = {
         rt: { timing: 'Protons preferred if available in time; IMRT for photons <sup>[6]</sup>. Start within 28 days of surgery (max 40).', vol: [ { l: 'CSI', v: 'Whole craniospinal axis' }, { l: 'Boost', v: 'Tumour bed: GTV = bed, CTV = GTV + 1 cm (0.5 cm posteriorly with protons to spare the brainstem)' } ], doses: [ { l: 'CSI', d: '18 Gy / 10 fr' }, { l: 'Tumour-bed boost', d: '+36 Gy → 54 Gy', c: 'esc' } ] },
         refs: [ 6 ] } ],
       notes: 'Lowering CSI to 18 Gy without molecular selection was inferior in ACNS0331 (3–7 y: 5-y EFS 71.4 % vs 82.9 %) <sup>[1]</sup>. SIOP-E keeps 23.4 Gy until PNET5-MB LR, SJMB12 (15 Gy) and ACNS1422 (18 Gy) report <sup>[5]</sup>; SFCE applies the PNET5 LR dose (18 Gy). WNT without CTNNB1 mutation → germline APC testing <sup>[14]</sup>.' },
-    'mb-sr': { title: 'Non-WNT standard risk (SHH TP53-wt or group 3 / 4), M0, no residual', risk: 'sr', badge: 'MB · STANDARD RISK', tags: { age: 'ch', risk: 'sr', ph: 'first' },
+    'mb-sr': { title: 'Non-WNT standard risk (SHH TP53-wt or group 3 / 4), M0, no residual', risk: 'sr', badge: 'MB · STANDARD RISK', tags: { age: 'ch', risk: 'sr', ph: 'first', grp: [ 'shh', 'nwns' ], res: 'r0', m: 'M0' },
       def: [ { k: 'Biology', v: 'SHH TP53 wild-type or group 3 / 4; non-LC/A; MYC not amplified (MYCN-amplified group 4 = SR in SFCE)' }, { k: 'Stage', v: 'M0, residual < 1.5 cm²' } ],
       arms: [ { proto: 'COG ACNS0331', pc: 'cog', label: 'Randomized — boost volume', ev: 'rct', key: 'CSI 23.4 Gy + involved-field (tumour-bed) boost → 54 Gy',
         out: [ { l: 'IFRT vs PF boost 5-y EFS', v: '82.5 % vs 80.5 % (non-inferior)', c: 'ov-good' }, { l: 'CSI 18 vs 23.4 Gy (3–7 y)', v: '71.4 % vs 82.9 % — inferior', c: 'ov-bad' }, { l: 'SJMB03 average risk 5-y PFS', v: '83.2 %', c: 'ov-good' } ], outNote: 'SHH did better with IFRT; group 4 did worse with 18 Gy; larger IQ decline with 23.4 Gy CSI <sup>[1]</sup>.',
@@ -2004,9 +2227,14 @@ var MB = {
         out: [ { l: 'Includes', v: 'MYCN-amplified group 3 / 4 (only MYC excluded)', c: 'ov-neu' } ],
         chemo: '8 courses B-A. SR = WNT &lt; 16 y, SHH-TP53wt or non-WNT/non-SHH, M0 R0, no MYC (and, for WNT / SHH, no MYCN) amplification. Hyperfractionation (MSFOP, 1 Gy bid) not recommended for non-WNT (lower EFS); discussable for WNT R0M0, chemotherapy refusal or when a short treatment is required <sup>[6]</sup>.',
         rt: { timing: 'Protons preferred if available in time; IMRT for photons <sup>[6]</sup>. Start within 28 days of surgery (max 40).', vol: [ { l: 'CSI', v: 'Whole craniospinal axis' }, { l: 'Boost', v: 'Tumour bed: GTV = bed, CTV = GTV + 1 cm (0.5 cm posteriorly with protons to spare the brainstem)' } ], doses: [ { l: 'CSI', d: '23.4 Gy (1.8 or 2 Gy fractions)' }, { l: 'Tumour-bed boost', d: '→ 54 Gy', c: 'esc' } ] },
-        refs: [ 6 ] } ],
+        refs: [ 6 ] },
+      { proto: 'MSFOP 98 / 2007 (SFCE)', pc: 'lit', label: 'Exclusive hyperfractionated RT, no chemotherapy', ev: 'trial', key: 'HFRT CSI 36 Gy (1 Gy b.i.d.) + tumour-bed boost to 68 Gy (1.5 cm)',
+        out: [ { l: '5-y OS / PFS', v: '84 % / 74 %', c: 'ov-mid' }, { l: 'IQ decline', v: 'shallower than RT + chemo', c: 'ov-good' } ],
+        chemo: 'None (chemotherapy-naïve) <sup>[23]</sup>.',
+        rt: { timing: 'Post-operative, 6 weeks overall, online quality control.', vol: [ { l: 'CSI', v: 'Whole neuraxis' }, { l: 'Boost', v: 'Tumour bed + 1.5 cm (not whole posterior fossa)' } ], doses: [ { l: 'CSI', d: '36 Gy (1 Gy twice daily)' }, { l: 'Tumour-bed boost', d: '→ 68 Gy (1 Gy b.i.d.)', c: 'esc' } ], verify: 'Option for patients declining or not eligible for chemotherapy.' },
+        refs: [ 23 ] }  ],
       notes: 'Favourable non-WNT subsets: M0 group 4 with chr 11 loss / chr 17 gain <sup>[12]</sup>; ≥ 2 of chr 7 gain, 8 loss, 11 loss (5-y EFS 100 % in PNET4) <sup>[20]</sup> — candidates for de-escalation within trials only (COG ACNS2031, NCT05382338).' },
-    'mb-rplus': { title: 'M0 with residual ≥ 1.5 cm² as the only risk factor', risk: 'sr', badge: 'MB · M0 · R+', tags: { age: 'ch', risk: 'sr', ph: 'first' },
+    'mb-rplus': { title: 'M0 with residual ≥ 1.5 cm² as the only risk factor', risk: 'sr', badge: 'MB · M0 · R+', tags: { age: 'ch', risk: 'sr', ph: 'first', grp: [ 'shh', 'nwns' ], res: 'rp', m: 'M0' },
       def: [ { k: 'Residual', v: '≥ 1.5 cm² on post-op MRI < 72 h, no other risk factor' }, { k: 'Surgery', v: 'Second look only if safe' } ],
       arms: [ { proto: 'COG · ARIA', pc: 'cog', label: 'ARIA stratum C', ev: 'cons', key: 'No other RF: CSI 23.4 Gy · with RF or unknown MYC: 36 Gy',
         out: [ { l: 'ACNS0332 (residual = HR criterion)', v: '5 % of the cohort', c: 'ov-neu' } ],
@@ -2022,9 +2250,14 @@ var MB = {
         out: [ { l: 'CSI', v: 'reduced to 23.4 Gy in both branches', c: 'ov-neu' } ],
         chemo: '2 courses etoposide-carboplatin (PNET HR+5). Complete remission, or second surgery achieving CR → PNET MB with 6 courses B-A. Residual not resectable to CR → PNET HR+5 (HD thiotepa × 2 → RT → temozolomide). Under 5 y: isolated R+ = standard risk (Head Start or PNET5 MB by age) <sup>[6]</sup>.',
         rt: { timing: 'After induction ± second surgery.', vol: [ { l: 'Boost', v: 'Tumour bed (CTV = GTV + 1 cm); residual' } ], doses: [ { l: 'CR (± second surgery)', d: 'CSI 23.4 Gy → tumour bed 54 Gy' }, { l: 'Persistent residual (PNET HR+5)', d: 'CSI 23.4 Gy → tumour bed 54 Gy → residual 59.4 Gy', c: 'esc' } ] },
-        refs: [ 6 ] } ],
+        refs: [ 6 ] },
+      { proto: 'Literature', pc: 'lit', label: 'Multi-cohort analysis (n = 1110)', ev: 'retro', key: 'STR as sole risk factor → treat as standard risk',
+        out: [ { l: 'STR independent prognostic factor', v: 'no (multivariable)', c: 'ov-good' }, { l: 'M0 + upfront CSI', v: 'STR not prognostic', c: 'ov-good' } ],
+        chemo: 'As standard risk <sup>[22]</sup>.',
+        rt: null, noRt: 'Supports CSI 23.4 Gy standard-risk RT when residual is the only risk feature; maximal safe resection remains the goal.',
+        refs: [ 22 ] }  ],
       notes: 'After molecular subgroup adjustment, GTR gave no OS benefit over STR and no benefit over NTR; PFS benefit only in group 4 <sup>[13]</sup> — do not pursue small residues at the cost of neurological morbidity.' },
-    'mb-yc': { title: 'Children 3–5 years — where age thresholds diverge', risk: 'sp', badge: 'MB · 3–5 Y', tags: { age: 'yc', risk: 'any', ph: 'first' },
+    'mb-yc': { title: 'Children 3–5 years — where age thresholds diverge', risk: 'sp', badge: 'MB · 3–5 Y', tags: { age: 'yc', risk: 'any', ph: 'first', grp: 'any', res: 'any', m: 'any' },
       def: [ { k: 'Age', v: '36–59 months' }, { k: 'Issue', v: 'CSI vs radiation-sparing approach depends on the framework' } ],
       arms: [ { proto: 'COG · ARIA', pc: 'cog', label: '≥ 36 months = older-child algorithm', ev: 'rct', key: 'Standard CSI 23.4 Gy — 18 Gy inferior',
         out: [ { l: 'ACNS0331, 3–7 y: CSI 18 vs 23.4 Gy', v: '5-y EFS 71.4 % vs 82.9 %', c: 'ov-bad' }, { l: 'SJYC07 intermediate risk (focal 54 Gy)', v: '5-y EFS 24.6 %', c: 'ov-bad' } ],
@@ -2042,7 +2275,7 @@ var MB = {
         rt: { timing: 'PNET HR+5: RT ≤ 45 days after the last HD thiotepa and ≤ 150 days from diagnosis; residual and metastatic boosts only if lesions remain measurable after HDC <sup>[6]</sup>.', vol: [ { l: 'CSI', v: 'Whole craniospinal axis' }, { l: 'Boost', v: 'Initial tumour bed (CTV = GTV + 1 cm); residual; metastatic sites' } ], doses: [ { l: 'SR: CSI', d: '23.4 Gy → TB 54 Gy' }, { l: 'HR 3–5 y: CSI', d: '23.4 Gy', c: 'esc' }, { l: 'HR 3–5 y: tumour bed / residual', d: '54 / 59.4 Gy', c: 'esc' }, { l: 'HR 3–5 y: metastases', d: 'spine above conus 36 Gy · supratentorial / below conus 54 Gy', c: 'highesc' } ] },
         refs: [ 6 ] } ],
       notes: 'Threshold summary: ARIA / SIOP 36 months; SFCE 5 years (SHH ≥ 5 y for standard CSI).' },
-    'mb-mplus': { title: 'Metastatic (M1–M3), non-WNT, ≥ 3–5 years', risk: 'hr', badge: 'MB · M+', tags: { age: 'ch', risk: 'hr', ph: 'first' },
+    'mb-mplus': { title: 'Metastatic (M1–M3), non-WNT, ≥ 3–5 years', risk: 'hr', badge: 'MB · M+', tags: { age: 'ch', risk: 'hr', ph: 'first', grp: [ 'shh', 'nwns' ], res: 'any', m: 'M+' },
       def: [ { k: 'Stage', v: 'M1 (CSF) to M3 (nodular spinal / intracranial); M4 = extra-CNS' }, { k: 'Biology', v: 'Any non-WNT' } ],
       arms: [ { proto: 'COG ACNS0332 · ARIA', pc: 'cog', label: 'High-dose CSI ± carboplatin', ev: 'rct', key: 'CSI 36 Gy + boost 54 Gy · metastatic boosts',
         out: [ { l: '5-y EFS / OS', v: '62.9 % / 73.4 %', c: 'ov-mid' }, { l: 'Group 3: + carboplatin vs none', v: '73.2 % vs 53.7 %', c: 'ov-mid' } ],
@@ -2060,7 +2293,7 @@ var MB = {
         rt: { timing: 'PNET HR+5: RT ≤ 45 days after the last HD thiotepa and ≤ 150 days from diagnosis; residual and metastatic boosts only if lesions remain measurable after HDC <sup>[6]</sup>.', vol: [ { l: 'CSI', v: 'Whole craniospinal axis' }, { l: 'Boost', v: 'Initial tumour bed (CTV = GTV + 1 cm); residual; metastatic sites' } ], doses: [ { l: 'CSI', d: '36 Gy / 20 fr / 1.8 Gy', c: 'esc' }, { l: 'Tumour bed', d: '→ 54 Gy', c: 'esc' }, { l: 'Residual', d: '→ 59.4 Gy', c: 'highesc' }, { l: 'Spinal metastases above the conus', d: '→ 39.6 Gy', c: 'highesc' }, { l: 'Supratentorial or below-conus metastases', d: '→ 54 Gy', c: 'highesc' } ] },
         refs: [ 6 ] } ],
       notes: 'Very high risk: M+ group 3 (5-y survival < 50 %) <sup>[12]</sup>. Metastatic boost doses differ between frameworks — see reference sections.' },
-    'mb-lca-myc': { title: 'LC/A histology or MYC amplification (M0)', risk: 'hr', badge: 'MB · LCA / MYC', tags: { age: 'ch', risk: 'hr', ph: 'first' },
+    'mb-lca-myc': { title: 'LC/A histology or MYC amplification (M0)', risk: 'hr', badge: 'MB · LCA / MYC', tags: { age: 'ch', risk: 'hr', ph: 'first', grp: [ 'shh', 'shhp53', 'nwns' ], res: 'any', m: 'M0' },
       def: [ { k: 'Histology', v: 'Large-cell / anaplastic (significant anaplasia > 50 %)' }, { k: 'Biology', v: 'MYC amplification (MYCN-amplified non-group 4)' } ],
       arms: [ { proto: 'COG · ARIA', pc: 'cog', label: 'High-dose CSI (ACNS0332 eligible)', ev: 'rct', key: 'CSI 36 Gy + boost 54 Gy',
         out: [ { l: 'ACNS0332 all HR', v: '5-y EFS 62.9 %', c: 'ov-mid' } ], outNote: 'ARIA notes that the prognostic weight of anaplasia is largely driven by subgroup and MYC status <sup>[7]</sup>.',
@@ -2078,7 +2311,7 @@ var MB = {
         rt: { timing: 'PNET HR+5: RT ≤ 45 days after the last HD thiotepa and ≤ 150 days from diagnosis; residual and metastatic boosts only if lesions remain measurable after HDC <sup>[6]</sup>.', vol: [ { l: 'CSI', v: 'Whole craniospinal axis' }, { l: 'Boost', v: 'Initial tumour bed (CTV = GTV + 1 cm); residual; metastatic sites' } ], doses: [ { l: 'CSI', d: '36 Gy / 20 fr / 1.8 Gy', c: 'esc' }, { l: 'Tumour bed', d: '→ 54 Gy', c: 'esc' }, { l: 'Residual', d: '→ 59.4 Gy', c: 'highesc' }, { l: 'Spinal metastases above the conus', d: '→ 39.6 Gy', c: 'highesc' }, { l: 'Supratentorial or below-conus metastases', d: '→ 54 Gy', c: 'highesc' } ] },
         refs: [ 6 ] } ],
       notes: '' },
-    'mb-shh-tp53': { title: 'SHH, TP53-mutant (germline or somatic)', risk: 'hr', badge: 'MB · SHH-TP53', tags: { age: 'ch', risk: 'hr', ph: 'first' },
+    'mb-shh-tp53': { title: 'SHH, TP53-mutant (germline or somatic)', risk: 'hr', badge: 'MB · SHH-TP53', tags: { age: 'ch', risk: 'hr', ph: 'first', grp: 'shhp53', res: 'any', m: 'any' },
       def: [ { k: 'Biology', v: 'SHH with TP53 mutation — germline TP53 testing mandatory' }, { k: 'Risk', v: 'Very high risk (< 50 % survival)' } ],
       arms: [ { proto: 'COG · ARIA', pc: 'cog', label: 'High risk', ev: 'cons', key: 'CSI 36 Gy + boost 54 Gy',
         out: [ { l: 'SJMB03 high-risk SHH', v: '5-y PFS < 60 %', c: 'ov-bad' } ],
@@ -2096,7 +2329,7 @@ var MB = {
         rt: { timing: 'PNET HR+5: RT ≤ 45 days after the last HD thiotepa and ≤ 150 days from diagnosis; residual and metastatic boosts only if lesions remain measurable after HDC <sup>[6]</sup>.', vol: [ { l: 'CSI', v: 'Whole craniospinal axis' }, { l: 'Boost', v: 'Initial tumour bed (CTV = GTV + 1 cm); residual; metastatic sites' } ], doses: [ { l: 'CSI', d: '36 Gy / 20 fr / 1.8 Gy', c: 'esc' }, { l: 'Tumour bed', d: '→ 54 Gy', c: 'esc' }, { l: 'Residual', d: '→ 59.4 Gy', c: 'highesc' }, { l: 'Spinal metastases above the conus', d: '→ 39.6 Gy', c: 'highesc' }, { l: 'Supratentorial or below-conus metastases', d: '→ 54 Gy', c: 'highesc' } ] },
         refs: [ 6 ] } ],
       notes: 'All SHH relapses in PNET4 had TP53 mutation or 17p loss <sup>[20]</sup>. Genetic counselling mandatory <sup>[14]</sup>.' },
-    'mb-wnt-hr': { title: 'WNT with high-risk features (≥ 16 years, M+, residual)', risk: 'sp', badge: 'MB · WNT-HR', tags: { age: 'any', risk: 'hr', ph: 'first' },
+    'mb-wnt-hr': { title: 'WNT with high-risk features (≥ 16 years, M+, residual)', risk: 'sp', badge: 'MB · WNT-HR', tags: { age: 'any', risk: 'hr', ph: 'first', grp: 'wnt', res: 'any', m: 'any' },
       def: [ { k: 'Features', v: '≥ 16 years, M+, residual, LC/A, or WNT without CTNNB1 mutation' } ],
       arms: [ { proto: 'COG · ARIA', pc: 'cog', label: 'ARIA stratum C', ev: 'cons', key: '< 16 y R+ no RF: 23.4 Gy · with RF or ≥ 16 y: 36 Gy',
         out: [ { l: 'WNT ≥ 16 y', v: 'favourable prognosis lost', c: 'ov-mid' } ],
@@ -2114,7 +2347,7 @@ var MB = {
         rt: { timing: 'As chosen arm.', vol: [ { l: 'Boost', v: 'Tumour bed CTV = GTV + 1 cm' } ], doses: [ { l: 'SR treatment', d: 'CSI 23.4 Gy → 54 Gy' }, { l: 'HR treatment', d: 'CSI 36 Gy → 54 Gy (+ residual / metastases)', c: 'esc' } ] },
         refs: [ 6 ] } ],
       notes: '' },
-    'mb-ado': { title: 'Adolescents ≥ 16 years and adults', risk: 'sp', badge: 'MB · ≥ 16 Y', tags: { age: 'ado', risk: 'any', ph: 'first' },
+    'mb-ado': { title: 'Adolescents ≥ 16 years and adults', risk: 'sp', badge: 'MB · ≥ 16 Y', tags: { age: 'ado', risk: 'any', ph: 'first', grp: 'any', res: 'any', m: 'any' },
       def: [ { k: 'Age', v: '≥ 16 years (paediatric trials up to 21–22 y)' } ],
       arms: [ { proto: 'EANO-EURACAN 2019', pc: 'lit', label: 'Post-pubertal / adult guideline', ev: 'cons', key: 'CSI 36 Gy (or 35.2 Gy) + PF / TB to 54–55.8 Gy · 23.4 Gy + chemo possible',
         out: [ { l: 'HIT-2000 adults M0 (chemoradiotherapy)', v: '4-y EFS 74 %, OS 94 %', c: 'ov-good' }, { l: 'NOA-07 (> 21 y, Packer)', v: '3-y EFS 66.6 %', c: 'ov-mid' } ],
@@ -2127,7 +2360,7 @@ var MB = {
         rt: null, noRt: 'As paediatric risk groups.',
         refs: [ 1, 2, 7 ] } ],
       notes: 'Adolescent WNT loses its favourable prognosis <sup>[20]</sup>. Photons: helical tomotherapy or VMAT; protons as an alternative (level III B) <sup>[15]</sup>.' },
-    'mb-inf-shh': { title: 'Infant (< 3–4 y), SHH / desmoplastic-MBEN, M0', risk: 'inf', badge: 'iMB · SHH · M0', tags: { age: 'inf', risk: 'lr', ph: 'first' },
+    'mb-inf-shh': { title: 'Infant (< 3–4 y), SHH / desmoplastic-MBEN, M0', risk: 'inf', badge: 'iMB · SHH · M0', tags: { age: 'inf', risk: 'lr', ph: 'first', grp: 'shh', res: 'any', m: 'M0' },
       def: [ { k: 'Age', v: '< 36 months (HIT < 4 y; SFCE < 5 y)' }, { k: 'Histology', v: 'Desmoplastic / nodular or MBEN — all SHH-INF' } ],
       arms: [ { proto: 'COG', pc: 'cog', label: 'ACNS1221 · SJYC07', ev: 'trial', key: 'No RT — chemotherapy without intraventricular MTX failed',
         out: [ { l: 'ACNS1221 2-y PFS', v: '52 % (closed early)', c: 'ov-bad' }, { l: 'ACNS0334 SHH MB', v: 'all survived', c: 'ov-good' } ],
@@ -2145,7 +2378,7 @@ var MB = {
         rt: null, noRt: 'No RT in HIT-SKK. Gorlin syndrome: avoid RT in first line (second tumours) <sup>[6]</sup>.',
         refs: [ 6 ] } ],
       notes: 'In ACNS1221 no relapse occurred with MBEN or age < 12 months <sup>[9]</sup>.' },
-    'mb-inf-nonshh': { title: 'Infant, classic / LC/A or group 3 / 4, M0', risk: 'inf', badge: 'iMB · NON-SHH · M0', tags: { age: 'inf', risk: 'sr', ph: 'first' },
+    'mb-inf-nonshh': { title: 'Infant, classic / LC/A or group 3 / 4, M0', risk: 'inf', badge: 'iMB · NON-SHH · M0', tags: { age: 'inf', risk: 'sr', ph: 'first', grp: 'nwns', res: 'any', m: 'M0' },
       def: [ { k: 'Age', v: '< 36 months' }, { k: 'Biology', v: 'Group 3 / 4 or classic / LC/A histology' } ],
       arms: [ { proto: 'COG ACNS0334 · SJYC07', pc: 'cog', label: 'HDMTX + 3 × HDC · focal RT', ev: 'rct', key: 'HDMTX induction → 3 tandem HDC; SJYC07 focal 54 Gy',
         out: [ { l: 'ACNS0334 group 3 5-y EFS', v: '70 % with HDMTX vs 33 %', c: 'ov-mid' }, { l: 'SJYC07 intermediate risk (focal RT)', v: '5-y EFS 24.6 %', c: 'ov-bad' } ],
@@ -2163,7 +2396,7 @@ var MB = {
         rt: { timing: 'RT after HDC discussed according to age, M stage, residual and response; doses validated at the national RT webconference.', vol: [ { l: 'PNET HR+5 &lt; 3 y', v: 'CSI + tumour bed + residual / metastases' } ], doses: [ { l: 'HR &lt; 3 y (PNET HR+5): CSI', d: '18 Gy', c: 'esc' }, { l: 'Tumour bed / residual', d: '50.4 / 54 Gy', c: 'esc' }, { l: 'Metastases', d: 'spine above conus 30.6 Gy · supratentorial / below conus 50.4 Gy', c: 'highesc' } ] },
         refs: [ 6 ] } ],
       notes: '' },
-    'mb-inf-mplus': { title: 'Infant, metastatic', risk: 'inf', badge: 'iMB · M+', tags: { age: 'inf', risk: 'hr', ph: 'first' },
+    'mb-inf-mplus': { title: 'Infant, metastatic', risk: 'inf', badge: 'iMB · M+', tags: { age: 'inf', risk: 'hr', ph: 'first', grp: [ 'shh', 'nwns' ], res: 'any', m: 'M+' },
       def: [ { k: 'Age', v: '< 36 months' }, { k: 'Stage', v: 'M+' } ],
       arms: [ { proto: 'COG · ARIA', pc: 'cog', label: 'Stratum C', ev: 'cons', key: 'SHH M+: HIT-SKK + HDMTX · non-SHH M+: dismal — palliation legitimate',
         out: [ { l: 'Non-WNT/non-SHH M+ 5-y CSI-free', v: '8 %', c: 'ov-bad' }, { l: 'MYC-amplified group 3 / i17q (ACNS0334)', v: 'no survivors', c: 'ov-bad' } ],
@@ -2181,7 +2414,7 @@ var MB = {
         rt: { timing: 'PNET HR+5: RT ≤ 45 days after the last HD thiotepa and ≤ 150 days from diagnosis; residual and metastatic boosts only if lesions remain measurable after HDC <sup>[6]</sup>.', vol: [ { l: 'CSI', v: 'Whole craniospinal axis' }, { l: 'Boost', v: 'Initial tumour bed (CTV = GTV + 1 cm); residual; metastatic sites' } ], doses: [ { l: '&lt; 3 y: CSI', d: '18 Gy → TB 50.4, residual 54 Gy', c: 'esc' }, { l: '&lt; 3 y: metastases', d: 'above conus 30.6 · supratentorial / below conus 50.4 Gy', c: 'highesc' }, { l: '3–5 y: CSI', d: '23.4 Gy → TB 54, residual 59.4 Gy', c: 'esc' }, { l: '3–5 y: metastases', d: 'above conus 36 · supratentorial / below conus 54 Gy', c: 'highesc' } ] },
         refs: [ 6 ] } ],
       notes: '' },
-    'mb-germline': { title: 'Germline predisposition (SUFU, PTCH1, TP53, APC, BRCA2, PALB2)', risk: 'sp', badge: 'MB · GERMLINE', tags: { age: 'any', risk: 'any', ph: 'first' },
+    'mb-germline': { title: 'Germline predisposition (SUFU, PTCH1, TP53, APC, BRCA2, PALB2)', risk: 'sp', badge: 'MB · GERMLINE', tags: { age: 'any', risk: 'any', ph: 'first', grp: 'any', res: 'any', m: 'any' },
       def: [ { k: 'Prevalence', v: '~6 % of MB <sup>[14]</sup>' }, { k: 'Testing', v: 'TP53, PTCH1, SUFU in SHH; BRCA2 / PALB2 in SHH; APC in CTNNB1-wild-type WNT' } ],
       arms: [ { proto: 'Literature', pc: 'lit', label: 'Waszak 2018 + expert practice', ev: 'exp', key: 'Tailor RT and alkylators to the syndrome',
         out: [ { l: 'Consensus genes', v: 'APC, BRCA2, PALB2, PTCH1, SUFU, TP53', c: 'ov-neu' } ],
@@ -2194,7 +2427,7 @@ var MB = {
         rt: null, noRt: 'RT should be avoided in first line in Gorlin syndrome (second tumours) <sup>[6]</sup>.',
         refs: [ 6 ] } ],
       notes: '' },
-    'mb-rel-irr': { title: 'Relapse after prior craniospinal irradiation', risk: 'off', badge: 'MB · RELAPSE · PRIOR CSI', tags: { age: 'any', risk: 'any', ph: 'rel' },
+    'mb-rel-irr': { title: 'Relapse after prior craniospinal irradiation', risk: 'off', badge: 'MB · RELAPSE · PRIOR CSI', tags: { age: 'any', risk: 'any', ph: 'rel', grp: 'any', res: 'any', m: 'any' },
       def: [ { k: 'Pattern', v: 'Mostly distant in group 3 / 4 (~90 %); group 3 earlier (median 1.34 y) <sup>[16]</sup>' }, { k: 'Work-up', v: 'Biopsy / profiling; trial screening' } ],
       arms: [ { proto: 'Swedish guidelines', pc: 'lit', label: 'Re-irradiation (Embring 2023)', ev: 'cons', key: 'Re-CSI 27 Gy / 15 fr ± boost 40–45 Gy · focal 40–45 Gy',
         out: [ { l: 'Prior HR treatment', v: 'palliative intent', c: 'ov-bad' }, { l: 'Recurrent SHH', v: 'limited gain', c: 'ov-bad' } ],
@@ -2205,15 +2438,25 @@ var MB = {
         out: [ { l: 'Response at 6 months', v: '45 %', c: 'ov-mid' }, { l: 'Median OS / 5-y OS', v: '25.5 mo / 22.6 %', c: 'ov-bad' }, { l: 'SFCE real-life (22 MB)', v: 'median OS 26 mo', c: 'ov-bad' } ],
         chemo: 'Daily thalidomide, fenofibrate, celecoxib; alternating metronomic etoposide / cyclophosphamide; bevacizumab; intraventricular etoposide / cytarabine (no VP shunt).',
         rt: null, noRt: 'Can follow or replace re-irradiation.',
-        refs: [ 17, 21 ] } ],
+        refs: [ 17, 21 ] },
+      { proto: 'Re-irradiation series', pc: 'lit', label: 'HIT-REZ matched cohort · Garrahan · Toronto', ev: 'retro', key: 'RT2 prolongs median survival; cure rare · re-CSI 21.6 Gy in selected patients',
+        out: [ { l: 'HIT-REZ median OS RT2 vs none', v: '31.5 vs 20.0 mo', c: 'ov-mid' }, { l: 'HIT-REZ 10-y OS', v: '8 % vs 0 %', c: 'ov-bad' }, { l: 'Re-CSI vs focal, 3-y OS after re-RT', v: '25 % vs 0 %', c: 'ov-mid' } ],
+        chemo: 'Most patients receive salvage chemotherapy / anti-angiogenic therapy after RT2 <sup>[25]</sup>.',
+        rt: { timing: 'At first recurrence; largest benefit without re-resection (HIT-REZ).', vol: [ { l: 'Focal', v: 'Focal intracranial recurrence (best outcome in Toronto)' }, { l: 'Re-CSI', v: 'Leptomeningeal / diffuse relapse' } ], doses: [ { l: 'Re-CSI', d: '21.6 Gy (19.8 Gy)', c: 'esc' }, { l: 'Focal re-RT', d: 'individualised to cumulative OAR doses' } ], verify: 'High neurocognitive cost after re-CSI (median IQ 58).' },
+        refs: [ 24, 25, 26 ] }  ],
       notes: 'Trials: omburtamab (NCT04743661), MEPENDAX (NCT06485908), DFMO maintenance (NCT04696029), digoxin (NCT06701812).' },
-    'mb-rel-naive': { title: 'Relapse without prior CSI (infant protocols)', risk: 'sp', badge: 'MB · RELAPSE · NO PRIOR CSI', tags: { age: 'inf', risk: 'any', ph: 'rel' },
+    'mb-rel-naive': { title: 'Relapse without prior CSI (infant protocols)', risk: 'sp', badge: 'MB · RELAPSE · NO PRIOR CSI', tags: { age: 'inf', risk: 'any', ph: 'rel', grp: 'any', res: 'any', m: 'any' },
       def: [ { k: 'Context', v: 'Relapse after radiation-sparing infant therapy' } ],
       arms: [ { proto: 'Literature', pc: 'lit', label: 'Hill 2020 · Erker 2025', ev: 'retro', key: 'Salvage CSI ± re-resection; HDC if CSI avoided',
         out: [ { l: 'SHH iMB 3-y post-relapse survival', v: '61.6 %', c: 'ov-mid' }, { l: 'CSI at relapse', v: 'HR 0.27–0.33', c: 'ov-good' } ],
         chemo: 'Marrow-ablative HDC + stem cells when CSI is avoided (HR 0.24, NS).',
         rt: { timing: 'At relapse.', vol: [ { l: 'Local relapse', v: 'Re-resection + low-dose CSI (≤ 24 Gy) or focal RT' }, { l: 'Disseminated', v: 'CSI' } ], doses: [ { l: 'Local relapse', d: 'CSI ≤ 24 Gy or focal', c: 'esc' }, { l: 'Other', d: 'CSI per age and extent', c: 'esc' } ] },
-        refs: [ 16, 19 ] } ],
+        refs: [ 16, 19 ] },
+      { proto: 'HIT-REZ', pc: 'lit', label: 'RT-naïve patients at recurrence', ev: 'retro', key: 'CSI at recurrence markedly improves survival',
+        out: [ { l: 'Median PFS CSI vs none', v: '25.0 vs 6.6 mo', c: 'ov-good' }, { l: 'Median OS', v: '40.2 vs 12.4 mo', c: 'ov-good' } ],
+        chemo: 'Per salvage regimen <sup>[24]</sup>.',
+        rt: { timing: 'At recurrence, if age allows.', vol: [ { l: 'CSI', v: 'Whole neuraxis + boost' } ], doses: [ { l: 'CSI', d: 'per age / risk (not detailed in source)' } ] },
+        refs: [ 24 ] }  ],
       notes: 'Risk of leukoencephalopathy when methotrexate is given after RT <sup>[7]</sup>.' }
   },
   context: [
@@ -2503,7 +2746,8 @@ function tagMatch(sit, f) {
   for (var ax in f) {
     if (!f[ax]) continue;
     var v = sit.tags[ax];
-    if (v !== 'any' && v !== f[ax]) return false;
+    if (v === 'any') continue;
+    if (Array.isArray(v) ? v.indexOf(f[ax]) < 0 : v !== f[ax]) return false;
   }
   return true;
 }
