@@ -1170,8 +1170,8 @@ var ETMR = {
 
 // ═══ DONNÉES — PINÉOBLASTOME ═══
 var PINEO = {
-  id: 'pineo', name: 'Pineoblastoma', short: 'PB', family: 'Embryonal tumours (non-MB)', status: 'ready',
-  desc: 'Age, metastatic status and molecular group. COG ACNS0332 (CSI 36 Gy) and reduced-dose CSI side by side for ≥ 3 years.',
+  id: 'pineo', name: 'Pineal parenchymal tumours', short: 'PPT', family: 'Embryonal tumours (non-MB)', status: 'ready',
+  desc: 'Pineocytoma, PPTID, pineoblastoma, PTPR and DMT SMARCB1 — organised as the Tanguy 2026 chapter (Springer, Pineal Tumors and Pineal Region Tumors). Pineoblastoma: age, metastatic status and molecular group; COG ACNS0332 (CSI 36 Gy) and reduced-dose CSI side by side.',
   sources: [ { t: 'COG ACNS0332', c: 'cog' }, { t: 'SNO-EANO-EURACAN 2024', c: 'lit' }, { t: 'Rare Brain Tumor Consortium', c: 'lit' } ],
   identity: [
     { k: 'Molecular groups', v: 'PB-miRNA1, PB-miRNA2 (DICER1 / DROSHA / DGCR8), PB-RB1, PB-MYC/FOXR2 <sup>[1]</sup>' },
@@ -1182,10 +1182,11 @@ var PINEO = {
   ],
   alerts: [ { c: '', t: 'The source tool cited NCT02114229 as SIOPE ATRT01 (it is the St Jude alisertib ATRT trial) and NCT04278560 as an ONC201 trial (unrelated study). Both removed.' } ],
   axes: [
+    { id: 'ent', label: 'Entity', opts: [ { v: 'pc', l: 'Pineocytoma' }, { v: 'pptid', l: 'PPTID' }, { v: 'pb', l: 'Pineoblastoma' }, { v: 'ptpr', l: 'PTPR' }, { v: 'dmt', l: 'DMT SMARCB1' } ] },
     { id: 'age', label: 'Age', opts: [ { v: 'lt3', l: '< 3 years' }, { v: 'ge3', l: '≥ 3 years' } ] },
     { id: 'm', label: 'Metastatic status', opts: [ { v: 'M0', l: 'M0' }, { v: 'M+', l: 'M+' } ] }
   ],
-  groups: [ { t: '≥ 3 years', ids: [ 'pb-ge3-m0', 'pb-ge3-mp' ] }, { t: '< 3 years and syndromic', ids: [ 'pb-lt3', 'pb-trilat' ] }, { t: 'Other pineal parenchymal tumours', ids: [ 'pb-pptid' ] } ],
+  groups: [ { t: 'Pineocytoma (WHO 1)', ids: [ 'pc' ] }, { t: 'PPTID (WHO 2–3)', ids: [ 'pb-pptid', 'pptid-hr' ] }, { t: 'Pineoblastoma ≥ 3 years', ids: [ 'pb-ge3-m0', 'pb-ge3-mp' ] }, { t: 'Pineoblastoma < 3 years and syndromic', ids: [ 'pb-lt3', 'pb-trilat' ] }, { t: 'Pineoblastoma in adults', ids: [ 'pb-adult' ] }, { t: 'Other pineal-region tumours (PTPR, DMT SMARCB1)', ids: [ 'ptpr', 'dmt' ] } ],
   refs: { 1: { a: 'Li BK, Vasiljevic A, Dufour C, et al.', t: 'Pineoblastoma segregates into molecular sub-groups with distinct clinico-pathologic features: a Rare Brain Tumor Consortium registry study', j: 'Acta Neuropathol. 2020;139(2):223–241', doi: '10.1007/s00401-019-02111-y', n: '72 molecularly confirmed PB, 5 groups. DOI corrected (source: …02112-5).' }, 2: REF_HWANG, 3: REF_SCHU,
     4: { a: 'Liu APY, Li BK, Vasiljevic A, et al.', t: 'SNO-EANO-EURACAN consensus on management of pineal parenchymal tumors', j: 'Neuro Oncol. 2024;26(12):2159–2173', doi: '10.1093/neuonc/noae128', n: 'Table 2 recommendations by entity / age / extent. PB-miRNA1 / miRNA2: 5-y PFS/OS 57 %/70 % and 86 %/100 %; PB-MYC/FOXR2 17 %/24 %; PB-RB1 19 %/30 %. SJMB03 PB: AR 5-y PFS/OS 100 %/100 %, HR 56.5 %/60.3 %. ACNS0332 PB: 5-y EFS/OS 62.8 %/78.5 %. Metastatic PB 5-y OS 50–55 %.' },
     5: { a: 'Mallick S, Benson R, Rath GK.', t: 'Patterns of care and survival outcomes in patients with pineal parenchymal tumor of intermediate differentiation: an individual patient data analysis', j: 'Radiother Oncol. 2016;121(2):204–208', doi: '10.1016/j.radonc.2016.10.025', n: '29 studies, n = 127; median age 33 y. Median PFS 5.17 y, OS 14 y. Relapses: 62.5 % spinal / leptomeningeal, 37.5 % local. Female sex and adjuvant RT associated with better OS (univariate); STR should receive adjuvant RT.' },
@@ -1193,11 +1194,27 @@ var PINEO = {
     7: { a: 'Yu T, Sun X, Wang J, et al.', t: 'Twenty-seven cases of pineal parenchymal tumours of intermediate differentiation: mitotic count, Ki-67 labelling index and extent of resection predict prognosis', j: 'J Neurol Neurosurg Psychiatry. 2016;87(4):386–395', doi: '10.1136/jnnp-2014-309805', n: 'Mitotic count + Ki-67 stratification predicted OS / PFS better than WHO grade; GTR 59 %; high-risk residual: 3 / 6 irradiated free of local recurrence, early recurrence without adjuvant therapy.' },
     8: { a: 'Takase H, Tanoshima R, Singla N, et al.', t: 'Pineal parenchymal tumor of intermediate differentiation: a systematic review and contemporary management of 389 cases reported during the last two decades', j: 'Neurosurg Rev. 2022;45(2):1135–1155', doi: '10.1007/s10143-021-01674-3', n: 'Strategy for grade 3 and aggressive PPTID controversial; maximal resection + chemotherapy + RT proposed as first line.' },
     9: { a: 'Liu APY, Gudenas B, Lin T, et al.', t: 'Risk-adapted therapy and biological heterogeneity in pineoblastoma: integrated clinico-pathological analysis from the prospective, multi-center SJMB03 and SJYC07 trials', j: 'Acta Neuropathol. 2020;139(2):259–271', doi: '10.1007/s00401-019-02106-9', n: 'n = 58. SJMB03 (≥ 3 y): CSI 23.4 Gy (average risk) or 36 Gy (high risk) + primary boost + chemo: 5-y PFS 100 % vs 56.5 %. SJYC07 (< 3 y): 2-y PFS 14.3 % (focal RT) and 0 %. Subgroups PB-A, PB-B, PB-B-like, PB-FOXR2; DICER1 / DROSHA / DGCR8 alterations.' },
-    10: { a: 'Pfaff E, Aichmüller C, Sill M, et al.', t: 'Molecular subgrouping of primary pineal parenchymal tumors reveals distinct subtypes correlated with clinical parameters and genetic alterations', j: 'Acta Neuropathol. 2020;139(2):243–257', doi: '10.1007/s00401-019-02101-0', n: 'DNA methylation of 195 pineal tumours: pineocytoma, PPTID, PTPR and PB with three core PB subtypes (miRNA-processing alterations in ~2 / 3), Pin-RB (trilateral RB and RB1-altered) and PB-MYC.' } },
+    10: { a: 'Pfaff E, Aichmüller C, Sill M, et al.', t: 'Molecular subgrouping of primary pineal parenchymal tumors reveals distinct subtypes correlated with clinical parameters and genetic alterations', j: 'Acta Neuropathol. 2020;139(2):243–257', doi: '10.1007/s00401-019-02101-0', n: 'DNA methylation of 195 pineal tumours: pineocytoma, PPTID, PTPR and PB with three core PB subtypes (miRNA-processing alterations in ~2 / 3), Pin-RB (trilateral RB and RB1-altered) and PB-MYC.' },
+    11: { a: 'Clark AJ, Sughrue ME, Ivan ME, et al.', t: 'Factors influencing overall survival rates for patients with pineocytoma', j: 'J Neurooncol. 2010;100(2):255–260', doi: '10.1007/s11060-010-0189-6', n: 'Systematic review, 168 patients / 64 articles: 5-y OS GTR 84 % vs STR + RT 17 %; STR + RT not better than STR alone.' },
+    12: { a: 'Clark AJ, Ivan ME, Sughrue ME, et al.', t: 'Tumor control after surgery and radiotherapy for pineocytoma', j: 'J Neurosurg. 2010;113(2):319–324', doi: '10.3171/2009.12.JNS091683', n: '166 patients: 5-y PFS GTR 100 % vs STR + RT 84 %; resection 89 % vs biopsy 75 %; no PFS difference STR vs STR + RT.' },
+    13: { a: 'Wilson DA, Awad AW, Brachman D, et al.', t: 'Long-term radiosurgical control of subtotally resected adult pineocytomas', j: 'J Neurosurg. 2012;117(2):212–217', doi: '10.3171/2012.5.JNS1251', n: 'Barrow 1999–2011, n = 14 adults; 9 with residual: adjuvant SRS (3 upfront, 2 at recurrence) — no progression after SRS; PFS longer with SRS after STR.' },
+    14: { a: 'Stoiber EM, Schaible B, Herfarth K, et al.', t: 'Long term outcome of adolescent and adult patients with pineal parenchymal tumors treated with fractionated radiotherapy between 1982 and 2003 — a single institution’s experience', j: 'Radiat Oncol. 2010;5:122', doi: '10.1186/1748-717X-5-122', n: 'Heidelberg, n = 14 (4 PC, 1 PPTID, 9 PB): primary site median 54 Gy; PB CSI / WBI median 35 Gy. Local RT effective for PC and some PPTID; PB local / spinal failure common despite CSI.' },
+    15: { a: 'Lu VM, Luther EM, Eichberg DG, et al.', t: 'Prognosticating survival of pineal parenchymal tumors of intermediate differentiation (PPTID) by grade', j: 'J Neurooncol. 2021;155(2):165–172', doi: '10.1007/s11060-021-03863-y', n: 'NCDB 2005–2016, 103 adults (61 % grade 2): 5-y OS 54 %; GTR (HR 0.43) and younger age independent predictors; RT (36 %) and chemotherapy (17 %) without proven impact.' },
+    16: { a: 'Raleigh DR, Solomon DA, Lloyd SA, et al.', t: 'Histopathologic review of pineal parenchymal tumors identifies novel morphologic subtypes and prognostic factors for outcome', j: 'Neuro Oncol. 2017;19(1):78–88', doi: '10.1093/neuonc/now105', n: 'UCSF, n = 75: 78 % of PPTID received adjuvant therapy, mostly CSI (median 36 Gy) + pineal boost to median 55.8 Gy; grade, extent of resection and neuraxis spread prognostic; small-cell vs large-cell PPTID subtypes.' },
+    17: { a: 'Liu C, Carmicheal J, Baine MJ, Zhang C.', t: 'Radiation therapy for pineal parenchymal tumor of intermediate differentiation: a case series and literature review', j: 'J Cent Nerv Syst Dis. 2023;15:11795735231160036', doi: '10.1177/11795735231160036', n: 'Two cases + literature review (n = 308 with location data): 84 recurred (27.3 %), 46 / 84 (54.7 %) disseminated. Suggests RT even in low-risk / GTR cases and upfront CSI for high risk; literature CSI average 31 Gy vs 36 Gy standard.' },
+    18: { a: 'Mynarek M, Pizer B, Dufour C, et al.', t: 'Evaluation of age-dependent treatment strategies for children and young adults with pineoblastoma: analysis of pooled European Society for Paediatric Oncology (SIOP-E) and US Head Start data', j: 'Neuro Oncol. 2017;19(4):576–585', doi: '10.1093/neuonc/now234', n: 'n = 135. Age ≥ 4 y (HR 0.27) and RT (HR 0.28) favourable, M+ unfavourable, residual not prognostic. < 4 y: 5-y PFS / OS 11 % / 12 % (3 / 5 survived with HDCT + local RT). ≥ 4 y: M0 72 % / 73 %, M+ 50 % / 55 %; CSI median 35 Gy (18–45).' },
+    19: { a: 'Hansford JR, Huang J, Endersby R, et al.', t: 'Pediatric pineoblastoma: a pooled outcome study of North American and Australian therapeutic data', j: 'Neurooncol Adv. 2022;4(1):vdac056', doi: '10.1093/noajnl/vdac056', n: 'n = 178. < 3 y: 5-y PFS / OS 13.5 % / 16.2 % (male sex HR 3.93); 7 / 49 long-term survivors, 4 of whom received RT. ≥ 3 y: 60.8 % / 67.3 %; M+ PFS 39.2 %, OS 49.8 %; trials with 36 Gy CSI (CCG-921, CCG-99701, ACNS0332): 5-y PFS 58.5–68.2 %. HDCT no measurable benefit.' },
+    20: { a: 'Liu APY, Li BK, Pfaff E, et al.', t: 'Clinical and molecular heterogeneity of pineal parenchymal tumors: a consensus study', j: 'Acta Neuropathol. 2021;141(5):771–785', doi: '10.1007/s00401-021-02284-5', n: '221 PB / PPTID: consensus groups PB-miRNA1, PB-miRNA2, PB-MYC/FOXR2, PB-RB1 and molecular PPTID (KBTBD4). PB-miRNA2 and PPTID best, miRNA1 intermediate, MYC/FOXR2 and RB1 dismal; reduced-dose CSI adequate for average-risk PB-miRNA1/2.' },
+    21: { a: 'Jing Y, Deng W, Zhang H, et al.', t: 'Development and validation of a prognostic nomogram to predict cancer-specific survival in adult patients with pineoblastoma', j: 'Front Oncol. 2020;10:1021 (corrigendum 10:594049)', doi: '10.3389/fonc.2020.01021', n: 'SEER 1975–2016, 213 adults: independent predictors age, year, therapy, size, extension; post-operative RT HR 0.43, post-operative RT + chemotherapy HR 0.38.' },
+    22: { a: 'Lancia A, Becherini C, Detti B, et al.', t: 'Radiotherapy for papillary tumor of the pineal region: a systematic review of the literature', j: 'Clin Neurol Neurosurg. 2020;190:105646', doi: '10.1016/j.clineuro.2019.105646', n: '34 studies, 116 PTPR: RT in 72.4 % (3D-CRT 45–60 Gy, median 50.4 Gy; SRS 12–36 Gy); local recurrence ~60 % at 5 y, > 80 % at 10 y; expected 10-y OS 72.5 %; little toxicity.' },
+    23: { a: 'Fauchon F, Hasselblatt M, Jouvet A, et al.', t: 'Role of surgery, radiotherapy and chemotherapy in papillary tumors of the pineal region: a multicenter study', j: 'J Neurooncol. 2013;112(2):223–231', doi: '10.1007/s11060-013-1050-5', n: 'n = 44, median FU 63 mo: median PFS 58.1 mo; only GTR and younger age associated with OS; no significant effect of RT or chemotherapy.' },
+    24: { a: 'Fèvre-Montange M, Hasselblatt M, Figarella-Branger D, et al.', t: 'Prognosis and histopathologic features in papillary tumors of the pineal region: a retrospective multicenter study of 31 cases', j: 'J Neuropathol Exp Neurol. 2006;65(10):1004–1011', doi: '10.1097/01.jnen.0000240462.80263.13', n: 'n = 31 (5–66 y): GTR 21 / 31, RT 15; 5-y OS 73 %, PFS 27 % — frequent local recurrence.' },
+    25: { a: 'Thomas C, Wefers A, Bens S, et al.', t: 'Desmoplastic myxoid tumor, SMARCB1-mutant: clinical, histopathological and molecular characterization of a pineal region tumor encountered in adolescents and adults', j: 'Acta Neuropathol. 2020;139(2):277–286', doi: '10.1007/s00401-019-02094-w', n: '7 pineal-region tumours, median age 40 y (15–61), SMARCB1 loss, low Ki-67 (median 3 %), methylation close to ATRT-MYC. After median 48 mo: 3 alive stable, 1 progression, 3 died. Entity in WHO CNS5 (2021).' },
+    26: { a: 'Tanguy R.', t: 'Pineal tumors and pineal region tumors (radiotherapy)', j: 'In: Mottolese C, ed. Pineal Tumors and Pineal Region Tumors. Cham: Springer Nature; 2026:269–294 (ISBN 978-3-032-18607-2; eBook 978-3-032-18608-9)', doi: '10.1007/978-3-032-18608-9_16', n: 'Chapter 16. Table “Radiation therapy for tumors of the pineal region”: pineoblastoma CSI 24–36 Gy + tumour boost to 45–54 Gy (1.8–2 Gy); PPTID focal 50.4–54 Gy or CSI 24–36 Gy + boost 45–54 Gy; PTPR focal 50.4–54 Gy if incompletely resected / recurrent; pineocytoma usually no RT — focal 50.4 Gy / 1.8 Gy or SRS 15–18 Gy for small residual / recurrent tumours. Text: PB ≥ 3 y and adults CSI 36 Gy + boost to 54–55.8 Gy; PC CTV + 5 mm, PTV + 3–5 mm; PTPR CTV / PTV + 0.3–0.5 cm.' } },
   situations: {
     'pb-ge3-m0': {
       title: 'Pineoblastoma ≥ 3 years, M0', risk: 'sr', badge: 'PB · ≥ 3 Y · M0',
-      tags: { age: 'ge3', m: 'M0' },
+      tags: { ent: 'pb', age: 'ge3', m: 'M0' },
       def: [ { k: 'Age', v: '≥ 3 years' }, { k: 'Status', v: 'M0 after full staging' } ],
       arms: [ {
         proto: 'COG ACNS0332', pc: 'cog', label: 'CNS-PNET / PB cohort', ev: 'rct', key: 'CSI 36 Gy + boost ± carboplatin',
@@ -1225,12 +1242,22 @@ var PINEO = {
         out: [ { l: '5-y PFS average risk', v: '100 % (17 / 18 without progression)', c: 'ov-good' } ],
         chemo: '4 cycles of high-dose cisplatin / cyclophosphamide / vincristine with autologous stem-cell rescue (SJMB03) <sup>[9]</sup>.',
         rt: { timing: 'Post-operative, ≥ 3 years.', vol: [ { l: 'CSI', v: 'Whole neuraxis' }, { l: 'Boost', v: 'Primary site' } ], doses: [ { l: 'CSI', d: '23.4 Gy' }, { l: 'Primary', d: 'focal boost (total dose not stated in the source)' } ], verify: 'Small cohort; reduced CSI not yet standard for pineoblastoma in Europe.' },
-        refs: [ 9 ] }  ],
+        refs: [ 9 ] },
+      { proto: 'Tanguy 2026 (book chapter)', pc: 'lit', label: 'Pineoblastoma (WHO 4)', ev: 'exp', key: 'CSI 36 Gy (table range 24–36 Gy) + boost to 54–55.8 Gy · with chemotherapy',
+        out: [ { l: 'ACNS0332 PB-containing cohort, 5-y OS', v: '78.5 %', c: 'ov-mid' } ],
+        chemo: 'Platinum- and alkylator-based, as for high-risk medulloblastoma.',
+        rt: { timing: 'Post-operative, with chemotherapy.', vol: [ { l: 'CSI', v: 'Whole neuraxis' }, { l: 'Boost', v: 'Tumour bed' } ], doses: [ { l: 'CSI', d: 'typically 36 Gy (table: 24–36 Gy)', c: 'highesc' }, { l: 'Tumour-bed boost', d: '→ 54–55.8 Gy (table: 45–54 Gy)', c: 'esc' } ] },
+        refs: [ 26 ] },
+      { proto: 'Pooled analyses', pc: 'lit', label: '≥ 3–4 years, M0 (SIOP-E / Head Start, North America / Australia)', ev: 'retro', key: 'CSI + boost + chemotherapy',
+        out: [ { l: 'SIOP-E ≥ 4 y M0, 5-y PFS / OS', v: '72 % / 73 %', c: 'ov-mid' }, { l: 'Trials with 36 Gy CSI, 5-y PFS', v: '58.5–68.2 %', c: 'ov-mid' } ],
+        chemo: 'Embryonal-type chemotherapy; HDCT without measurable benefit in pooled data <sup>[19]</sup>.',
+        rt: null, noRt: 'CSI median 35 Gy (18–45) in the SIOP-E / Head Start pool; most North American trial patients received 36 Gy CSI.',
+        refs: [ 18, 19 ] }    ],
       notes: 'De-escalation (abbreviated SDC and / or 23.4 Gy CSI) is acceptable for PB-miRNA1/2 with GTR / NTR and M0; only local failures in pooled PB-miRNA2 <sup>[4]</sup>. Metastatic relapses reported after reduced-dose CSI or focal RT for localized PB with residual disease <sup>[4]</sup>.'
     },
     'pb-ge3-mp': {
       title: 'Pineoblastoma ≥ 3 years, M+ — response-adapted CSI', risk: 'hr', badge: 'PB · ≥ 3 Y · M+',
-      tags: { age: 'ge3', m: 'M+' },
+      tags: { ent: 'pb', age: 'ge3', m: 'M+' },
       def: [ { k: 'Status', v: 'M+ (CSF dissemination frequent)' } ],
       arms: [ {
         proto: 'SNO-EANO-EURACAN 2024', pc: 'lit', label: 'Consensus · two options', ev: 'cons', key: 'CSI 36 Gy + boost ≤ 54 Gy → maintenance (± pre-RT chemo)',
@@ -1254,12 +1281,22 @@ var PINEO = {
         out: [ { l: '5-y PFS high risk', v: '56.5 %', c: 'ov-mid' } ],
         chemo: 'Adjuvant SJMB03 chemotherapy <sup>[9]</sup>.',
         rt: { timing: 'Post-operative.', vol: [ { l: 'CSI', v: 'Whole neuraxis' }, { l: 'Boost', v: 'Primary site + metastases' } ], doses: [ { l: 'CSI', d: '36 Gy' }, { l: 'Primary', d: 'focal boost (total dose not stated in the source)' } ] },
-        refs: [ 9 ] }  ],
+        refs: [ 9 ] },
+      { proto: 'Tanguy 2026 (book chapter)', pc: 'lit', label: 'Pineoblastoma (WHO 4)', ev: 'exp', key: 'CSI 36 Gy (table range 24–36 Gy) + boost to 54–55.8 Gy · with chemotherapy',
+        out: [ { l: 'ACNS0332 PB-containing cohort, 5-y OS', v: '78.5 %', c: 'ov-mid' } ],
+        chemo: 'Platinum- and alkylator-based, as for high-risk medulloblastoma.',
+        rt: { timing: 'Post-operative, with chemotherapy.', vol: [ { l: 'CSI', v: 'Whole neuraxis' }, { l: 'Boost', v: 'Tumour bed' } ], doses: [ { l: 'CSI', d: 'typically 36 Gy (table: 24–36 Gy)', c: 'highesc' }, { l: 'Tumour-bed boost', d: '→ 54–55.8 Gy (table: 45–54 Gy)', c: 'esc' } ] },
+        refs: [ 26 ] },
+      { proto: 'Pooled analyses', pc: 'lit', label: '≥ 3–4 years, M+', ev: 'retro', key: 'CSI + boost + chemotherapy',
+        out: [ { l: 'SIOP-E ≥ 4 y M+, 5-y PFS / OS', v: '50 % / 55 %', c: 'ov-bad' }, { l: 'North America ≥ 3 y M+, 5-y PFS / OS', v: '39.2 % / 49.8 %', c: 'ov-bad' } ],
+        chemo: 'Embryonal-type chemotherapy; HDCT without measurable benefit in pooled data <sup>[19]</sup>.',
+        rt: null, noRt: 'CSI median 35 Gy (18–45) in the SIOP-E / Head Start pool; most North American trial patients received 36 Gy CSI.',
+        refs: [ 18, 19 ] }    ],
       notes: 'COG ACNS0332 eligibility included high-risk PB; metastatic patients there received CSI 36 Gy <sup>[2]</sup>.'
     },
     'pb-lt3': {
       title: 'Pineoblastoma < 3 years — chemotherapy first, RT deferred', risk: 'inf', badge: 'PB · < 3 Y',
-      tags: { age: 'lt3', m: 'any' },
+      tags: { ent: 'pb', age: 'lt3', m: 'any' },
       def: [ { k: 'Age', v: '< 3 years — mostly PB-RB1 and PB-MYC/FOXR2 groups <sup>[1]</sup>' } ],
       arms: [ {
         proto: 'Infant frameworks', pc: 'lit', label: 'HDCT / ASCR', ev: 'retro', key: 'HDCT first ± focal 50.4 Gy',
@@ -1277,12 +1314,17 @@ var PINEO = {
         out: [ { l: '2-y PFS intermediate / high risk', v: '14.3 % / 0 %', c: 'ov-bad' } ],
         chemo: 'Induction, consolidation (focal RT or chemotherapy), metronomic maintenance <sup>[9]</sup>.',
         rt: null, noRt: 'Focal RT in intermediate risk did not prevent early progression; supports more intensive strategies or CSI when age allows.',
-        refs: [ 9 ] }  ],
+        refs: [ 9 ] },
+      { proto: 'Pooled analyses', pc: 'lit', label: '< 3–4 years (SIOP-E / Head Start, North America / Australia)', ev: 'retro', key: 'Dismal without RT — HDCT + early focal RT deserves evaluation',
+        out: [ { l: 'SIOP-E < 4 y, 5-y PFS / OS', v: '11 % / 12 %', c: 'ov-bad' }, { l: 'North America < 3 y, 5-y PFS / OS', v: '13.5 % / 16.2 %', c: 'ov-bad' }, { l: 'Long-term survivors who had RT', v: '4 / 7', c: 'ov-neu' } ],
+        chemo: 'HDCT + local RT: 3 / 5 survivors (SIOP-E); male sex adverse (HR 3.93) in < 3 y <sup>[18,19]</sup>.',
+        rt: null, noRt: 'RT should not be ruled out in young children: early focal RT after HDCT, or CSI where age allows.',
+        refs: [ 18, 19 ] }   ],
       notes: 'Tension between RT avoidance in infants and the adverse effect of RT omission — individual MDT decision. Consensus: no standard regimen below 3 y; HDC-containing regimens, consider focal RT in localized disease (very limited evidence); offer early trial enrolment <sup>[4]</sup>.'
     },
     'pb-trilat': {
       title: 'Trilateral retinoblastoma (RB1-associated pineoblastoma)', risk: 'sp', badge: 'PB · RB1',
-      tags: { age: 'any', m: 'any' },
+      tags: { ent: 'pb', age: 'any', m: 'any' },
       def: [ { k: 'Context', v: 'Pineoblastoma with (bilateral) retinoblastoma, germline RB1' } ],
       arms: [ {
         proto: 'Expert practice', pc: 'lit', label: 'Retinoblastoma guidelines', ev: 'exp', key: 'Treat PB per age / stage',
@@ -1294,32 +1336,120 @@ var PINEO = {
       notes: 'Genetic counselling mandatory.'
     },
     'pb-pptid': {
-      title: 'PPTID, pineocytoma, papillary tumour of the pineal region', risk: 'sp', badge: 'PPTID · PC · PTPR',
-      tags: { age: 'any', m: 'any' },
-      def: [ { k: 'Entities', v: 'PPTID (grade 2–3, KBTBD4), pineocytoma, PTPR — mostly adults' }, { k: 'Outcome', v: 'Molecular PPTID 5-y PFS / OS 81 % / 86 %; pineocytoma GTR 5-y PFS 100 %' } ],
+      title: 'PPTID (WHO grade 2–3) — localized', risk: 'sp', badge: 'PPTID · M0',
+      tags: { ent: 'pptid', age: 'any', m: 'M0' },
+      def: [ { k: 'Entity', v: 'Pineal parenchymal tumour of intermediate differentiation, grade 2–3 (KBTBD4); 10–15 % of PPT, mostly adults' }, { k: 'Outcome', v: 'Molecular PPTID 5-y PFS / OS 81 % / 86 %' } ],
       arms: [ {
         proto: 'SNO-EANO-EURACAN 2024', pc: 'lit', label: 'PPTID', ev: 'cons', key: 'GTR · focal RT 54–59.4 Gy if grade 3 / STR',
         out: [ { l: 'Molecular PPTID', v: '5-y PFS / OS 81 % / 86 %', c: 'ov-mid' } ],
         chemo: 'No standard regimen; consider embryonal-type chemotherapy if metastatic (limited evidence).',
         rt: { timing: 'Post-operative.', vol: [ { l: 'Localized', v: 'Focal (focal vs CSI still debated)' }, { l: 'Metastatic', v: 'CSI + focal boost' } ], doses: [ { l: 'Grade 2, GTR', d: 'Consider observation' }, { l: 'Grade 3 GTR, or STR', d: 'Focal 54–59.4 Gy', c: 'esc' }, { l: 'Metastatic', d: 'CSI up to 36 Gy + focal boost', c: 'highesc' } ] },
         refs: [ 4 ]
-      }, {
-        proto: 'SNO-EANO-EURACAN 2024', pc: 'lit', label: 'Pineocytoma · PTPR', ev: 'cons', key: 'Surgery; focal RT / SRS if incomplete or relapse',
-        out: [ { l: 'Pineocytoma 5-y PFS', v: '90 % resected vs 75 % biopsy', c: 'ov-good' }, { l: 'PTPR local recurrence', v: 'up to 3 / 4', c: 'ov-bad' } ],
-        chemo: 'None standard (PTPR: bevacizumab / mTOR inhibitors anecdotal).',
-        rt: { timing: 'If total removal impossible, or at relapse.', vol: [ { l: 'Pineocytoma', v: 'Focal RT or SRS' }, { l: 'PTPR', v: 'Focal RT if STR, Ki-67 ≥ 10 % or relapse' } ], doses: [ { l: 'Dose', d: 'Not specified in consensus' } ] },
-        refs: [ 4 ]
       },
       { proto: 'PPTID series', pc: 'lit', label: 'Grade 3 or high mitotic / Ki-67 index', ev: 'retro', key: 'Adjuvant focal RT after STR (grade 3); grade 2 after STR: no proven benefit',
         out: [ { l: 'IPD meta-analysis (n = 127) median PFS / OS', v: '5.17 y / 14 y', c: 'ov-mid' }, { l: 'Relapse pattern', v: '62.5 % spinal / leptomeningeal', c: 'ov-bad' }, { l: 'NCDB grade 3 STR', v: 'RT improves OS', c: 'ov-good' }, { l: 'NCDB grade 2 STR', v: 'no RT benefit', c: 'ov-neu' } ],
         chemo: 'Chemotherapy not standardised (22.8 % in the IPD series); embryonal-type regimens if metastatic. Risk better stratified by mitotic count + Ki-67 than by WHO grade alone <sup>[7]</sup>.',
         rt: { timing: 'Post-operative.', vol: [ { l: 'Localized', v: 'Focal (tumour bed + residual)' }, { l: 'Metastatic', v: 'CSI + focal boost' } ], doses: [ { l: 'Grade 3 after STR', d: 'Focal RT (dose per SNO-EANO-EURACAN: 54–59.4 Gy)', c: 'esc' }, { l: 'Grade 2 after STR / GTR', d: 'Observation can be discussed' }, { l: 'Dissemination', d: 'CSI + boost', c: 'highesc' } ], verify: 'Retrospective series give no dose-response data; doses from the 2024 consensus.' },
-        refs: [ 5, 6, 7, 8 ] }  ],
+        refs: [ 5, 6, 7, 8 ] },
+      { proto: 'Tanguy 2026 (book chapter)', pc: 'lit', label: 'PPTID (WHO 2–3), localized', ev: 'exp', key: 'Post-operative focal RT 50.4–54 Gy, alone or with chemotherapy',
+        out: [ { l: 'Source', v: 'review chapter, dose table', c: 'ov-neu' } ],
+        chemo: 'Optional; no standard regimen.',
+        rt: { timing: 'Post-operative (especially after STR).', vol: [ { l: 'Target', v: 'Tumour bed + residual' } ], doses: [ { l: 'Focal', d: '50.4–54 Gy (1.8–2 Gy)' } ] },
+        refs: [ 26 ] }   ],
       notes: 'Pineal cysts: observation; surgery only if symptomatic <sup>[4]</sup>. PPTID relapses are mostly leptomeningeal and can be late — craniospinal MRI follow-up for ≥ 10 years <sup>[5]</sup>.'
+    },
+    'pptid-hr': {
+      title: 'PPTID — high risk or disseminated (grade 3, STR / biopsy, CSF+)', risk: 'hr', badge: 'PPTID · HR / M+',
+      tags: { ent: 'pptid', age: 'any', m: 'M+' },
+      def: [ { k: 'High-risk features', v: 'Grade 3, STR or biopsy only, neuraxis / CSF dissemination at diagnosis' }, { k: 'Relapse pattern', v: '> 50 % of relapses are disseminated' } ],
+      arms: [ { proto: 'Literature', pc: 'lit', label: 'UCSF series + reviews', ev: 'retro', key: 'Upfront CSI 36 Gy + pineal boost to ~55.8 Gy',
+        out: [ { l: 'Recurrences disseminated (review, n = 308)', v: '54.7 %', c: 'ov-bad' }, { l: 'UCSF prognostic factors', v: 'grade, resection, neuraxis spread', c: 'ov-neu' }, { l: 'NCDB adults 5-y OS', v: '54 %', c: 'ov-mid' } ],
+        chemo: 'Often combined with embryonal-type chemotherapy in high-risk cases; no standard regimen <sup>[16]</sup>.',
+        rt: { timing: 'Post-operative; upfront rather than at dissemination.', vol: [ { l: 'CSI', v: 'Whole neuraxis' }, { l: 'Boost', v: 'Pineal region (tumour bed + residual)' } ], doses: [ { l: 'CSI', d: 'median 36 Gy (UCSF)', c: 'highesc' }, { l: 'Pineal boost', d: '→ median 55.8 Gy', c: 'esc' } ], verify: 'Benefit of upfront CSI debated; literature CSI average 31 Gy vs 36 Gy standard (Liu 2023).' },
+        refs: [ 16, 17, 15 ] },
+      { proto: 'Tanguy 2026 (book chapter)', pc: 'lit', label: 'PPTID, disseminated / high risk', ev: 'exp', key: 'CSI 24–36 Gy + tumour boost to 45–54 Gy',
+        out: [ { l: 'Source', v: 'review chapter, dose table', c: 'ov-neu' } ],
+        chemo: 'Often combined with chemotherapy.',
+        rt: { timing: 'Post-operative.', vol: [ { l: 'CSI', v: 'Whole neuraxis' }, { l: 'Boost', v: 'Primary tumour' } ], doses: [ { l: 'CSI', d: '24–36 Gy (text: 23.4–36 Gy)', c: 'highesc' }, { l: 'Tumour boost', d: '→ 45–54 Gy (1.8–2 Gy)', c: 'esc' } ] },
+        refs: [ 26 ] }  ],
+      notes: 'Salvage CSI for disseminated relapse can give long-term control; craniospinal MRI follow-up ≥ 10 y <sup>[17,26]</sup>.'
+    },
+    'pc': {
+      title: 'Pineocytoma (WHO grade 1)', risk: 'lr', badge: 'PC',
+      tags: { ent: 'pc', age: 'any', m: 'M0' },
+      def: [ { k: 'Entity', v: 'Slow-growing grade 1 PPT, median age ~55 y; rare in children, where cystic forms mimic pineal cysts' }, { k: 'Standard', v: 'Gross-total resection' } ],
+      arms: [ {
+        proto: 'SNO-EANO-EURACAN 2024', pc: 'lit', label: 'Pineocytoma', ev: 'cons', key: 'Surgery; focal RT / SRS if incomplete or relapse',
+        out: [ { l: 'Pineocytoma 5-y PFS', v: '90 % resected vs 75 % biopsy', c: 'ov-good' } ],
+        chemo: 'None standard (PTPR: bevacizumab / mTOR inhibitors anecdotal).',
+        rt: { timing: 'If total removal impossible, or at relapse.', vol: [ { l: 'Pineocytoma', v: 'Focal RT or SRS' } ], doses: [ { l: 'Dose', d: 'Not specified in consensus' } ] },
+        refs: [ 4 ]
+      },
+      { proto: 'Literature', pc: 'lit', label: 'Systematic reviews + SRS series', ev: 'retro', key: 'GTR; after STR: SRS or focal RT 54 Gy if growth — benefit of routine adjuvant RT unproven',
+        out: [ { l: '5-y OS GTR vs STR + RT', v: '84 % vs 17 %', c: 'ov-mid' }, { l: '5-y PFS GTR vs STR + RT', v: '100 % vs 84 %', c: 'ov-good' }, { l: 'Adjuvant SRS after STR (n = 5)', v: 'no progression', c: 'ov-good' } ],
+        chemo: 'None.',
+        rt: { timing: 'After STR (adjuvant or at progression); reserve for growth or pineoblastoma-like features.', vol: [ { l: 'Target', v: 'Residual tumour' } ], doses: [ { l: 'SRS', d: 'single fraction (dose not specified in the series)' }, { l: 'Fractionated focal', d: '54 Gy / 30 fr (Heidelberg series)' } ], verify: 'STR + RT was not better than STR alone in pooled data (Clark 2010).' },
+        refs: [ 11, 12, 13, 14 ] },
+      { proto: 'Tanguy 2026 (book chapter)', pc: 'lit', label: 'Pineocytoma (WHO 1)', ev: 'exp', key: 'RT usually not indicated · focal 50.4 Gy or SRS 15–18 Gy if recurrent / inoperable',
+        out: [ { l: 'Source', v: 'review chapter, dose table', c: 'ov-neu' } ],
+        chemo: 'None.',
+        rt: { timing: 'Recurrent inoperable or growing residual tumour.', vol: [ { l: 'GTV', v: 'Visible tumour on post-operative imaging' }, { l: 'CTV', v: 'GTV + 5 mm (non-infiltrative tumour)' }, { l: 'PTV', v: 'CTV + 3–5 mm (IGRT-dependent)' } ], doses: [ { l: 'Focal', d: '50.4 Gy / 1.8 Gy' }, { l: 'SRS (small residual / recurrence)', d: '15–18 Gy single fraction' } ] },
+        refs: [ 26 ] }  ],
+      notes: 'Cyst vs pineocytoma: neuroradiological + histological + molecular confirmation. Relapse after GTR is rare <sup>[26]</sup>.'
+    },
+    'ptpr': {
+      title: 'Papillary tumour of the pineal region (PTPR)', risk: 'sp', badge: 'PTPR',
+      tags: { ent: 'ptpr', age: 'any', m: 'any' },
+      def: [ { k: 'Entity', v: 'Grade 2–3 neuroepithelial tumour (subcommissural organ), median age ~30 y' }, { k: 'Course', v: 'Frequent local recurrence: ~60 % at 5 y, > 80 % at 10 y' } ],
+      arms: [ {
+        proto: 'SNO-EANO-EURACAN 2024', pc: 'lit', label: 'PTPR', ev: 'cons', key: 'Surgery; focal RT / SRS if incomplete or relapse',
+        out: [ { l: 'PTPR local recurrence', v: 'up to 3 / 4', c: 'ov-bad' } ],
+        chemo: 'None standard (PTPR: bevacizumab / mTOR inhibitors anecdotal).',
+        rt: { timing: 'If total removal impossible, or at relapse.', vol: [ { l: 'PTPR', v: 'Focal RT if STR, Ki-67 ≥ 10 % or relapse' } ], doses: [ { l: 'Dose', d: 'Not specified in consensus' } ] },
+        refs: [ 4 ]
+      },
+      { proto: 'Literature', pc: 'lit', label: 'Systematic review + multicentre series', ev: 'retro', key: 'Maximal resection; focal RT ~50–54 Gy (median 50.4 Gy) — benefit on PFS unproven',
+        out: [ { l: '10-y OS (review)', v: '72.5 %', c: 'ov-mid' }, { l: '5-y OS / PFS (n = 31)', v: '73 % / 27 %', c: 'ov-bad' }, { l: 'Effect of RT on OS / PFS (n = 44)', v: 'not significant', c: 'ov-neu' } ],
+        chemo: 'None standard <sup>[23]</sup>.',
+        rt: { timing: 'Adjuvant (especially after STR) or definitive; also at relapse.', vol: [ { l: 'GTV', v: 'Enhancing tumour or residual / cavity on T1-Gd, including cystic / haemorrhagic parts' }, { l: 'CTV', v: 'GTV + 0.3–0.5 cm, respecting bone, falx, tentorium' }, { l: 'PTV', v: 'CTV + 0.3–0.5 cm' } ], doses: [ { l: '3D-CRT / IMRT', d: '45–60 Gy, median 50.4 Gy (1.8–2 Gy)' }, { l: 'SRS', d: '12–36 Gy (n = 17)' } ], verify: 'Volume margins from the Tanguy 2026 chapter (no dedicated PTPR guideline).' },
+        refs: [ 22, 23, 24, 26 ] },
+      { proto: 'Tanguy 2026 (book chapter)', pc: 'lit', label: 'PTPR (WHO 2–3)', ev: 'exp', key: 'Focal RT 50.4–54 Gy if incompletely resected or recurrent',
+        out: [ { l: 'Source', v: 'review chapter, dose table', c: 'ov-neu' } ],
+        chemo: 'None.',
+        rt: { timing: 'Incomplete resection or recurrence.', vol: [ { l: 'GTV', v: 'Enhancing tumour / residual cavity on T1-Gd, incl. cystic or haemorrhagic parts' }, { l: 'CTV', v: 'GTV + 0.3–0.5 cm, respecting bone, falx, tentorium' }, { l: 'PTV', v: 'CTV + 0.3–0.5 cm' } ], doses: [ { l: 'Focal', d: '50.4–54 Gy (1.8–2 Gy)' } ] },
+        refs: [ 26 ] }  ],
+      notes: 'Differential diagnosis: papillary ependymoma and choroid plexus tumours <sup>[26]</sup>.'
+    },
+    'dmt': {
+      title: 'Desmoplastic myxoid tumour, SMARCB1-mutant (DMT)', risk: 'sp', badge: 'DMT · SMARCB1',
+      tags: { ent: 'dmt', age: 'ge3', m: 'any' },
+      def: [ { k: 'Entity', v: 'WHO CNS5 (2021); pineal region, adolescents and adults (median 40 y); SMARCB1 loss, methylation close to ATRT-MYC' }, { k: 'Outcome', v: 'Intermediate; 3 / 7 died after median 48 mo' } ],
+      arms: [ { proto: 'Literature', pc: 'lit', label: 'Index series (n = 7)', ev: 'retro', key: 'Resection; focal RT ≥ 54 Gy in some — impact not assessable',
+        out: [ { l: 'Alive with stable disease at 48 mo', v: '3 / 7', c: 'ov-mid' }, { l: 'Died of disease', v: '3 / 7', c: 'ov-bad' } ],
+        chemo: 'Not defined.',
+        rt: { timing: 'Post-operative, individual decision.', vol: [ { l: 'Target', v: 'Focal (tumour bed + residual)' } ], doses: [ { l: 'Focal', d: '≥ 54 Gy (3 patients)' } ], verify: 'Per the Tanguy 2026 chapter (Thomas 2020 table) — not re-checked against the Thomas full text.' },
+        refs: [ 25, 26 ] } ],
+      notes: 'Not an ATRT despite SMARCB1 loss: adult age, low Ki-67 and better course argue against infant ATRT protocols <sup>[25]</sup>.'
+    },
+    'pb-adult': {
+      title: 'Pineoblastoma in adults', risk: 'hr', badge: 'PB · ADULT',
+      tags: { ent: 'pb', age: 'ge3', m: 'any' },
+      def: [ { k: 'Data', v: 'SEER registry and small series; no trial' } ],
+      arms: [ { proto: 'Literature', pc: 'lit', label: 'SEER (n = 213) + Heidelberg series', ev: 'retro', key: 'Post-operative RT (± chemotherapy) independently improves survival',
+        out: [ { l: 'Post-operative RT', v: 'HR 0.43', c: 'ov-good' }, { l: 'RT + chemotherapy', v: 'HR 0.38', c: 'ov-good' } ],
+        chemo: 'Chemotherapy combined with RT in SEER; regimen not specified <sup>[21]</sup>.',
+        rt: { timing: 'Post-operative.', vol: [ { l: 'CSI', v: 'Whole neuraxis (whole brain in older series)' }, { l: 'Boost', v: 'Primary site' } ], doses: [ { l: 'CSI / WBI', d: 'median 35 Gy (Heidelberg)' }, { l: 'Primary', d: 'median 54 Gy' } ], verify: 'Local and spinal failures frequent despite CSI without chemotherapy (Stoiber 2010).' },
+        refs: [ 21, 14 ] },
+      { proto: 'Tanguy 2026 (book chapter)', pc: 'lit', label: 'Adult pineoblastoma (EURACAN approach)', ev: 'exp', key: 'CSI 36 Gy + boost to 54–55.8 Gy · platinum chemotherapy',
+        out: [ { l: 'Source', v: 'review chapter, dose table', c: 'ov-neu' } ],
+        chemo: 'Platinum-based, benefit uncertain in adults.',
+        rt: { timing: 'Post-operative.', vol: [ { l: 'CSI', v: 'Whole neuraxis' }, { l: 'Boost', v: 'Primary site' } ], doses: [ { l: 'CSI', d: '36 Gy', c: 'highesc' }, { l: 'Boost', d: '→ 54–55.8 Gy', c: 'esc' } ] },
+        refs: [ 26 ] }  ],
+      notes: 'See also the adult EURACAN overview (Lombardi 2022) cited in the chapter.'
     }
   },
   context: [
-    { t: 'Molecular subgroups of pineoblastoma (Liu 2020, Pfaff 2020)', h: '<ul><li><strong>St Jude (Liu 2020)</strong>: four methylation subgroups — PB-A, PB-B, PB-B-like and PB-FOXR2; DICER1 / DROSHA / DGCR8 alterations are recurrent and mutually exclusive in PB-B and PB-B-like; FOXR2 overexpression defines PB-FOXR2. Subgroups differ in age, propensity for metastasis and outcome.</li><li><strong>Heidelberg (Pfaff 2020, n = 195 pineal tumours)</strong>: three core PB subtypes (miRNA-processing alterations in about two thirds), plus Pin-RB (trilateral retinoblastoma and sporadic RB1-altered tumours, younger patients) and PB-MYC (younger, group-3-medulloblastoma-like, poor outcome).</li></ul><p>Age and subgroup are prognostic and inform how intensive the treatment (CSI) should be <sup>[9,10]</sup>.</p>' } ],
+    { t: 'Molecular subgroups of pineoblastoma (Liu 2020, Pfaff 2020)', h: '<ul><li><strong>St Jude (Liu 2020)</strong>: four methylation subgroups — PB-A, PB-B, PB-B-like and PB-FOXR2; DICER1 / DROSHA / DGCR8 alterations are recurrent and mutually exclusive in PB-B and PB-B-like; FOXR2 overexpression defines PB-FOXR2. Subgroups differ in age, propensity for metastasis and outcome.</li><li><strong>Heidelberg (Pfaff 2020, n = 195 pineal tumours)</strong>: three core PB subtypes (miRNA-processing alterations in about two thirds), plus Pin-RB (trilateral retinoblastoma and sporadic RB1-altered tumours, younger patients) and PB-MYC (younger, group-3-medulloblastoma-like, poor outcome).</li><li><strong>Consensus nomenclature (Liu 2021, n = 221)</strong>: PB-miRNA1, PB-miRNA2, PB-MYC/FOXR2, PB-RB1 and molecular PPTID (KBTBD4); PB-miRNA2 and PPTID best, miRNA1 intermediate, MYC/FOXR2 and RB1 dismal; reduced-dose CSI adequate for average-risk PB-miRNA1/2 <sup>[20]</sup>.</li></ul><p>Age and subgroup are prognostic and inform how intensive the treatment (CSI) should be <sup>[9,10]</sup>.</p>' } ],
   trials: [ { id: 'NCT00392327', st: 'done', stl: 'COMPLETED', t: 'COG ACNS0332 — HR medulloblastoma / PNET incl. pineoblastoma', m: 'PNET/PB cohort: Hwang 2018' } ]
 };
 
