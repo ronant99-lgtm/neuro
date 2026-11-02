@@ -4,545 +4,200 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Neuro-Oncologie Pédiatrique · Outils d'aide à la décision</title>
+<meta name="description" content="Atlas des situations cliniques et outils d'aide à la décision en radiothérapie pour les tumeurs du SNC de l'enfant.">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --text:    #1a1f2e;
-    --text2:   #4a5568;
-    --text3:   #8a9ab5;
-    --border:  #d8e0eb;
-    --bg:      #f8fafc;
-    --white:   #ffffff;
-    --aria:    #c25a12;
-    --siop:    #0e7490;
-    --sfce:    #6d28d9;
-    --cmp:     #166534;
-    --atrt:    #7c3aed;
-    --revue:   #0f5a8a;
-    --gcog:    #b45309;
-    --rare:    #0e7a6e;
-    --radius:  10px;
+    --text: #1a1f2e; --text2: #4a5568; --text3: #8a9ab5;
+    --border: #d8e0eb; --bg: #f8fafc; --white: #ffffff;
+    --atlas: #0b6e6e; --aria: #c25a12; --siop: #0e7490; --sfce: #6d28d9; --cmp: #166534;
+    --gct: #b45309; --revue: #0f5a8a; --rare: #0e7a6e;
+    --radius: 10px; --w: 820px;
   }
+  body { font-family: 'DM Sans', sans-serif; font-weight: 300; background: var(--bg); color: var(--text); min-height: 100vh; padding: 40px 16px 60px; }
+  a { color: inherit; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 40px 20px 60px;
-  }
+  /* header */
+  .page-header { max-width: var(--w); margin: 0 auto 36px; border-bottom: 2px solid var(--text); padding-bottom: 20px; }
+  .page-header-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .page-title { font-family: 'DM Serif Display', serif; font-size: 1.9rem; line-height: 1.15; }
+  .page-title span { display: block; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 400; color: var(--text2); margin-top: 5px; }
+  .page-meta { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); text-align: right; line-height: 1.8; }
 
-  /* ── PAGE HEADER ── */
-  .page-header {
-    max-width: 760px;
-    margin: 0 auto 40px;
-    border-bottom: 2px solid var(--text);
-    padding-bottom: 20px;
-  }
-  .page-header-top {
-    display: flex; align-items: flex-end;
-    justify-content: space-between; gap: 16px;
-    flex-wrap: wrap;
-  }
-  .page-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.9rem;
-    line-height: 1.15;
-    color: var(--text);
-  }
-  .page-title span {
-    display: block;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 400;
-    color: var(--text2);
-    margin-top: 5px;
-    letter-spacing: 0.2px;
-  }
-  .page-meta {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--text3);
-    text-align: right;
-    line-height: 1.8;
-  }
+  .section-label { max-width: var(--w); margin: 0 auto 14px; font-family: 'DM Mono', monospace; font-size: 9.5px; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text3); display: flex; align-items: center; gap: 8px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-  /* ── SECTION LABEL ── */
-  .section-label {
-    max-width: 760px;
-    margin: 0 auto 14px;
-    font-family: 'DM Mono', monospace;
-    font-size: 9.5px;
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-    color: var(--text3);
-    display: flex; align-items: center; gap: 8px;
-  }
-  .section-label::after {
-    content: ''; flex: 1; height: 1px; background: var(--border);
-  }
+  /* featured atlas */
+  .atlas { max-width: var(--w); margin: 0 auto 40px; background: var(--white); border: 1px solid var(--border); border-top: 4px solid var(--atlas); border-radius: var(--radius); padding: 24px 26px; }
+  .atlas-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 10px; }
+  .atlas h2 { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 1.45rem; }
+  .atlas h2 small { display: block; font-family: 'DM Mono', monospace; font-size: 9.5px; letter-spacing: 0.6px; color: var(--atlas); text-transform: uppercase; margin-top: 4px; }
+  .btn { display: inline-block; font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 13px; text-decoration: none; color: #fff; background: var(--atlas); padding: 9px 16px; border-radius: 8px; white-space: nowrap; }
+  .btn:hover { filter: brightness(1.1); }
+  .atlas p { font-size: 13px; line-height: 1.65; color: var(--text2); margin-bottom: 14px; max-width: 680px; }
+  .stats { display: flex; gap: 22px; flex-wrap: wrap; margin-bottom: 18px; }
+  .stat b { display: block; font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 1.5rem; color: var(--atlas); line-height: 1.1; }
+  .stat span { font-family: 'DM Mono', monospace; font-size: 9.5px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.4px; }
+  .fam { margin-bottom: 10px; }
+  .fam-label { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { font-size: 12px; text-decoration: none; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(11,110,110,0.28); background: rgba(11,110,110,0.05); color: var(--atlas); }
+  .chip:hover { background: rgba(11,110,110,0.12); }
+  .chip em { font-style: normal; font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); margin-left: 4px; }
+  .srcs { margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--border); font-size: 11.5px; color: var(--text2); line-height: 1.6; }
+  .srcs strong { font-weight: 500; color: var(--text); }
 
-  /* ── TOOL CARDS ── */
-  .cards {
-    max-width: 760px;
-    margin: 0 auto 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    display: flex;
-    align-items: stretch;
-    overflow: hidden;
-    transition: box-shadow 0.2s;
-  }
+  /* tool cards */
+  .cards { max-width: var(--w); margin: 0 auto 36px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .card { background: var(--white); border: 1px solid var(--border); border-left: 4px solid var(--c, var(--text3)); border-radius: var(--radius); padding: 15px 18px; text-decoration: none; display: flex; flex-direction: column; transition: box-shadow 0.2s; }
   .card:hover { box-shadow: 0 3px 16px rgba(0,0,0,0.07); }
+  .card-title { font-family: 'DM Serif Display', serif; font-size: 1.02rem; margin-bottom: 4px; }
+  .card-badge { align-self: flex-start; font-family: 'DM Mono', monospace; font-size: 8.5px; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 20px; border: 1px solid var(--c); color: var(--c); margin-bottom: 8px; }
+  .card-desc { font-size: 12.3px; color: var(--text2); line-height: 1.55; flex: 1; }
+  .card-link { margin-top: 10px; font-family: 'DM Mono', monospace; font-size: 10px; color: var(--c); }
+  .c-aria { --c: var(--aria); } .c-siop { --c: var(--siop); } .c-sfce { --c: var(--sfce); } .c-cmp { --c: var(--cmp); }
+  .c-gct { --c: var(--gct); } .c-revue { --c: var(--revue); } .c-rare { --c: var(--rare); }
 
-  .card-accent {
-    width: 4px;
-    flex-shrink: 0;
-  }
-  .card-accent.aria  { background: var(--aria); }
-  .card-accent.siop  { background: var(--siop); }
-  .card-accent.sfce  { background: var(--sfce); }
-  .card-accent.cmp   { background: var(--cmp); }
-  .card-accent.atrt  { background: var(--atrt); }
-  .card-accent.revue { background: var(--revue); }
-  .card-accent.gcog  { background: var(--gcog); }
-  .card-accent.rare  { background: var(--rare); }
+  .footer { max-width: var(--w); margin: 10px auto 0; font-size: 11.5px; color: var(--text2); line-height: 1.65; border-top: 1px solid var(--border); padding-top: 16px; }
+  .footer p { margin-bottom: 8px; }
+  .footer strong { font-weight: 500; color: var(--text); }
 
-  .card-body {
-    flex: 1;
-    padding: 16px 20px;
-    min-width: 0;
-  }
-  .card-header {
-    display: flex; align-items: baseline; gap: 10px;
-    margin-bottom: 5px; flex-wrap: wrap;
-  }
-  .card-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.05rem;
-    color: var(--text);
-  }
-  .card-badge {
-    font-family: 'DM Mono', monospace;
-    font-size: 8.5px;
-    letter-spacing: 0.5px;
-    padding: 2px 8px;
-    border-radius: 20px;
-    border: 1px solid;
-  }
-  .card-badge.aria  { color: var(--aria);  border-color: rgba(194,90,18,0.3);   background: rgba(194,90,18,0.06); }
-  .card-badge.siop  { color: var(--siop);  border-color: rgba(14,116,144,0.3);  background: rgba(14,116,144,0.06); }
-  .card-badge.sfce  { color: var(--sfce);  border-color: rgba(109,40,217,0.3);  background: rgba(109,40,217,0.06); }
-  .card-badge.cmp   { color: var(--cmp);   border-color: rgba(22,101,52,0.3);   background: rgba(22,101,52,0.06); }
-  .card-badge.atrt  { color: var(--atrt);  border-color: rgba(124,58,237,0.3);  background: rgba(124,58,237,0.06); }
-  .card-badge.revue { color: var(--revue); border-color: rgba(15,90,138,0.3);   background: rgba(15,90,138,0.06); }
-  .card-badge.gcog  { color: var(--gcog);  border-color: rgba(180,83,9,0.3);    background: rgba(180,83,9,0.06); }
-  .card-badge.rare  { color: var(--rare);  border-color: rgba(14,122,110,0.3);  background: rgba(14,122,110,0.06); }
-  .card-badge.fusion {
-    color: #374151;
-    border-color: rgba(55,65,81,0.25);
-    background: rgba(55,65,81,0.05);
-  }
-
-  .card-desc {
-    font-size: 12.5px;
-    color: var(--text2);
-    line-height: 1.55;
-    margin-bottom: 10px;
-  }
-  .card-link {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--text3);
-    text-decoration: none;
-    border-bottom: 1px dashed var(--border);
-    transition: color 0.15s, border-color 0.15s;
-  }
-  .card-link:hover { color: var(--text2); border-color: var(--text3); }
-
-  .card-qr {
-    flex-shrink: 0;
-    padding: 14px 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    border-left: 1px solid var(--border);
-    background: #fafbfc;
-  }
-  .card-qr img {
-    width: 80px; height: 80px;
-    display: block;
-    border-radius: 4px;
-  }
-  .card-qr-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 8px;
-    color: var(--text3);
-    text-align: center;
-    line-height: 1.4;
-  }
-
-  /* ── FOOTER ── */
-  .footer {
-    max-width: 760px;
-    margin: 0 auto;
-    border-top: 1px solid var(--border);
-    padding-top: 16px;
-    font-family: 'DM Mono', monospace;
-    font-size: 9.5px;
-    color: var(--text3);
-    line-height: 1.8;
-  }
-  .footer strong { color: var(--text2); }
-
-  /* ── PRINT ── */
-  @media print {
-    body { background: white; padding: 20px; }
-    .card { break-inside: avoid; box-shadow: none !important; }
-    .card-link { color: var(--text3) !important; }
-    @page { margin: 1.5cm; }
-  }
-
-  @media (max-width: 540px) {
-    .card-qr { display: none; }
-    .page-header-top { flex-direction: column; align-items: flex-start; }
+  @media (max-width: 640px) {
+    body { padding: 28px 16px 48px; }
+    .page-title { font-size: 1.55rem; }
     .page-meta { text-align: left; }
+    .cards { grid-template-columns: 1fr; }
+    .atlas { padding: 20px 18px; }
   }
 </style>
 </head>
 <body>
 
-<div class="page-header">
+<header class="page-header">
   <div class="page-header-top">
-    <div class="page-title">
-      Neuro-Oncologie Pédiatrique
-      <span>Outils cliniques d'aide à la décision en radiothérapie</span>
-    </div>
-    <div class="page-meta">
-      ronant99-lgtm.github.io/neuro<br>
-      Médulloblastomes · ATRT · Germinomes · NGGCT · Tumeurs rares · 10 outils<br>
-      Mise à jour : Avril 2026
-    </div>
+    <h1 class="page-title">Neuro-Oncologie Pédiatrique
+      <span>Outils d'aide à la décision en radiothérapie</span></h1>
+    <div class="page-meta">ronant99-lgtm.github.io/neuro<br>1 atlas · 10 outils dédiés<br>Mise à jour : novembre 2026</div>
   </div>
-</div>
+</header>
 
-<!-- ═══ MÉDULLOBLASTOMES ═══ -->
-<div class="section-label">Algorithmes de stratification &amp; logigrammes · Médulloblastomes · Format fusionné</div>
-
-<div class="cards">
-
-  <div class="card">
-    <div class="card-accent aria"></div>
-    <div class="card-body">
-      <div class="card-header">
-        <div class="card-title">ARIA Stratum C</div>
-        <span class="card-badge aria">SJCRH / COG</span>
-        <span class="card-badge fusion">⬡ Stratification + Logigramme</span>
-      </div>
-      <div class="card-desc">
-        Outil fusionné (wizard + logigramme D3.js) pour les médulloblastomes selon le référentiel ARIA Stratum C (SJCRH/COG, v1.1, déc. 2025). 
-        Stratification séquentielle par âge (36 mois), sous-groupe moléculaire, stade et résidu. 
-        Protocoles LMIC-adaptés, contraintes OAR complètes (PENTEC Appendix IX), données d'outcomes par protocole, 
-        et sections de dosimétrie détaillées (CSI standard et haut risque, Appendix VIII).
-      </div>
-      <a class="card-link" href="https://ronant99-lgtm.github.io/neuro/aria-mb-fusion.html" target="_blank">
-        ronant99-lgtm.github.io/neuro/aria-mb-fusion.html
-      </a>
-    </div>
-    <div class="card-qr">
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://ronant99-lgtm.github.io/neuro/aria-mb-fusion.html&color=000000&bgcolor=fafbfc&qzone=1" alt="QR ARIA">
-      <div class="card-qr-label">Scanner<br>pour accès</div>
-    </div>
+<div class="section-label">Outil principal · toutes entités</div>
+<section class="atlas">
+  <div class="atlas-head">
+    <h2>Atlas des situations cliniques<small>Pediatric Neuro-Oncology Atlas · interface en anglais</small></h2>
+    <a class="btn" href="neuro-onco-atlas.html">Ouvrir l'atlas →</a>
+  </div>
+  <p>Point d'entrée unique, organisé par situation clinique finale. Pour chaque situation, les protocoles concurrents sont présentés côte à côte (COG, SIOP-Europe, recommandations SFCE 2026, littérature), avec les volumes, les doses et les données d'efficacité, chaque chiffre étant rattaché à sa référence. Une carte décisionnelle filtrable par entité permet de trouver la situation (âge, groupe moléculaire, stade M, résidu, réponse).</p>
+  <div class="stats">
+    <div class="stat"><b>14</b><span>entités</span></div>
+    <div class="stat"><b>102</b><span>situations</span></div>
+    <div class="stat"><b>COG · SIOP-E · SFCE</b><span>côte à côte</span></div>
   </div>
 
-  <div class="card">
-    <div class="card-accent siop"></div>
-    <div class="card-body">
-      <div class="card-header">
-        <div class="card-title">Stratification SIOP-Europe</div>
-        <span class="card-badge siop">SIOP-Europe · PNET5-MB</span>
-        <span class="card-badge fusion">⬡ Stratification + Logigramme</span>
-      </div>
-      <div class="card-desc">
-        Outil fusionné (formulaire multi-critères simultanés + logigramme D3.js) selon le référentiel européen SIOP-Europe 
-        (Bailey et al., EJC Paediatric Oncology 2025). Couvre nourrissons iMB et enfants ≥ 36 mois. 
-        Intègre les recommandations WNT (18 Gy réduit), la règle du résidu isolé comme facteur SR 
-        (étude 1 110 patients), et les critères d'inclusion à l'essai SIOP-HR-MB. 
-        Alerte spécifique pour SHH-TP53 muté (Li-Fraumeni, alkylants déconseillés).
-      </div>
-      <a class="card-link" href="https://ronant99-lgtm.github.io/neuro/siop-mb-fusion.html" target="_blank">
-        ronant99-lgtm.github.io/neuro/siop-mb-fusion.html
-      </a>
-    </div>
-    <div class="card-qr">
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://ronant99-lgtm.github.io/neuro/siop-mb-fusion.html&color=000000&bgcolor=fafbfc&qzone=1" alt="QR SIOP">
-      <div class="card-qr-label">Scanner<br>pour accès</div>
-    </div>
-  </div>
+  <div class="fam"><div class="fam-label">Tumeurs embryonnaires</div><div class="chips">
+    <a class="chip" href="neuro-onco-atlas.html#/e/mb">Médulloblastome<em>15</em></a>
+    <a class="chip" href="neuro-onco-atlas.html#/e/atrt">ATRT<em>9</em></a>
+    <a class="chip" href="neuro-onco-atlas.html#/e/etmr">ETMR<em>4</em></a>
+    <a class="chip" href="neuro-onco-atlas.html#/e/pineo">Tumeurs du parenchyme pinéal<em>10</em></a>
+    <a class="chip" href="neuro-onco-atlas.html#/e/nbfoxr2">Neuroblastome SNC FOXR2<em>6</em></a>
+    <a class="chip" href="neuro-onco-atlas.html#/e/bcor">Tumeur SNC BCOR-ITD<em>6</em></a>
+  </div></div>
+  <div class="fam"><div class="fam-label">Tumeurs germinales</div><div class="chips">
+    <a class="chip" href="neuro-onco-atlas.html#/e/gct">Germinome · NGGCT · tératome · rechute<em>15</em></a>
+  </div></div>
+  <div class="fam"><div class="fam-label">Gliomes et épendymomes</div><div class="chips">
+    <a class="chip" href="neuro-onco-atlas.html#/e/epen">Épendymome<em>7</em></a>
+    <a class="chip" href="neuro-onco-atlas.html#/e/lgg">Gliome de bas grade<em>5</em></a>
+    <a class="chip" href="neuro-onco-atlas.html#/e/hgg">Gliome de haut grade hémisphérique<em>4</em></a>
+    <a class="chip" href="neuro-onco-atlas.html#/e/dmg">DIPG / DMG H3 K27<em>4</em></a>
+  </div></div>
+  <div class="fam"><div class="fam-label">Autres</div><div class="chips">
+    <a class="chip" href="neuro-onco-atlas.html#/e/cranio">Craniopharyngiome<em>5</em></a>
+    <a class="chip" href="neuro-onco-atlas.html#/e/cpt">Tumeurs des plexus choroïdes<em>9</em></a>
+    <a class="chip" href="neuro-onco-atlas.html#/e/pis">Sarcomes intracrâniens primitifs<em>3</em></a>
+  </div></div>
 
-  <div class="card">
-    <div class="card-accent sfce"></div>
-    <div class="card-body">
-      <div class="card-header">
-        <div class="card-title">Prise en charge SFCE 2026</div>
-        <span class="card-badge sfce">SFCE · RENOCLIP · Jan 2026</span>
-        <span class="card-badge fusion">⬡ Stratification + Logigramme</span>
-      </div>
-      <div class="card-desc">
-        Outil fusionné (wizard séquentiel + logigramme D3.js) selon les recommandations françaises SFCE de janvier 2026 
-        (groupe tumeurs embryonnaires, RENOCLIP-LOC). Deux arbres distincts : &lt; 5 ans (formulaire multi-critères : 
-        moléculaire, histologie, stade M, résidu, MYC, âge précis) et ≥ 5 ans (questions séquentielles). 
-        Intègre les protocoles PNET5-MB LR/SR, PNET HR+5, HIT-SKK, Head Start II/IV, 
-        séquence R+ M0 VP-CBP, vérification SUFU, et délais critiques RT.
-      </div>
-      <a class="card-link" href="https://ronant99-lgtm.github.io/neuro/sfce-mb-fusion.html" target="_blank">
-        ronant99-lgtm.github.io/neuro/sfce-mb-fusion.html
-      </a>
-    </div>
-    <div class="card-qr">
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://ronant99-lgtm.github.io/neuro/sfce-mb-fusion.html&color=000000&bgcolor=fafbfc&qzone=1" alt="QR SFCE">
-      <div class="card-qr-label">Scanner<br>pour accès</div>
-    </div>
-  </div>
+  <div class="srcs"><strong>Principales sources :</strong> ARIA v1.1 (SJCRH / COG) · consensus SIOP-Europe médulloblastome (Bailey 2025) · recommandations SFCE janvier 2026 · ESTRO-SIOPE ATRT 2024 · recommandations européennes ESCP (gliomes de haut et bas grade, tumeurs germinales) · SNO-EANO-EURACAN 2024 (tumeurs pinéales) · Tanguy 2026, <em>Pineal Tumors and Pineal Region Tumors</em> (Springer) · littérature vérifiée sur PubMed.</div>
+</section>
 
-  <div class="card">
-    <div class="card-accent cmp"></div>
-    <div class="card-body">
-      <div class="card-header">
-        <div class="card-title">Comparateur — 3 Référentiels</div>
-        <span class="card-badge cmp">ARIA · SIOP · SFCE · En parallèle</span>
-      </div>
-      <div class="card-desc">
-        À partir d'un profil patient unique (7 questions), affiche simultanément 
-        les recommandations des trois référentiels avec code couleur de concordance 
-        (consensus vert / divergence partielle orange / divergence majeure rouge). 
-        Permet d'identifier en un coup d'œil les points de convergence 
-        internationale et les décisions spécifiques à chaque institution.
-      </div>
-      <a class="card-link" href="https://ronant99-lgtm.github.io/neuro/mb-comparator.html" target="_blank">
-        ronant99-lgtm.github.io/neuro/mb-comparator.html
-      </a>
-    </div>
-    <div class="card-qr">
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://ronant99-lgtm.github.io/neuro/mb-comparator.html&color=000000&bgcolor=fafbfc&qzone=1" alt="QR Comparateur">
-      <div class="card-qr-label">Scanner<br>pour accès</div>
-    </div>
-  </div>
+<div class="section-label">Médulloblastome · stratification et logigrammes</div>
+<section class="cards">
+  <a class="card c-aria" href="aria-mb-fusion.html">
+    <div class="card-title">ARIA Stratum C</div>
+    <span class="card-badge">SJCRH / COG · v1.1</span>
+    <div class="card-desc">Stratification séquentielle (âge, sous-groupe, stade, résidu) et logigramme interactif selon ARIA. Contraintes OAR (PENTEC), dosimétrie CSI standard et haut risque.</div>
+    <div class="card-link">aria-mb-fusion.html</div>
+  </a>
+  <a class="card c-siop" href="siop-mb-fusion.html">
+    <div class="card-title">Stratification SIOP-Europe</div>
+    <span class="card-badge">Bailey et al., EJC Paediatr Oncol 2025</span>
+    <div class="card-desc">Formulaire multi-critères et logigramme : nourrissons et enfants ≥ 36 mois, WNT, règle du résidu isolé, critères SIOP-HR-MB, alerte SHH-TP53.</div>
+    <div class="card-link">siop-mb-fusion.html</div>
+  </a>
+  <a class="card c-sfce" href="sfce-mb-fusion.html">
+    <div class="card-title">Prise en charge SFCE 2026</div>
+    <span class="card-badge">SFCE · RENOCLIP · janvier 2026</span>
+    <div class="card-desc">Deux arbres (&lt; 5 ans et ≥ 5 ans) : PNET5-MB LR / SR, PNET HR+5, HIT-SKK, Head Start, séquence R+ M0, vérification SUFU, délais de RT.</div>
+    <div class="card-link">sfce-mb-fusion.html</div>
+  </a>
+  <a class="card c-cmp" href="mb-comparator.html">
+    <div class="card-title">Comparateur ARIA · SIOP · SFCE</div>
+    <span class="card-badge">3 référentiels en parallèle</span>
+    <div class="card-desc">À partir d'un profil patient unique, affiche les trois recommandations côte à côte avec un code couleur de concordance.</div>
+    <div class="card-link">mb-comparator.html</div>
+  </a>
+</section>
 
-</div>
+<div class="section-label">Tumeurs germinales du SNC · protocoles et essais</div>
+<section class="cards">
+  <a class="card c-gct" href="acns2321-germinoma-revue.html">
+    <div class="card-title">ACNS2321 — germinome</div>
+    <span class="card-badge">COG · phase II · NCT06368817</span>
+    <div class="card-desc">Les 7 strates de l'essai (WVI 12–24 Gy, CSI, WBI selon la réponse et la localisation), éligibilité, lignée ACNS0232 → 1123 → 2321.</div>
+    <div class="card-link">acns2321-germinoma-revue.html</div>
+  </a>
+  <a class="card c-gct" href="acns2021-nggct-revue.html">
+    <div class="card-title">ACNS2021 — NGGCT</div>
+    <span class="card-badge">COG · phase II · NCT04684368</span>
+    <div class="card-desc">Volume WVSCI 30,6 Gy (plan A), HDC + CSI 36 Gy (plan B), arbre décisionnel selon la réponse, chimiothérapie d'induction.</div>
+    <div class="card-link">acns2021-nggct-revue.html</div>
+  </a>
+  <a class="card c-gct" href="siop-cnsgct2-revue.html">
+    <div class="card-title">SIOP CNS GCT II — approche européenne</div>
+    <span class="card-badge">SIOPE BTG · ESCP 2021</span>
+    <div class="card-desc">Diagnostic et marqueurs, germinome localisé et métastatique, NGGCT standard et haut risque, tératome, rechute, comparaison COG / SIOP.</div>
+    <div class="card-link">siop-cnsgct2-revue.html</div>
+  </a>
+  <a class="card c-gct" href="nggct-relapse-revue.html">
+    <div class="card-title">NGGCT sécrétantes — rechute</div>
+    <span class="card-badge">Revue clinique 2025</span>
+    <div class="card-desc">Pronostic, ré-induction (GemPOx), chimiothérapie haute dose avec autogreffe, place de la ré-irradiation.</div>
+    <div class="card-link">nggct-relapse-revue.html</div>
+  </a>
+</section>
 
-<!-- ═══ ATRT ═══ -->
-<div class="section-label">ATRT · Tumeurs rhabdoïdes atypiques</div>
+<div class="section-label">Revues de littérature · protocoles RT et essais actifs</div>
+<section class="cards">
+  <a class="card c-rare" href="RareNeuroOnco_Revue.html">
+    <div class="card-title">Tumeurs rares et embryonnaires</div>
+    <span class="card-badge">ATRT · ETMR · pinéoblastome · GCT · épendymome</span>
+    <div class="card-desc">Protocoles RT de référence par scénario, essais actifs (COG, SIOPE, St. Jude, réseaux français) et tableau comparatif transversal.</div>
+    <div class="card-link">RareNeuroOnco_Revue.html</div>
+  </a>
+  <a class="card c-revue" href="NeuroOnco_Revue.html">
+    <div class="card-title">Entités majeures</div>
+    <span class="card-badge">5 entités · 30+ essais</span>
+    <div class="card-desc">Craniopharyngiome, gliomes de bas et haut grade, DIPG / DMG, médulloblastome : protocoles, données d'efficacité, essais en cours.</div>
+    <div class="card-link">NeuroOnco_Revue.html</div>
+  </a>
+</section>
 
-<div class="cards">
-
-  <div class="card">
-    <div class="card-accent atrt"></div>
-    <div class="card-body">
-      <div class="card-header">
-        <div class="card-title">ATRT — Stratification &amp; Logigramme SIOPE ATRT01</div>
-        <span class="card-badge atrt">SIOPE · GPOH · EudraCT 2018-003335-29</span>
-        <span class="card-badge fusion">⬡ Stratification + Logigramme</span>
-      </div>
-      <div class="card-desc">
-        Outil fusionné combinant un wizard de stratification pas-à-pas 
-        (4 étapes : âge à la consolidation, statut métastatique, localisation tumorale, 
-        chimiosensibilité) et un logigramme D3.js interactif zoomable. Couvre 
-        l'intégralité de l'arbre décisionnel SIOPE ATRT01 : RT focale vs HDCT (Part A), 
-        CSI + boost (M+), nourrissons &lt; 12 mois et cas hors protocole. 
-        Inclut les recommandations RTQA QUARTET, les données d'outcome par bras 
-        et les contraintes vertébrales SIOPE RT Working Group (Hoeben 2019).
-      </div>
-      <a class="card-link" href="https://ronant99-lgtm.github.io/neuro/siope-atrt01-fusion.html" target="_blank">
-        ronant99-lgtm.github.io/neuro/siope-atrt01-fusion.html
-      </a>
-    </div>
-    <div class="card-qr">
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://ronant99-lgtm.github.io/neuro/siope-atrt01-fusion.html&color=000000&bgcolor=fafbfc&qzone=1" alt="QR ATRT01">
-      <div class="card-qr-label">Scanner<br>pour accès</div>
-    </div>
-  </div>
-
-</div>
-
-<!-- ═══ GERMINOMES CNS ═══ -->
-<div class="section-label">Tumeurs germinales du SNC · Germinomes &amp; NGGCT · Essais cliniques &amp; protocoles RT</div>
-
-<div class="cards">
-
-  <div class="card">
-    <div class="card-accent gcog"></div>
-    <div class="card-body">
-      <div class="card-header">
-        <div class="card-title">ACNS2321 — CNS Germinoma RT Dashboard</div>
-        <span class="card-badge gcog">COG · Phase II · NCT06368817 · 2024</span>
-        <span class="card-badge revue">Revue · Type D</span>
-      </div>
-      <div class="card-desc">
-        Dashboard de revue structurée de l'essai COG ACNS2321 (en recrutement depuis oct. 2024), 
-        avec focus sur les protocoles de radiothérapie. Couvre les 7 strates de l'essai 
-        (WVI 12–24 Gy, CSI 18–24 Gy, WBI 18–24 Gy selon réponse à la chimio d'induction 
-        et localisation tumorale), les critères d'éligibilité complets (marqueurs, imagerie, 
-        timing), le contexte de la lignée COG (ACNS0232 → 1123 → 2321) et l'objectif 
-        principal de réduction de dose (12 Gy WVI vs 18 Gy dans ACNS1123). 
-        Compilé lors de l'observership au St. Jude Children's Research Hospital.
-      </div>
-      <a class="card-link" href="https://ronant99-lgtm.github.io/neuro/acns2321-germinoma-revue.html" target="_blank">
-        ronant99-lgtm.github.io/neuro/acns2321-germinoma-revue.html
-      </a>
-    </div>
-    <div class="card-qr">
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://ronant99-lgtm.github.io/neuro/acns2321-germinoma-revue.html&color=000000&bgcolor=fafbfc&qzone=1" alt="QR ACNS2321">
-      <div class="card-qr-label">Scanner<br>pour accès</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-accent gcog"></div>
-    <div class="card-body">
-      <div class="card-header">
-        <div class="card-title">ACNS2021 — CNS NGGCT RT Dashboard</div>
-        <span class="card-badge gcog">COG · Phase II · NCT04684368 · WVSCI</span>
-        <span class="card-badge revue">Revue · Type D</span>
-      </div>
-      <div class="card-desc">
-        Dashboard de revue structurée de l'essai COG ACNS2021 (en recrutement), 
-        avec focus sur les protocoles de radiothérapie pour les NGGCT localisées. 
-        Couvre le volume innovant WVSCI (irradiation ventriculaire totale + canal rachidien, 30.6 Gy) 
-        du Plan A (bons répondeurs CR/PR) et le Plan B (HDCSCR etoposide/thiotepa + PBSCT → CSI 36 Gy) 
-        pour les répondeurs insuffisants. Inclut l'arbre décisionnel complet basé sur la réponse 
-        (marqueurs, chirurgie de second regard), les critères d'éligibilité, la chimiothérapie 
-        d'induction (CarboE / IE × 6 cycles) et le contexte de la lignée COG NGGCT 
-        (ACNS0122 → ACNS1123 → ACNS2021 : rationale pour la réintroduction de l'irradiation spinale 
-        après les 12 % de rechutes spinales isolées d'ACNS1123).
-        Compilé lors de l'observership au St. Jude Children's Research Hospital.
-      </div>
-      <a class="card-link" href="https://ronant99-lgtm.github.io/neuro/acns2021-nggct-revue.html" target="_blank">
-        ronant99-lgtm.github.io/neuro/acns2021-nggct-revue.html
-      </a>
-    </div>
-    <div class="card-qr">
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://ronant99-lgtm.github.io/neuro/acns2021-nggct-revue.html&color=000000&bgcolor=fafbfc&qzone=1" alt="QR ACNS2021">
-      <div class="card-qr-label">Scanner<br>pour accès</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-accent siop"></div>
-    <div class="card-body">
-      <div class="card-header">
-        <div class="card-title">SIOP CNS GCT II — Approche Européenne · Germinome &amp; NGGCT</div>
-        <span class="card-badge siop">SIOPE BTG · ESCP 2021 · ERN PaedCan</span>
-        <span class="card-badge revue">Revue · Type D</span>
-      </div>
-      <div class="card-desc">
-        Dashboard de revue structurée du protocole européen de référence pour les tumeurs germinales 
-        intracrâniennes pédiatriques (SIOP CNS GCT II, fermé 2018 ; ESCP 2021). 
-        Couvre 8 sections : diagnostic &amp; staging (marqueurs AFP &gt;25 ng/ml / HCG &gt;50 IU/L, 
-        panel IHC, règle bifocale-DI, algorithme chirurgie/LCR), germinome localisé 
-        (CarboE/IE × 4 → WVI+TB 24 Gy, omission du boost en CR site unique), 
-        germinome métastatique (CSI 24 Gy + 16 Gy boost), NGGCT risque standard 
-        (PEI × 3–4 → TU 54 Gy / CSI 30 Gy + TU 24 Gy), NGGCT haut risque 
-        (AFP &gt;1000 ou âge &lt;6 ans : HD-PEI + SCT expérimental), tératome, rechute 
-        (germinome : SDC+RT ou HDC+SCT ; NGGCT : thiotepa-HDC+SCT obligatoire), 
-        et tableau comparatif COG vs SIOP avec liens croisés vers les outils ACNS2321 et ACNS2021.
-        Compilé lors de l'observership au St. Jude Children's Research Hospital.
-      </div>
-      <a class="card-link" href="https://ronant99-lgtm.github.io/neuro/siop-cnsgct2-revue.html" target="_blank">
-        ronant99-lgtm.github.io/neuro/siop-cnsgct2-revue.html
-      </a>
-    </div>
-    <div class="card-qr">
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://ronant99-lgtm.github.io/neuro/siop-cnsgct2-revue.html&color=000000&bgcolor=fafbfc&qzone=1" alt="QR SIOP CNS GCT II">
-      <div class="card-qr-label">Scanner<br>pour accès</div>
-    </div>
-  </div>
-
-</div>
-<div class="section-label">Revue de littérature · Tumeurs embryonnaires &amp; rares · Protocoles RT &amp; essais actifs</div>
-
-<div class="cards">
-
-  <div class="card">
-    <div class="card-accent rare"></div>
-    <div class="card-body">
-      <div class="card-header">
-        <div class="card-title">Rare Pediatric Neuro-Oncology — RT &amp; Trials Dashboard</div>
-        <span class="card-badge rare">ATRT · ETMR · Pineoblastome · GCT/NGGCT · Épendymome</span>
-        <span class="card-badge revue">Revue · Type D</span>
-      </div>
-      <div class="card-desc">
-        Dashboard de revue structurée couvrant 7 entités rares ou embryonnaires du SNC pédiatrique 
-        (ATRT, ETMR, pineoblastome, GCT/NGGCT, épendymome, choroid plexus tumors, PIS). Pour chaque entité : 
-        protocoles RT de référence par scénario (âge, stade M, réponse), essais cliniques actifs 
-        (COG · SIOPE · St. Jude · réseaux français), signal clinique 2025–2026 et références annotées. 
-        Inclut un tableau comparatif transversal (marqueur moléculaire, indication CSI, dose de référence, OS approximatif). 
-        Compilé lors de l'observership au St. Jude Children's Research Hospital, enrichi du RadOncReview (CNS &amp; Peds).
-      </div>
-      <a class="card-link" href="https://ronant99-lgtm.github.io/neuro/RareNeuroOnco_Revue.html" target="_blank">
-        ronant99-lgtm.github.io/neuro/RareNeuroOnco_Revue.html
-      </a>
-    </div>
-    <div class="card-qr">
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://ronant99-lgtm.github.io/neuro/RareNeuroOnco_Revue.html&color=000000&bgcolor=fafbfc&qzone=1" alt="QR Rare NeuroOnco Revue">
-      <div class="card-qr-label">Scanner<br>pour accès</div>
-    </div>
-  </div>
-
-</div>
-
-<!-- ═══ REVUE — ENTITÉS MAJEURES ═══ -->
-<div class="section-label">Revue de littérature · Entités majeures · Protocoles RT &amp; essais cliniques actifs</div>
-
-<div class="cards">
-
-  <div class="card">
-    <div class="card-accent revue"></div>
-    <div class="card-body">
-      <div class="card-header">
-        <div class="card-title">Pediatric Neuro-Oncology — RT &amp; Trials Dashboard</div>
-        <span class="card-badge revue">5 entités · 30+ essais · St. Jude 2026</span>
-        <span class="card-badge revue">Revue · Type D</span>
-      </div>
-      <div class="card-desc">
-        Dashboard de revue structurée couvrant 5 entités tumorales pédiatriques 
-        (craniopharyngiome, LGG, HGG, DIPG/DMG, médulloblastome). Pour chaque entité : 
-        protocoles RT de référence avec données d'outcome, essais cliniques actifs 
-        (statut, phase, sponsor), signal clinique 2025–2026 et références annotées. 
-        Inclut un tableau comparatif transversal (dose CSI, protons, cible moléculaire, 
-        thème dominant). Compilé lors de l'observership au St. Jude Children's Research Hospital.
-      </div>
-      <a class="card-link" href="https://ronant99-lgtm.github.io/neuro/NeuroOnco_Revue.html" target="_blank">
-        ronant99-lgtm.github.io/neuro/NeuroOnco_Revue.html
-      </a>
-    </div>
-    <div class="card-qr">
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://ronant99-lgtm.github.io/neuro/NeuroOnco_Revue.html&color=000000&bgcolor=fafbfc&qzone=1" alt="QR NeuroOnco Revue">
-      <div class="card-qr-label">Scanner<br>pour accès</div>
-    </div>
-  </div>
-
-</div>
-
-<div class="footer">
-  <strong>Avertissement :</strong> Ces outils sont destinés à un usage pédagogique et à l'aide à la préparation des RCP/RCPPI. 
-  Ils ne se substituent pas au jugement clinique individualisé ni aux décisions collégiales. 
-  Les contraintes OAR sont issues des références institutionnelles (PENTEC / SIOPE RT Working Group).<br><br>
-  <strong>Sources :</strong> ARIA Stratum C (SJCRH/COG, déc. 2025) · SIOP-Europe PNET5-MB (Bailey et al., EJC 2025) · SFCE Médulloblastomes jan. 2026 (RENOCLIP-LOC) · SIOPE ATRT01 v1.5 (GPOH/SIOPE, 2023) · COG ACNS2321 (NCT06368817, 2024) · COG ACNS2021 (NCT04684368, NGGCT) · SIOP CNS GCT II / ESCP 2021 (SIOPE BTG · ERN PaedCan) · RadOncReview CNS &amp; Peds · St. Jude Observership 2026<br>
-  <strong>Auteur :</strong> R. Tanguy · Radiothérapie pédiatrique · ronant99-lgtm.github.io/neuro
-</div>
+<footer class="footer">
+  <p><strong>Avertissement :</strong> outils à visée pédagogique et d'aide à la préparation des RCP / RCPPI. Ils ne se substituent ni au jugement clinique individualisé ni aux décisions collégiales. Les contraintes de dose aux organes à risque sont issues des références publiées (PENTEC, SIOPE RT Working Group).</p>
+  <p><strong>Contenu :</strong> uniquement des données publiées ou publiques. Les protocoles d'essais non publics ne sont pas reproduits ; leurs colonnes restent signalées « pending » dans l'atlas.</p>
+  <p><strong>Auteur :</strong> R. Tanguy · Radiothérapie pédiatrique · Centre Léon Bérard, Lyon</p>
+</footer>
 
 </body>
 </html>
