@@ -4,32 +4,57 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Protocoles Neuro-Oncologie — SRS/SBRT Crânien 2026</title>
+<meta name="description" content="Protocoles et contraintes de radiochirurgie stéréotaxique crânienne du service — mise à jour 03/11/2026">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+  /* ── THÈME (root = sombre · body.light = clair parchemin) ── */
   :root {
-    --bg: #0f1117;
-    --surface: #181c27;
-    --surface2: #1e2233;
-    --surface3: #232840;
-    --border: #2a2f45;
-    --border2: #3a4060;
-    --accent: #4f8ef7;
-    --accent2: #38d9a9;
-    --accent3: #ffd43b;
-    --muted: #8892b0;
-    --text: #e2e8f8;
-    --text-dim: #9ba8c8;
-    --green: #38d9a9;
-    --yellow: #ffd43b;
-    --red: #ff6b6b;
-    --orange: #ff9f43;
-    --blue: #4f8ef7;
-    --purple: #c084fc;
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2330;
+    --surface3: #21262d;
+    --border: #2a3441;
+    --border2: #30363d;
+    --accent: #388bfd;
+    --accent2: #39c5cf;
+    --accent3: #d29922;
+    --muted: #8b949e;
+    --text: #e6edf3;
+    --text-dim: #a9b4c0;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --red: #f85149;
+    --orange: #f0883e;
+    --blue: #388bfd;
+    --purple: #a371f7;
+    --line: rgba(255,255,255,0.05);
     --font-head: 'DM Serif Display', Georgia, serif;
     --font-body: 'DM Sans', sans-serif;
     --font-mono: 'DM Mono', monospace;
     --radius: 10px;
     --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
+  body.light {
+    --bg: #f5f0e8;
+    --surface: #ffffff;
+    --surface2: #ede8dc;
+    --surface3: #e6e0d2;
+    --border: #c8bfaa;
+    --border2: #d4ccba;
+    --accent: #1a5fa8;
+    --accent2: #1a7a8a;
+    --accent3: #a0720a;
+    --muted: #7a6f5a;
+    --text: #1a1208;
+    --text-dim: #5a4f3a;
+    --green: #2d7a3a;
+    --yellow: #a0720a;
+    --red: #c0392b;
+    --orange: #c45a10;
+    --blue: #1a5fa8;
+    --purple: #6b3fa0;
+    --line: rgba(0,0,0,0.07);
+    --shadow: 0 2px 10px rgba(0,0,0,0.08);
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
@@ -167,6 +192,56 @@
 
   @media print { .print-btn, nav, header { display: none !important; } .risk-calc-row { display: table-row !important; } section { break-inside: avoid; } body { background: #fff; color: #000; } }
   @media (max-width: 640px) { .container { padding: 0 14px; } .header-inner { padding: 0 14px; } .nav-inner { padding: 0 14px; } header h1 { font-size: 1.25rem; } .header-badge { display: none; } .risk-result { min-width: 100%; } }
+
+  /* ── AJOUTS v2026-11 : thème clair, niveaux de preuve, vérification, RadioSync, audit ── */
+  body.light header { background: rgba(245,240,232,0.97); backdrop-filter: blur(10px); box-shadow: 0 1px 6px rgba(0,0,0,0.08); }
+  body.light .dose-card, body.light .ref-item, body.light .table-wrap { box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+  body.light .risk-bar-wrap { background: rgba(0,0,0,0.08); }
+  body.light .calc-btn { color: #fff; }
+  .dose-item, tbody tr, ul.bullet-list li { border-bottom-color: var(--line) !important; }
+
+  .btn-theme { margin-left: 10px; flex-shrink: 0; background: var(--surface2); border: 1px solid var(--border2); color: var(--text); border-radius: 20px; padding: 5px 12px; font-family: var(--font-mono); font-size: 0.66rem; cursor: pointer; }
+  .btn-theme:hover { border-color: var(--accent); }
+
+  .ev { display: inline-block; font-family: var(--font-mono); font-size: 0.58rem; padding: 2px 6px; border-radius: 4px; border: 1px solid; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; vertical-align: middle; margin-left: 4px; }
+  .ev.rct   { color: var(--green);  border-color: var(--green); }
+  .ev.trial { color: var(--blue);   border-color: var(--blue); }
+  .ev.cons  { color: var(--purple); border-color: var(--purple); }
+  .ev.retro { color: var(--yellow); border-color: var(--yellow); }
+  .ev.exp   { color: var(--muted);  border-color: var(--muted); }
+  .ev.pend  { color: var(--muted);  border-color: var(--muted); border-style: dashed; }
+  .ev.svc   { color: var(--orange); border-color: var(--orange); background: rgba(240,136,62,0.08); }
+  .verify { display: inline-block; font-family: var(--font-mono); font-size: 0.6rem; color: var(--yellow); border: 1px dashed var(--yellow); border-radius: 4px; padding: 1px 6px; margin-left: 4px; vertical-align: middle; white-space: normal; }
+  .src { font-family: var(--font-mono); font-size: 0.58rem; color: var(--muted); margin-left: 4px; white-space: nowrap; }
+  .legend-row { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 0.74rem; color: var(--text-dim); margin: 6px 0 4px; }
+  .legend-row .ev { margin-left: 0; margin-right: 4px; }
+  .struct { font-family: var(--font-mono); font-size: 0.66rem; color: var(--text-dim); background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; white-space: nowrap; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 13px; margin: 12px 0; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+  .card h4 { font-family: var(--font-body); font-size: 0.86rem; font-weight: 600; color: var(--text); margin-bottom: 8px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+  .card p, .card li { font-size: 0.8rem; color: var(--text-dim); }
+  .card ul { padding-left: 16px; }
+  .card li { margin: 3px 0; }
+  .num { font-family: var(--font-mono); color: var(--accent2); }
+
+  .rs-tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 10px 0; }
+  .rs-tools input[type=search], .rs-tools select { background: var(--surface); border: 1px solid var(--border2); color: var(--text); font-family: var(--font-body); font-size: 0.82rem; padding: 7px 11px; border-radius: 7px; outline: none; }
+  .rs-tools input[type=search] { min-width: 260px; flex: 1; }
+  .rs-tools label { font-size: 0.78rem; color: var(--text-dim); display: flex; align-items: center; gap: 6px; }
+  .rs-count { font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted); }
+  #rs-table td.rs-delai { font-family: var(--font-mono); font-size: 0.76rem; white-space: normal; }
+  #rs-table td.rs-delai.zero { color: var(--green); }
+  #rs-table td.rs-delai.stop { color: var(--orange); }
+  #rs-table td.rs-delai.cond { color: var(--yellow); }
+  .rs-wrap { max-height: 460px; overflow-y: auto; }
+  .rs-wrap thead th { position: sticky; top: 0; z-index: 1; }
+
+  .audit-list { list-style: none; padding: 0; }
+  .audit-list li { font-size: 0.79rem; color: var(--text-dim); padding: 7px 0 7px 22px; border-bottom: 1px solid var(--line); position: relative; }
+  .audit-list li::before { content: '✎'; position: absolute; left: 2px; top: 7px; color: var(--accent); }
+  .audit-list li strong { color: var(--text); }
+  .ref-item .ref-meta .src { margin-left: 0; }
+  .ref-group { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 18px 0 4px; }
 </style>
 </head>
 <body>
@@ -176,9 +251,10 @@
     <div class="header-icon">🧠</div>
     <div>
       <h1>SRS/SBRT Crânien — Protocoles & Contraintes</h1>
-      <div class="subtitle">Neuro-Oncologie · Radiothérapie · Version 2026 · Usage clinique interne</div>
+      <div class="subtitle">Neuro-Oncologie · Radiothérapie · Version 2026 (mise à jour du 03/11/2026) · Usage clinique interne</div>
     </div>
     <div class="header-badge">MO_NEURO_2026</div>
+    <button class="btn-theme" id="btn-theme" onclick="toggleTheme()" title="Basculer thème clair / sombre">☀︎ / ☾</button>
   </div>
 </header>
 
@@ -187,32 +263,49 @@
     <a href="#prescription">Prescription</a>
     <a href="#multiloc">Multilocalisation</a>
     <a href="#contraintes">Contraintes détaillées</a>
-    <a href="#recap-table">Tableau récap + Estimateur risque + Lit op</a>
+    <a href="#recap-table">Tableau + estimateurs</a>
+    <a href="#lit-op">Lit opératoire</a>
+    <a href="#systemique">Traitements systémiques</a>
+    <a href="#reirradiation">Réirradiation</a>
+    <a href="#surveillance">Surveillance</a>
     <a href="#references">Références</a>
+    <a href="#audit">Journal d'audit</a>
   </div>
 </nav>
+
+<div class="container" style="padding-top:18px">
+  <div class="legend-row">
+    <strong style="color:var(--text)">Niveau de preuve :</strong>
+    <span><span class="ev rct">Randomisé</span>essai randomisé</span>
+    <span><span class="ev trial">Prospectif</span>essai prospectif / protocole</span>
+    <span><span class="ev cons">Consensus</span>recommandation / revue de consensus</span>
+    <span><span class="ev retro">Rétrospectif</span>série rétrospective</span>
+    <span><span class="ev svc">Service</span>contrainte ou pratique du service, sans référence publiée</span>
+    <span><span class="verify">⚠ à vérifier</span>donnée non confirmée dans la source</span>
+  </div>
+</div>
 
 
 <!-- ══ PRESCRIPTION ══ -->
 <section id="prescription">
 <div class="container">
   <div class="section-title"><span>💊</span> Protocoles de dose</div>
-  <div class="section-lead">Prescription en fonction de la taille et de la localisation lésionnelle. Lésion unique sauf mention contraire.</div>
+  <div class="section-lead">Prescription du service en fonction de la taille et de la localisation lésionnelle. Lésion unique sauf mention contraire. <span class="ev svc">Service</span></div>
   <div class="dose-grid">
     <div class="dose-card c1">
       <div class="fractions-label">🤖 CyberKnife — référence</div>
       <h3 style="margin-top:0;font-size:0.83rem;">Lésion unique</h3>
-      <div class="dose-item"><div class="dot"></div><div><span class="frac-badge">1×18-20 Gy</span><div style="font-size:0.78rem;color:var(--text-dim);margin-top:3px">Lésion 5–15 mm (4,2 cc) — <strong>zone non fonctionnelle</strong></div></div></div>
+      <div class="dose-item"><div class="dot"></div><div><span class="frac-badge">1×18-20 Gy</span><div style="font-size:0.78rem;color:var(--text-dim);margin-top:3px">Lésion 5–15 mm (sphère de 15 mm ≈ 1,8 cc) — <strong>zone non fonctionnelle</strong></div></div></div>
       <div class="dose-item"><div class="dot g"></div><div><span class="frac-badge green">3×9 Gy</span><div style="font-size:0.78rem;color:var(--text-dim);margin-top:3px"><strong>Zone fonctionnelle</strong> ou lésion 15–25 mm</div></div></div>
       <div class="dose-item"><div class="dot o"></div><div><span class="frac-badge orange">5×6-7 Gy</span><div style="font-size:0.78rem;color:var(--text-dim);margin-top:3px">Lésion 20–40 mm</div></div></div>
-      <div class="dose-item"><div class="dot o"></div><div><span class="frac-badge orange">5×6 Gy</span><div style="font-size:0.78rem;color:var(--text-dim);margin-top:3px">Lit opératoire</div></div></div>
+      <div class="dose-item"><div class="dot o"></div><div><span class="frac-badge orange">5×6 Gy</span><div style="font-size:0.78rem;color:var(--text-dim);margin-top:3px">Lit opératoire (ou 3×9 Gy, voir <a class="cite-link" href="#lit-op">§ Lit opératoire</a>)</div></div></div>
     </div>
     <div class="dose-card c3">
       <div class="fractions-label">⚡ VersaHD — si CK indisponible</div>
       <h3 style="margin-top:0;font-size:0.83rem;">Lésion unique</h3>
       <div class="dose-item"><div class="dot g"></div><div><span class="frac-badge green">3×8-9 Gy</span><div style="font-size:0.78rem;color:var(--text-dim);margin-top:3px">Lésion 15–25 mm</div></div></div>
       <div class="dose-item"><div class="dot o"></div><div><span class="frac-badge orange">5×6-7 Gy</span><div style="font-size:0.78rem;color:var(--text-dim);margin-top:3px">Lésion 20–40 mm</div></div></div>
-      <div class="dose-item"><div class="dot o"></div><div><span class="frac-badge orange">5×6 Gy</span><div style="font-size:0.78rem;color:var(--text-dim);margin-top:3px">Lit opératoire — <a class="cite-link" href="https://doi.org/10.1016/j.prro.2019.09.014" target="_blank">Tanenbaum 2019</a> · <a class="cite-link" href="https://doi.org/10.1227/neu.0000000000002897" target="_blank">Lehrer 2024</a></div></div></div>
+      <div class="dose-item"><div class="dot o"></div><div><span class="frac-badge orange">5×6 Gy</span><div style="font-size:0.78rem;color:var(--text-dim);margin-top:3px">Lit opératoire — <a class="cite-link" href="https://doi.org/10.1007/s11060-025-05357-7" target="_blank">Minniti 2026</a> · revue : <a class="cite-link" href="https://doi.org/10.1227/neu.0000000000002897" target="_blank">Lehrer 2024</a></div></div></div>
     </div>
     <div class="dose-card c5">
       <div class="fractions-label">🔢 Multilocalisation — choix du fractionnement</div>
@@ -223,6 +316,28 @@
       <div class="info-box yellow" style="margin-top:10px;padding:8px 11px;font-size:0.76rem;"><span class="icon">⚠️</span><div>Choix final guidé par <strong>critères dosimétriques</strong> : OAR / gradients / ponts de dose</div></div>
     </div>
   </div>
+
+  <h3>📈 Repères publiés de dose-réponse (information — la prescription du service reste inchangée)</h3>
+  <div class="grid2">
+    <div class="card">
+      <h4>Contrôle local selon la dose <span class="ev cons">Consensus</span><span class="src">HyTEC — résumé</span></h4>
+      <ul>
+        <li>Lésion ≤ 20 mm : 18 Gy en 1 fraction → contrôle local à 1 an &gt; 85 % ; 24 Gy → 95 %.</li>
+        <li>Lésion 21–30 mm : 18 Gy → ≈ 75 % ; lésion 31–40 mm : 15 Gy → ≈ 69 %.</li>
+        <li>3 à 5 fractions, 27–35 Gy : ≈ 80 % de contrôle local à 1 an pour 21–40 mm.</li>
+        <li>Mélanome : doses plus élevées probablement nécessaires.</li>
+      </ul>
+      <p style="margin-top:6px"><a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2020.10.034" target="_blank">Redmond 2021 (HyTEC TCP)</a></p>
+    </div>
+    <div class="card">
+      <h4>Ajustements de dose décrits <span class="ev retro">Rétrospectif</span></h4>
+      <ul>
+        <li><strong>Cavité</strong> : 3×9 Gy et 5×6 Gy (BED<sub>10</sub> &gt; 45 Gy) donnent 93 % et 90 % de contrôle local à 1 an — <a class="cite-link" href="https://doi.org/10.1007/s11060-025-05357-7" target="_blank">Minniti 2026</a> <span class="src">PDF lu</span></li>
+        <li><strong>5 fractions, lésion intacte</strong> : l'équipe de Sunnybrook passe de 30 à 27,5 Gy si BMC30 &gt; 10 cc — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2019.12.002" target="_blank">Faruqi 2020</a> <span class="src">PDF lu</span></li>
+        <li><strong>Sous immunothérapie ou thérapie ciblée (CBNPC)</strong> : dose réduite (&lt; 20 Gy si &lt; 2 cm ; &lt; 18 Gy si 2–3 cm) → effets radiques 10,8 % vs 23,7 %, contrôle local non inférieur (94,6 %) — <a class="cite-link" href="https://doi.org/10.1227/neu.0000000000003961" target="_blank">Chung 2026</a> <span class="src">résumé</span></li>
+      </ul>
+    </div>
+  </div>
 </div>
 </section>
 
@@ -231,31 +346,47 @@
 <section id="multiloc">
 <div class="container">
   <div class="section-title"><span>🔵</span> Critères — Traitement Concomitant Multilocalisation</div>
-  <div class="section-lead">Adapté du protocole <a class="cite-link" href="https://clinicaltrials.gov/ct2/show/NCT02353000" target="_blank">NCT02353000</a> (Harterink 2019 — <a class="cite-link" href="https://doi.org/10.1093/noajnl/vdab021" target="_blank">doi:10.1093/noajnl/vdab021</a>) et <a class="cite-link" href="https://doi.org/10.1016/j.adro.2023.101402" target="_blank">Ladbury 2024</a></div>
+  <div class="section-lead">Plafond du service <span class="ev svc">Service</span>, mis en regard des références officielles : le référentiel SFRO 2025 (<a class="cite-link" href="https://doi.org/10.1016/j.canrad.2025.104765" target="_blank">Antoni 2025</a>) et l'étude prospective JLGK0901 (<a class="cite-link" href="https://doi.org/10.1016/S1470-2045(14)70061-0" target="_blank">Yamamoto 2014</a>).</div>
   <div class="dose-grid">
     <div class="dose-card c3">
-      <div class="fractions-label">✅ Critères d'éligibilité</div>
+      <div class="fractions-label">✅ Critères d'éligibilité — plafond du service</div>
       <ul class="bullet-list" style="margin-top:6px">
         <li><strong>Nombre de lésions &lt; 15</strong></li>
         <li><strong>Volume total &lt; 25–35 cc</strong></li>
         <li><strong>Taille max d'une lésion &lt; 3 cm</strong> (volume &lt; 14 cc)</li>
         <li>Critères dosimétriques : OAR / gradients / ponts de dose / V12-14 selon schéma 1-3-5 fr</li>
       </ul>
-      <div class="info-box green" style="margin-top:10px;padding:8px 11px;font-size:0.76rem;"><span class="icon">ℹ️</span><div>Le <strong>volume de la lésion principale</strong> est le facteur le plus important. Exemples : <a class="cite-link" href="https://doi.org/10.1016/j.prro.2021.09.007" target="_blank">Meeks 2021</a></div></div>
+      <div class="info-box green" style="margin-top:10px;padding:8px 11px;font-size:0.76rem;"><span class="icon">ℹ️</span><div>Le <strong>volume de la lésion principale</strong> est le facteur le plus important. Exemples pratiques (isocentre unique) : <a class="cite-link" href="https://doi.org/10.1016/j.prro.2021.09.007" target="_blank">Meeks 2021</a> · cas cliniques : <a class="cite-link" href="https://doi.org/10.1016/j.adro.2023.101402" target="_blank">Ladbury 2024</a> <span class="ev cons">Consensus</span></div></div>
     </div>
     <div class="dose-card c1">
       <div class="fractions-label">🔴 Si critères dépassés</div>
       <div class="info-box red" style="margin-top:8px;padding:11px 13px;"><span class="icon">⛔</span><div>Passage à un <strong>traitement séquentiel</strong><br>Discussion en <strong>réunion pluridisciplinaire</strong></div></div>
     </div>
     <div class="dose-card c3">
-      <div class="fractions-label">📈 Risque de récidive intra-crânienne (DBF)</div>
+      <div class="fractions-label">📈 Risque de récidive intra-crânienne à distance</div>
       <ul class="bullet-list" style="margin-top:6px">
-        <li><strong>Nombre de lésions</strong> à la présentation (facteur le plus robuste)</li>
-        <li><strong>Histologie</strong> : mélanome, SCLC = haut risque ; EGFR/ALK muté = bas risque</li>
-        <li>Charge métastatique systémique · Délai court primitif → MC</li>
-        <li><strong>Vélocité</strong> après 1er ttt — <a class="cite-link" href="https://doi.org/10.1016/j.radonc.2025.111279" target="_blank">Schiele 2025</a> · <a class="cite-link" href="https://doi.org/10.1007/s11060-017-2588-4" target="_blank">Ayela-Peacock 2017</a></li>
+        <li><strong>Nombre de lésions</strong> : ≥ 8 métastases (HR 3,53), mélanome (HR 1,45) et dose marginale minimale prédisent la récidive à distance (nomogramme) — <a class="cite-link" href="https://doi.org/10.1007/s11060-017-2588-4" target="_blank">Ayala-Peacock 2017</a> <span class="ev retro">Rétrospectif</span></li>
+        <li><strong>5–10 vs 1–4 métastases</strong> : indication de panencéphalique plus fréquente (HR 3,13) malgré la SRS répétée — <a class="cite-link" href="https://doi.org/10.1093/neuonc/noae201" target="_blank">CYBER-SPACE 2025</a> <span class="ev rct">Randomisé</span></li>
+        <li><strong>Vélocité métastatique (BMV)</strong> : seul score prédisant à la fois la survie et l'indication de panencéphalique — <a class="cite-link" href="https://doi.org/10.1016/j.radonc.2025.111279" target="_blank">Schiele 2025</a></li>
+        <li>Histologie : mélanome, CBPC = haut risque ; EGFR/ALK muté = bas risque · charge métastatique systémique · délai court primitif → métastase cérébrale <span class="ev svc">Service</span></li>
       </ul>
     </div>
+  </div>
+
+  <h3>📚 Repères publiés pour le nombre et le volume de lésions</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Source</th><th>Population / critères</th><th>Résultat clé</th><th>Preuve</th></tr></thead>
+      <tbody>
+        <tr><td class="td-ref"><a href="https://doi.org/10.1016/S1470-2045(14)70061-0" target="_blank">JLGK0901 — Yamamoto 2014</a></td><td style="font-size:0.77rem">1 à 10 métastases ; plus grosse &lt; 10 mL et &lt; 3 cm ; <strong>volume cumulé ≤ 15 mL</strong> ; 22 Gy si &lt; 4 mL, 20 Gy si 4–10 mL</td><td style="font-size:0.77rem">Survie non inférieure entre 5–10 et 2–4 métastases (1194 patients)</td><td><span class="ev trial">Prospectif</span></td></tr>
+        <tr><td class="td-ref"><a href="https://doi.org/10.1016/j.canrad.2025.104765" target="_blank">SFRO 2025 — Antoni</a></td><td style="font-size:0.77rem">Référentiel français, indications et modalités techniques de la radiothérapie des métastases cérébrales</td><td style="font-size:0.77rem">Critères chiffrés non repris ici <span class="verify">⚠ à vérifier sur le texte intégral</span></td><td><span class="ev cons">Consensus</span></td></tr>
+        <tr><td class="td-ref"><a href="https://doi.org/10.1001/jama.2026.0076" target="_blank">Aizer 2026 (JAMA)</a></td><td style="font-size:0.77rem">5 à 20 métastases (médiane 14), SRS vs panencéphalique avec épargne hippocampique</td><td style="font-size:0.77rem">Symptômes et retentissement meilleurs avec la SRS (différence MDASI-BT −1,06)</td><td><span class="ev rct">Randomisé</span></td></tr>
+        <tr><td class="td-ref"><a href="https://doi.org/10.1093/neuonc/noae201" target="_blank">CYBER-SPACE 2025</a></td><td style="font-size:0.77rem">1 à 10 métastases, SRS répétée à chaque nouvelle lésion</td><td style="font-size:0.77rem">77 % sans indication de panencéphalique à 12 mois</td><td><span class="ev rct">Randomisé</span></td></tr>
+        <tr><td class="td-ref"><a href="https://doi.org/10.1016/j.adro.2024.101509" target="_blank">Upadhyay 2024 (ARO)</a></td><td style="font-size:0.77rem">≥ 15 métastases (médiane 20), surtout 24 Gy en 3 fractions</td><td style="font-size:0.77rem">RN tout grade 15,3 % ; grade ≥ 3 : 3,2 %</td><td><span class="ev retro">Rétrospectif</span></td></tr>
+        <tr><td class="td-ref"><a href="https://doi.org/10.1016/j.clon.2024.10.035" target="_blank">Parikh 2025</a></td><td style="font-size:0.77rem">≥ 4 métastases en fraction unique ; V12 composite médian 11,3 cc</td><td style="font-size:0.77rem">Toxicité tardive symptomatique 4,9 % à 1 an ; le volume cible total prédit la toxicité, pas le V12 composite</td><td><span class="ev retro">Rétrospectif</span></td></tr>
+        <tr><td class="td-ref"><a href="https://doi.org/10.1093/noajnl/vdab021" target="_blank">Hartgerink 2021 (NCT02353000)</a></td><td style="font-size:0.77rem">4 à 10 métastases, SRS vs panencéphalique</td><td style="font-size:0.77rem">Essai fermé prématurément (29 patients) : pas de conclusion ; ne fixe pas de plafond</td><td><span class="ev rct">Randomisé</span></td></tr>
+      </tbody>
+    </table>
   </div>
 </div>
 </section>
@@ -265,66 +396,73 @@
 <section id="contraintes">
 <div class="container">
   <div class="section-title"><span>📐</span> Critères Dosimétriques — Détail par Fractionnement</div>
-  <div class="section-lead">Contraintes encéphale-GTV (per-lésion ou per-patient selon indication) + OAR</div>
+  <div class="section-lead">Chaque contrainte indique la <strong>structure à créer dans le TPS</strong> (<span class="struct">structure</span>), telle que définie dans l'étude source : une valeur mesurée sur une autre structure n'est pas comparable.</div>
 
   <h3><span class="badge-fx fx1">1 fx</span> Fraction Unique</h3>
-  <div class="info-box blue"><span class="icon">📊</span><div><strong>Couverture &gt; 95%</strong> — IC Paddick (pCI) <strong>&gt; 0,8</strong></div></div>
+  <div class="info-box blue"><span class="icon">📊</span><div><strong>Couverture &gt; 95%</strong> — IC Paddick (pCI) <strong>&gt; 0,8</strong> <span class="ev svc">Service</span></div></div>
   <ul class="bullet-list">
     <li>
-      <strong>Encéphale-GTV — V12 Gy</strong> <span class="tag optimum">Optimum</span> <span class="tag obligatoire">Obligatoire</span>
-      <br><span style="font-family:var(--font-mono);color:var(--accent2)">V12 &lt; 8,5 cc</span> (optimum, point médian Q3 → risque RN ~10% à 1 an) — <a class="cite-link" href="https://doi.org/10.1186/1748-717X-6-48" target="_blank">Minniti 2011</a>
-      <br><span style="font-family:var(--font-mono);color:var(--red)">V12 &lt; 10 cc</span> (obligatoire, sRN ~15%) — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2020.08.013" target="_blank">Milano HyTEC 2021</a>
-      <span class="tag per-lesion">par lésion</span> si multilocalisation
+      <strong>V12 Gy</strong> <span class="struct">encéphale sain (structure non précisée dans l'article)</span> <span class="tag optimum">Optimum</span>
+      <br><span style="font-family:var(--font-mono);color:var(--accent2)">V12 &lt; 8,5 cc</span> — point médian du 3<sup>e</sup> quartile, risque de RN (symptomatique ou non) &gt; 10 % à 1 an au-delà — <a class="cite-link" href="https://doi.org/10.1186/1748-717X-6-48" target="_blank">Minniti 2011</a> <span class="ev retro">Rétrospectif</span> <span class="src">texte intégral lu</span>
     </li>
     <li>
-      <strong>Encéphale-GTV — V15 Gy</strong> <span class="tag per-lesion">par lésion</span> (zone PTV+1cm) — <a class="cite-link" href="https://doi.org/10.1016/j.radonc.2025.111266" target="_blank">Yarlagadda 2026</a>
-      <br><span style="font-family:var(--font-mono);color:var(--green)">V15 &lt; 2,52 cc</span> → &lt;5% toute RN &nbsp;·&nbsp; <span style="font-family:var(--font-mono);color:var(--orange)">V15 &lt; 4,65 cc</span> → &lt;5% RN G2+
+      <strong>V12 Gy</strong> <span class="struct">encéphale + cible (tissu total)</span> <span class="tag obligatoire">Obligatoire (service)</span>
+      <br><span style="font-family:var(--font-mono);color:var(--red)">V12 &lt; 10 cc</span> — V12 de 5 / 10 / &gt; 15 cc → RN symptomatique ≈ 10 / 15 / 20 % — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2020.08.013" target="_blank">Milano HyTEC 2021</a> <span class="ev cons">Consensus</span>
+      <span class="tag per-lesion">par lésion</span> si multilocalisation. Au-delà de 4 lésions, un V12 composite &gt; 10 cc a été accepté avec 4,9 % de toxicité à 1 an (<a class="cite-link" href="https://doi.org/10.1016/j.clon.2024.10.035" target="_blank">Parikh 2025</a>).
     </li>
-    <li>Autres OAR : <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2021.09.027" target="_blank">Timmerman 2022</a> &nbsp;·&nbsp; Récap V12/V15 : <a class="cite-link" href="https://doi.org/10.1227/neu.0000000000002897" target="_blank">Lehrer 2024</a></li>
-    <li><strong>Multiloc — pont de dose</strong> : si pont &gt; <span class="highlight">isodose 14 Gy</span> → hypofractionné ou réoptimisation</li>
+    <li>
+      <strong>V15 Gy</strong> <span class="struct">encéphale à risque autour de la lésion</span> <span class="tag per-lesion">par lésion</span> — <a class="cite-link" href="https://doi.org/10.1016/j.radonc.2025.111266" target="_blank">Yarlagadda 2026</a> <span class="ev retro">Rétrospectif</span>
+      <br><span style="font-family:var(--font-mono);color:var(--green)">V15 &lt; 2,52 cc</span> → &lt; 5 % toute RN &nbsp;·&nbsp; <span style="font-family:var(--font-mono);color:var(--orange)">V15 &lt; 4,65 cc</span> → &lt; 5 % RN grade ≥ 2 (petites métastases)
+      <span class="verify">⚠ structure exacte et paramètres du modèle à vérifier sur le texte intégral</span>
+    </li>
+    <li>Autres OAR (voies optiques, tronc cérébral, cochlée) : <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2021.09.027" target="_blank">Timmerman 2022</a> · voies optiques : <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2018.01.053" target="_blank">Milano HyTEC 2021</a> <span class="verify">⚠ tableau chiffré à établir</span></li>
+    <li><strong>Multiloc — pont de dose</strong> : si pont &gt; <span class="highlight">isodose 14 Gy</span> → hypofractionné ou réoptimisation <span class="ev svc">Service</span></li>
   </ul>
   <div class="dose-grid" style="margin-top:10px">
-    <div class="formula-box"><div class="f-label">Indice Conformation Paddick (pCI)</div><div class="f-value">pCI = V²<sub>PTVcouvert</sub> / (V<sub>Isodose</sub> × V<sub>PTV</sub>)</div><div class="f-note">Objectif &gt; 0,8 · nCI &lt; 1,2 · RTOG &lt; 1,4</div></div>
-    <div class="formula-box"><div class="f-label">Indice Gradient Paddick (pGI)</div><div class="f-value">pGI = V<sub>½ iso</sub> / V<sub>Isodose prescription</sub></div><div class="f-note">Objectif &lt; 4 par ring · Limite max = 7 · <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2019.11.408" target="_blank">Reynolds 2019</a></div></div>
+    <div class="formula-box"><div class="f-label">Indice de conformation de Paddick (pCI)</div><div class="f-value">pCI = V²<sub>PTVcouvert</sub> / (V<sub>Isodose</sub> × V<sub>PTV</sub>)</div><div class="f-note">Objectif &gt; 0,8 · nCI &lt; 1,2 · RTOG &lt; 1,4 <span class="ev svc">Service</span></div></div>
+    <div class="formula-box"><div class="f-label">Indice de gradient de Paddick (GI)</div><div class="f-value">GI = V<sub>½ isodose de prescription</sub> / V<sub>isodose de prescription</sub></div><div class="f-note">Définition : <a class="cite-link" href="https://doi.org/10.3171/sup.2006.105.7.194" target="_blank">Paddick 2006</a> · Objectif &lt; 4 par ring · Limite max = 7 <span class="ev svc">Service</span><br>Le gradient atteignable dépend de la taille de la cible (plus mauvais pour les petites lésions) : seuils par taille pour le DGI CyberKnife — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2019.11.408" target="_blank">Reynolds 2020</a></div></div>
   </div>
   <div class="info-box red"><span class="icon">⛔</span><div>Si critères dosimétriques non remplis → <strong>passage en traitement fractionné</strong></div></div>
 
   <h3 style="margin-top:26px"><span class="badge-fx fx3">3 fx</span> Trois Fractions</h3>
   <ul class="bullet-list">
-    <li><strong>Couverture &gt; 95%</strong> — IC &gt; 0,8</li>
-    <li><strong>Encéphale-GTV — V18 Gy</strong> : <span style="font-family:var(--font-mono);color:var(--accent2)">V18 &lt; 24-26 cc</span> si possible · <span style="font-family:var(--font-mono);color:var(--red)">V18 &lt; 30 cc</span> obligatoire — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2016.03.013" target="_blank">Minniti 2016</a></li>
-    <li><strong>Encéphale — V20 Gy</strong> <span class="tag per-patient">par patient</span> <span style="font-family:var(--font-mono);color:var(--green)">V20 &lt; 20 cc</span> → &lt;9% RN G1-3 — Milano HyTEC <em style="font-size:0.76rem;color:var(--muted)">(principalement mono-lésion)</em></li>
-    <li><strong>Encéphale — V20 Gy</strong> <span class="tag per-lesion">par lésion</span> (PTV+1cm) <span style="font-family:var(--font-mono);color:var(--green)">V20 &lt; 20 cc</span> — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2023.07.040" target="_blank">Upadhyay 2023</a></li>
-    <li><strong>Peau</strong> : Dmax &lt; 24 Gy · V22,5 &lt; 10 cc · Autres OAR : <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2021.09.027" target="_blank">Timmerman 2022</a></li>
-    <li><strong>Multiloc</strong> : si pont &gt; <span class="highlight">isodose 22 Gy</span> → 5 fx, séquentiel ou réoptimisation</li>
+    <li><strong>Couverture &gt; 95%</strong> — IC &gt; 0,8 <span class="ev svc">Service</span></li>
+    <li><strong>V18 Gy</strong> <span class="struct">encéphale sain</span> : <span style="font-family:var(--font-mono);color:var(--accent2)">V18 &lt; 24-26 cc</span> si possible · <span style="font-family:var(--font-mono);color:var(--red)">V18 &lt; 30 cc</span> obligatoire <span class="ev svc">Seuils du service</span>
+      <br>Quartiles de V18 &lt; 22,8 / 22,8–30,2 / 30,3–41,2 / &gt; 41,2 cc → RN (symptomatique ou non) à 1 an 0 / 6 / 13 / 24 % ; 5 % si V18 ≤ 30,2 cc vs 14 % au-delà (lésions &gt; 2 cm, 3×9 Gy) — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2016.03.013" target="_blank">Minniti 2016</a> <span class="ev retro">Rétrospectif</span> <span class="src">PDF lu</span></li>
+    <li><strong>V20 Gy</strong> <span class="struct">encéphale + cible</span> <span class="tag per-patient">par patient</span> <span style="font-family:var(--font-mono);color:var(--green)">V20 &lt; 20 cc</span> → &lt; 10 % de nécrose ou d'œdème, &lt; 4 % de RN opérée — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2020.08.013" target="_blank">Milano HyTEC 2021</a> <span class="ev cons">Consensus</span></li>
+    <li><strong>V20 Gy et V23 Gy</strong> <span class="struct">PTV + 1 cm (cible + encéphale)</span> <span class="tag per-lesion">par lésion</span> <span style="font-family:var(--font-mono);color:var(--green)">V20 &lt; 20 cc</span> → toute RN ≤ 10 %, grade ≥ 3 ≤ 5 % · <span style="font-family:var(--font-mono);color:var(--green)">V23 &lt; 15 cc</span> → grade ≥ 3 ≤ 5 % — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2023.07.040" target="_blank">Upadhyay 2024</a> <span class="ev retro">Rétrospectif</span> <span class="src">PDF lu</span></li>
+    <li><strong>Peau</strong> : Dmax &lt; 24 Gy · V22,5 &lt; 10 cc <span class="ev svc">Service</span> · Autres OAR : <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2021.09.027" target="_blank">Timmerman 2022</a></li>
+    <li><strong>Multiloc</strong> : si pont &gt; <span class="highlight">isodose 22 Gy</span> → 5 fx, séquentiel ou réoptimisation <span class="ev svc">Service</span></li>
   </ul>
   <div class="info-box red"><span class="icon">⛔</span><div>Si critères non remplis → <strong>passage en 5 fractions</strong></div></div>
 
   <h3 style="margin-top:26px"><span class="badge-fx fx5">5 fx</span> Cinq Fractions</h3>
   <ul class="bullet-list">
-    <li><strong>Couverture &gt; 95%</strong> — CI &gt; 0,8</li>
-    <li><strong>Encéphale-GTV — V30 Gy</strong> <span class="tag per-lesion">par lésion</span> : <span style="font-family:var(--font-mono);color:var(--accent2)">V30 &lt; 10,5 cc</span> → sRN 13% vs 61% à 1 an — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2019.12.002" target="_blank">Faruqi 2020</a> · <span style="font-family:var(--font-mono);color:var(--red)">V30 &lt; 14 cc</span> obligatoire</li>
-    <li><strong>Encéphale-GTV — V25 Gy</strong> <span class="tag per-lesion">par lésion</span> : <span style="font-family:var(--font-mono);color:var(--green)">V25 &lt; 16 cc</span> → sRN 2% vs 22% à 2 ans — <a class="cite-link" href="https://doi.org/10.1016/j.radonc.2020.12.011" target="_blank">Andruska 2021</a> <em style="font-size:0.76rem;color:var(--muted)">(multiloc concomitante)</em></li>
-    <li><strong>Encéphale — V24 Gy</strong> <span class="tag per-patient">par patient</span> <span style="font-family:var(--font-mono);color:var(--green)">V24 &lt; 20 cc</span> → &lt;9% RN tout grade — Milano HyTEC</li>
-    <li><strong>Peau</strong> : V30 &lt; 10 cc · Autres OAR : <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2021.09.027" target="_blank">Timmerman 2022</a></li>
-    <li><strong>Multiloc</strong> : si pont &gt; <span class="highlight">isodose 25 Gy</span> → séquentiel ou réoptimisation</li>
+    <li><strong>Couverture &gt; 95%</strong> — CI &gt; 0,8 <span class="ev svc">Service</span></li>
+    <li><strong>V30 Gy (BMC30)</strong> <span class="struct">encéphale − GTV</span> <span class="tag per-lesion">par lésion intacte</span> : <span style="font-family:var(--font-mono);color:var(--accent2)">V30 &lt; 10,5 cc</span> → RN symptomatique à 1 an 13 % vs 61 % au-delà (OR 7,2) — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2019.12.002" target="_blank">Faruqi 2020</a> <span class="ev retro">Rétrospectif</span> <span class="src">PDF lu</span> · <span style="font-family:var(--font-mono);color:var(--red)">V30 &lt; 14 cc</span> obligatoire <span class="ev svc">Service</span></li>
+    <li><strong>V25 Gy et V30 Gy</strong> <span class="struct">encéphale non atteint (encéphale − cible)</span> <span class="tag per-lesion">par lésion</span> : <span style="font-family:var(--font-mono);color:var(--green)">V25 &lt; 16 cc</span> et <span style="font-family:var(--font-mono);color:var(--green)">V30 &lt; 10 cc</span> → RN symptomatique à 2 ans 2 % si aucun seuil dépassé vs 21 % si l'un des deux l'est (lésions intactes ou réséquées, sans SRS antérieure) — <a class="cite-link" href="https://doi.org/10.1016/j.radonc.2020.12.011" target="_blank">Andruska 2021</a> <span class="ev retro">Rétrospectif</span></li>
+    <li><strong>V24 Gy</strong> <span class="struct">encéphale + cible</span> <span class="tag per-patient">par patient</span> <span style="font-family:var(--font-mono);color:var(--green)">V24 &lt; 20 cc</span> → &lt; 10 % de nécrose ou d'œdème, &lt; 4 % de RN opérée — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2020.08.013" target="_blank">Milano HyTEC 2021</a> <span class="ev cons">Consensus</span></li>
+    <li><strong>Peau</strong> : V30 &lt; 10 cc <span class="ev svc">Service</span> · Autres OAR : <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2021.09.027" target="_blank">Timmerman 2022</a></li>
+    <li><strong>Multiloc</strong> : si pont &gt; <span class="highlight">isodose 25 Gy</span> → séquentiel ou réoptimisation <span class="ev svc">Service</span></li>
   </ul>
   <div class="info-box red"><span class="icon">⛔</span><div>Si critères non remplis → <strong>traitement séquentiel, discussion RCP</strong></div></div>
+  <div class="info-box yellow"><span class="icon">🧮</span><div style="font-size:0.78rem"><strong>Contraintes du service (ponts de dose, peau, seuils « obligatoires »)</strong> : sans référence publiée. Chantier à prévoir : les exprimer de façon homogène entre 1, 3 et 5 fractions (par exemple en EQD2 ou en dose équivalente en fraction unique).</div></div>
 </div>
 </section>
 
 
-<!-- ══ TABLEAU RÉCAP + CALCULATEUR ══ -->
+
+<!-- ══ TABLEAU RÉCAP + ESTIMATEURS ══ -->
 <section id="recap-table">
 <div class="container">
   <div class="section-title"><span>📋</span> Tableau Récapitulatif — Contraintes & Estimateur de Risque</div>
   <div class="section-lead">
     Vue synthétique. Chaque contrainte avec données de risque publiées dispose d'un bouton
     <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--accent);background:rgba(79,142,247,0.1);padding:2px 7px;border-radius:3px;border:1px solid rgba(79,142,247,0.25)">∑ RISQUE ▾</span>
-    — saisir la valeur de votre plan pour obtenir l'estimation de risque RN attendue d'après la publication source.
+    — saisir la valeur du plan, mesurée <strong>sur la structure indiquée</strong>. L'estimateur ne donne que les valeurs publiées : au-delà des données de l'étude, il affiche « hors domaine » au lieu d'extrapoler.
   </div>
 
-  <h3>⚡ Seuils ponts de dose (multilocalisation)</h3>
+  <h3>⚡ Seuils ponts de dose (multilocalisation) <span class="ev svc">Service</span></h3>
   <div class="table-wrap">
     <table>
       <thead><tr><th>Fx</th><th>Seuil pont de dose</th><th>Décision</th></tr></thead>
@@ -336,12 +474,12 @@
     </table>
   </div>
 
-  <h3 style="margin-top:22px">Contraintes principales avec estimateurs de risque</h3>
+  <h3 style="margin-top:22px">Contraintes principales avec estimateurs de risque (lésions intactes)</h3>
   <div class="table-wrap">
     <table>
       <thead>
         <tr>
-          <th>Fx</th><th>Volume / OAR</th><th>Contrainte publiée</th><th>Niveau</th><th>Périmètre</th>
+          <th>Fx</th><th>Structure TPS</th><th>Contrainte</th><th>Niveau</th><th>Périmètre</th>
           <th>Risque associé (publication)</th><th>Référence</th><th>Estimateur</th>
         </tr>
       </thead>
@@ -350,19 +488,19 @@
         <!-- 1 fx V12 Minniti -->
         <tr>
           <td><span class="badge-fx fx1">1 fx</span></td>
-          <td class="td-oar">Encéphale-GTV<br><small style="color:var(--muted)">V12 Gy</small></td>
+          <td class="td-oar">Encéphale sain<br><small style="color:var(--muted)">V12 Gy</small></td>
           <td class="td-constraint">V12 &lt; 8,5 cc</td>
           <td><span class="tag optimum">Optimum</span></td>
           <td><span class="tag per-lesion">par lésion</span></td>
-          <td style="font-size:0.76rem;color:var(--text-dim)">Q1 &lt;3,3cc → 0% · Q2 3,3–5,9 → 16%<br>Q3 6,0–10,9 → 24% · Q4 &gt;10,9 → 51%</td>
-          <td class="td-ref"><a href="https://doi.org/10.1186/1748-717X-6-48" target="_blank">Minniti 2011</a></td>
+          <td style="font-size:0.76rem;color:var(--text-dim)">RN à 1 an (symptomatique ou non) :<br>Q1 &lt;3,3cc → 0% · Q2 3,3–5,9 → 16%<br>Q3 6,0–10,9 → 24% · Q4 &gt;10,9 → 51%</td>
+          <td class="td-ref"><a href="https://doi.org/10.1186/1748-717X-6-48" target="_blank">Minniti 2011</a><br><span class="ev retro">Rétro</span></td>
           <td><button class="calc-toggle" onclick="toggleCalc('c1',this)">∑ RISQUE <span class="arrow">▾</span></button></td>
         </tr>
         <tr class="risk-calc-row" id="c1"><td colspan="8">
           <div class="calc-panel">
-            <div><div class="calc-label">Minniti 2011 — V12 Gy enc.-GTV (1 fx, 206 patients, SRS LINAC 15-20Gy)</div>
+            <div><div class="calc-label">Minniti 2011 — V12 Gy (1 fx, 206 patients / 310 lésions &lt; 3,5 cm, LINAC 15–20 Gy)</div>
               <div class="calc-input-group"><input class="calc-input" type="number" id="i_c1" placeholder="ex: 7.5" min="0" max="50" step="0.1"><span class="calc-unit">cc</span><button class="calc-btn" onclick="calcMinniti2011()">Calculer</button></div>
-              <div class="calc-hint">Risque RN actuariel à 1 an selon quartiles de V12 Gy</div></div>
+              <div class="calc-hint">Risque actuariel de RN à 1 an selon le quartile de V12 (RN symptomatique ou non)</div></div>
             <div class="risk-result" id="r_c1"><div class="risk-pct" id="r_c1_p">—</div><div class="risk-bar-wrap"><div class="risk-bar" id="r_c1_b" style="width:0%"></div></div><div class="risk-desc" id="r_c1_d"></div><div class="risk-source" id="r_c1_s"></div></div>
           </div>
         </td></tr>
@@ -370,19 +508,19 @@
         <!-- 1 fx V12 Milano -->
         <tr>
           <td><span class="badge-fx fx1">1 fx</span></td>
-          <td class="td-oar">Encéphale<br><small style="color:var(--muted)">V12 Gy (tissu total)</small></td>
+          <td class="td-oar">Encéphale + cible<br><small style="color:var(--muted)">V12 Gy (tissu total)</small></td>
           <td class="td-constraint crit">V12 &lt; 10 cc</td>
-          <td><span class="tag obligatoire">Obligatoire</span></td>
+          <td><span class="tag obligatoire">Obligatoire (service)</span></td>
           <td><span class="tag per-lesion">par lésion</span></td>
-          <td style="font-size:0.76rem;color:var(--text-dim)">V12 5cc → ~10% sRN<br>V12 10cc → ~15% · &gt;15cc → ~20%</td>
-          <td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2020.08.013" target="_blank">Milano HyTEC 2021</a></td>
+          <td style="font-size:0.76rem;color:var(--text-dim)">V12 5 cc → ≈10% RN sympt.<br>10 cc → ≈15% · &gt;15 cc → ≈20%</td>
+          <td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2020.08.013" target="_blank">Milano HyTEC 2021</a><br><span class="ev cons">Consensus</span></td>
           <td><button class="calc-toggle" onclick="toggleCalc('c2',this)">∑ RISQUE <span class="arrow">▾</span></button></td>
         </tr>
         <tr class="risk-calc-row" id="c2"><td colspan="8">
           <div class="calc-panel">
-            <div><div class="calc-label">Milano HyTEC 2021 — V12 Gy tissu total incluant GTV (1 fx, données poolées ~8000 patients)</div>
+            <div><div class="calc-label">Milano HyTEC 2021 — V12 Gy tissu total incluant la cible (1 fx, analyse poolée)</div>
               <div class="calc-input-group"><input class="calc-input" type="number" id="i_c2" placeholder="ex: 8" min="0" max="40" step="0.1"><span class="calc-unit">cc</span><button class="calc-btn" onclick="calcMilano1fx()">Calculer</button></div>
-              <div class="calc-hint">Risque sRN interpolé d'après données HyTEC (UCSF, Cincinnati — Fig. 4)</div></div>
+              <div class="calc-hint">Interpolation linéaire entre les 3 points publiés (5 / 10 / 15 cc) ; pas d'extrapolation au-delà de 15 cc</div></div>
             <div class="risk-result" id="r_c2"><div class="risk-pct" id="r_c2_p">—</div><div class="risk-bar-wrap"><div class="risk-bar" id="r_c2_b" style="width:0%"></div></div><div class="risk-desc" id="r_c2_d"></div><div class="risk-source" id="r_c2_s"></div></div>
           </div>
         </td></tr>
@@ -390,19 +528,19 @@
         <!-- 1 fx V15 Yarlagadda -->
         <tr>
           <td><span class="badge-fx fx1">1 fx</span></td>
-          <td class="td-oar">Encéphale-GTV<br><small style="color:var(--muted)">V15 Gy</small></td>
-          <td class="td-constraint">V15 &lt; 2,52 cc (toute RN)<br>V15 &lt; 4,65 cc (G2+ RN)</td>
+          <td class="td-oar">Encéphale à risque<br><small style="color:var(--muted)">V15 Gy</small> <span class="verify">⚠</span></td>
+          <td class="td-constraint">V15 &lt; 2,52 cc (toute RN)<br>V15 &lt; 4,65 cc (RN G≥2)</td>
           <td><span class="tag optimum">Optimum</span></td>
-          <td><span class="tag per-lesion">par lésion</span> (PTV+1cm)</td>
-          <td style="font-size:0.76rem;color:var(--text-dim)">&lt;5% toute RN si &lt;2,52cc<br>&lt;5% G2+ si &lt;4,65cc · V15_50=16,3cc</td>
-          <td class="td-ref"><a href="https://doi.org/10.1016/j.radonc.2025.111266" target="_blank">Yarlagadda 2026</a></td>
+          <td><span class="tag per-lesion">par lésion</span></td>
+          <td style="font-size:0.76rem;color:var(--text-dim)">&lt;5% toute RN si &lt;2,52 cc<br>&lt;5% RN G≥2 si &lt;4,65 cc</td>
+          <td class="td-ref"><a href="https://doi.org/10.1016/j.radonc.2025.111266" target="_blank">Yarlagadda 2026</a><br><span class="ev retro">Rétro</span></td>
           <td><button class="calc-toggle" onclick="toggleCalc('c3',this)">∑ RISQUE <span class="arrow">▾</span></button></td>
         </tr>
         <tr class="risk-calc-row" id="c3"><td colspan="8">
           <div class="calc-panel">
-            <div><div class="calc-label">Yarlagadda 2026 — V15 Gy zone PTV+1cm (1 fx, 1494 SBM ≤2cm, Gamma Knife)</div>
+            <div><div class="calc-label">Yarlagadda 2026 — V15 Gy (1 fx, petites métastases)</div>
               <div class="calc-input-group"><input class="calc-input" type="number" id="i_c3" placeholder="ex: 3.5" min="0" max="30" step="0.1"><span class="calc-unit">cc</span><button class="calc-btn" onclick="calcYarlagadda()">Calculer</button></div>
-              <div class="calc-hint">Modèle logistique NTCP : NTCP = exp(4γ50·(V/V50−1)) / (1+exp(...)) avec V50=16,29cc, γ50=0,88</div></div>
+              <div class="calc-hint">Modèle logistique NTCP (V50 = 16,29 cc, γ50 = 0,88) <span class="verify">⚠ paramètres, structure et effectifs non vérifiés (texte intégral non disponible)</span></div></div>
             <div class="risk-result" id="r_c3"><div class="risk-pct" id="r_c3_p">—</div><div class="risk-bar-wrap"><div class="risk-bar" id="r_c3_b" style="width:0%"></div></div><div class="risk-desc" id="r_c3_d"></div><div class="risk-source" id="r_c3_s"></div></div>
           </div>
         </td></tr>
@@ -419,19 +557,19 @@
         <!-- 3 fx V18 Minniti -->
         <tr style="background:rgba(79,142,247,0.02)">
           <td><span class="badge-fx fx3">3 fx</span></td>
-          <td class="td-oar">Encéphale-GTV<br><small style="color:var(--muted)">V18 Gy</small></td>
+          <td class="td-oar">Encéphale sain<br><small style="color:var(--muted)">V18 Gy</small></td>
           <td class="td-constraint">V18 &lt; 24-26 cc<br><span class="td-constraint crit">V18 &lt; 30 cc (oblig.)</span></td>
-          <td><span class="tag optimum">Optimum</span></td>
-          <td>—</td>
-          <td style="font-size:0.76rem;color:var(--text-dim)">Q1 &lt;22,8cc → 0% · Q2 →6%<br>Q3 30,3–41,2cc → 13% · Q4 &gt;41cc → 24%</td>
-          <td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2016.03.013" target="_blank">Minniti 2016</a></td>
+          <td><span class="tag optimum">Optimum</span> <span class="ev svc">Service</span></td>
+          <td><span class="tag per-lesion">par lésion</span></td>
+          <td style="font-size:0.76rem;color:var(--text-dim)">RN à 1 an : Q1 &lt;22,8 cc → 0% · Q2 → 6%<br>Q3 30,3–41,2 cc → 13% · Q4 &gt;41,2 cc → 24%</td>
+          <td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2016.03.013" target="_blank">Minniti 2016</a><br><span class="ev retro">Rétro</span></td>
           <td><button class="calc-toggle" onclick="toggleCalc('c4',this)">∑ RISQUE <span class="arrow">▾</span></button></td>
         </tr>
         <tr class="risk-calc-row" id="c4"><td colspan="8">
           <div class="calc-panel">
-            <div><div class="calc-label">Minniti 2016 — V18 Gy encéphale-GTV (3×9Gy, lésions &gt;2cm, 289 patients, Rome)</div>
+            <div><div class="calc-label">Minniti 2016 — V18 Gy encéphale sain (3×9 Gy, lésions &gt; 2 cm, 138 patients en 3 fx, Rome)</div>
               <div class="calc-input-group"><input class="calc-input" type="number" id="i_c4" placeholder="ex: 28" min="0" max="80" step="0.5"><span class="calc-unit">cc</span><button class="calc-btn" onclick="calcMinniti2016()">Calculer</button></div>
-              <div class="calc-hint">Risque RN 1 an par quartiles (Q1 &lt;22,8 / Q2 22,8–30,2 / Q3 30,3–41,2 / Q4 &gt;41,2 cc)</div></div>
+              <div class="calc-hint">Risque de RN à 1 an par quartile (Q1 &lt;22,8 / Q2 22,8–30,2 / Q3 30,3–41,2 / Q4 &gt;41,2 cc)</div></div>
             <div class="risk-result" id="r_c4"><div class="risk-pct" id="r_c4_p">—</div><div class="risk-bar-wrap"><div class="risk-bar" id="r_c4_b" style="width:0%"></div></div><div class="risk-desc" id="r_c4_d"></div><div class="risk-source" id="r_c4_s"></div></div>
           </div>
         </td></tr>
@@ -439,38 +577,58 @@
         <!-- 3 fx V20 Upadhyay -->
         <tr style="background:rgba(79,142,247,0.02)">
           <td><span class="badge-fx fx3">3 fx</span></td>
-          <td class="td-oar">Encéphale<br><small style="color:var(--muted)">V20 Gy</small></td>
+          <td class="td-oar">PTV + 1 cm<br><small style="color:var(--muted)">V20 Gy</small></td>
           <td class="td-constraint">V20 &lt; 20 cc</td>
           <td><span class="tag optimum">Objectif</span></td>
-          <td><span class="tag per-lesion">par lésion</span> (PTV+1cm)</td>
-          <td style="font-size:0.76rem;color:var(--text-dim)">V20 &lt;4cc → 5% toute RN / 2% G3RN<br>V20 &lt;20cc → 10% / 5% G3RN</td>
-          <td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2023.07.040" target="_blank">Upadhyay 2023</a></td>
+          <td><span class="tag per-lesion">par lésion</span></td>
+          <td style="font-size:0.76rem;color:var(--text-dim)">V20 &lt;4 cc → 5% toute RN / 2% G≥3<br>V20 &lt;20 cc → 10% / 5% (Table 2)</td>
+          <td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2023.07.040" target="_blank">Upadhyay 2024</a><br><span class="ev retro">Rétro</span></td>
           <td><button class="calc-toggle" onclick="toggleCalc('c5',this)">∑ RISQUE <span class="arrow">▾</span></button></td>
         </tr>
         <tr class="risk-calc-row" id="c5"><td colspan="8">
           <div class="calc-panel">
-            <div><div class="calc-label">Upadhyay 2023 — V20 Gy PTV+1cm (3 fx LINAC HyperArc, 2518 lésions, Ohio State)</div>
-              <div class="calc-input-group"><input class="calc-input" type="number" id="i_c5" placeholder="ex: 12" min="0" max="100" step="0.5"><span class="calc-unit">cc</span><button class="calc-btn" onclick="calcUpadhyay()">Calculer</button></div>
-              <div class="calc-hint">Toute RN + G3RN d'après Table 2 publiée (Upadhyay 2023)</div></div>
+            <div><div class="calc-label">Upadhyay 2024 — V20 Gy dans PTV + 1 cm (3 fx LINAC, 2518 lésions, Ohio State)</div>
+              <div class="calc-input-group"><input class="calc-input" type="number" id="i_c5" placeholder="ex: 12" min="0" max="150" step="0.5"><span class="calc-unit">cc</span><button class="calc-btn" onclick="calcUpadhyay('V20')">Calculer</button></div>
+              <div class="calc-hint">Table 2 publiée : risque associé au premier seuil respecté (&lt; 4 / 10 / 20 / 40 / 60 / 80 / 100 cc)</div></div>
             <div class="risk-result" id="r_c5"><div class="risk-pct" id="r_c5_p">—</div><div class="risk-bar-wrap"><div class="risk-bar" id="r_c5_b" style="width:0%"></div></div><div class="risk-desc" id="r_c5_d"></div><div class="risk-source" id="r_c5_s"></div></div>
+          </div>
+        </td></tr>
+
+        <!-- 3 fx V23 Upadhyay -->
+        <tr style="background:rgba(79,142,247,0.02)">
+          <td><span class="badge-fx fx3">3 fx</span></td>
+          <td class="td-oar">PTV + 1 cm<br><small style="color:var(--muted)">V23 Gy</small></td>
+          <td class="td-constraint">V23 &lt; 15 cc</td>
+          <td><span class="tag optimum">Objectif</span></td>
+          <td><span class="tag per-lesion">par lésion</span></td>
+          <td style="font-size:0.76rem;color:var(--text-dim)">V23 &lt;15 cc → 10% toute RN / 5% G≥3<br>(meilleur prédicteur de la RN de grade ≥ 3)</td>
+          <td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2023.07.040" target="_blank">Upadhyay 2024</a><br><span class="ev retro">Rétro</span></td>
+          <td><button class="calc-toggle" onclick="toggleCalc('c11',this)">∑ RISQUE <span class="arrow">▾</span></button></td>
+        </tr>
+        <tr class="risk-calc-row" id="c11"><td colspan="8">
+          <div class="calc-panel">
+            <div><div class="calc-label">Upadhyay 2024 — V23 Gy dans PTV + 1 cm (3 fx)</div>
+              <div class="calc-input-group"><input class="calc-input" type="number" id="i_c11" placeholder="ex: 10" min="0" max="150" step="0.5"><span class="calc-unit">cc</span><button class="calc-btn" onclick="calcUpadhyay('V23')">Calculer</button></div>
+              <div class="calc-hint">Table 2 publiée : seuils &lt; 15 / 20 / 40 / 60 / 80 / 100 cc</div></div>
+            <div class="risk-result" id="r_c11"><div class="risk-pct" id="r_c11_p">—</div><div class="risk-bar-wrap"><div class="risk-bar" id="r_c11_b" style="width:0%"></div></div><div class="risk-desc" id="r_c11_d"></div><div class="risk-source" id="r_c11_s"></div></div>
           </div>
         </td></tr>
 
         <tr style="background:rgba(79,142,247,0.02)">
           <td><span class="badge-fx fx3">3 fx</span></td>
-          <td class="td-oar">Encéphale (HyTEC)<br><small style="color:var(--muted)">V20 Gy</small></td>
+          <td class="td-oar">Encéphale + cible<br><small style="color:var(--muted)">V20 Gy</small></td>
           <td class="td-constraint">V20 &lt; 20 cc</td>
           <td><span class="tag optimum">Objectif</span></td>
           <td><span class="tag per-patient">par patient</span></td>
-          <td style="font-size:0.76rem;color:var(--text-dim)">&lt;9% toute RN/œdème (principalement mono-lésion)</td>
-          <td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2020.08.013" target="_blank">Milano HyTEC 2021</a></td>
+          <td style="font-size:0.76rem;color:var(--text-dim)">&lt;10% nécrose ou œdème · &lt;4% RN opérée</td>
+          <td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2020.08.013" target="_blank">Milano HyTEC 2021</a><br><span class="ev cons">Consensus</span></td>
           <td></td>
         </tr>
         <tr style="background:rgba(79,142,247,0.02)">
           <td><span class="badge-fx fx3">3 fx</span></td>
           <td class="td-oar">Peau</td>
           <td class="td-constraint warn">Dmax &lt; 24 Gy · V22,5 &lt; 10 cc</td>
-          <td>—</td><td>—</td><td>—</td><td class="td-ref">—</td><td></td>
+          <td><span class="ev svc">Service</span></td><td>—</td><td>—</td><td class="td-ref">—</td><td></td>
         </tr>
         <tr style="background:rgba(79,142,247,0.02)">
           <td><span class="badge-fx fx3">3 fx</span></td>
@@ -484,19 +642,19 @@
         <!-- 5 fx Faruqi -->
         <tr style="background:rgba(255,159,67,0.025)">
           <td><span class="badge-fx fx5">5 fx</span></td>
-          <td class="td-oar">Encéphale-GTV<br><small style="color:var(--muted)">V30 Gy (BMC30)</small></td>
-          <td class="td-constraint">V30 &lt; 10,5 cc<br><span class="td-constraint crit">V30 &lt; 14 cc (oblig.)</span></td>
+          <td class="td-oar">Encéphale − GTV<br><small style="color:var(--muted)">V30 Gy (BMC30)</small></td>
+          <td class="td-constraint">V30 &lt; 10,5 cc<br><span class="td-constraint crit">V30 &lt; 14 cc (oblig., service)</span></td>
           <td><span class="tag optimum">Optimum</span></td>
-          <td><span class="tag per-lesion">par lésion</span></td>
-          <td style="font-size:0.76rem;color:var(--text-dim)">sRN 13% si &lt;10,5cc vs 61% si ≥10,5cc à 1 an<br>(lésions intactes)</td>
-          <td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2019.12.002" target="_blank">Faruqi 2020</a></td>
+          <td><span class="tag per-lesion">par lésion intacte</span></td>
+          <td style="font-size:0.76rem;color:var(--text-dim)">RN sympt. à 1 an 13% si &lt;10,5 cc vs 61% si ≥10,5 cc</td>
+          <td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2019.12.002" target="_blank">Faruqi 2020</a><br><span class="ev retro">Rétro</span></td>
           <td><button class="calc-toggle" onclick="toggleCalc('c6',this)">∑ RISQUE <span class="arrow">▾</span></button></td>
         </tr>
         <tr class="risk-calc-row" id="c6"><td colspan="8">
           <div class="calc-panel">
-            <div><div class="calc-label">Faruqi 2020 — BMC30 (encéphale−GTV) ≥30Gy (5 fx LINAC Elekta, 250 cibles, Sunnybrook)</div>
+            <div><div class="calc-label">Faruqi 2020 — BMC30 (encéphale − GTV) — 5 fx LINAC, 132 lésions intactes, Sunnybrook</div>
               <div class="calc-input-group"><input class="calc-input" type="number" id="i_c6" placeholder="ex: 9" min="0" max="40" step="0.1"><span class="calc-unit">cc</span><button class="calc-btn" onclick="calcFaruqi()">Calculer</button></div>
-              <div class="calc-hint">Seuil bipartite : sRN 13% si BMC30&lt;10,5cc vs 61% si ≥10,5cc à 1 an (OR 7,2, p=0,02) — lésions intactes</div></div>
+              <div class="calc-hint">Seuil unique : RN symptomatique 13 % si BMC30 &lt; 10,5 cc vs 61 % si ≥ 10,5 cc à 1 an (OR 7,2 ; +21 % de risque par cc)</div></div>
             <div class="risk-result" id="r_c6"><div class="risk-pct" id="r_c6_p">—</div><div class="risk-bar-wrap"><div class="risk-bar" id="r_c6_b" style="width:0%"></div></div><div class="risk-desc" id="r_c6_d"></div><div class="risk-source" id="r_c6_s"></div></div>
           </div>
         </td></tr>
@@ -504,42 +662,42 @@
         <!-- 5 fx Andruska -->
         <tr style="background:rgba(255,159,67,0.025)">
           <td><span class="badge-fx fx5">5 fx</span></td>
-          <td class="td-oar">Encéphale-GTV<br><small style="color:var(--muted)">BrainV25 + BrainV30</small></td>
+          <td class="td-oar">Encéphale non atteint<br><small style="color:var(--muted)">V25 + V30 Gy</small></td>
           <td class="td-constraint">V25 &lt; 16 cc<br>V30 &lt; 10 cc</td>
           <td><span class="tag optimum">Objectif</span></td>
           <td><span class="tag per-lesion">par lésion</span></td>
-          <td style="font-size:0.76rem;color:var(--text-dim)">V25 ≤16cc → 2% sRN à 2 ans (vs 22%)<br>V30 ≤10cc → 3% sRN à 2 ans (vs 23%)</td>
-          <td class="td-ref"><a href="https://doi.org/10.1016/j.radonc.2020.12.011" target="_blank">Andruska 2021</a></td>
+          <td style="font-size:0.76rem;color:var(--text-dim)">RN sympt. à 2 ans : 2% si aucun seuil dépassé<br>21% si au moins un seuil dépassé</td>
+          <td class="td-ref"><a href="https://doi.org/10.1016/j.radonc.2020.12.011" target="_blank">Andruska 2021</a><br><span class="ev retro">Rétro</span></td>
           <td><button class="calc-toggle" onclick="toggleCalc('c7',this)">∑ RISQUE <span class="arrow">▾</span></button></td>
         </tr>
         <tr class="risk-calc-row" id="c7"><td colspan="8">
           <div class="calc-panel">
-            <div><div class="calc-label">Andruska 2021 — BrainV25 + BrainV30 (encéphale−GTV), 5 fx, sans SRS préalable (117 lésions, AUC 0,87/0,88)</div>
+            <div><div class="calc-label">Andruska 2021 — V25 + V30 encéphale non atteint, 5 fx, lésions sans SRS antérieure (117 lésions au total)</div>
               <div class="calc-input-group" style="gap:16px;flex-wrap:wrap;">
-                <div><div style="font-size:0.68rem;color:var(--muted);margin-bottom:3px">BrainV25 (cc)</div><div style="display:flex;gap:6px;align-items:center"><input class="calc-input" type="number" id="i_c7a" placeholder="ex: 14" min="0" max="60" step="0.1" style="width:100px"><span class="calc-unit">cc</span></div></div>
-                <div><div style="font-size:0.68rem;color:var(--muted);margin-bottom:3px">BrainV30 (cc)</div><div style="display:flex;gap:6px;align-items:center"><input class="calc-input" type="number" id="i_c7b" placeholder="ex: 8" min="0" max="40" step="0.1" style="width:100px"><span class="calc-unit">cc</span></div></div>
+                <div><div style="font-size:0.68rem;color:var(--muted);margin-bottom:3px">V25 (cc)</div><div style="display:flex;gap:6px;align-items:center"><input class="calc-input" type="number" id="i_c7a" placeholder="ex: 14" min="0" max="60" step="0.1" style="width:100px"><span class="calc-unit">cc</span></div></div>
+                <div><div style="font-size:0.68rem;color:var(--muted);margin-bottom:3px">V30 (cc)</div><div style="display:flex;gap:6px;align-items:center"><input class="calc-input" type="number" id="i_c7b" placeholder="ex: 8" min="0" max="40" step="0.1" style="width:100px"><span class="calc-unit">cc</span></div></div>
                 <button class="calc-btn" onclick="calcAndruska()" style="align-self:flex-end">Calculer</button>
               </div>
-              <div class="calc-hint">Risque sRN à 2 ans selon violation des seuils (violation ≥1 seuil → 21%, aucun seuil → ~2-3%)</div></div>
+              <div class="calc-hint">RN symptomatique à 2 ans : 2 % si aucun seuil dépassé, 21 % si au moins un (p = 0,007). V25 &gt; 16 cc : HR 11,7 ; V30 &gt; 10 cc : HR 7,1</div></div>
             <div class="risk-result" id="r_c7"><div class="risk-pct" id="r_c7_p">—</div><div class="risk-bar-wrap"><div class="risk-bar" id="r_c7_b" style="width:0%"></div></div><div class="risk-desc" id="r_c7_d"></div><div class="risk-source" id="r_c7_s"></div></div>
           </div>
         </td></tr>
 
         <tr style="background:rgba(255,159,67,0.025)">
           <td><span class="badge-fx fx5">5 fx</span></td>
-          <td class="td-oar">Encéphale (HyTEC)<br><small style="color:var(--muted)">V24 Gy</small></td>
+          <td class="td-oar">Encéphale + cible<br><small style="color:var(--muted)">V24 Gy</small></td>
           <td class="td-constraint">V24 &lt; 20 cc</td>
           <td><span class="tag optimum">Objectif</span></td>
           <td><span class="tag per-patient">par patient</span></td>
-          <td style="font-size:0.76rem;color:var(--text-dim)">&lt;9% toute RN/œdème (principalement mono-lésion)</td>
-          <td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2020.08.013" target="_blank">Milano HyTEC 2021</a></td>
+          <td style="font-size:0.76rem;color:var(--text-dim)">&lt;10% nécrose ou œdème · &lt;4% RN opérée</td>
+          <td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2020.08.013" target="_blank">Milano HyTEC 2021</a><br><span class="ev cons">Consensus</span></td>
           <td></td>
         </tr>
         <tr style="background:rgba(255,159,67,0.025)">
           <td><span class="badge-fx fx5">5 fx</span></td>
           <td class="td-oar">Peau</td>
           <td class="td-constraint warn">V30 &lt; 10 cc</td>
-          <td>—</td><td>—</td><td>—</td><td class="td-ref">—</td><td></td>
+          <td><span class="ev svc">Service</span></td><td>—</td><td>—</td><td class="td-ref">—</td><td></td>
         </tr>
         <tr style="background:rgba(255,159,67,0.025)">
           <td><span class="badge-fx fx5">5 fx</span></td>
@@ -553,38 +711,76 @@
     </table>
   </div>
 
-  <!-- LIT OPÉRATOIRE -->
-  <h3 style="margin-top:28px">🔪 Lit opératoire — Contraintes spécifiques (cavités post-résection)</h3>
-  <div class="info-box blue" style="margin-bottom:10px; font-size:0.8rem;">
-    <span class="icon">ℹ️</span>
-    <div>Contraintes <strong>distinctes</strong> des lésions intactes. Pour les cavités post-op, les paramètres prédictifs diffèrent : Tanenbaum 2019 identifie le <strong>hotspot dans la marge PTV</strong> (PTV−CTV) comme facteur principal, tandis que Minniti 2026 valide les contraintes V20/V24/V30 sur encéphale−GTV spécifiquement pour les cavités en 3fx et 5fx.</div>
+  <h3 style="margin-top:20px">📐 Indices dosimétriques</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Indice</th><th>Formule</th><th>Objectif</th><th>Limite max</th><th>Réf.</th></tr></thead>
+      <tbody>
+        <tr><td class="td-oar">pCI (Paddick)</td><td style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-dim)">V²PTVcouvert / (VIso × VPTV)</td><td class="td-constraint">&gt; 0,8</td><td>nCI &lt; 1,2 · RTOG &lt; 1,4</td><td><span class="ev svc">Service</span></td></tr>
+        <tr><td class="td-oar">GI (gradient de Paddick)</td><td style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-dim)">V½iso / VIsodose</td><td class="td-constraint">&lt; 4 par ring</td><td class="td-constraint crit">&lt; 7 (obligatoire)</td><td class="td-ref"><a href="https://doi.org/10.3171/sup.2006.105.7.194" target="_blank">Paddick 2006</a> (définition) · <span class="ev svc">Service</span> (seuils)</td></tr>
+      </tbody>
+    </table>
   </div>
+
+  <div class="info-box yellow" style="margin-top:18px">
+    <span class="icon">⚠️</span>
+    <div style="font-size:0.78rem;"><strong>Note estimateurs</strong> — Les valeurs calculées sont extraites directement des données publiées (quartiles, tables ou modèles NTCP) et sont indicatives. Les populations sources sont hétérogènes (taille lésionnelle, technologie, époque, définition de la RN). Les estimateurs ne remplacent pas l'analyse DVH complète du plan ni le jugement clinique.</div>
+  </div>
+</div>
+</section>
+
+
+<!-- ══ LIT OPÉRATOIRE ══ -->
+<section id="lit-op">
+<div class="container">
+  <div class="section-title"><span>🔪</span> Lit opératoire — cavités post-résection</div>
+  <div class="section-lead">Contraintes <strong>distinctes</strong> des lésions intactes : pour les cavités, les paramètres prédictifs diffèrent (point chaud dans la marge PTV − CTV en 5 fractions ; V20, V24, V30 de l'encéphale − GTV en 3 et 5 fractions).</div>
+
+  <div class="grid2">
+    <div class="card">
+      <h4>Technique décrite dans les séries de référence <span class="ev retro">Rétrospectif</span></h4>
+      <ul>
+        <li>GTV = toute la cavité, sans l'œdème ni le trajet chirurgical ; CTV = GTV + 1 mm (+ ≥ 5 mm le long du volet si contact dural préopératoire) ; PTV 0 à 1 mm ; prescription sur l'isodose 80 % — <a class="cite-link" href="https://doi.org/10.1007/s11060-025-05357-7" target="_blank">Minniti 2026</a> <span class="src">PDF lu</span></li>
+        <li>Résultats à 1 an : contrôle local 93 % (3×9 Gy) et 90 % (5×6 Gy) ; RN symptomatique 12,8 % et 9,8 % ; méningite carcinomateuse ≈ 13,5 %.</li>
+        <li>Délai chirurgie → SRS médian 26 jours (84 % dans les 4 semaines).</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Options et alertes récentes</h4>
+      <ul>
+        <li><strong>SRS préopératoire</strong> : faisabilité et tolérance évaluées dans un essai randomisé (analyse préliminaire, 103 patients) — <a class="cite-link" href="https://doi.org/10.1001/jamaoncol.2025.1770" target="_blank">Yeboa 2025</a> <span class="ev rct">Randomisé</span> <span class="ev pend">Critère principal en attente</span></li>
+        <li>En préopératoire, le multifractionné donne moins de récidives dans la cavité que la fraction unique (2,9 % vs 16,3 % à 2 ans) — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2023.09.012" target="_blank">PROPS-BM 2024</a> <span class="ev retro">Rétrospectif</span></li>
+        <li><strong>Cavité 35 Gy en 7 fractions vs panencéphalique</strong> : moins de toxicité, mais méningite carcinomateuse 27 % à 1 an vs 8,7 % — <a class="cite-link" href="https://doi.org/10.1093/neuonc/noaf182" target="_blank">ESTRON 2025</a> <span class="ev rct">Randomisé (phase 2)</span></li>
+      </ul>
+    </div>
+  </div>
+
   <div class="table-wrap">
     <table>
       <thead>
         <tr>
-          <th>Fx</th><th>Volume / OAR</th><th>Contrainte publiée</th><th>Niveau</th><th>Périmètre</th>
+          <th>Fx</th><th>Structure TPS</th><th>Contrainte</th><th>Niveau</th><th>Périmètre</th>
           <th>Risque associé (publication)</th><th>Référence</th><th>Estimateur</th>
         </tr>
       </thead>
       <tbody>
 
-        <!-- Tanenbaum 2019 — hotspot PTV margin -->
+        <!-- Tanenbaum — point chaud marge PTV -->
         <tr style="background:rgba(56,217,169,0.02)">
           <td><span class="badge-fx fx5">5 fx</span></td>
-          <td class="td-oar">Hotspot dans marge PTV<br><small style="color:var(--muted)">(PTV − CTV, tissu sain)</small></td>
-          <td class="td-constraint">V110% dans marge &lt; 0,67 cc<br>V33,5 Gy dans marge &lt; 0,055 cc</td>
+          <td class="td-oar">Marge PTV − CTV<br><small style="color:var(--muted)">(tissu sain autour de la cavité)</small></td>
+          <td class="td-constraint">V110% dans la marge &lt; 0,67 cc<br>V33,5 Gy dans la marge &lt; 0,055 cc</td>
           <td><span class="tag optimum">Objectif</span></td>
           <td><span class="tag per-lesion">par cavité</span></td>
-          <td style="font-size:0.76rem;color:var(--text-dim)">V110% &gt;0,67cc : HR 8,47 (p=0,04)<br>V33,5Gy ≥0,055cc → RN 35% à 12 mois vs 17%<br><em style="color:var(--muted)">V25/V30/V35 non prédictifs (p NS)</em></td>
-          <td class="td-ref"><a href="https://doi.org/10.1016/j.prro.2019.09.014" target="_blank">Tanenbaum 2019</a></td>
+          <td style="font-size:0.76rem;color:var(--text-dim)">V110% &gt;0,67 cc : HR 8,47 (p=0,04)<br>V33,5 Gy ≥0,055 cc → RN radiologique 35% vs 5% à 12 mois<br><em style="color:var(--muted)">V25/V30/V35 encéphale − CTV non prédictifs</em></td>
+          <td class="td-ref"><a href="https://doi.org/10.1016/j.prro.2019.09.014" target="_blank">Tanenbaum 2020</a><br><span class="ev retro">Rétro</span></td>
           <td><button class="calc-toggle" onclick="toggleCalc('c8',this)">∑ RISQUE <span class="arrow">▾</span></button></td>
         </tr>
         <tr class="risk-calc-row" id="c8"><td colspan="8">
           <div class="calc-panel">
             <div>
-              <div class="calc-label">Tanenbaum 2019 — Hotspot 5 fx, cavités post-op (55 lésions, LINAC 25-35Gy, Emory)</div>
-              <div style="font-size:0.72rem; color:var(--muted); margin-bottom:8px">Paramètre prédictif : volume du hotspot ≥110% <strong>dans la marge PTV</strong> (PTV−CTV). Les V25/V30 ne sont PAS prédictifs dans cette cohorte.</div>
+              <div class="calc-label">Tanenbaum 2020 — point chaud, 5 fx, 55 cavités post-op (LINAC 25–35 Gy, Emory)</div>
+              <div style="font-size:0.72rem; color:var(--muted); margin-bottom:8px">Paramètre prédictif : volume du point chaud <strong>dans la marge PTV</strong> (PTV − CTV). RN <strong>radiologique</strong> (trop peu d'événements symptomatiques pour une analyse).</div>
               <div class="calc-input-group">
                 <div>
                   <div style="font-size:0.68rem;color:var(--muted);margin-bottom:3px">V110% dans marge PTV (cc)</div>
@@ -596,39 +792,51 @@
                 </div>
                 <button class="calc-btn" onclick="calcTanenbaum()" style="align-self:flex-end">Calculer</button>
               </div>
-              <div class="calc-hint">Seuils : V110% &gt;0,67cc → HR 8,47 · V33,5Gy ≥0,055cc → RN 35% vs 17% à 12 mois (radiographique)</div>
+              <div class="calc-hint">Seuils : V110% &gt; 0,67 cc → HR 8,47 · V33,5 Gy ≥ 0,0546 cc → RN 34,7 % vs 5,1 % à 12 mois (17,2 % à 18 mois sous le seuil)</div>
             </div>
             <div class="risk-result" id="r_c8"><div class="risk-pct" id="r_c8_p">—</div><div class="risk-bar-wrap"><div class="risk-bar" id="r_c8_b" style="width:0%"></div></div><div class="risk-desc" id="r_c8_d"></div><div class="risk-source" id="r_c8_s"></div></div>
           </div>
         </td></tr>
 
+        <!-- Minniti 2013 — 3 fx cavités -->
+        <tr style="background:rgba(79,142,247,0.025)">
+          <td><span class="badge-fx fx3">3 fx</span></td>
+          <td class="td-oar">Encéphale sain<br><small style="color:var(--muted)">V24 Gy</small></td>
+          <td class="td-constraint">V24 &lt; 16,8 cc</td>
+          <td><span class="tag optimum">Objectif</span></td>
+          <td><span class="tag per-lesion">par cavité</span></td>
+          <td style="font-size:0.76rem;color:var(--text-dim)">RN brute 16% si ≥16,8 cc vs 2% (8% vs 3% à 1 an)<br>Cavités &gt; 3 cm, 3×9 Gy, PTV = cavité + 2 mm</td>
+          <td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2013.03.037" target="_blank">Minniti 2013</a><br><span class="ev retro">Rétro</span></td>
+          <td></td>
+        </tr>
+
         <!-- Minniti 2026 — 3 fx cavités -->
         <tr style="background:rgba(79,142,247,0.025)">
           <td><span class="badge-fx fx3">3 fx</span></td>
-          <td class="td-oar">Encéphale−GTV<br><small style="color:var(--muted)">V20 Gy · V24 Gy</small></td>
-          <td class="td-constraint">V20(B−GTV) &lt; 15 cc<br>V24(B−GTV) &lt; 10 cc</td>
+          <td class="td-oar">Encéphale − GTV<br><small style="color:var(--muted)">V20 Gy · V24 Gy</small></td>
+          <td class="td-constraint">V20 &lt; 15 cc<br>V24 &lt; 10 cc</td>
           <td><span class="tag optimum">Objectif</span></td>
           <td><span class="tag per-lesion">par cavité</span></td>
-          <td style="font-size:0.76rem;color:var(--text-dim)">V20 ≤15cc → sRN 7,1% à 1 an vs 22,3% (p=0,009)<br>V24 ≤10cc → sRN &lt;10% à 1 an<br>LC 93% à 1 an · sRN 12,8% à 1 an</td>
-          <td class="td-ref"><a href="https://doi.org/10.1007/s11060-025-05357-7" target="_blank">Minniti 2026</a></td>
+          <td style="font-size:0.76rem;color:var(--text-dim)">V20 ≤15 cc → RN sympt. 7,1% à 1 an vs 22,3% (p=0,009) ; 15–30 cc → 19,2% ; &gt;30 cc → 30,4%<br>V24 &lt;10 cc → RN sympt. &lt;10%<br><em style="color:var(--muted)">V20 encéphale + cible non prédictif en 3 fx</em></td>
+          <td class="td-ref"><a href="https://doi.org/10.1007/s11060-025-05357-7" target="_blank">Minniti 2026</a><br><span class="ev retro">Rétro</span></td>
           <td><button class="calc-toggle" onclick="toggleCalc('c9',this)">∑ RISQUE <span class="arrow">▾</span></button></td>
         </tr>
         <tr class="risk-calc-row" id="c9"><td colspan="8">
           <div class="calc-panel">
             <div>
-              <div class="calc-label">Minniti 2026 — V20/V24 encéphale−GTV (3×9Gy, 103 cavités post-op, Rome LINAC)</div>
+              <div class="calc-label">Minniti 2026 — V20/V24 encéphale − GTV (3×9 Gy, 103 cavités, LINAC)</div>
               <div class="calc-input-group" style="gap:14px;flex-wrap:wrap;">
                 <div>
-                  <div style="font-size:0.68rem;color:var(--muted);margin-bottom:3px">V20(B−GTV) (cc)</div>
+                  <div style="font-size:0.68rem;color:var(--muted);margin-bottom:3px">V20 encéphale − GTV (cc)</div>
                   <div style="display:flex;gap:6px;align-items:center"><input class="calc-input" type="number" id="i_c9a" placeholder="ex: 12" min="0" max="60" step="0.5" style="width:100px"><span class="calc-unit">cc</span></div>
                 </div>
                 <div>
-                  <div style="font-size:0.68rem;color:var(--muted);margin-bottom:3px">V24(B−GTV) (cc) <span style="color:var(--muted);font-style:italic">(optionnel)</span></div>
+                  <div style="font-size:0.68rem;color:var(--muted);margin-bottom:3px">V24 encéphale − GTV (cc) <span style="color:var(--muted);font-style:italic">(optionnel)</span></div>
                   <div style="display:flex;gap:6px;align-items:center"><input class="calc-input" type="number" id="i_c9b" placeholder="ex: 8" min="0" max="40" step="0.5" style="width:100px"><span class="calc-unit">cc</span></div>
                 </div>
                 <button class="calc-btn" onclick="calcMinniti2026_3fx()" style="align-self:flex-end">Calculer</button>
               </div>
-              <div class="calc-hint">V20 ≤15cc → sRN ~7% · 15–30cc → ~19% · &gt;30cc → ~30% à 1 an · V24 ≤10cc → sRN &lt;10%</div>
+              <div class="calc-hint">V20 ≤ 15 cc → ≈ 7 % · 15–30 cc → ≈ 19 % · &gt; 30 cc → ≈ 30 % à 1 an · V24 &lt; 10 cc → &lt; 10 % (risque au-delà non publié)</div>
             </div>
             <div class="risk-result" id="r_c9"><div class="risk-pct" id="r_c9_p">—</div><div class="risk-bar-wrap"><div class="risk-bar" id="r_c9_b" style="width:0%"></div></div><div class="risk-desc" id="r_c9_d"></div><div class="risk-source" id="r_c9_s"></div></div>
           </div>
@@ -637,30 +845,30 @@
         <!-- Minniti 2026 — 5 fx cavités -->
         <tr style="background:rgba(255,159,67,0.025)">
           <td><span class="badge-fx fx5">5 fx</span></td>
-          <td class="td-oar">Encéphale−GTV<br><small style="color:var(--muted)">V24 Gy · V30 Gy</small></td>
-          <td class="td-constraint">V24(B−GTV) &lt; 15 cc<br>V30(B−GTV) &lt; 10 cc</td>
+          <td class="td-oar">Encéphale − GTV<br><small style="color:var(--muted)">V24 Gy · V30 Gy</small></td>
+          <td class="td-constraint">V24 &lt; 15 cc<br>V30 &lt; 10 cc</td>
           <td><span class="tag optimum">Objectif</span></td>
           <td><span class="tag per-lesion">par cavité</span></td>
-          <td style="font-size:0.76rem;color:var(--text-dim)">V24 ≤15cc → sRN 4,8% à 1 an vs 27,3% (p=0,003)<br>V30 ≤10cc → sRN 5,9% vs 22,3% si &gt;10cc (p=0,02)<br>LC 90% à 1 an · sRN 9,8% à 1 an</td>
-          <td class="td-ref"><a href="https://doi.org/10.1007/s11060-025-05357-7" target="_blank">Minniti 2026</a></td>
+          <td style="font-size:0.76rem;color:var(--text-dim)">V24 ≤15 cc → RN sympt. 4,8% à 1 an vs 27,3% (p=0,003)<br>V30 ≤10 cc → 5,9% vs 22,3% (p=0,02)</td>
+          <td class="td-ref"><a href="https://doi.org/10.1007/s11060-025-05357-7" target="_blank">Minniti 2026</a><br><span class="ev retro">Rétro</span></td>
           <td><button class="calc-toggle" onclick="toggleCalc('c10',this)">∑ RISQUE <span class="arrow">▾</span></button></td>
         </tr>
         <tr class="risk-calc-row" id="c10"><td colspan="8">
           <div class="calc-panel">
             <div>
-              <div class="calc-label">Minniti 2026 — V24/V30 encéphale−GTV (5×6Gy, 99 cavités post-op, Rome LINAC)</div>
+              <div class="calc-label">Minniti 2026 — V24/V30 encéphale − GTV (5×6 Gy, 99 cavités, LINAC)</div>
               <div class="calc-input-group" style="gap:14px;flex-wrap:wrap;">
                 <div>
-                  <div style="font-size:0.68rem;color:var(--muted);margin-bottom:3px">V24(B−GTV) (cc)</div>
+                  <div style="font-size:0.68rem;color:var(--muted);margin-bottom:3px">V24 encéphale − GTV (cc)</div>
                   <div style="display:flex;gap:6px;align-items:center"><input class="calc-input" type="number" id="i_c10a" placeholder="ex: 12" min="0" max="60" step="0.5" style="width:100px"><span class="calc-unit">cc</span></div>
                 </div>
                 <div>
-                  <div style="font-size:0.68rem;color:var(--muted);margin-bottom:3px">V30(B−GTV) (cc) <span style="color:var(--muted);font-style:italic">(optionnel)</span></div>
+                  <div style="font-size:0.68rem;color:var(--muted);margin-bottom:3px">V30 encéphale − GTV (cc) <span style="color:var(--muted);font-style:italic">(optionnel)</span></div>
                   <div style="display:flex;gap:6px;align-items:center"><input class="calc-input" type="number" id="i_c10b" placeholder="ex: 8" min="0" max="40" step="0.5" style="width:100px"><span class="calc-unit">cc</span></div>
                 </div>
                 <button class="calc-btn" onclick="calcMinniti2026_5fx()" style="align-self:flex-end">Calculer</button>
               </div>
-              <div class="calc-hint">V24 ≤15cc → sRN ~5% · V30 ≤10cc → sRN ~6% à 1 an</div>
+              <div class="calc-hint">V24 ≤ 15 cc → ≈ 5 % vs ≈ 27 % · V30 ≤ 10 cc → ≈ 6 % vs ≈ 22 % à 1 an</div>
             </div>
             <div class="risk-result" id="r_c10"><div class="risk-pct" id="r_c10_p">—</div><div class="risk-bar-wrap"><div class="risk-bar" id="r_c10_b" style="width:0%"></div></div><div class="risk-desc" id="r_c10_d"></div><div class="risk-source" id="r_c10_s"></div></div>
           </div>
@@ -669,21 +877,114 @@
       </tbody>
     </table>
   </div>
+  <div class="info-box blue" style="font-size:0.78rem"><span class="icon">ℹ️</span><div>Facteurs cliniques de RN symptomatique sur cavité (5 fractions) : SRS antérieure (OR 8,7) et panencéphalique antérieure (OR 7,7) ; thérapie ciblée ou immunothérapie dans le mois : OR 17,4 pour toute RN — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2019.12.002" target="_blank">Faruqi 2020</a> <span class="ev retro">Rétrospectif</span></div></div>
+</div>
+</section>
 
-  <h3 style="margin-top:20px">📐 Indices dosimétriques</h3>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Indice</th><th>Formule</th><th>Objectif</th><th>Limite max</th><th>Réf.</th></tr></thead>
-      <tbody>
-        <tr><td class="td-oar">pCI (Paddick)</td><td style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-dim)">V²PTVcouvert / (VIso × VPTV)</td><td class="td-constraint">&gt; 0,8</td><td>nCI &lt; 1,2 · RTOG &lt; 1,4</td><td class="td-ref">—</td></tr>
-        <tr><td class="td-oar">pGI (Gradient Paddick)</td><td style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-dim)">V½iso / VIsodose</td><td class="td-constraint">&lt; 4 par ring</td><td class="td-constraint crit">&lt; 7 (obligatoire)</td><td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2019.11.408" target="_blank">Reynolds 2019</a></td></tr>
-      </tbody>
+
+
+<!-- ══ TRAITEMENTS SYSTÉMIQUES ══ -->
+<section id="systemique">
+<div class="container">
+  <div class="section-title"><span>💉</span> Traitements systémiques et SRS intracrânienne</div>
+  <div class="section-lead">Durée d'arrêt recommandée <strong>avant le début et après la fin</strong> de la stéréotaxie intracrânienne, d'après le tableau RadioSync (radiosync.com, données libres de droit) — même tableau que dans le Formulaire RT. <span class="ev cons">Consensus</span></div>
+
+  <div class="rs-tools">
+    <input type="search" id="rs-q" placeholder="Rechercher une DCI ou un nom commercial (ex. osimertinib, Enhertu)…" oninput="rsRender()">
+    <select id="rs-cat" onchange="rsRender()">
+      <option value="">Toutes catégories</option>
+      <option>chimiothérapie</option><option>thérapie ciblée</option><option>immunothérapie</option><option>hormonothérapie</option>
+    </select>
+    <label><input type="checkbox" id="rs-stop" onchange="rsRender()"> Seulement si arrêt ou condition</label>
+    <span class="rs-count" id="rs-count"></span>
+  </div>
+  <div class="table-wrap rs-wrap">
+    <table id="rs-table">
+      <thead><tr><th>DCI</th><th>Nom commercial</th><th>Catégorie</th><th>Voie</th><th>Arrêt — SRS intracrânienne</th></tr></thead>
+      <tbody id="rs-body"></tbody>
     </table>
   </div>
+  <div class="calc-hint" id="rs-source"></div>
+  <div class="info-box yellow" style="font-size:0.76rem"><span class="icon">⚠️</span><div>Valeurs conditionnelles (« sauf… », « si… », avis d'expert) affichées en entier. Toute interruption se décide avec l'oncologue référent. Mise à jour : régénérer le tableau dans le Formulaire (<code>outils/radiosync/maj_radiosync.js</code>, dépôt <em>travail</em>), puis recopier le bloc <code>RADIOSYNC-DEBUT … RADIOSYNC-FIN</code> ici.</div></div>
 
-  <div class="info-box yellow" style="margin-top:18px">
-    <span class="icon">⚠️</span>
-    <div style="font-size:0.78rem;"><strong>Note estimateurs</strong> — Les valeurs calculées sont extraites directement des données publiées (quartiles ou modèles NTCP) et sont indicatives. Les populations sources sont hétérogènes (taille lésionnelle, technologie, era). Les estimateurs ne remplacent pas l'analyse DVH complète du plan ni le jugement clinique.</div>
+  <h3>📚 Données de toxicité publiées</h3>
+  <div class="grid2">
+    <div class="card">
+      <h4>Immunothérapie</h4>
+      <ul>
+        <li>Cavités, 3 et 5 fractions : immunothérapie concomitante associée à la RN symptomatique en univarié, tendance en multivarié (p = 0,07) — <a class="cite-link" href="https://doi.org/10.1007/s11060-025-05357-7" target="_blank">Minniti 2026</a> <span class="ev retro">Rétrospectif</span></li>
+        <li>Double immunothérapie (anti-PD-1 + anti-CTLA-4) concomitante et RN symptomatique : étude de cohorte — <a class="cite-link" href="https://doi.org/10.1001/jamanetworkopen.2025.4347" target="_blank">Vaios 2025</a> <span class="verify">⚠ résultats chiffrés à lire</span></li>
+        <li>CBNPC sous immunothérapie ou thérapie ciblée : dose réduite → effets radiques 10,8 % vs 23,7 %, contrôle local non inférieur — <a class="cite-link" href="https://doi.org/10.1227/neu.0000000000003961" target="_blank">Chung 2026</a> <span class="ev retro">Rétrospectif</span></li>
+        <li>Immunothérapie concomitante associée à une survie plus longue (HR 0,34) dans CYBER-SPACE — <a class="cite-link" href="https://doi.org/10.1093/neuonc/noae201" target="_blank">El Shafie 2025</a></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Thérapies ciblées et anticorps conjugués (ADC)</h4>
+      <ul>
+        <li>Thérapie ciblée active sur le SNC poursuivie pendant la SRS (fenêtre de 3–7 jours) : RN symptomatique 5 % par métastase, 13 % par patient ; 21 % des patients sous anti-HER2 et 20 % sous ADC anti-HER2 — <a class="cite-link" href="https://doi.org/10.1007/s11060-026-05450-5" target="_blank">Steele 2026</a> <span class="ev retro">Rétrospectif</span></li>
+        <li>Trastuzumab deruxtecan + SRS : aucune RN (0 % à 1 an vs 4,3 % sans T-DXd) et meilleur contrôle intracrânien — <a class="cite-link" href="https://doi.org/10.1016/j.breast.2026.104751" target="_blank">Chun 2026</a> <span class="ev retro">Rétrospectif, 29 patients sous T-DXd</span></li>
+        <li>ADC concomitants associés à la RN symptomatique en univarié sur cavités — <a class="cite-link" href="https://doi.org/10.1007/s11060-025-05357-7" target="_blank">Minniti 2026</a></li>
+        <li>Cavités, 5 fractions : thérapie ciblée ou immunothérapie dans le mois → OR 17,4 pour toute RN — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2019.12.002" target="_blank">Faruqi 2020</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ══ RÉIRRADIATION ══ -->
+<section id="reirradiation">
+<div class="container">
+  <div class="section-title"><span>🔁</span> Réirradiation et SRS répétée</div>
+  <div class="section-lead">Données uniquement rétrospectives : pas de contrainte validée. Repères pour la discussion en RCP. Revue de synthèse en français : <a class="cite-link" href="https://doi.org/10.1016/j.canrad.2024.09.005" target="_blank">Petit 2024</a>. <span class="ev retro">Rétrospectif</span></div>
+  <div class="grid2">
+    <div class="card">
+      <h4>Même lésion déjà irradiée (rechute locale)</h4>
+      <ul>
+        <li><strong>SRS répétée en fraction unique</strong> (229 lésions, dose médiane 18 Gy, 15 mois après la 1<sup>re</sup> SRS) : contrôle 80 % à 1 an ; effet radique symptomatique 11 % ; modifications d'imagerie (symptomatiques ou non) 30 % à 1 an — <a class="cite-link" href="https://doi.org/10.3171/2022.4.JNS212597" target="_blank">Sneed 2023</a></li>
+        <li><strong>Rattrapage en 5 fractions</strong> (20–35 Gy, 120 cibles dont 56 % de cavités) : échec local 27,7 % et RN symptomatique 7 % à 1 an ; échec plus fréquent si volume plus grand et intervalle plus court — <a class="cite-link" href="https://doi.org/10.1007/s11060-023-04265-y" target="_blank">Yan 2023</a></li>
+        <li>Modèle NTCP de la SRS répétée : seuil de tolérance plus bas et courbe dose-réponse plus plate qu'en première irradiation ; la dose de la 1<sup>re</sup> SRS peut être « décomptée » selon le délai — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2025.01.017" target="_blank">Sharma 2025</a></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Facteurs de risque de RN après irradiation antérieure</h4>
+      <ul>
+        <li>SRS antérieure sur la même lésion, 5 fractions : HR 7,5 pour la RN symptomatique — <a class="cite-link" href="https://doi.org/10.1016/j.radonc.2020.12.011" target="_blank">Andruska 2021</a></li>
+        <li>Cavité après SRS antérieure (OR 8,7) ou panencéphalique antérieure (OR 7,7) — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2019.12.002" target="_blank">Faruqi 2020</a></li>
+        <li>Nouvelles lésions après SRS ou panencéphalique : ≥ 15 métastases, 24 % avec SRS et 19 % avec panencéphalique antérieure → RN de grade ≥ 3 : 3,2 % — <a class="cite-link" href="https://doi.org/10.1016/j.adro.2024.101509" target="_blank">Upadhyay 2024</a></li>
+        <li>SRS répétée pour toute nouvelle lésion (jusqu'à 10) : stratégie évaluée dans <a class="cite-link" href="https://doi.org/10.1093/neuonc/noae201" target="_blank">CYBER-SPACE</a> <span class="ev rct">Randomisé</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="info-box yellow" style="font-size:0.78rem"><span class="icon">🧮</span><div><strong>Pratique à définir dans le service</strong> : sommation des doses (EQD2, α/β = 2 Gy pour l'encéphale), délai minimal, volume réirradié. À rattacher au chantier « contraintes du service en EQD2 ». <span class="ev svc">Service</span></div></div>
+</div>
+</section>
+
+
+<!-- ══ SURVEILLANCE ══ -->
+<section id="surveillance">
+<div class="container">
+  <div class="section-title"><span>🔎</span> Surveillance après SRS</div>
+  <div class="section-lead">Calendrier et critères issus des séries de référence, à défaut de recommandation spécifique vérifiée. <span class="ev retro">Rétrospectif</span></div>
+  <div class="grid2">
+    <div class="card">
+      <h4>Calendrier et délais</h4>
+      <ul>
+        <li>IRM cérébrale avec injection <strong>tous les 2 mois la 1<sup>re</sup> année</strong>, puis tous les 3–4 mois (protocole des séries de Rome) — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2016.03.013" target="_blank">Minniti 2016</a> ; tous les 2–3 mois la 1<sup>re</sup> année à Sunnybrook — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2019.12.002" target="_blank">Faruqi 2020</a></li>
+        <li>Délai d'apparition de la RN : médiane 8 mois ; 38 % avant 6 mois, 43 % entre 6 et 12 mois, <strong>19 % après 1 an</strong> (5 fractions) — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2019.12.002" target="_blank">Faruqi 2020</a> ; médiane 10–12 mois — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2016.03.013" target="_blank">Minniti 2016</a></li>
+        <li>Récidive à distance : ≈ 45 % à 1 an après chirurgie + SRS de la cavité — <a class="cite-link" href="https://doi.org/10.1007/s11060-025-05357-7" target="_blank">Minniti 2026</a> ; d'où une surveillance rapprochée pour traiter les nouvelles lésions petites.</li>
+        <li>Après cavité : surveiller la méningite carcinomateuse (13,5 % à 1 an, forme nodulaire au contact de la cavité de meilleur pronostic) — <a class="cite-link" href="https://doi.org/10.1007/s11060-025-05357-7" target="_blank">Minniti 2026</a></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>RN ou progression ?</h4>
+      <ul>
+        <li>IRM de perfusion : rapport de CBV &gt; 2,0 en faveur d'une progression ; TEP F-DOPA : rapport SUV<sub>max lésion</sub>/SUV<sub>max fond</sub> &gt; 1,59 en faveur d'une progression ; lésion stable ou qui régresse sur 6 mois avec valeurs inférieures → RN — critères utilisés par <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2016.03.013" target="_blank">Minniti 2016</a></li>
+        <li>TEP aux acides aminés (et à moindre degré FDG) : recommandation de pratique EANM/EANO/RANO/SNMMI — <a class="cite-link" href="https://doi.org/10.1007/s00259-024-07038-5" target="_blank">Verger 2025</a> <span class="ev cons">Consensus</span></li>
+        <li>En cas de doute persistant : contrôle rapproché (6–8 semaines) et discussion en RCP ; la preuve histologique reste la référence — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2019.12.002" target="_blank">Faruqi 2020</a></li>
+        <li>Après SRS répétée, les modifications d'imagerie apparaissent en médiane à 6,7 mois et culminent vers 10 mois — <a class="cite-link" href="https://doi.org/10.3171/2022.4.JNS212597" target="_blank">Sneed 2023</a></li>
+      </ul>
+    </div>
   </div>
 </div>
 </section>
@@ -693,28 +994,72 @@
 <section id="references">
 <div class="container">
   <div class="section-title"><span>📚</span> Références</div>
-  <div class="section-lead">Accès direct aux sources — cliquer pour ouvrir la publication</div>
+  <div class="section-lead">Toutes vérifiées dans PubMed le 03/11/2026 (titre, auteur, année, revue). <span class="src">PDF lu</span> = chiffres contrôlés sur le texte intégral ; <span class="src">résumé</span> = chiffres contrôlés sur le résumé seulement.</div>
+
+  <div class="ref-group">Contraintes dosimétriques — lésions intactes</div>
   <div class="ref-grid">
-    <div class="ref-item"><a href="https://doi.org/10.1186/1748-717X-6-48" target="_blank">Minniti 2011 — Radiat Oncol 6:48</a><div class="ref-meta">V12Gy sRN 1 fx · Quartiles Q1-Q4 · 206 patients · Rome · Seuil clinique 8,5 cc</div></div>
-    <div class="ref-item"><a href="https://doi.org/10.1016/j.ijrobp.2016.03.013" target="_blank">Minniti 2016 — IJROBP 95:1142</a><div class="ref-meta">1fx vs 3×9Gy lésions &gt;2cm · V18Gy enc.-GTV par quartiles · 289 patients Rome</div></div>
-    <div class="ref-item"><a href="https://doi.org/10.1016/j.ijrobp.2020.08.013" target="_blank">Milano HyTEC 2021 — IJROBP 110:68</a><div class="ref-meta">Pooled NTCP · V12 1fx · V20 3fx · V24 5fx encéphale · Référence centrale</div></div>
-    <div class="ref-item"><a href="https://doi.org/10.1016/j.ijrobp.2023.07.040" target="_blank">Upadhyay 2023 — IJROBP 118:275</a><div class="ref-meta">3 fx LINAC · V20/V23 per-lésion (PTV+1cm) · 2518 lésions · Ohio State · Table 2</div></div>
-    <div class="ref-item"><a href="https://doi.org/10.1016/j.ijrobp.2019.12.002" target="_blank">Faruqi 2020 — IJROBP 106:772</a><div class="ref-meta">5 fx LINAC · BMC30 seuil 10,5cc · 250 cibles · Sunnybrook Toronto</div></div>
-    <div class="ref-item"><a href="https://doi.org/10.1016/j.radonc.2020.12.011" target="_blank">Andruska 2021 — Radonc 156:181</a><div class="ref-meta">5 fx · BrainV25+V30 per-lésion · sRN à 2 ans · Washington University · AUC 0,87/0,88</div></div>
-    <div class="ref-item"><a href="https://doi.org/10.1016/j.radonc.2025.111266" target="_blank">Yarlagadda 2026 — Radonc 214:111266</a><div class="ref-meta">NTCP V15Gy per-lésion · 1 fx SRS ≤2cm · Gamma Knife · Miami · Modèle logistique</div></div>
-    <div class="ref-item"><a href="https://doi.org/10.1227/neu.0000000000002897" target="_blank">Lehrer 2024 — Neurosurgery</a><div class="ref-meta">Récap contraintes V12/V15 per-lésion fraction unique</div></div>
-    <div class="ref-item"><a href="https://doi.org/10.1016/j.ijrobp.2021.09.027" target="_blank">Timmerman 2022 — IJROBP</a><div class="ref-meta">Contraintes OAR SRS/SBRT — référence générale tous sites</div></div>
-    <div class="ref-item"><a href="https://doi.org/10.1016/j.ijrobp.2019.11.408" target="_blank">Reynolds 2019 — IJROBP</a><div class="ref-meta">Gradient Index pGI — variabilité et optimisation dosimétrique</div></div>
-    <div class="ref-item"><a href="https://doi.org/10.1016/j.prro.2019.09.014" target="_blank">Tanenbaum 2019 — PRRO</a><div class="ref-meta">Lit opératoire — post-résection SRS 5 fractions</div></div>
-    <div class="ref-item"><a href="https://doi.org/10.1016/j.prro.2021.09.007" target="_blank">Meeks 2021 — PRRO</a><div class="ref-meta">Protocoles multilocalisation concomitante — exemples</div></div>
-    <div class="ref-item"><a href="https://doi.org/10.1093/noajnl/vdab021" target="_blank">Harterink 2019 — Neuro-Oncol Adv</a><div class="ref-meta">Protocole NCT02353000 — critères multiloc de référence</div></div>
-    <div class="ref-item"><a href="https://doi.org/10.1016/j.adro.2023.101402" target="_blank">Ladbury 2024 — Adv Radiat Oncol</a><div class="ref-meta">Critères traitement concomitant multilocalisation</div></div>
-    <div class="ref-item"><a href="https://doi.org/10.1016/j.radonc.2025.111279" target="_blank">Schiele 2025 — Radonc</a><div class="ref-meta">Vélocité — risque distant brain failure après 1er traitement</div></div>
-    <div class="ref-item"><a href="https://doi.org/10.1007/s11060-017-2588-4" target="_blank">Ayela-Peacock 2017 — J Neurooncol</a><div class="ref-meta">Score DBF — facteurs prédictifs récidive intra-crânienne</div></div>
-    <div class="ref-item"><a href="https://clinicaltrials.gov/ct2/show/NCT02353000" target="_blank">NCT02353000 — ClinicalTrials.gov</a><div class="ref-meta">Protocole de référence multilocalisation concomitante</div></div>
-    <div class="ref-item"><a href="https://doi.org/10.1007/s11060-025-05357-7" target="_blank">Minniti 2026 — J Neurooncol 176:175</a><div class="ref-meta">3fx vs 5fx cavités post-op · V20/V24/V30(B-GTV) · sRN 12,8% vs 9,8% à 1 an · 190 patients Rome LINAC</div></div>
-    <div class="ref-item"><a href="https://doi.org/10.1016/j.prro.2019.09.014" target="_blank">Tanenbaum 2019 — PRRO 10:36-43</a><div class="ref-meta">Hotspot dans marge PTV-CTV · 5fx 55 cavités post-op Emory · V110%>0,67cc → HR 8,47 · V25/V30 non prédictifs</div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1186/1748-717X-6-48" target="_blank">Minniti 2011 — Radiat Oncol 6:48</a><div class="ref-meta">1 fx · V12 par quartiles · 206 patients · seuil 8,5 cc · <span class="src">texte intégral lu</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.ijrobp.2016.03.013" target="_blank">Minniti 2016 — IJROBP 95:1142</a><div class="ref-meta">1 fx vs 3×9 Gy, lésions &gt; 2 cm · V18 par quartiles · 289 patients · <span class="src">PDF lu</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.ijrobp.2020.08.013" target="_blank">Milano 2021 (HyTEC) — IJROBP 110:68</a><div class="ref-meta">Analyse poolée NTCP · V12 1 fx · V20 3 fx · V24 5 fx · <span class="src">résumé</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.ijrobp.2023.07.040" target="_blank">Upadhyay 2024 — IJROBP 118:275</a><div class="ref-meta">3 fx · V20/V23 dans PTV + 1 cm · 2518 lésions · Table 2 · <span class="src">PDF lu</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.radonc.2025.111266" target="_blank">Yarlagadda 2026 — Radiother Oncol 214:111266</a><div class="ref-meta">1 fx · NTCP V15 · petites métastases · <span class="src">résumé</span> <span class="verify">⚠ texte intégral manquant</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.ijrobp.2019.12.002" target="_blank">Faruqi 2020 — IJROBP 106:772</a><div class="ref-meta">5 fx · BMC30 10,5 cc (lésions intactes) · 250 cibles · <span class="src">PDF lu</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.radonc.2020.12.011" target="_blank">Andruska 2021 — Radiother Oncol 156:181</a><div class="ref-meta">5 fx · V25/V30 encéphale non atteint · 117 lésions · <span class="src">résumé</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.clon.2024.10.035" target="_blank">Parikh 2025 — Clin Oncol 37:103663</a><div class="ref-meta">≥ 4 métastases, V12 composite · <span class="src">résumé</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.ijrobp.2021.09.027" target="_blank">Timmerman 2022 — IJROBP 112:4</a><div class="ref-meta">« A Story of Hypofractionation and the Table on the Wall » · contraintes OAR tous sites</div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.ijrobp.2018.01.053" target="_blank">Milano 2021 (HyTEC voies optiques) — IJROBP 110:87</a><div class="ref-meta">Tolérance des voies optiques en 1 à 5 fractions · <span class="src">résumé</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.3171/sup.2006.105.7.194" target="_blank">Paddick 2006 — J Neurosurg 105 Suppl:194</a><div class="ref-meta">Définition de l'indice de gradient (GI)</div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.ijrobp.2019.11.408" target="_blank">Reynolds 2020 — IJROBP 106:604</a><div class="ref-meta">Dose Gradient Index (DGI) CyberKnife : seuils selon la taille de la cible</div></div>
   </div>
+
+  <div class="ref-group">Prescription et contrôle local</div>
+  <div class="ref-grid">
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.ijrobp.2020.10.034" target="_blank">Redmond 2021 (HyTEC TCP) — IJROBP 110:53</a><div class="ref-meta">Contrôle local selon la dose et la taille · <span class="src">résumé</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1227/neu.0000000000002897" target="_blank">Lehrer 2024 — Neurosurgery 95:253</a><div class="ref-meta">Revue : SRS hypofractionnée des métastases cérébrales</div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1227/neu.0000000000003961" target="_blank">Chung 2026 — Neurosurgery 99:1115</a><div class="ref-meta">Dose réduite sous immunothérapie / thérapie ciblée (CBNPC) · <span class="src">résumé</span></div></div>
+  </div>
+
+  <div class="ref-group">Multilocalisation, nombre de lésions, récidive à distance</div>
+  <div class="ref-grid">
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.canrad.2025.104765" target="_blank">Antoni 2025 (SFRO) — Cancer Radiother 29:104765</a><div class="ref-meta">Recommandations SFRO 2025 · <span class="verify">⚠ texte intégral à lire</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1016/S1470-2045(14)70061-0" target="_blank">Yamamoto 2014 (JLGK0901) — Lancet Oncol 15:387</a><div class="ref-meta">1–10 métastases, volume cumulé ≤ 15 mL · <span class="src">résumé</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1001/jama.2026.0076" target="_blank">Aizer 2026 — JAMA 335:1127</a><div class="ref-meta">Phase 3 : SRS vs panencéphalique avec épargne hippocampique, 5–20 métastases · <span class="src">résumé</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1093/neuonc/noae201" target="_blank">El Shafie 2025 (CYBER-SPACE) — Neuro Oncol 27:479</a><div class="ref-meta">Phase 2 randomisée, SRS répétée pour 1–10 métastases · <span class="src">résumé</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.radonc.2025.111279" target="_blank">Schiele 2025 — Radiother Oncol 214:111279</a><div class="ref-meta">Scores pronostiques dans CYBER-SPACE · vélocité métastatique · <span class="src">résumé</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1007/s11060-017-2588-4" target="_blank">Ayala-Peacock 2017 — J Neurooncol 135:403</a><div class="ref-meta">Nomogramme de récidive à distance après SRS · <span class="src">résumé</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.adro.2024.101509" target="_blank">Upadhyay 2024 — Adv Radiat Oncol 9:101509</a><div class="ref-meta">SRS pour ≥ 15 métastases · <span class="src">résumé</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1093/noajnl/vdab021" target="_blank">Hartgerink 2021 — Neurooncol Adv 3:vdab021</a><div class="ref-meta">NCT02353000, 4–10 métastases, fermé prématurément</div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.prro.2021.09.007" target="_blank">Meeks 2021 — Pract Radiat Oncol 12:195</a><div class="ref-meta">SRS isocentre unique pour métastases multiples : pratique de 3 centres</div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.adro.2023.101402" target="_blank">Ladbury 2024 — Adv Radiat Oncol 9:101402</a><div class="ref-meta">Guide pratique Radiosurgery Society (5–15 lésions, grosse lésion)</div></div>
+  </div>
+
+  <div class="ref-group">Lit opératoire</div>
+  <div class="ref-grid">
+    <div class="ref-item"><a href="https://doi.org/10.1007/s11060-025-05357-7" target="_blank">Minniti 2026 — J Neurooncol 176:175</a><div class="ref-meta">3×9 vs 5×6 Gy sur cavité · 190 patients · <span class="src">PDF lu</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.ijrobp.2013.03.037" target="_blank">Minniti 2013 — IJROBP 86:623</a><div class="ref-meta">3×9 Gy, cavités &gt; 3 cm · V24 16,8 cc · <span class="src">PDF lu</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.prro.2019.09.014" target="_blank">Tanenbaum 2020 — Pract Radiat Oncol 10:36</a><div class="ref-meta">Point chaud dans la marge PTV − CTV, 5 fx, 55 cavités · <span class="src">PDF lu</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1093/neuonc/noaf182" target="_blank">El Shafie 2025 (ESTRON) — Neuro Oncol 27:3224</a><div class="ref-meta">Cavité 35 Gy/7 fx vs panencéphalique · <span class="src">résumé</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1001/jamaoncol.2025.1770" target="_blank">Yeboa 2025 — JAMA Oncol 11:890</a><div class="ref-meta">SRS préopératoire vs postopératoire (analyse préliminaire) · <span class="src">résumé</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.ijrobp.2023.09.012" target="_blank">Prabhu 2024 (PROPS-BM) — IJROBP 118:650</a><div class="ref-meta">SRS préopératoire 1 fx vs multifractionnée · <span class="src">résumé</span></div></div>
+  </div>
+
+  <div class="ref-group">Traitements systémiques</div>
+  <div class="ref-grid">
+    <div class="ref-item"><a href="https://radiosync.com" target="_blank">RadioSync — radiosync.com</a><div class="ref-meta">Tableau des arrêts autour de la radiothérapie (export du 14/10/2026)</div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1007/s11060-026-05450-5" target="_blank">Steele 2026 — J Neurooncol 176:203</a><div class="ref-meta">Thérapies ciblées concomitantes et RN symptomatique · <span class="src">résumé</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.breast.2026.104751" target="_blank">Chun 2026 — Breast 87:104751</a><div class="ref-meta">Trastuzumab deruxtecan + SRS · <span class="src">résumé</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1001/jamanetworkopen.2025.4347" target="_blank">Vaios 2025 — JAMA Netw Open 8:e254347</a><div class="ref-meta">Double immunothérapie et RN symptomatique · <span class="verify">⚠ chiffres à lire</span></div></div>
+  </div>
+
+  <div class="ref-group">Réirradiation et surveillance</div>
+  <div class="ref-grid">
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.canrad.2024.09.005" target="_blank">Petit 2024 — Cancer Radiother 28:538</a><div class="ref-meta">Revue : réirradiation des métastases cérébrales</div></div>
+    <div class="ref-item"><a href="https://doi.org/10.3171/2022.4.JNS212597" target="_blank">Sneed 2023 — J Neurosurg 138:104</a><div class="ref-meta">SRS répétée en fraction unique · 229 lésions · <span class="src">résumé</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1007/s11060-023-04265-y" target="_blank">Yan 2023 — J Neurooncol 162:119</a><div class="ref-meta">Rattrapage hypofractionné après SRS · 120 cibles · <span class="src">résumé</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.ijrobp.2025.01.017" target="_blank">Sharma 2025 — IJROBP 122:467</a><div class="ref-meta">NTCP de la SRS répétée avec décompte de la dose antérieure · <span class="src">résumé</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1007/s00259-024-07038-5" target="_blank">Verger 2025 — Eur J Nucl Med Mol Imaging 52:1822</a><div class="ref-meta">Recommandation EANM/EANO/RANO/SNMMI : TEP des métastases cérébrales</div></div>
+  </div>
+
   <div class="info-box yellow" style="margin-top:20px">
     <span class="icon">⚠️</span>
     <div style="font-size:0.78rem;"><strong>Avertissement d'usage</strong> — Document de protocole interne à usage clinique exclusif. Ne se substitue pas au jugement clinique individuel ni aux recommandations des sociétés savantes. Toute décision doit être prise en accord avec les données actualisées de la littérature et, si nécessaire, après discussion en RCP.</div>
@@ -722,234 +1067,380 @@
 </div>
 </section>
 
+
+<!-- ══ JOURNAL D'AUDIT ══ -->
+<section id="audit">
+<div class="container">
+  <div class="section-title"><span>🧾</span> Journal d'audit des sources</div>
+  <div class="section-lead">Corrections apportées le 03/11/2026 par rapport à la version précédente (vérification PubMed + textes intégraux du dossier « Atlas neuro – documents »).</div>
+  <ul class="audit-list">
+    <li><strong>Critères multilocalisation</strong> : n'étaient pas issus de « Harterink 2019 » (en réalité Hartgerink 2021, essai fermé prématurément, sans plafond). Présentés comme plafond du service, mis en regard de JLGK0901 et SFRO 2025.</li>
+    <li><strong>Prescription</strong> : « 5–15 mm (4,2 cc) » corrigé — 4,2 cc correspond à une sphère de 20 mm ; une sphère de 15 mm fait ≈ 1,8 cc. Doses inchangées.</li>
+    <li><strong>Tanenbaum</strong> : V33,5 Gy dans la marge ≥ 0,055 cc → RN 35 % vs <strong>5 %</strong> à 12 mois (et non 17 %, valeur à 18 mois). Année corrigée : 2020 (Pract Radiat Oncol 10:36).</li>
+    <li><strong>Minniti 2026, 3 fx</strong> : le risque « 27 % si V24 &gt; 10 cc » venait du groupe 5 fractions ; remplacé par « &gt; 10 %, valeur non publiée ».</li>
+    <li><strong>Upadhyay</strong> : Table 2 vérifiée (V20) ; ajout de la contrainte V23 &lt; 15 cc et de son estimateur ; plus d'extrapolation au-delà de 100 cc. Année : 2024 (IJROBP 118:275).</li>
+    <li><strong>Milano HyTEC</strong> : « &lt; 9 % » corrigé en « &lt; 10 % de nécrose ou d'œdème, &lt; 4 % de RN opérée » ; estimateur V12 limité aux points publiés (plus d'extrapolation jusqu'à 30 %).</li>
+    <li><strong>Yarlagadda</strong> : courbe « RN grade ≥ 2 » obtenue par décalage arbitraire du V50 supprimée ; paramètres du modèle marqués ⚠ (texte intégral non disponible).</li>
+    <li><strong>Andruska</strong> : risques par seuil isolé (22 % / 23 %) non retrouvés dans le résumé, retirés ; seul le résultat combiné (2 % vs 21 %) est conservé. Mention « multiloc concomitante » retirée.</li>
+    <li><strong>Faruqi</strong> : 13 % vs 61 % confirmé sur le texte intégral, pour les lésions intactes.</li>
+    <li><strong>Minniti 2016</strong> : quartiles de V18 confirmés (0 / 6 / 13 / 24 %).</li>
+    <li><strong>Indice de gradient</strong> : Reynolds 2020 porte sur le DGI CyberKnife (et non sur le GI de Paddick) ; définition du GI rattachée à Paddick 2006 ; seuils &lt; 4 / &lt; 7 marqués comme seuils du service.</li>
+    <li><strong>Lehrer 2024</strong> : revue sur la SRS hypofractionnée, et non un récapitulatif des contraintes V12/V15 ; attribution corrigée.</li>
+    <li><strong>Ayala-Peacock</strong> : orthographe corrigée.</li>
+    <li><strong>Contraintes du service</strong> (ponts de dose 14/22/25 Gy, peau, seuils « obligatoires ») : signalées par le badge « Service ».</li>
+    <li><strong>Ajouts</strong> : structure TPS pour chaque contrainte ; Minniti 2013 (cavités 3 fx) ; repères dose-réponse HyTEC ; sections traitements systémiques (RadioSync), réirradiation et surveillance ; bibliographie 2024–2026.</li>
+  </ul>
+</div>
+</section>
+
 <button class="print-btn" onclick="window.print()">🖨️ Imprimer / PDF</button>
 
+
 <script>
-// ── Utilitaires ──────────────────────────────────────────────
+// RADIOSYNC-DEBUT (copié depuis 0__FORMULAIRE.html, dépôt travail — généré par outils/radiosync/maj_radiosync.js : ne pas modifier à la main)
+var RADIOSYNC = {
+  version: "14/10/2026",
+  // [DCI, nom commercial, catégorie, administration, normofractionné, palliatif, stéréotaxie extracrânienne, stéréotaxie intracrânienne]
+  d: [
+    ["Irinotecan","Campto","chimiothérapie","IV","48 h","48 h","48 h","48 h"],
+    ["Topotecan","Hycamtin","chimiothérapie","IV, Oral","24 h","24 h","24 h","24 h"],
+    ["Daunorubicine","Cerubidine","chimiothérapie","IV","5 jours","5 jours","5 jours","5 jours"],
+    ["Doxorubicine","Adriamycine","chimiothérapie","IV","7 jours","7 jours","7 jours","7 jours"],
+    ["Epirubicine","Farmorubicine","chimiothérapie","IV","7 jours","7 jours","7 jours","7 jours"],
+    ["Idarubicine","Zavedos","chimiothérapie","IV","5 jours","5 jours","5 jours","5 jours"],
+    ["Etoposide","Vepeside, Celltop","chimiothérapie","IV, Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Bleomycine","Bléomycine","chimiothérapie","IV, IM, SC","pas d'arrêt, sauf irradiation thoracique : 24 h","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Mercaptopurine","Purinethol","chimiothérapie","Oral","24 h","24 h","24 h","24 h"],
+    ["Fludarabine","Fludara","chimiothérapie","IV, Oral","5 jours","5 jours","5 jours","5 jours"],
+    ["Clofarabine","Evoltra","chimiothérapie","IV","48 h","48 h","48 h","48 h"],
+    ["Cisplatin","Cisplatine","chimiothérapie","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Carboplatin","Paraplatine","chimiothérapie","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Oxaliplatine","Eloxatine","chimiothérapie","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Chlorambucil","Leukeran","chimiothérapie","Oral","24 h","24 h","24 h","24 h"],
+    ["Melphalan","Alkeran","chimiothérapie","IV, Oral","24 h","24 h","24 h","24 h"],
+    ["Cyclophosphamide","Endoxan","chimiothérapie","IV, Oral","48 h","48 h","48 h","48 h"],
+    ["Ifosfamide","Holoxan","chimiothérapie","IV","48 h","48 h","48 h","48 h"],
+    ["5-Fluorouracil","Fluorouracile","chimiothérapie","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Capecitabine","Xeloda","chimiothérapie","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Trifluridine","Lonsurf (avec tipiracil)","chimiothérapie","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Tipiracil","Lonsurf (avec trifluridine)","chimiothérapie","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Gemcitabine","Gemzar","chimiothérapie","IV","7 jours, sauf radiochimiothérapie concomitante à 100 mg/m²","7 jours","7 jours","pas d'arrêt"],
+    ["Cytarabine","Aracytine","chimiothérapie","IV, SC, IT","24 h","24 h","24 h","24 h"],
+    ["Azacitidine","Vidaza","chimiothérapie","SC, IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Methotrexate","Methotrexate","chimiothérapie","Oral, IV, IM, IT","5 jours, 2 semaines si intrathécal","5 jours, 2 semaines si intrathécal","5 jours, 2 semaines si intrathécal","5 jours, 2 semaines si intrathécal"],
+    ["Pemetrexed","Alimta","chimiothérapie","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Raltitrexed","Tomudex","chimiothérapie","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Bendamustine","Levact, Bendeka","chimiothérapie","IV","24 h","24 h","24 h","24 h"],
+    ["Fotemustine","Muphoran","chimiothérapie","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Lomustine","Bélustine","chimiothérapie","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Trabectedine","Yondelis","chimiothérapie","IV","5 jours","pas d'arrêt","5 jours","5 jours"],
+    ["Dacarbazine","Déticène","chimiothérapie","IV","24 h","24 h","24 h","24 h"],
+    ["Procarbazine","Natulan","chimiothérapie","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Mitomycin C","Amétycine","chimiothérapie","IV, Intravésical","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Temozolomide","Temodal","chimiothérapie","Oral, IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Hydroxyurea","Hydrea","chimiothérapie","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Mycophenolate mofetil","Cellcept","chimiothérapie","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Busulfan","Busilvex","chimiothérapie","IV","pas d'association concomitante : avis d'expert nécessaire avant l'irradiation","pas d'association concomitante : avis d'expert nécessaire avant l'irradiation","pas d'association concomitante : avis d'expert nécessaire avant l'irradiation","pas d'association concomitante : avis d'expert nécessaire avant l'irradiation"],
+    ["Paclitaxel","Taxol","chimiothérapie","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Nab-Paclitaxel","Abraxane","chimiothérapie","IV","5 jours","5 jours","5 jours","5 jours"],
+    ["Docetaxel","Taxotère","chimiothérapie","IV","5 jours","5 jours","5 jours","5 jours"],
+    ["Cabazitaxel","Jevtana","chimiothérapie","IV","5 jours","5 jours","5 jours","5 jours"],
+    ["Eribuline","Halaven","chimiothérapie","IV","5 jours","pas d'arrêt","5 jours","pas d'arrêt"],
+    ["Vinblastine","Velbé","chimiothérapie","IV","5 jours","5 jours","5 jours","5 jours"],
+    ["Vincristine","Oncovin","chimiothérapie","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Vinorelbine","Navelbine","chimiothérapie","IV, Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Goserelin","Zoladex","hormonothérapie","SC (implant)","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Leuprorelin","Eligard, Enantone","hormonothérapie","SC, IM","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Triptoreline","Décapeptyl","hormonothérapie","IM, SC","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Degarelix","Firmagon","hormonothérapie","SC","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Relugolix","Orgovyx, Relumina","hormonothérapie","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Bicalutamide","Casodex","hormonothérapie","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Apalutamide","Erleada","hormonothérapie","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Enzalutamide","Xtandi","hormonothérapie","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Darolutamide","Nubeqa","hormonothérapie","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Abiraterone acetate","Zytiga","hormonothérapie","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Tamoxifene","Nolvadex","hormonothérapie","Oral","pas d'arrêt, sauf radiosensibilité intrinsèque","pas d'arrêt, sauf radiosensibilité intrinsèque","pas d'arrêt, sauf radiosensibilité intrinsèque","pas d'arrêt, sauf radiosensibilité intrinsèque"],
+    ["Fulvestrant","Faslodex","hormonothérapie","IM","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Letrozole","Femara","hormonothérapie","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Anastrozole","Arimidex","hormonothérapie","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Exemestane","Aromasine","hormonothérapie","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Megestrol acetate","Megace","hormonothérapie","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Alectinib","Alecensa","thérapie ciblée","Oral","5 jours","pas d'arrêt","5 jours","5 jours"],
+    ["Brigatinib","Alunbrig","thérapie ciblée","Oral","5 jours","pas d'arrêt","5 jours","5 jours"],
+    ["Ceritinib","Zykadia","thérapie ciblée","Oral","5 jours","pas d'arrêt","5 jours","5 jours"],
+    ["Crizotinib","Xalkori","thérapie ciblée","Oral","5 jours","pas d'arrêt","5 jours","5 jours"],
+    ["Lorlatinib","Lorviqua","thérapie ciblée","Oral","5 jours","pas d'arrêt","5 jours","5 jours"],
+    ["Bosutinib","Bosulif","thérapie ciblée","Oral","5 jours","5 jours","5 jours","5 jours"],
+    ["Dasatinib","Sprycel","thérapie ciblée","Oral","24 h","24 h","24 h","24 h"],
+    ["Imatinib","Glivec","thérapie ciblée","Oral","4 jours","4 jours","4 jours","4 jours"],
+    ["Nilotinib","Tasigna","thérapie ciblée","Oral","4 jours","4 jours","4 jours","4 jours"],
+    ["Ponatinib","Iclusig","thérapie ciblée","Oral","5 jours","5 jours","5 jours","5 jours"],
+    ["Acalabrutinib","Calquence","thérapie ciblée","Oral","48 h","48 h","48 h","48 h"],
+    ["Ibrutinib","Imbruvica","thérapie ciblée","Oral","48 h","48 h","48 h","48 h"],
+    ["Pirtobrutinib","Jaypirca","thérapie ciblée","Oral","5 jours","5 jours","5 jours","5 jours"],
+    ["Zanubrutinib","Brukinsa","thérapie ciblée","Oral","24 h","24 h","24 h","24 h"],
+    ["Afatinib","Giotrif","thérapie ciblée","Oral","5 jours","pas d'arrêt","5 jours","pas d'arrêt"],
+    ["Gefitinib","Iressa","thérapie ciblée","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Erlotinib","Tarceva","thérapie ciblée","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Osimertinib","Tagrisso","thérapie ciblée","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Futibatinib","Lytgobi","thérapie ciblée","Oral","24 h","24 h","24 h","24 h"],
+    ["Pemigatinib","Pemazyre","thérapie ciblée","Oral","5 jours","5 jours","5 jours","5 jours"],
+    ["Gilteritinib","Xospata","thérapie ciblée","Oral","5 jours","5 jours","5 jours","5 jours"],
+    ["Lapatinib","Tyverb","thérapie ciblée","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Tucatinib","Tukysa","thérapie ciblée","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Fedratinib","Inrebic","thérapie ciblée","Oral","5 jours","5 jours","5 jours","5 jours"],
+    ["Ruxolitinib","Jakavi","thérapie ciblée","Oral","24 h","24 h","24 h","24 h"],
+    ["Binimetinib","Mektovi","thérapie ciblée","Oral","48 h","48 h","48 h","48 h"],
+    ["Cobimetinib","Cotellic","thérapie ciblée","Oral","7 jours","7 jours","7 jours","7 jours"],
+    ["Trametinib","Mekinist","thérapie ciblée","Oral","48 h","48 h","48 h","48 h"],
+    ["Capmatinib","Tabrecta","thérapie ciblée","Oral","48 h","48 h","48 h","48 h"],
+    ["Cabozantinib","Cabometyx, Cometriq","thérapie ciblée","Oral","21 jours","pas d'arrêt, sauf irradiation abdomino-pelvienne","21 jours","pas d'arrêt"],
+    ["Tepotinib","Tepmetko","thérapie ciblée","Oral","5 jours","5 jours","5 jours","5 jours"],
+    ["Selpercatinib","Retsevmo","thérapie ciblée","Oral","5 jours","5 jours","5 jours","5 jours"],
+    ["Larotrectinib","Vitrakvi","thérapie ciblée","Oral","24 h","24 h","24 h","24 h"],
+    ["Axitinib","Inlyta","thérapie ciblée","Oral","48 h","48 h","48 h","48 h"],
+    ["Lenvatinib","Lenvima, Kisplyx","thérapie ciblée","Oral","5 jours","5 jours","5 jours","5 jours"],
+    ["Sorafenib","Nexavar","thérapie ciblée","Oral","7 jours","pas d'arrêt, sauf irradiation abdomino-pelvienne","7 jours","pas d'arrêt"],
+    ["Pazopanib","Votrient","thérapie ciblée","Oral","5 jours","5 jours","5 jours","5 jours"],
+    ["Ripretinib","Qinlock","thérapie ciblée","Oral","3 jours","3 jours","3 jours","3 jours"],
+    ["Sunitinib","Sutent","thérapie ciblée","Oral","21 jours","pas d'arrêt, sauf irradiation abdomino-pelvienne","21 jours","pas d'arrêt"],
+    ["Obinutuzumab","Gazyvaro","thérapie ciblée","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Rituximab","MabThera, Rituxan","thérapie ciblée","IV, SC","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Cetuximab","Erbitux","thérapie ciblée","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Panitumumab","Vectibix","thérapie ciblée","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Pertuzumab","Perjeta","thérapie ciblée","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Trastuzumab","Herceptin","thérapie ciblée","IV, SC","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Bevacizumab","Avastin","thérapie ciblée","IV","21 jours","pas d'arrêt, sauf irradiation abdomino-pelvienne","21 jours","pas d'arrêt"],
+    ["Ramucirumab","Cyramza","thérapie ciblée","IV","21 jours","pas d'arrêt, sauf irradiation abdomino-pelvienne","21 jours","pas d'arrêt"],
+    ["Daratumumab","Darzalex","thérapie ciblée","IV, SC","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Venetoclax","Venclyxto","thérapie ciblée","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Dabrafenib","Tafinlar","thérapie ciblée","Oral","48 h","48 h","48 h","48 h"],
+    ["Encorafenib","Braftovi","thérapie ciblée","Oral","48 h","48 h","48 h","48 h"],
+    ["Vemurafenib","Zelboraf","thérapie ciblée","Oral","7 jours","7 jours","7 jours","7 jours"],
+    ["Niraparib","Zejula","thérapie ciblée","Oral","5 jours","pas d'arrêt","5 jours","5 jours"],
+    ["Olaparib","Lynparza","thérapie ciblée","Oral","3 jours","pas d'arrêt","3 jours","3 jours"],
+    ["Rucaparib","Rubraca","thérapie ciblée","Oral","5 jours","pas d'arrêt","5 jours","5 jours"],
+    ["Talazoparib","Talzenna","thérapie ciblée","Oral","5 jours","pas d'arrêt","5 jours","5 jours"],
+    ["Bortezomib","Velcade","thérapie ciblée","IV, SC","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Carfilzomib","Kyprolis","thérapie ciblée","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Ixazomib","Ninlaro","thérapie ciblée","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Vismodegib","Erivedge","thérapie ciblée","Oral","5 jours","5 jours","5 jours","5 jours"],
+    ["Sonidegib","Odomzo","thérapie ciblée","Oral","5 jours","5 jours","5 jours","5 jours"],
+    ["Alpelisib","Piqray","thérapie ciblée","Oral","48 h","48 h","48 h","48 h"],
+    ["Idelalisib","Zydelig","thérapie ciblée","Oral","48 h","48 h","48 h","48 h"],
+    ["Everolimus","Afinitor","thérapie ciblée","Oral","7 jours","7 jours","7 jours","7 jours"],
+    ["Sirolimus","Rapamune","thérapie ciblée","Oral","7 jours","7 jours","7 jours","7 jours"],
+    ["Ciclosporin","Neoral","thérapie ciblée","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Tacrolimus","Prograf","thérapie ciblée","Oral","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Vandetanib","Caprelsa","thérapie ciblée","Oral","5 jours","5 jours","5 jours","5 jours"],
+    ["Abemaciclib","Verzenios","thérapie ciblée","Oral","5 jours","pas d'arrêt","5 jours","5 jours"],
+    ["Palbociclib","Ibrance","thérapie ciblée","Oral","5 jours","pas d'arrêt","5 jours","5 jours"],
+    ["Ribociclib","Kisqali","thérapie ciblée","Oral","5 jours","pas d'arrêt","5 jours","5 jours"],
+    ["Vorinostat","Zolinza","thérapie ciblée","Oral","24 h","24 h","24 h","24 h"],
+    ["Panobinostat","Farydak","thérapie ciblée","Oral","5 jours","5 jours","5 jours","5 jours"],
+    ["Ivosidenib","Tibsovo","thérapie ciblée","Oral","5 jours","5 jours","5 jours","5 jours"],
+    ["Enasidenib","Idhifa","thérapie ciblée","Oral","5 jours","5 jours","5 jours","5 jours"],
+    ["Adagrasib","Krazati","thérapie ciblée","Oral","5 jours","5 jours","5 jours","5 jours"],
+    ["Sotorasib","Lumykras","thérapie ciblée","Oral","48 h","48 h","48 h","48 h"],
+    ["Brentuximab vedotin","Adcetris","thérapie ciblée","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Trastuzumab Emtansine","Kadcyla","thérapie ciblée","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","7 jours"],
+    ["Trastuzumab Deruxtecan","Enhertu","thérapie ciblée","IV","7 jours","7 jours","7 jours","7 jours"],
+    ["Enfortumab Vedotin","Padcev","thérapie ciblée","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Sacituzumab govitecan","Trodelvy","thérapie ciblée","IV","5 jours","5 jours","5 jours","5 jours"],
+    ["Aflibercept","Zaltrap","thérapie ciblée","IV","21 jours","pas d'arrêt, sauf irradiation abdomino-pelvienne","21 jours","pas d'arrêt"],
+    ["Lenalidomide","Revlimid","immunothérapie","Oral","24 h","24 h","24 h","24 h"],
+    ["Pomalidomide","Imnovid","immunothérapie","Oral","48 h","48 h","48 h","48 h"],
+    ["Thalidomide","Thalidomide","immunothérapie","Oral","48 h","48 h","48 h","48 h"],
+    ["Nivolumab","Opdivo","immunothérapie","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Pembrolizumab","Keytruda","immunothérapie","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Cemiplimab","Libtayo","immunothérapie","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Dostarlimab","Jemperli","immunothérapie","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Atezolizumab","Tecentriq","immunothérapie","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Avelumab","Bavencio","immunothérapie","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Durvalumab","Imfinzi","immunothérapie","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Ipilimumab","Yervoy","immunothérapie","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"],
+    ["Tremelimumab","Imjudo","immunothérapie","IV","pas d'arrêt","pas d'arrêt","pas d'arrêt","pas d'arrêt"]
+  ]
+};
+// RADIOSYNC-FIN
+
+// ── Thème clair / sombre ─────────────────────────────────────
+var THEME_KEY = 'theme-mo-neuro';
+function toggleTheme() {
+  var light = document.body.classList.toggle('light');
+  try { localStorage.setItem(THEME_KEY, light ? 'light' : 'dark'); } catch (e) {}
+}
+(function () {
+  var t = null;
+  try { t = localStorage.getItem(THEME_KEY); } catch (e) {}
+  if (t === 'light') document.body.classList.add('light');
+})();
+
+// ── Utilitaires estimateurs ──────────────────────────────────
 function toggleCalc(id, btn) {
-  const row = document.getElementById(id);
-  const open = row.classList.toggle('open');
+  var row = document.getElementById(id);
+  var open = row.classList.toggle('open');
   btn.classList.toggle('open', open);
   btn.querySelector('.arrow').textContent = open ? '▴' : '▾';
 }
 
-function showRes(id, pct, desc, src, level) {
-  const el = document.getElementById('r_' + id);
-  el.className = 'risk-result ' + level;
-  document.getElementById('r_' + id + '_p').textContent = pct;
+// n = valeur numérique utilisée pour la couleur et la barre (null = hors domaine)
+function showRes(id, txt, n, desc, src) {
+  var el = document.getElementById('r_' + id);
+  el.className = 'risk-result ' + (n === null ? 'crit' : lvl(n));
+  document.getElementById('r_' + id + '_p').textContent = txt;
   document.getElementById('r_' + id + '_d').textContent = desc;
   document.getElementById('r_' + id + '_s').textContent = src;
-  const bar = document.getElementById('r_' + id + '_b');
-  bar.style.width = Math.min(100, (parseFloat(pct) / 50) * 100) + '%';
+  document.getElementById('r_' + id + '_b').style.width = (n === null ? 100 : Math.min(100, n / 50 * 100)) + '%';
   el.style.display = 'block';
 }
-
-function lvl(n) {
-  if (n < 10) return 'low';
-  if (n < 20) return 'mid';
-  if (n < 40) return 'high';
-  return 'crit';
-}
+function lvl(n) { return n < 10 ? 'low' : n < 20 ? 'mid' : n < 40 ? 'high' : 'crit'; }
+function val(id) { var v = parseFloat(document.getElementById(id).value); return isNaN(v) || v < 0 ? null : v; }
+function fr(x) { return String(Math.round(x * 10) / 10).replace('.', ','); }
 
 // ── Minniti 2011 — V12 Gy (1 fx) ────────────────────────────
-// Q1 <3,3→0% | Q2 3,3–5,9→16% | Q3 6,0–10,9→24% | Q4 >10,9→51% (actuariel 1 an)
+// Actuariel 1 an : Q1 <3,3 → 0 % · Q2 3,3–5,9 → 16 % · Q3 6,0–10,9 → 24 % · Q4 >10,9 → 51 %
 function calcMinniti2011() {
-  const v = parseFloat(document.getElementById('i_c1').value);
-  if (isNaN(v) || v < 0) return;
-  let p, d;
-  if (v < 3.3)        { p = '~0%';  d = 'Q1 (V12 <3,3cc) : risque RN ~0% à 1 an. Excellent.'; }
-  else if (v <= 5.9)  { p = '~16%'; d = 'Q2 (V12 3,3–5,9cc) : risque RN ~16% à 1 an. En dessous du seuil clinique de 8,5cc.'; }
-  else if (v <= 8.5)  { p = '~16-24%'; d = 'Q2-Q3 intermédiaire (V12 6–8,5cc) : risque 16–24% à 1 an. Proche du seuil optimum — surveiller.'; }
-  else if (v <= 10.9) { p = '~24%'; d = 'Q3 (V12 6,0–10,9cc) : risque RN ~24% à 1 an. Dépassement seuil optimum — envisager fractionnement.'; }
-  else                { p = '~51%'; d = 'Q4 (V12 >10,9cc) : risque RN ~51% à 1 an. Dépassement majeur — fractionnement impératif.'; }
-  showRes('c1', p, d, 'Minniti 2011 (Radiat Oncol 6:48) — 206 patients, 310 lésions ≤3,5cm, SRS LINAC 15-20Gy, Rome', lvl(parseFloat(p)));
+  var v = val('i_c1'); if (v === null) return;
+  var n, t, d;
+  if (v < 3.3)        { n = 0;  t = '≈ 0 %';  d = 'Q1 (V12 < 3,3 cc) : risque de RN ≈ 0 % à 1 an.'; }
+  else if (v < 6.0)   { n = 16; t = '≈ 16 %'; d = 'Q2 (V12 3,3–5,9 cc) : risque de RN ≈ 16 % à 1 an.'; }
+  else if (v <= 10.9) { n = 24; t = '≈ 24 %'; d = 'Q3 (V12 6,0–10,9 cc) : risque de RN ≈ 24 % à 1 an.' + (v > 8.5 ? ' Au-delà du seuil de 8,5 cc : envisager le fractionnement.' : ' Sous le seuil de 8,5 cc.'); }
+  else                { n = 51; t = '≈ 51 %'; d = 'Q4 (V12 > 10,9 cc) : risque de RN ≈ 51 % à 1 an — fractionnement fortement recommandé.'; }
+  showRes('c1', t, n, d + ' RN symptomatique ou non.', 'Minniti 2011 (Radiat Oncol 6:48) — 206 patients, 310 lésions < 3,5 cm, LINAC 15–20 Gy, Rome.');
 }
 
-// ── Milano HyTEC 2021 — V12 (1 fx, tissu total) ─────────────
-// V12 ~1,84cc→1% sRN | 5cc→10% | 10cc→15% | 15cc→20% (données poolées UCSF/Cincinnati)
+// ── Milano HyTEC 2021 — V12 tissu total (1 fx) ──────────────
+// Points publiés : 5 cc → ≈10 % · 10 cc → ≈15 % · >15 cc → ≈20 % (RN symptomatique)
 function calcMilano1fx() {
-  const v = parseFloat(document.getElementById('i_c2').value);
-  if (isNaN(v) || v < 0) return;
-  let pN, d;
-  if (v <= 1.84)      { pN = 1;  d = 'V12 ≤1,84cc : risque sRN ~1% (données UCSF). Très faible risque.'; }
-  else if (v <= 5)    { pN = Math.round(1 + (v-1.84)/(5-1.84)*9);  d = `V12 ${v}cc : risque sRN estimé ~${pN}%. Acceptable (sous seuil obligatoire 10cc).`; }
-  else if (v <= 10)   { pN = Math.round(10 + (v-5)/5*5);  d = `V12 ${v}cc : risque sRN estimé ~${pN}%. Près du seuil obligatoire (10cc).`; }
-  else if (v <= 15)   { pN = Math.round(15 + (v-10)/5*5);  d = `V12 ${v}cc : risque sRN estimé ~${pN}%. Dépassement seuil obligatoire — fractionnement recommandé.`; }
-  else                { pN = Math.min(30, Math.round(20 + (v-15)*0.5));  d = `V12 ${v}cc : risque sRN estimé ~${pN}%. Risque élevé — fractionnement impératif.`; }
-  showRes('c2', '~' + pN + '%', d, 'Milano HyTEC 2021 (IJROBP 110:68-86) — données poolées 51 études ~8000 patients, tissu total incluant GTV', lvl(pN));
+  var v = val('i_c2'); if (v === null) return;
+  var src = 'Milano HyTEC 2021 (IJROBP 110:68) — analyse poolée, tissu total incluant la cible.';
+  if (v < 5)  return showRes('c2', '< 10 %', 8, 'V12 ' + fr(v) + ' cc : sous le premier point publié (5 cc ≈ 10 %).', src);
+  if (v <= 15) { var n = v <= 10 ? 10 + (v - 5) : 15 + (v - 10); return showRes('c2', '≈ ' + fr(n) + ' %', n, 'V12 ' + fr(v) + ' cc : interpolation entre les points publiés.' + (v > 10 ? ' Au-delà du seuil obligatoire de 10 cc.' : ''), src); }
+  showRes('c2', '≥ 20 %', null, 'V12 ' + fr(v) + ' cc : au-delà de 15 cc, HyTEC indique ≈ 20 % ; pas de valeur publiée plus haut (hors domaine). Fractionnement recommandé.', src);
 }
 
-// ── Yarlagadda 2026 — V15 Gy, modèle NTCP logistique ────────
-// NTCP(V) = exp(4γ50·(V/V50−1)) / (1 + exp(4γ50·(V/V50−1)))
-// V50=16.29cc, γ50=0.88 (toute RN). Seuils publiés: 2,52cc→5%, 4,55cc→7,5%, 6,06cc→10%
+// ── Yarlagadda 2026 — V15 Gy, modèle logistique ─────────────
+// NTCP(V) = exp(4γ50·(V/V50−1)) / (1 + exp(4γ50·(V/V50−1))), V50 = 16,29 cc, γ50 = 0,88 (⚠ à vérifier)
 function calcYarlagadda() {
-  const v = parseFloat(document.getElementById('i_c3').value);
-  if (isNaN(v) || v <= 0) return;
-  const V50=16.29, g50=0.88;
-  const e = 4*g50*(v/V50 - 1);
-  const ntcp = Math.exp(e) / (1 + Math.exp(e));
-  const pN = Math.round(ntcp * 1000) / 10;
-  // G2+ approximation (V50 décalé ~+2cc d'après seuils publiés 4,65cc→5%)
-  const e2 = 4*g50*(v/(V50+2.1) - 1);
-  const ntcp2 = Math.exp(e2) / (1 + Math.exp(e2));
-  const pN2 = Math.round(ntcp2 * 1000) / 10;
-  let extra = '';
-  if (v <= 2.52) extra = ' ✓ Seuil <5% toute RN respecté.';
-  else if (v <= 4.65) extra = ' — V15>2,52cc : toute RN >5%. G2+ <5% si V15<4,65cc.';
-  else if (v <= 6.06) extra = ' — RN G2+ >5%. Optimisation conseillée.';
-  else extra = ' — Risque cliniquement significatif. Réoptimisation ou fractionnement.';
-  showRes('c3', pN + '%', `Toute RN : ~${pN}% · RN G2+ (symptomatique) : ~${pN2}%${extra}`,
-    'Yarlagadda 2026 (Radonc 214:111266) — Modèle logistique NTCP, 1494 SBM ≤2cm, Gamma Knife Icon, Miami. Meilleur prédicteur vs V12 (AUC supérieur)', lvl(pN));
+  var v = val('i_c3'); if (v === null || v === 0) return;
+  var e = 4 * 0.88 * (v / 16.29 - 1), n = Math.round(Math.exp(e) / (1 + Math.exp(e)) * 1000) / 10;
+  var x = v < 2.52 ? ' Sous 2,52 cc : < 5 % toute RN.' : v < 4.65 ? ' Entre 2,52 et 4,65 cc : toute RN > 5 %, RN grade ≥ 2 < 5 %.' : ' Au-delà de 4,65 cc : RN grade ≥ 2 > 5 % — optimiser.';
+  showRes('c3', fr(n) + ' %', n, 'Toute RN (modèle) : ≈ ' + fr(n) + ' %.' + x + ' ⚠ Paramètres non vérifiés sur le texte intégral.', 'Yarlagadda 2026 (Radiother Oncol 214:111266) — fraction unique, petites métastases.');
 }
 
 // ── Minniti 2016 — V18 Gy (3 fx) ────────────────────────────
-// Q1 <22,8→0% | Q2 22,8-30,2→6% | Q3 30,3-41,2→13% | Q4 >41,2→24% (1 an)
+// 1 an : Q1 <22,8 → 0 % · Q2 22,8–30,2 → 6 % · Q3 30,3–41,2 → 13 % · Q4 >41,2 → 24 %
 function calcMinniti2016() {
-  const v = parseFloat(document.getElementById('i_c4').value);
-  if (isNaN(v) || v < 0) return;
-  let p, d;
-  if (v < 22.8)       { p = '~0%';  d = 'Q1 (V18 <22,8cc) : risque RN ~0% à 1 an. Excellent.'; }
-  else if (v <= 30.2) { p = '~6%';  d = 'Q2 (V18 22,8–30,2cc) : risque RN ~6% à 1 an. Sous le seuil obligatoire de 30cc — acceptable.'; }
-  else if (v <= 41.2) { p = '~13%'; d = 'Q3 (V18 30,3–41,2cc) : risque RN ~13% à 1 an. Dépassement seuil obligatoire (30cc) — optimisation requise.'; }
-  else                { p = '~24%'; d = 'Q4 (V18 >41,2cc) : risque RN ~24% à 1 an. Risque élevé — passage en 5 fractions recommandé.'; }
-  showRes('c4', p, d, 'Minniti 2016 (IJROBP 95:1142-48) — 289 patients, lésions >2cm, 3×9Gy, SRS LINAC, Rome. Analyse per-patient.', lvl(parseFloat(p)));
+  var v = val('i_c4'); if (v === null) return;
+  var n, d;
+  if (v < 22.8)       { n = 0;  d = 'Q1 (V18 < 22,8 cc) : risque de RN ≈ 0 % à 1 an.'; }
+  else if (v <= 30.2) { n = 6;  d = 'Q2 (V18 22,8–30,2 cc) : risque de RN ≈ 6 % à 1 an — sous le seuil obligatoire de 30 cc.'; }
+  else if (v <= 41.2) { n = 13; d = 'Q3 (V18 30,3–41,2 cc) : risque de RN ≈ 13 % à 1 an — au-delà du seuil obligatoire de 30 cc.'; }
+  else                { n = 24; d = 'Q4 (V18 > 41,2 cc) : risque de RN ≈ 24 % à 1 an — passage en 5 fractions recommandé.'; }
+  showRes('c4', '≈ ' + n + ' %', n, d + ' RN symptomatique ou non.', 'Minniti 2016 (IJROBP 95:1142) — 3×9 Gy, lésions > 2 cm, encéphale sain, Rome.');
 }
 
-// ── Upadhyay 2023 — V20 Gy (3 fx) ───────────────────────────
-// Table 2 publiée : V20 <4cc→5%/2% | <10cc→7.5%/3.5% | <20cc→10%/5% | <40cc→15%/7.5%
-// <60cc→18%/10% | <80cc→22%/12% | <100cc→27%/15%
-function calcUpadhyay() {
-  const v = parseFloat(document.getElementById('i_c5').value);
-  if (isNaN(v) || v < 0) return;
-  const table = [[4,5,2],[10,7.5,3.5],[20,10,5],[40,15,7.5],[60,18,10],[80,22,12],[100,27,15]];
-  let anyRN, g3RN;
-  for (let i = 0; i < table.length; i++) {
-    if (v < table[i][0]) {
-      if (i === 0) { anyRN = table[0][1]; g3RN = table[0][2]; }
-      else {
-        const lo = table[i-1], hi = table[i];
-        const t = (v - lo[0]) / (hi[0] - lo[0]);
-        anyRN = Math.round((lo[1] + t*(hi[1]-lo[1]))*10)/10;
-        g3RN = Math.round((lo[2] + t*(hi[2]-lo[2]))*10)/10;
-      }
-      break;
-    }
-    if (i === table.length-1) {
-      anyRN = Math.min(40, Math.round(27 + (v-100)*0.1));
-      g3RN = Math.min(25, Math.round(15 + (v-100)*0.05));
+// ── Upadhyay 2024 — Table 2 (3 fx, PTV + 1 cm) ──────────────
+var UPADHYAY = {
+  V20: [[4, 5, 2], [10, 7.5, 3.5], [20, 10, 5], [40, 15, 7.5], [60, 18, 10], [80, 22, 12], [100, 27, 15]],
+  V23: [[15, 10, 5], [20, 12, 6], [40, 15, 8], [60, 22, 12], [80, 28, 16], [100, 35, 20]]
+};
+function calcUpadhyay(param) {
+  var id = param === 'V20' ? 'c5' : 'c11', v = val('i_' + id); if (v === null) return;
+  var src = 'Upadhyay 2024 (IJROBP 118:275) — Table 2, 3 fx LINAC, 2518 lésions ; structure PTV + 1 cm.';
+  var t = UPADHYAY[param];
+  for (var i = 0; i < t.length; i++) {
+    if (v < t[i][0]) {
+      var ok = param === 'V20' ? (v < 20 ? ' ✓ V20 < 20 cc respecté.' : ' ✗ V20 ≥ 20 cc.') : (v < 15 ? ' ✓ V23 < 15 cc respecté.' : ' ✗ V23 ≥ 15 cc.');
+      return showRes(id, '≤ ' + fr(t[i][1]) + ' % / ≤ ' + fr(t[i][2]) + ' %', t[i][1],
+        param + ' ' + fr(v) + ' cc (< ' + t[i][0] + ' cc) : toute RN ≤ ' + fr(t[i][1]) + ' % · RN grade ≥ 3 ≤ ' + fr(t[i][2]) + ' %.' + ok, src);
     }
   }
-  const critere = v < 20 ? '✓ V20<20cc respecté.' : '✗ V20 dépasse 20cc — optimisation recommandée.';
-  showRes('c5', `~${anyRN}% / ~${g3RN}%`,
-    `Toute RN : ~${anyRN}% · G3RN (symptomatique sévère) : ~${g3RN}% — ${critere}`,
-    'Upadhyay 2023 (IJROBP 118:275-84) — 2518 lésions, 3fx LINAC HyperArc, V20 = best predictor toute RN, V23 = G3RN. Table 2.', lvl(anyRN));
+  showRes(id, 'hors domaine', null, param + ' ' + fr(v) + ' cc : au-delà du dernier seuil publié (100 cc).', src);
 }
 
-// ── Faruqi 2020 — BMC30 (5 fx) ────────────────────────────
-// Seuil unique : BMC30 <10.5cc → sRN 13% à 1 an vs ≥10.5cc → 61%
+// ── Faruqi 2020 — BMC30 (5 fx, lésions intactes) ────────────
 function calcFaruqi() {
-  const v = parseFloat(document.getElementById('i_c6').value);
-  if (isNaN(v) || v < 0) return;
-  let p, d;
-  if (v < 10.5) { p = '~13%'; d = 'BMC30 <10,5cc : sRN ~13% à 1 an. Critère respecté.'; }
-  else          { p = '~61%'; d = 'BMC30 ≥10,5cc : sRN ~61% à 1 an (OR 7,2, p=0,02). Dépassement majeur — réduire dose, modifier plan ou discuter chirurgie.'; }
-  showRes('c6', p, d, 'Faruqi 2020 (IJROBP 106:772-79) — 250 cibles (132 intactes + 118 cavités), 5fx LINAC Elekta Sunnybrook. Seuil sur lésions intactes.', lvl(parseFloat(p)));
+  var v = val('i_c6'); if (v === null) return;
+  var src = 'Faruqi 2020 (IJROBP 106:772) — 132 lésions intactes, 5 fx LINAC, PTV 2 mm, Sunnybrook. Seuil établi sur lésions intactes.';
+  if (v < 10.5) showRes('c6', '≈ 13 %', 13, 'BMC30 ' + fr(v) + ' cc < 10,5 cc : RN symptomatique ≈ 13 % à 1 an.', src);
+  else showRes('c6', '≈ 61 %', 61, 'BMC30 ' + fr(v) + ' cc ≥ 10,5 cc : RN symptomatique ≈ 61 % à 1 an (OR 7,2). L\'équipe source passe alors de 30 à 27,5 Gy, ou discute la chirurgie.' + (v >= 14 ? ' Au-delà du seuil obligatoire du service (14 cc).' : ''), src);
 }
 
-// ── Tanenbaum 2019 — Hotspot marge PTV (5 fx, cavités) ─────
-function calcTanenbaum() {
-  const v110 = parseFloat(document.getElementById('i_c8a').value);
-  const v335 = parseFloat(document.getElementById('i_c8b').value);
-  const h110 = !isNaN(v110) && v110 >= 0;
-  const h335 = !isNaN(v335) && v335 >= 0;
-  if (!h110 && !h335) return;
-  let lines = [], highRisk = false;
-  if (h110) {
-    if (v110 > 0.67) { highRisk = true; lines.push(`V110% marge=${v110}cc >0,67cc → HR 8,47 ✗`); }
-    else lines.push(`V110% marge=${v110}cc ≤0,67cc ✓`);
-  }
-  if (h335) {
-    if (v335 >= 0.055) { highRisk = true; lines.push(`V33,5Gy marge=${v335}cc ≥0,055cc → RN ~35% à 12 mois ✗`); }
-    else lines.push(`V33,5Gy marge=${v335}cc <0,055cc → RN ~17% à 12 mois ✓`);
-  }
-  let p = highRisk ? '~35%' : '~17%';
-  let d = lines.join(' | ') + (highRisk
-    ? ' — Seuil(s) dépassé(s) : RN radiographique ~35% à 12 mois (HR 8,47 si V110%>0,67cc).'
-    : ' — Seuils respectés : RN radiographique ~17% à 12 mois (risque de base de la cohorte).');
-  showRes('c8', p, d, 'Tanenbaum 2019 (PRRO 10:36-43) — 55 cavités post-op 5fx LINAC 25-35Gy, Emory. RN radiographique 18,2% à 1 an. V25/V30/V35 non prédictifs dans cette cohorte.', lvl(parseFloat(p)));
-}
-
-// ── Minniti 2026 — 3 fx, cavités ─────────────────────────────
-// V20(B-GTV) ≤15cc→sRN 7,1% · 15-30cc→19,2% · >30cc→30,4% à 1 an (p=0.009)
-// V24(B-GTV) ≤10cc→sRN <10% à 1 an (p=0.003)
-function calcMinniti2026_3fx() {
-  const v20 = parseFloat(document.getElementById('i_c9a').value);
-  const v24 = parseFloat(document.getElementById('i_c9b').value);
-  const h20 = !isNaN(v20) && v20 >= 0;
-  const h24 = !isNaN(v24) && v24 >= 0;
-  if (!h20 && !h24) return;
-  let lines = [], maxRisk = 0;
-  if (h20) {
-    let r;
-    if (v20 <= 15) { r = 7; lines.push(`V20(B-GTV)=${v20}cc ≤15cc → sRN ~7% à 1 an ✓`); }
-    else if (v20 <= 30) { r = 19; lines.push(`V20(B-GTV)=${v20}cc 15–30cc → sRN ~19% à 1 an ⚠`); }
-    else { r = 30; lines.push(`V20(B-GTV)=${v20}cc >30cc → sRN ~30% à 1 an ✗`); }
-    maxRisk = Math.max(maxRisk, r);
-  }
-  if (h24) {
-    let r;
-    if (v24 <= 10) { r = 8; lines.push(`V24(B-GTV)=${v24}cc ≤10cc → sRN <10% ✓`); }
-    else { r = 27; lines.push(`V24(B-GTV)=${v24}cc >10cc → sRN ~27% à 1 an ✗`); }
-    maxRisk = Math.max(maxRisk, r);
-  }
-  showRes('c9', '~' + maxRisk + '%',
-    lines.join(' | ') + ` — Risque sRN estimé ~${maxRisk}% à 1 an.`,
-    'Minniti 2026 (J Neurooncol 176:175) — 103 cavités 3×9Gy LINAC TrueBeam VMAT, Rome. sRN 12,8% à 1 an. V20(B-GTV) meilleur prédicteur.', lvl(maxRisk));
-}
-
-// ── Minniti 2026 — 5 fx, cavités ─────────────────────────────
-// V24(B-GTV) ≤15cc→sRN 4,8% · >15cc→27,3% (p=0.003)
-// V30(B-GTV) ≤10cc→sRN 5,9% · >10cc→22,3% (p=0.02)
-function calcMinniti2026_5fx() {
-  const v24 = parseFloat(document.getElementById('i_c10a').value);
-  const v30 = parseFloat(document.getElementById('i_c10b').value);
-  const h24 = !isNaN(v24) && v24 >= 0;
-  const h30 = !isNaN(v30) && v30 >= 0;
-  if (!h24 && !h30) return;
-  let lines = [], maxRisk = 0;
-  if (h24) {
-    let r = v24 <= 15 ? 5 : 27;
-    lines.push(v24 <= 15 ? `V24(B-GTV)=${v24}cc ≤15cc → sRN ~5% à 1 an ✓` : `V24(B-GTV)=${v24}cc >15cc → sRN ~27% à 1 an ✗`);
-    maxRisk = Math.max(maxRisk, r);
-  }
-  if (h30) {
-    let r = v30 <= 10 ? 6 : 22;
-    lines.push(v30 <= 10 ? `V30(B-GTV)=${v30}cc ≤10cc → sRN ~6% à 1 an ✓` : `V30(B-GTV)=${v30}cc >10cc → sRN ~22% à 1 an ✗`);
-    maxRisk = Math.max(maxRisk, r);
-  }
-  showRes('c10', '~' + maxRisk + '%',
-    lines.join(' | ') + ` — Risque sRN estimé ~${maxRisk}% à 1 an.`,
-    'Minniti 2026 (J Neurooncol 176:175) — 99 cavités 5×6Gy LINAC TrueBeam VMAT, Rome. sRN 9,8% à 1 an. V24 et V30 (B-GTV) prédicteurs significatifs.', lvl(maxRisk));
-}
-
-// ── Andruska 2021 — BrainV25 + BrainV30 (5 fx) ─────────────
-// V25 ≤16cc→2% vs >16cc→22% à 2 ans | V30 ≤10cc→3% vs >10cc→23% à 2 ans
-// Violation ≥1 seuil → 21% à 2 ans (p=0.007) | aucun seuil → 2%
+// ── Andruska 2021 — V25 + V30 (5 fx) ────────────────────────
 function calcAndruska() {
-  const v25 = parseFloat(document.getElementById('i_c7a').value);
-  const v30 = parseFloat(document.getElementById('i_c7b').value);
-  const h25 = !isNaN(v25) && v25 >= 0;
-  const h30 = !isNaN(v30) && v30 >= 0;
-  if (!h25 && !h30) return;
-  let viol = 0, lines = [];
-  if (h25) { if (v25 > 16) { viol++; lines.push(`BrainV25=${v25}cc >16cc → ~22% sRN ✗`); } else lines.push(`BrainV25=${v25}cc ≤16cc → ~2% sRN ✓`); }
-  if (h30) { if (v30 > 10) { viol++; lines.push(`BrainV30=${v30}cc >10cc → ~23% sRN ✗`); } else lines.push(`BrainV30=${v30}cc ≤10cc → ~3% sRN ✓`); }
-  let p, summary;
-  if (viol === 0) { p = '~2%'; summary = 'Aucun seuil dépassé → risque sRN ≤2–3% à 2 ans.'; }
-  else            { p = '~21%'; summary = `${viol} seuil(s) dépassé(s) → risque sRN ~21% à 2 ans (violation ≥1 seuil, p=0,007).`; }
-  showRes('c7', p, lines.join(' | ') + ' — ' + summary,
-    'Andruska 2021 (Radonc 156:181-87) — 117 lésions sans SRS préalable, 5fx Washington University/Phelps. AUC BrainV25=0,87 · BrainV30=0,88.', lvl(parseFloat(p)));
+  var a = val('i_c7a'), b = val('i_c7b'); if (a === null && b === null) return;
+  var viol = 0, l = [];
+  if (a !== null) { if (a > 16) { viol++; l.push('V25 ' + fr(a) + ' cc > 16 ✗'); } else l.push('V25 ' + fr(a) + ' cc ≤ 16 ✓'); }
+  if (b !== null) { if (b > 10) { viol++; l.push('V30 ' + fr(b) + ' cc > 10 ✗'); } else l.push('V30 ' + fr(b) + ' cc ≤ 10 ✓'); }
+  var src = 'Andruska 2021 (Radiother Oncol 156:181) — 5 fx, lésions sans SRS antérieure, encéphale non atteint.';
+  if (viol) showRes('c7', '≈ 21 %', 21, l.join(' · ') + ' — au moins un seuil dépassé : RN symptomatique ≈ 21 % à 2 ans.', src);
+  else showRes('c7', '≈ 2 %', 2, l.join(' · ') + ' — aucun seuil dépassé : RN symptomatique ≈ 2 % à 2 ans.' + (a === null || b === null ? ' (un seul paramètre saisi)' : ''), src);
 }
+
+// ── Tanenbaum 2020 — point chaud dans la marge PTV (5 fx, cavités) ──
+function calcTanenbaum() {
+  var a = val('i_c8a'), b = val('i_c8b'); if (a === null && b === null) return;
+  var l = [], hi = false, n = 5;
+  if (a !== null) { if (a > 0.67) { hi = true; l.push('V110% ' + fr(a) + ' cc > 0,67 → HR 8,47 ✗'); } else l.push('V110% ' + fr(a) + ' cc ≤ 0,67 ✓'); }
+  if (b !== null) { if (b >= 0.0546) { hi = true; n = 35; l.push('V33,5 Gy ' + String(b).replace('.', ',') + ' cc ≥ 0,055 → RN ≈ 35 % à 12 mois ✗'); } else l.push('V33,5 Gy ' + String(b).replace('.', ',') + ' cc < 0,055 → RN ≈ 5 % à 12 mois (17 % à 18 mois) ✓'); }
+  if (hi && n < 35) n = 30;
+  showRes('c8', hi ? 'risque élevé' : '≈ 5 %', n, l.join(' · ') + (hi ? ' — limiter le point chaud à la cavité (CTV).' : ''),
+    'Tanenbaum 2020 (Pract Radiat Oncol 10:36) — 55 cavités, 5 fx 25–35 Gy, RN radiologique.');
+}
+
+// ── Minniti 2026 — cavités 3 fx ─────────────────────────────
+function calcMinniti2026_3fx() {
+  var a = val('i_c9a'), b = val('i_c9b'); if (a === null && b === null) return;
+  var l = [], n = 0;
+  if (a !== null) {
+    if (a <= 15) { n = Math.max(n, 7.1); l.push('V20 ' + fr(a) + ' cc ≤ 15 → ≈ 7 % ✓'); }
+    else if (a <= 30) { n = Math.max(n, 19.2); l.push('V20 ' + fr(a) + ' cc 15–30 → ≈ 19 % ⚠'); }
+    else { n = Math.max(n, 30.4); l.push('V20 ' + fr(a) + ' cc > 30 → ≈ 30 % ✗'); }
+  }
+  if (b !== null) {
+    if (b < 10) { n = Math.max(n, 9); l.push('V24 ' + fr(b) + ' cc < 10 → < 10 % ✓'); }
+    else { n = Math.max(n, 10); l.push('V24 ' + fr(b) + ' cc ≥ 10 → > 10 % (valeur non publiée) ✗'); }
+  }
+  showRes('c9', '≈ ' + fr(n) + ' %', n, l.join(' · ') + ' — RN symptomatique à 1 an.',
+    'Minniti 2026 (J Neurooncol 176:175) — 103 cavités, 3×9 Gy, encéphale − GTV. RN symptomatique globale 12,8 % à 1 an.');
+}
+
+// ── Minniti 2026 — cavités 5 fx ─────────────────────────────
+function calcMinniti2026_5fx() {
+  var a = val('i_c10a'), b = val('i_c10b'); if (a === null && b === null) return;
+  var l = [], n = 0;
+  if (a !== null) { if (a <= 15) { n = Math.max(n, 4.8); l.push('V24 ' + fr(a) + ' cc ≤ 15 → ≈ 5 % ✓'); } else { n = Math.max(n, 27.3); l.push('V24 ' + fr(a) + ' cc > 15 → ≈ 27 % ✗'); } }
+  if (b !== null) { if (b <= 10) { n = Math.max(n, 5.9); l.push('V30 ' + fr(b) + ' cc ≤ 10 → ≈ 6 % ✓'); } else { n = Math.max(n, 22.3); l.push('V30 ' + fr(b) + ' cc > 10 → ≈ 22 % ✗'); } }
+  showRes('c10', '≈ ' + fr(n) + ' %', n, l.join(' · ') + ' — RN symptomatique à 1 an.',
+    'Minniti 2026 (J Neurooncol 176:175) — 99 cavités, 5×6 Gy, encéphale − GTV. RN symptomatique globale 9,8 % à 1 an.');
+}
+
+// ── RadioSync : colonne stéréotaxie intracrânienne ──────────
+function rsNorm(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+function rsEsc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function rsClasse(v) {
+  if (v === "pas d'arrêt") return 'zero';
+  if (/sauf|si |avis/.test(v)) return 'cond';
+  return 'stop';
+}
+function rsRender() {
+  var q = rsNorm(document.getElementById('rs-q').value), cat = document.getElementById('rs-cat').value, stop = document.getElementById('rs-stop').checked;
+  var rows = RADIOSYNC.d.filter(function (r) {
+    if (cat && r[2] !== cat) return false;
+    if (stop && r[7] === "pas d'arrêt") return false;
+    return !q || rsNorm(r[0] + ' ' + r[1]).indexOf(q) >= 0;
+  });
+  document.getElementById('rs-body').innerHTML = rows.map(function (r) {
+    var c = rsClasse(r[7]);
+    return '<tr><td class="td-oar">' + rsEsc(r[0]) + '</td><td>' + rsEsc(r[1]) + '</td><td>' + rsEsc(r[2]) + '</td><td>' + rsEsc(r[3]) +
+      '</td><td class="rs-delai ' + c + '">' + (c === 'cond' ? '⚠ ' : '') + rsEsc(r[7]) + '</td></tr>';
+  }).join('') || '<tr><td colspan="5" style="color:var(--muted)">Aucun traitement trouvé.</td></tr>';
+  document.getElementById('rs-count').textContent = rows.length + ' / ' + RADIOSYNC.d.length;
+}
+document.getElementById('rs-source').textContent = 'Source : RadioSync (radiosync.com), tableau du ' + RADIOSYNC.version + ' — arrêt avant le début et après la fin de la radiothérapie, colonne « stéréotaxie intracrânienne ».';
+rsRender();
 </script>
 
 </body>
