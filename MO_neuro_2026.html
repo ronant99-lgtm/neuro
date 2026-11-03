@@ -439,7 +439,8 @@
     <li><strong>V18 Gy</strong> <span class="struct">encéphale sain</span> : <span style="font-family:var(--font-mono);color:var(--accent2)">V18 &lt; 24-26 cc</span> si possible · <span style="font-family:var(--font-mono);color:var(--red)">V18 &lt; 30 cc</span> obligatoire <span class="ev svc">Seuils du service</span>
       <br>Quartiles de V18 &lt; 22,8 / 22,8–30,2 / 30,3–41,2 / &gt; 41,2 cc → RN (symptomatique ou non) à 1 an 0 / 6 / 13 / 24 % ; 5 % si V18 ≤ 30,2 cc vs 14 % au-delà (lésions &gt; 2 cm, 3×9 Gy) — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2016.03.013" target="_blank">Minniti 2016</a> <span class="ev retro">Rétrospectif</span> <span class="src">PDF lu</span></li>
     <li><strong>V20 Gy</strong> <span class="struct">encéphale + cible</span> <span class="tag per-patient">par patient</span> <span style="font-family:var(--font-mono);color:var(--green)">V20 &lt; 20 cc</span> → &lt; 10 % de nécrose ou d'œdème, &lt; 4 % de RN opérée — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2020.08.013" target="_blank">Milano HyTEC 2021</a> <span class="ev cons">Consensus</span></li>
-    <li><strong>V20 Gy et V23 Gy</strong> <span class="struct">PTV + 1 cm (cible + encéphale)</span> <span class="tag per-lesion">par lésion</span> <span style="font-family:var(--font-mono);color:var(--green)">V20 &lt; 20 cc</span> → toute RN ≤ 10 %, grade ≥ 3 ≤ 5 % · <span style="font-family:var(--font-mono);color:var(--green)">V23 &lt; 15 cc</span> → grade ≥ 3 ≤ 5 % — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2023.07.040" target="_blank">Upadhyay 2024</a> <span class="ev retro">Rétrospectif</span> <span class="src">PDF lu</span></li>
+    <li><strong>V20 Gy et V23 Gy</strong> <span class="struct">PTV + 1 cm (cible + encéphale)</span> <span class="tag per-lesion">par lésion</span> <span style="font-family:var(--font-mono);color:var(--green)">V20 &lt; 20 cc</span> → toute RN ≤ 10 %, grade ≥ 3 ≤ 5 % · <span style="font-family:var(--font-mono);color:var(--green)">V23 &lt; 15 cc</span> → grade ≥ 3 ≤ 5 % — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2023.07.040" target="_blank">Upadhyay 2024</a> <span class="ev retro">Rétrospectif</span> <span class="src">PDF + supplément lus</span>
+      <br><small style="color:var(--muted)">Dans le supplément, tous les paramètres de V10 à V25 prédisent la RN de façon voisine (AUC 0,75–0,79) : V20 et V23 ne sont que les mieux classés.</small></li>
     <li><strong>Peau</strong> : Dmax &lt; 24 Gy · V22,5 &lt; 10 cc <span class="ev svc">Service</span> · Autres OAR : <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2021.09.027" target="_blank">Timmerman 2022</a></li>
     <li><strong>Multiloc</strong> : si pont &gt; <span class="highlight">isodose 22 Gy</span> → 5 fx, séquentiel ou réoptimisation <span class="ev svc">Service</span></li>
   </ul>
@@ -455,7 +456,30 @@
     <li><strong>Multiloc</strong> : si pont &gt; <span class="highlight">isodose 25 Gy</span> → séquentiel ou réoptimisation <span class="ev svc">Service</span></li>
   </ul>
   <div class="info-box red"><span class="icon">⛔</span><div>Si critères non remplis → <strong>traitement séquentiel, discussion RCP</strong></div></div>
-  <div class="info-box yellow"><span class="icon">🧮</span><div style="font-size:0.78rem"><strong>Contraintes du service (ponts de dose, peau, seuils « obligatoires »)</strong> : sans référence publiée. Chantier à prévoir : les exprimer de façon homogène entre 1, 3 et 5 fractions (par exemple en EQD2 ou en dose équivalente en fraction unique).</div></div>
+  <div class="info-box yellow"><span class="icon">🧮</span><div style="font-size:0.78rem"><strong>Contraintes du service (ponts de dose, peau, seuils « obligatoires »)</strong> : sans référence publiée. Chantier à prévoir : les exprimer de façon homogène entre 1, 3 et 5 fractions (par exemple en EQD2 ou en dose équivalente en fraction unique). Point de départ ci-dessous.</div></div>
+  <details class="card" style="margin-top:10px">
+    <summary style="cursor:pointer;font-size:0.84rem;font-weight:600;color:var(--text)">📊 Seuils publiés exprimés en dose équivalente en fraction unique (SFED) — compilation de Faruqi 2020</summary>
+    <p style="margin:8px 0">Tableau S1 du supplément de <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2019.12.002" target="_blank">Faruqi 2020</a> (conversion par le modèle linéaire-quadratique, α/β = 2 Gy). Compilation secondaire : chaque ligne reprend l'étude d'origine, dont la définition de la RN et la structure diffèrent. <span class="src">supplément lu</span></p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Étude</th><th>Cibles · schéma</th><th>Structure</th><th>Seuil (SFED)</th><th>RN au-dessus / en dessous</th></tr></thead>
+        <tbody style="font-size:0.76rem">
+          <tr><td>Faruqi 2020</td><td>250 (intactes + cavités) · 5 fx, 30 Gy</td><td>Encéphale − GTV/CTV</td><td class="td-constraint">V14,5 ≥ 10,5 cc</td><td>61,1 % / 12,6 % (sympt.)</td></tr>
+          <tr><td>Peng 2018</td><td>294 · CyberKnife 1–5 fx</td><td>Encéphale + cible</td><td class="td-constraint">V14 ≥ 20 cc</td><td>12,1 % (toute) · 3,4 % (grade 3)</td></tr>
+          <tr><td>Doré 2016</td><td>97 cavités · 23,1 Gy / 3 fx</td><td>Encéphale − PTV</td><td class="td-constraint">V12,8 (médiane 4,6 vs 10 cc)</td><td>NR</td></tr>
+          <tr><td>Minniti 2016</td><td>343 · 1 fx ou 27 Gy / 3 fx</td><td>Encéphale − cible</td><td class="td-constraint">1 fx : V12 &gt; 13,2 cc · 3 fx : V11 &gt; 30,2 cc</td><td>28 % / 13 % · 14 % / 5 %</td></tr>
+          <tr><td>Sneed 2015</td><td>2200 · Gamma Knife 1 fx</td><td>Encéphale + cible</td><td class="td-constraint">V12 &gt; 3,3 cc · V10 &gt; 4,3 cc</td><td>13–14 % / NR</td></tr>
+          <tr><td>Inoue 2014</td><td>85 · CyberKnife 5 fx</td><td>Encéphale − GTV</td><td class="td-constraint">V14 &gt; 7 cc · V14 &gt; 3 cc</td><td>12,5 % / 0 % (opérée) · 11,2 % / 0 % (sympt.)</td></tr>
+          <tr><td>Minniti 2014</td><td>171 · 27 Gy / 3 fx</td><td>Encéphale − cible</td><td class="td-constraint">V12,8 ≥ 20,9 cc · V11 ≥ 26,2 cc</td><td>14 % / 4 %</td></tr>
+          <tr><td>Inoue 2013</td><td>159 · CyberKnife 27 Gy / 3 fx</td><td>Encéphale − GTV</td><td class="td-constraint">V14 ≥ 5 cc · ≥ 7 cc</td><td>5,7 % / 1,4 % · 9 % / 0 % (opérée)</td></tr>
+          <tr><td>Minniti 2013</td><td>101 cavités · 27 Gy / 3 fx</td><td>Encéphale − cible</td><td class="td-constraint">V14,5 ≥ 16,8 cc</td><td>16 % / 2 %</td></tr>
+          <tr><td>Minniti 2011</td><td>310 · 1 fx 15–20 Gy</td><td>Encéphale − cible</td><td class="td-constraint">V10 &gt; 12,6 cc · V12 &gt; 10,9 cc</td><td>47 % / NR</td></tr>
+          <tr><td>Blonigen 2010</td><td>173 · 1 fx</td><td>Encéphale + cible</td><td class="td-constraint">V10 &gt; 6,4 cc · V12 &gt; 4,8 cc</td><td>&gt; 34,6 % / 7,1 %</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:6px;font-size:0.74rem;color:var(--muted)">Repères de conversion cités par Andruska 2021 (α/β = 3) : 25 Gy et 30 Gy en 5 fractions ≈ 12,8 Gy et 15 Gy en fraction unique ; HyTEC V24 (5 fx) ≈ 12,2 Gy. Faruqi : BMC30 (5 fx) ≈ 14,5 Gy en fraction unique (α/β = 2).</p>
+  </details>
 </div>
 </section>
 
@@ -923,7 +947,12 @@
       <h4>Immunothérapie</h4>
       <ul>
         <li>Cavités, 3 et 5 fractions : immunothérapie concomitante associée à la RN symptomatique en univarié, tendance en multivarié (p = 0,07) — <a class="cite-link" href="https://doi.org/10.1007/s11060-025-05357-7" target="_blank">Minniti 2026</a> <span class="ev retro">Rétrospectif</span></li>
-        <li>Double immunothérapie (ipilimumab + nivolumab) avec SRS, mélanome et CBNPC (288 patients, 1704 métastases) : meilleur contrôle local (94,7 % vs 88,3 % à 1 an ; HR 0,40) et intracrânien, <strong>sans excès d'événements neurologiques</strong> (33 % vs 37 %) ; pas d'effet du caractère concomitant ou séquentiel — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2023.12.002" target="_blank">Vaios 2024</a> <span class="ev retro">Rétrospectif</span> <span class="src">PDF lu</span></li>
+        <li><strong>Double immunothérapie (ipilimumab + nivolumab)</strong>, même cohorte Duke (mélanome et CBNPC, 288 patients, 1704 métastases) :
+          <ul>
+            <li>RN symptomatique <strong>augmentée</strong> : 21,8 % à 24 mois vs 13,5 % (immunothérapie simple) et 13,7 % (sans immunothérapie) ; HR ajusté 2,4. En concomitant (± 4 semaines) : 25,9 % vs 12,3 %. Les auteurs proposent, si possible, de <strong>décaler la SRS de 4 semaines ou de fractionner</strong> — <a class="cite-link" href="https://doi.org/10.1001/jamanetworkopen.2025.4347" target="_blank">Vaios 2025</a> <span class="ev retro">Rétrospectif</span> <span class="src">PDF lu</span></li>
+            <li>Meilleur contrôle local (94,7 % vs 88,3 % à 1 an ; HR 0,40) et intracrânien ; événements neurologiques toutes causes non différents (33 % vs 37 %) — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2023.12.002" target="_blank">Vaios 2024</a> <span class="src">PDF lu</span></li>
+          </ul>
+        </li>
         <li><strong>SFRO 2025</strong> : pas d'augmentation de la RN ni des hémorragies sous immunothérapie ; neurotoxicité accrue avec le trastuzumab emtansine et les anti-BRAF ; <strong>anti-BRAF à suspendre ≥ 3 jours avant et après une stéréotaxie fractionnée, ≥ 1 jour avant et après une dose unique</strong> ; surveillance neurologique si le traitement est poursuivi — <a class="cite-link" href="https://doi.org/10.1016/j.canrad.2025.104765" target="_blank">Antoni 2025</a> <span class="ev cons">Consensus</span></li>
         <li>CBNPC sous immunothérapie ou thérapie ciblée : dose réduite → effets radiques 10,8 % vs 23,7 %, contrôle local non inférieur — <a class="cite-link" href="https://doi.org/10.1227/neu.0000000000003961" target="_blank">Chung 2026</a> <span class="ev retro">Rétrospectif</span></li>
         <li>Immunothérapie concomitante associée à une survie plus longue (HR 0,34) dans CYBER-SPACE — <a class="cite-link" href="https://doi.org/10.1093/neuonc/noae201" target="_blank">El Shafie 2025</a></li>
@@ -1059,7 +1088,8 @@
     <div class="ref-item"><a href="https://radiosync.com" target="_blank">RadioSync — radiosync.com</a><div class="ref-meta">Tableau des arrêts autour de la radiothérapie (export du 14/10/2026)</div></div>
     <div class="ref-item"><a href="https://doi.org/10.1007/s11060-026-05450-5" target="_blank">Steele 2026 — J Neurooncol 176:203</a><div class="ref-meta">Thérapies ciblées concomitantes et RN symptomatique · <span class="src">résumé</span></div></div>
     <div class="ref-item"><a href="https://doi.org/10.1016/j.breast.2026.104751" target="_blank">Chun 2026 — Breast 87:104751</a><div class="ref-meta">Trastuzumab deruxtecan + SRS · <span class="src">résumé</span></div></div>
-    <div class="ref-item"><a href="https://doi.org/10.1016/j.ijrobp.2023.12.002" target="_blank">Vaios 2024 — IJROBP 118:1507</a><div class="ref-meta">Double immunothérapie + SRS, mélanome et CBNPC · <span class="src">PDF lu</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1016/j.ijrobp.2023.12.002" target="_blank">Vaios 2024 — IJROBP 118:1507</a><div class="ref-meta">Double immunothérapie + SRS : contrôle intracrânien · <span class="src">PDF lu</span></div></div>
+    <div class="ref-item"><a href="https://doi.org/10.1001/jamanetworkopen.2025.4347" target="_blank">Vaios 2025 — JAMA Netw Open 8:e254347</a><div class="ref-meta">Double immunothérapie concomitante et RN symptomatique (HR 2,4) · <span class="src">PDF lu</span></div></div>
   </div>
 
   <div class="ref-group">Réirradiation et surveillance</div>
@@ -1095,6 +1125,8 @@
     <li><strong>Andruska</strong> : texte intégral lu (03/11) — risques par seuil isolé confirmés (V25 : 2 % vs 22 % ; V30 : 3 % vs 23 %) et rétablis ; structure = encéphale − GTV. Mention « multiloc concomitante » retirée.</li>
     <li><strong>SFRO 2025</strong> : texte intégral lu (03/11) — repères sur le volume total (25 cm³), les doses, les volumes de cavité et les anti-BRAF ajoutés ; le référentiel ne contient pas de tableau de contraintes dosimétriques.</li>
     <li><strong>Vaios</strong> : l'article JAMA Netw Open 2025 (résumé sans chiffres) est remplacé par Vaios 2024 (IJROBP 118:1507), lu en entier.</li>
+    <li><strong>Vaios 2025</strong> (lu le 03/11, même cohorte que Vaios 2024) : double immunothérapie associée à une RN symptomatique plus fréquente (HR 2,4 ; 25,9 % vs 12,3 % à 24 mois en concomitant). Les deux articles sont désormais présentés ensemble.</li>
+    <li><strong>Suppléments</strong> : tableau S1 de Faruqi (seuils publiés en dose équivalente en fraction unique) ajouté pour le chantier EQD2 ; supplément d'Upadhyay : performances voisines de V10 à V25 (AUC 0,75–0,79). Les figures du supplément d'Upadhyay (courbes NTCP) ne sont pas exploitables en texte.</li>
     <li><strong>Upadhyay 2024 (≥ 15 métastases)</strong> : texte intégral lu — ajout des taux actuariels (RN 28 % tout grade et 13,2 % symptomatique à 1 an) et du suivi médian court (5,1 mois).</li>
     <li><strong>Faruqi</strong> : 13 % vs 61 % confirmé sur le texte intégral, pour les lésions intactes.</li>
     <li><strong>Minniti 2016</strong> : quartiles de V18 confirmés (0 / 6 / 13 / 24 %).</li>
