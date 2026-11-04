@@ -459,7 +459,7 @@
       <button type="button" data-sit="place">Lésion en place</button><button type="button" data-sit="adj">Lit opératoire</button><button type="button" data-sit="" class="on">Toutes</button>
     </div>
   </div>
-  <div class="crit-legend">Ordre de lecture : <strong>critère</strong> · structure · périmètre → <strong>seuil et risque associé</strong> → données de l'étude → remarques. Situation : <span class="sit place">en place</span> <span class="sit adj">cavité</span> <span class="sit both">en place + cavité</span></div>
+  <div class="crit-legend">Ordre de lecture : <strong>critère</strong> · structure · périmètre → <strong>seuil et risque associé</strong> → données de l'étude → remarques. <strong>Toute RN</strong> = radiologique, symptomatique ou non · <strong>RN symptomatique</strong> = avec signes neurologiques (≈ grade ≥ 2). Situation : <span class="sit place">en place</span> <span class="sit adj">cavité</span> <span class="sit both">en place + cavité</span></div>
 
   <!-- ─────────── 1 FRACTION ─────────── -->
   <div class="fx-block" data-fx="1">
@@ -469,7 +469,7 @@
       <div class="crit-head"><strong>Généralités</strong> <span class="ev svc">Service</span></div>
       <div class="crit-line">Couverture PTV &gt; 95 % · indice de conformation de Paddick (pCI) &gt; 0,8 · nCI &lt; 1,2 · RTOG &lt; 1,4</div>
       <div class="crit-line">Indice de gradient de Paddick (GI) &lt; 4 par ring, maximum 7. GI = V<sub>½ isodose de prescription</sub> / V<sub>isodose de prescription</sub> (<a class="cite-link" href="https://doi.org/10.3171/sup.2006.105.7.194" target="_blank">Paddick 2006</a>) ; le gradient atteignable est moins bon pour les petites cibles (<a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2019.11.408" target="_blank">Reynolds 2020</a>, DGI CyberKnife).</div>
-      <div class="crit-line">Multilocalisation : pont de dose &gt; <span class="highlight">isodose 14 Gy</span> → hypofractionné ou réoptimisation · OAR : <a class="cite-link" href="#oar">tableau 1 à 5 fractions</a></div>
+      <div class="crit-line">Multilocalisation : pont de dose &gt; <span class="highlight">isodose 14 Gy</span> → hypofractionné ou réoptimisation · OAR et peau : <a class="cite-link" href="#oar">tableau des organes à risque</a></div>
       <div class="crit-fail">⛔ Critère obligatoire non rempli → passage en traitement fractionné</div>
     </div>
 
@@ -481,15 +481,16 @@
     </div>
 
     <div class="crit-card" data-sit="place">
-      <div class="crit-head"><strong>V12 Gy</strong> <span class="struct">encéphale sain (structure non précisée dans l'article)</span> <span class="tag optimum">Optimum</span> <span class="sit place">en place</span></div>
-      <div class="crit-main opt">V12 &lt; 8,5 cc <span class="risk">(RN &gt; 10 % à 1 an au-delà)</span></div>
-      <div class="crit-data">Point médian du 3<sup>e</sup> quartile ; RN symptomatique ou non — <a class="cite-link" href="https://doi.org/10.1186/1748-717X-6-48" target="_blank">Minniti 2011</a> <span class="ev retro">Rétrospectif</span> <span class="src">texte intégral lu</span></div>
+      <div class="crit-head"><strong>V12 Gy</strong> <span class="struct">encéphale − GTV</span> <span class="tag optimum">Optimum</span> <span class="sit place">en place</span></div>
+      <div class="crit-main opt">V12 &lt; 8,5 cc <span class="risk">(toute RN &gt; 10 % à 1 an au-delà)</span></div>
+      <div class="crit-data">Point médian du 3<sup>e</sup> quartile de V12 — <a class="cite-link" href="https://doi.org/10.1186/1748-717X-6-48" target="_blank">Minniti 2011</a> <span class="ev retro">Rétrospectif</span> <span class="src">texte intégral lu</span></div>
+      <div class="crit-note">L'article parle du « volume de cerveau » recevant 12 Gy, sans préciser la soustraction de la cible.</div>
     </div>
 
     <div class="crit-card" data-sit="place">
-      <div class="crit-head"><strong>V15 Gy</strong> <span class="struct">GTV + 1 cm (cible incluse, sans os ni ventricules ; dose composite si chevauchement)</span> <span class="tag per-lesion">par lésion</span> <span class="tag optimum">Objectif</span> <span class="sit place">en place</span></div>
+      <div class="crit-head"><strong>V15 Gy</strong> <span class="struct">encéphale + cible (GTV + 1 cm, cible incluse, sans os ni ventricules ; dose composite si chevauchement)</span> <span class="tag per-lesion">par lésion</span> <span class="tag optimum">Objectif</span> <span class="sit place">en place</span></div>
       <div class="crit-main ok">V15 &lt; 2,52 cc <span class="risk">(toute RN &lt; 5 %)</span></div>
-      <div class="crit-data">V15 &lt; 4,65 cc → RN grade ≥ 2 &lt; 5 % · seuils 7,5 % / 10 % : 4,55 / 6,06 cc (toute RN) et 6,36 / 7,68 cc (grade ≥ 2) — <a class="cite-link" href="https://doi.org/10.1016/j.radonc.2025.111266" target="_blank">Yarlagadda 2026</a> <span class="ev retro">Rétrospectif</span> <span class="src">PDF lu</span></div>
+      <div class="crit-data">V15 &lt; 4,65 cc → RN symptomatique (grade ≥ 2) &lt; 5 % · seuils 7,5 % / 10 % : 4,55 / 6,06 cc (toute RN) et 6,36 / 7,68 cc (RN symptomatique) — <a class="cite-link" href="https://doi.org/10.1016/j.radonc.2025.111266" target="_blank">Yarlagadda 2026</a> <span class="ev retro">Rétrospectif</span> <span class="src">PDF lu</span></div>
       <div class="crit-note">Métastases ≤ 2 cm (médiane 0,45 cm), Gamma Knife 20–24 Gy, 1494 lésions.</div>
     </div>
 
@@ -506,27 +507,27 @@
     <div class="crit-card gen" data-sit="place adj">
       <div class="crit-head"><strong>Généralités</strong> <span class="ev svc">Service</span></div>
       <div class="crit-line">Couverture PTV &gt; 95 % · indice de conformation &gt; 0,8</div>
-      <div class="crit-line">Peau : Dmax &lt; 24 Gy · V22,5 Gy &lt; 10 cc · Multilocalisation : pont de dose &gt; <span class="highlight">isodose 22 Gy</span> → 5 fx, séquentiel ou réoptimisation · OAR : <a class="cite-link" href="#oar">tableau 1 à 5 fractions</a></div>
+      <div class="crit-line">Multilocalisation : pont de dose &gt; <span class="highlight">isodose 22 Gy</span> → 5 fx, séquentiel ou réoptimisation · OAR et peau : <a class="cite-link" href="#oar">tableau des organes à risque</a></div>
       <div class="crit-fail">⛔ Critère obligatoire non rempli → passage en 5 fractions</div>
     </div>
 
     <div class="crit-card" data-sit="place adj">
-      <div class="crit-head"><strong>V18 Gy</strong> <span class="struct">encéphale − cible</span> <span class="tag obligatoire">Obligatoire (service)</span> <span class="sit both">en place + cavité</span></div>
-      <div class="crit-main obl">V18 &lt; 30 cc <span class="risk">(RN ≈ 5 % sous 30,2 cc vs 14 % au-delà)</span></div>
+      <div class="crit-head"><strong>V18 Gy</strong> <span class="struct">encéphale − GTV</span> <span class="tag obligatoire">Obligatoire (service)</span> <span class="sit both">en place + cavité</span></div>
+      <div class="crit-main obl">V18 &lt; 30 cc <span class="risk">(toute RN ≈ 5 % sous 30,2 cc vs 14 % au-delà)</span></div>
       <div class="crit-line">Si possible <span class="mono opt">V18 &lt; 24–26 cc</span> <span class="ev svc">Seuils du service</span></div>
-      <div class="crit-data">Quartiles &lt; 22,8 / 22,8–30,2 / 30,3–41,2 / &gt; 41,2 cc → RN (symptomatique ou non) à 1 an 0 / 6 / 13 / 24 % — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2016.03.013" target="_blank">Minniti 2016</a> <span class="ev retro">Rétrospectif</span> <span class="src">PDF lu</span></div>
-      <div class="crit-note">Données issues de lésions en place &gt; 2 cm, 3 × 9 Gy.</div>
+      <div class="crit-data">Quartiles &lt; 22,8 / 22,8–30,2 / 30,3–41,2 / &gt; 41,2 cc → toute RN à 1 an 0 / 6 / 13 / 24 % — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2016.03.013" target="_blank">Minniti 2016</a> <span class="ev retro">Rétrospectif</span> <span class="src">PDF lu</span></div>
+      <div class="crit-note">Données issues de lésions en place &gt; 2 cm, 3 × 9 Gy. L'article parle d'« encéphale sain » (normal brain), sans préciser la soustraction.</div>
     </div>
 
     <div class="crit-card" data-sit="place">
       <div class="crit-head"><strong>V20 Gy</strong> <span class="struct">encéphale + cible</span> <span class="tag per-patient">par patient</span> <span class="tag optimum">Objectif</span> <span class="sit place">en place</span></div>
-      <div class="crit-main ok">V20 &lt; 20 cc <span class="risk">(nécrose ou œdème &lt; 10 %)</span></div>
+      <div class="crit-main ok">V20 &lt; 20 cc <span class="risk">(toute RN ou œdème &lt; 10 %)</span></div>
       <div class="crit-data">&lt; 4 % de RN opérée — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2020.08.013" target="_blank">Milano HyTEC 2021</a> <span class="ev cons">Consensus</span></div>
     </div>
 
     <div class="crit-card" data-sit="place">
       <div class="crit-head"><strong>V20 Gy</strong> <span class="struct">PTV + 1 cm (cible + encéphale)</span> <span class="tag per-lesion">par lésion</span> <span class="tag optimum">Objectif</span> <span class="sit place">en place</span></div>
-      <div class="crit-main ok">V20 &lt; 20 cc <span class="risk">(toute RN ≤ 10 %, grade ≥ 3 ≤ 5 %)</span></div>
+      <div class="crit-main ok">V20 &lt; 20 cc <span class="risk">(toute RN ≤ 10 %, RN grade ≥ 3 ≤ 5 %)</span></div>
       <div class="crit-data"><a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2023.07.040" target="_blank">Upadhyay 2024</a> <span class="ev retro">Rétrospectif</span> <span class="src">PDF + supplément lus</span></div>
       <div class="crit-note">Cohorte surtout de lésions en place (22,6 % des patients ont aussi été opérés d'au moins une métastase).</div>
     </div>
@@ -553,10 +554,10 @@
     </div>
 
     <div class="crit-card" data-sit="adj">
-      <div class="crit-head"><strong>V24 Gy</strong> <span class="struct">encéphale sain</span> <span class="tag per-lesion">par cavité</span> <span class="tag optimum">Objectif</span> <span class="sit adj">cavité</span></div>
-      <div class="crit-main ok">V24 &lt; 16,8 cc <span class="risk">(RN 2 % vs 16 % au-delà)</span></div>
+      <div class="crit-head"><strong>V24 Gy</strong> <span class="struct">encéphale − GTV</span> <span class="tag per-lesion">par cavité</span> <span class="tag optimum">Objectif</span> <span class="sit adj">cavité</span></div>
+      <div class="crit-main ok">V24 &lt; 16,8 cc <span class="risk">(toute RN 2 % vs 16 % au-delà)</span></div>
       <div class="crit-data">Taux bruts ; 3 % vs 8 % à 1 an — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2013.03.037" target="_blank">Minniti 2013</a> <span class="ev retro">Rétrospectif</span></div>
-      <div class="crit-note">Cavités &gt; 3 cm, 3 × 9 Gy, PTV = cavité + 2 mm.</div>
+      <div class="crit-note">Cavités &gt; 3 cm, 3 × 9 Gy, GTV = cavité, PTV = cavité + 2 mm. L'article parle d'« encéphale sain » (normal brain), sans préciser la soustraction.</div>
     </div>
   </div>
 
@@ -567,34 +568,33 @@
     <div class="crit-card gen" data-sit="place adj">
       <div class="crit-head"><strong>Généralités</strong> <span class="ev svc">Service</span></div>
       <div class="crit-line">Couverture PTV &gt; 95 % · indice de conformation &gt; 0,8</div>
-      <div class="crit-line">Peau : V30 Gy &lt; 10 cc · Multilocalisation : pont de dose &gt; <span class="highlight">isodose 25 Gy</span> → séquentiel ou réoptimisation · OAR : <a class="cite-link" href="#oar">tableau 1 à 5 fractions</a></div>
-      <div class="crit-fail">⛔ Critère obligatoire non rempli → traitement séquentiel, discussion en RCP</div>
+      <div class="crit-line">Multilocalisation : pont de dose &gt; <span class="highlight">isodose 25 Gy</span> → séquentiel ou réoptimisation · OAR et peau : <a class="cite-link" href="#oar">tableau des organes à risque</a></div>
+      <div class="crit-fail">⛔ Critères non remplis → traitement séquentiel, discussion en RCP</div>
     </div>
 
-    <div class="crit-card" data-sit="place adj">
-      <div class="crit-head"><strong>V30 Gy</strong> <span class="struct">encéphale − GTV</span> <span class="tag per-lesion">par lésion</span> <span class="tag obligatoire">Obligatoire (service)</span> <span class="sit both">en place + cavité</span></div>
-      <div class="crit-main obl">V30 &lt; 14 cc <span class="ev svc">Service</span></div>
-      <div class="crit-line">Si possible <span class="mono opt">V30 &lt; 10,5 cc</span> <span class="risk">(RN symptomatique à 1 an 13 % vs 61 % au-delà, OR 7,2)</span></div>
-      <div class="crit-data">BMC30 sur lésions en place — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2019.12.002" target="_blank">Faruqi 2020</a> <span class="ev retro">Rétrospectif</span> <span class="src">PDF lu</span></div>
+    <div class="crit-card" data-sit="place">
+      <div class="crit-head"><strong>V30 Gy</strong> <span class="struct">encéphale − GTV</span> <span class="tag per-lesion">par lésion</span> <span class="tag optimum">Objectif</span> <span class="sit place">en place</span></div>
+      <div class="crit-main ok">V30 &lt; 10,5 cc <span class="risk">(RN symptomatique à 1 an 13 % vs 61 % au-delà)</span></div>
+      <div class="crit-data">BMC30 sur lésions en place, OR 7,2 — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2019.12.002" target="_blank">Faruqi 2020</a> <span class="ev retro">Rétrospectif</span> <span class="src">PDF lu</span></div>
       <div class="crit-note">L'équipe de Sunnybrook passe de 30 à 27,5 Gy si BMC30 &gt; 10 cc.</div>
     </div>
 
     <div class="crit-card" data-sit="place adj">
-      <div class="crit-head"><strong>V25 Gy</strong> <span class="struct">encéphale − GTV (parenchyme entier jusqu'au foramen magnum)</span> <span class="tag per-lesion">par lésion</span> <span class="tag optimum">Objectif</span> <span class="sit both">en place + cavité</span></div>
+      <div class="crit-head"><strong>V25 Gy</strong> <span class="struct">encéphale − GTV</span> <span class="tag per-lesion">par lésion</span> <span class="tag optimum">Objectif</span> <span class="sit both">en place + cavité</span></div>
       <div class="crit-main ok">V25 &lt; 16 cc <span class="risk">(RN symptomatique à 2 ans 2 % vs 22 %)</span></div>
       <div class="crit-data"><a class="cite-link" href="https://doi.org/10.1016/j.radonc.2020.12.011" target="_blank">Andruska 2021</a> <span class="ev retro">Rétrospectif</span> <span class="src">PDF lu</span></div>
-      <div class="crit-note">Lésions en place ou réséquées, sans SRS antérieure. Aucun seuil (V25, V30) dépassé : 2 % ; au moins un : 21 %.</div>
+      <div class="crit-note">Encéphale = parenchyme entier jusqu'au foramen magnum. Lésions en place ou réséquées, sans SRS antérieure. Aucun seuil (V25, V30) dépassé : 2 % ; au moins un : 21 %.</div>
     </div>
 
     <div class="crit-card" data-sit="place adj">
-      <div class="crit-head"><strong>V30 Gy</strong> <span class="struct">encéphale − GTV (parenchyme entier jusqu'au foramen magnum)</span> <span class="tag per-lesion">par lésion</span> <span class="tag optimum">Objectif</span> <span class="sit both">en place + cavité</span></div>
+      <div class="crit-head"><strong>V30 Gy</strong> <span class="struct">encéphale − GTV</span> <span class="tag per-lesion">par lésion</span> <span class="tag optimum">Objectif</span> <span class="sit both">en place + cavité</span></div>
       <div class="crit-main ok">V30 &lt; 10 cc <span class="risk">(RN symptomatique à 2 ans 3 % vs 23 %)</span></div>
       <div class="crit-data"><a class="cite-link" href="https://doi.org/10.1016/j.radonc.2020.12.011" target="_blank">Andruska 2021</a> <span class="ev retro">Rétrospectif</span></div>
     </div>
 
     <div class="crit-card" data-sit="place">
       <div class="crit-head"><strong>V24 Gy</strong> <span class="struct">encéphale + cible</span> <span class="tag per-patient">par patient</span> <span class="tag optimum">Objectif</span> <span class="sit place">en place</span></div>
-      <div class="crit-main ok">V24 &lt; 20 cc <span class="risk">(nécrose ou œdème &lt; 10 %)</span></div>
+      <div class="crit-main ok">V24 &lt; 20 cc <span class="risk">(toute RN ou œdème &lt; 10 %)</span></div>
       <div class="crit-data">&lt; 4 % de RN opérée — <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2020.08.013" target="_blank">Milano HyTEC 2021</a> <span class="ev cons">Consensus</span></div>
     </div>
 
@@ -613,14 +613,14 @@
 
     <div class="crit-card" data-sit="adj">
       <div class="crit-head"><strong>V110 %</strong> <span class="struct">marge PTV − CTV (tissu sain autour de la cavité)</span> <span class="tag per-lesion">par cavité</span> <span class="tag optimum">Objectif</span> <span class="sit adj">cavité</span></div>
-      <div class="crit-main ok">V110 % &lt; 0,67 cc <span class="risk">(au-delà : HR 8,47 de RN radiologique)</span></div>
+      <div class="crit-main ok">V110 % &lt; 0,67 cc <span class="risk">(au-delà : toute RN, HR 8,47)</span></div>
       <div class="crit-data"><a class="cite-link" href="https://doi.org/10.1016/j.prro.2019.09.014" target="_blank">Tanenbaum 2020</a> <span class="ev retro">Rétrospectif</span></div>
       <div class="crit-note">Ce point chaud dans la marge est prédictif ; V25, V30, V35 de l'encéphale − CTV ne le sont pas dans cette série (55 cavités, 25–35 Gy). Estimateur : <a class="cite-link" href="#lit-op">§ Lit opératoire</a>.</div>
     </div>
 
     <div class="crit-card" data-sit="adj">
       <div class="crit-head"><strong>V33,5 Gy</strong> <span class="struct">marge PTV − CTV</span> <span class="tag per-lesion">par cavité</span> <span class="tag optimum">Objectif</span> <span class="sit adj">cavité</span></div>
-      <div class="crit-main ok">V33,5 Gy &lt; 0,055 cc <span class="risk">(RN radiologique 5 % vs 35 % à 12 mois)</span></div>
+      <div class="crit-main ok">V33,5 Gy &lt; 0,055 cc <span class="risk">(toute RN 5 % vs 35 % à 12 mois)</span></div>
       <div class="crit-data"><a class="cite-link" href="https://doi.org/10.1016/j.prro.2019.09.014" target="_blank">Tanenbaum 2020</a> <span class="ev retro">Rétrospectif</span></div>
     </div>
   </div>
@@ -651,13 +651,13 @@
           <tr><td>Faruqi 2020</td><td>250 (intactes + cavités) · 5 fx, 30 Gy</td><td>Encéphale − GTV/CTV</td><td class="td-constraint">V14,5 ≥ 10,5 cc</td><td>61,1 % / 12,6 % (sympt.)</td></tr>
           <tr><td>Peng 2018</td><td>294 · CyberKnife 1–5 fx</td><td>Encéphale + cible</td><td class="td-constraint">V14 ≥ 20 cc</td><td>12,1 % (toute) · 3,4 % (grade 3)</td></tr>
           <tr><td>Doré 2016</td><td>97 cavités · 23,1 Gy / 3 fx</td><td>Encéphale − PTV</td><td class="td-constraint">V12,8 (médiane 4,6 vs 10 cc)</td><td>NR</td></tr>
-          <tr><td>Minniti 2016</td><td>343 · 1 fx ou 27 Gy / 3 fx</td><td>Encéphale − cible</td><td class="td-constraint">1 fx : V12 &gt; 13,2 cc · 3 fx : V11 &gt; 30,2 cc</td><td>28 % / 13 % · 14 % / 5 %</td></tr>
+          <tr><td>Minniti 2016</td><td>343 · 1 fx ou 27 Gy / 3 fx</td><td>Encéphale − GTV</td><td class="td-constraint">1 fx : V12 &gt; 13,2 cc · 3 fx : V11 &gt; 30,2 cc</td><td>28 % / 13 % · 14 % / 5 %</td></tr>
           <tr><td>Sneed 2015</td><td>2200 · Gamma Knife 1 fx</td><td>Encéphale + cible</td><td class="td-constraint">V12 &gt; 3,3 cc · V10 &gt; 4,3 cc</td><td>13–14 % / NR</td></tr>
           <tr><td>Inoue 2014</td><td>85 · CyberKnife 5 fx</td><td>Encéphale − GTV</td><td class="td-constraint">V14 &gt; 7 cc · V14 &gt; 3 cc</td><td>12,5 % / 0 % (opérée) · 11,2 % / 0 % (sympt.)</td></tr>
-          <tr><td>Minniti 2014</td><td>171 · 27 Gy / 3 fx</td><td>Encéphale − cible</td><td class="td-constraint">V12,8 ≥ 20,9 cc · V11 ≥ 26,2 cc</td><td>14 % / 4 %</td></tr>
+          <tr><td>Minniti 2014</td><td>171 · 27 Gy / 3 fx</td><td>Encéphale − GTV</td><td class="td-constraint">V12,8 ≥ 20,9 cc · V11 ≥ 26,2 cc</td><td>14 % / 4 %</td></tr>
           <tr><td>Inoue 2013</td><td>159 · CyberKnife 27 Gy / 3 fx</td><td>Encéphale − GTV</td><td class="td-constraint">V14 ≥ 5 cc · ≥ 7 cc</td><td>5,7 % / 1,4 % · 9 % / 0 % (opérée)</td></tr>
-          <tr><td>Minniti 2013</td><td>101 cavités · 27 Gy / 3 fx</td><td>Encéphale − cible</td><td class="td-constraint">V14,5 ≥ 16,8 cc</td><td>16 % / 2 %</td></tr>
-          <tr><td>Minniti 2011</td><td>310 · 1 fx 15–20 Gy</td><td>Encéphale − cible</td><td class="td-constraint">V10 &gt; 12,6 cc · V12 &gt; 10,9 cc</td><td>47 % / NR</td></tr>
+          <tr><td>Minniti 2013</td><td>101 cavités · 27 Gy / 3 fx</td><td>Encéphale − GTV</td><td class="td-constraint">V14,5 ≥ 16,8 cc</td><td>16 % / 2 %</td></tr>
+          <tr><td>Minniti 2011</td><td>310 · 1 fx 15–20 Gy</td><td>Encéphale − GTV</td><td class="td-constraint">V10 &gt; 12,6 cc · V12 &gt; 10,9 cc</td><td>47 % / NR</td></tr>
           <tr><td>Blonigen 2010</td><td>173 · 1 fx</td><td>Encéphale + cible</td><td class="td-constraint">V10 &gt; 6,4 cc · V12 &gt; 4,8 cc</td><td>&gt; 34,6 % / 7,1 %</td></tr>
         </tbody>
       </table>
@@ -737,11 +737,11 @@
         <!-- 1 fx V12 Minniti -->
         <tr>
           <td><span class="badge-fx fx1">1 fx</span></td>
-          <td class="td-oar">Encéphale sain<br><small style="color:var(--muted)">V12 Gy</small></td>
+          <td class="td-oar">Encéphale − GTV<br><small style="color:var(--muted)">V12 Gy</small></td>
           <td class="td-constraint">V12 &lt; 8,5 cc</td>
           <td><span class="tag optimum">Optimum</span></td>
           <td><span class="tag per-lesion">par lésion</span></td>
-          <td style="font-size:0.76rem;color:var(--text-dim)">RN à 1 an (symptomatique ou non) :<br>Q1 &lt;3,3cc → 0% · Q2 3,3–5,9 → 16%<br>Q3 6,0–10,9 → 24% · Q4 &gt;10,9 → 51%</td>
+          <td style="font-size:0.76rem;color:var(--text-dim)">Toute RN à 1 an :<br>Q1 &lt;3,3cc → 0% · Q2 3,3–5,9 → 16%<br>Q3 6,0–10,9 → 24% · Q4 &gt;10,9 → 51%</td>
           <td class="td-ref"><a href="https://doi.org/10.1186/1748-717X-6-48" target="_blank">Minniti 2011</a><br><span class="ev retro">Rétro</span></td>
           <td><button class="calc-toggle" onclick="toggleCalc('c1',this)">∑ RISQUE <span class="arrow">▾</span></button></td>
         </tr>
@@ -749,7 +749,7 @@
           <div class="calc-panel">
             <div><div class="calc-label">Minniti 2011 — V12 Gy (1 fx, 206 patients / 310 lésions &lt; 3,5 cm, LINAC 15–20 Gy)</div>
               <div class="calc-input-group"><input class="calc-input" type="number" id="i_c1" placeholder="ex: 7.5" min="0" max="50" step="0.1"><span class="calc-unit">cc</span><button class="calc-btn" onclick="calcMinniti2011()">Calculer</button></div>
-              <div class="calc-hint">Risque actuariel de RN à 1 an selon le quartile de V12 (RN symptomatique ou non)</div></div>
+              <div class="calc-hint">Risque actuariel à 1 an selon le quartile de V12 (toute RN)</div></div>
             <div class="risk-result" id="r_c1"><div class="risk-pct" id="r_c1_p">—</div><div class="risk-bar-wrap"><div class="risk-bar" id="r_c1_b" style="width:0%"></div></div><div class="risk-desc" id="r_c1_d"></div><div class="risk-source" id="r_c1_s"></div></div>
           </div>
         </td></tr>
@@ -777,7 +777,7 @@
         <!-- 1 fx V15 Yarlagadda -->
         <tr>
           <td><span class="badge-fx fx1">1 fx</span></td>
-          <td class="td-oar">GTV + 1 cm<br><small style="color:var(--muted)">V15 Gy (cible incluse)</small></td>
+          <td class="td-oar">Encéphale + cible<br><small style="color:var(--muted)">V15 Gy dans GTV + 1 cm</small></td>
           <td class="td-constraint">V15 &lt; 2,52 cc (toute RN)<br>V15 &lt; 4,65 cc (RN G≥2)</td>
           <td><span class="tag optimum">Optimum</span></td>
           <td><span class="tag per-lesion">par lésion</span></td>
@@ -796,7 +796,7 @@
 
         <tr>
           <td><span class="badge-fx fx1">1 fx</span></td>
-          <td class="td-oar">Autres OAR</td>
+          <td class="td-oar">OAR et peau</td>
           <td class="td-constraint" style="color:var(--muted)"><a class="cite-link" href="#oar">Tableau OAR ↓</a></td>
           <td>—</td><td>—</td><td>—</td>
           <td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2021.09.027" target="_blank">Timmerman 2022</a></td>
@@ -806,19 +806,19 @@
         <!-- 3 fx V18 Minniti -->
         <tr style="background:rgba(79,142,247,0.02)">
           <td><span class="badge-fx fx3">3 fx</span></td>
-          <td class="td-oar">Encéphale sain<br><small style="color:var(--muted)">V18 Gy</small></td>
+          <td class="td-oar">Encéphale − GTV<br><small style="color:var(--muted)">V18 Gy</small></td>
           <td class="td-constraint">V18 &lt; 24-26 cc<br><span class="td-constraint crit">V18 &lt; 30 cc (oblig.)</span></td>
           <td><span class="tag optimum">Optimum</span> <span class="ev svc">Service</span></td>
           <td><span class="tag per-lesion">par lésion</span></td>
-          <td style="font-size:0.76rem;color:var(--text-dim)">RN à 1 an : Q1 &lt;22,8 cc → 0% · Q2 → 6%<br>Q3 30,3–41,2 cc → 13% · Q4 &gt;41,2 cc → 24%</td>
+          <td style="font-size:0.76rem;color:var(--text-dim)">Toute RN à 1 an : Q1 &lt;22,8 cc → 0% · Q2 → 6%<br>Q3 30,3–41,2 cc → 13% · Q4 &gt;41,2 cc → 24%</td>
           <td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2016.03.013" target="_blank">Minniti 2016</a><br><span class="ev retro">Rétro</span></td>
           <td><button class="calc-toggle" onclick="toggleCalc('c4',this)">∑ RISQUE <span class="arrow">▾</span></button></td>
         </tr>
         <tr class="risk-calc-row" id="c4"><td colspan="8">
           <div class="calc-panel">
-            <div><div class="calc-label">Minniti 2016 — V18 Gy encéphale sain (3×9 Gy, lésions &gt; 2 cm, 138 patients en 3 fx, Rome)</div>
+            <div><div class="calc-label">Minniti 2016 — V18 Gy encéphale − GTV (3×9 Gy, lésions &gt; 2 cm, 138 patients en 3 fx, Rome)</div>
               <div class="calc-input-group"><input class="calc-input" type="number" id="i_c4" placeholder="ex: 28" min="0" max="80" step="0.5"><span class="calc-unit">cc</span><button class="calc-btn" onclick="calcMinniti2016()">Calculer</button></div>
-              <div class="calc-hint">Risque de RN à 1 an par quartile (Q1 &lt;22,8 / Q2 22,8–30,2 / Q3 30,3–41,2 / Q4 &gt;41,2 cc)</div></div>
+              <div class="calc-hint">Risque de toute RN à 1 an par quartile (Q1 &lt;22,8 / Q2 22,8–30,2 / Q3 30,3–41,2 / Q4 &gt;41,2 cc)</div></div>
             <div class="risk-result" id="r_c4"><div class="risk-pct" id="r_c4_p">—</div><div class="risk-bar-wrap"><div class="risk-bar" id="r_c4_b" style="width:0%"></div></div><div class="risk-desc" id="r_c4_d"></div><div class="risk-source" id="r_c4_s"></div></div>
           </div>
         </td></tr>
@@ -869,19 +869,13 @@
           <td class="td-constraint">V20 &lt; 20 cc</td>
           <td><span class="tag optimum">Objectif</span></td>
           <td><span class="tag per-patient">par patient</span></td>
-          <td style="font-size:0.76rem;color:var(--text-dim)">&lt;10% nécrose ou œdème · &lt;4% RN opérée</td>
+          <td style="font-size:0.76rem;color:var(--text-dim)">&lt;10% toute RN ou œdème · &lt;4% RN opérée</td>
           <td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2020.08.013" target="_blank">Milano HyTEC 2021</a><br><span class="ev cons">Consensus</span></td>
           <td></td>
         </tr>
         <tr style="background:rgba(79,142,247,0.02)">
           <td><span class="badge-fx fx3">3 fx</span></td>
-          <td class="td-oar">Peau</td>
-          <td class="td-constraint warn">Dmax &lt; 24 Gy · V22,5 &lt; 10 cc</td>
-          <td><span class="ev svc">Service</span></td><td>—</td><td>—</td><td class="td-ref">—</td><td></td>
-        </tr>
-        <tr style="background:rgba(79,142,247,0.02)">
-          <td><span class="badge-fx fx3">3 fx</span></td>
-          <td class="td-oar">Autres OAR</td>
+          <td class="td-oar">OAR et peau</td>
           <td class="td-constraint" style="color:var(--muted)"><a class="cite-link" href="#oar">Tableau OAR ↓</a></td>
           <td>—</td><td>—</td><td>—</td>
           <td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2021.09.027" target="_blank">Timmerman 2022</a></td>
@@ -892,7 +886,7 @@
         <tr style="background:rgba(255,159,67,0.025)">
           <td><span class="badge-fx fx5">5 fx</span></td>
           <td class="td-oar">Encéphale − GTV<br><small style="color:var(--muted)">V30 Gy (BMC30)</small></td>
-          <td class="td-constraint">V30 &lt; 10,5 cc<br><span class="td-constraint crit">V30 &lt; 14 cc (oblig., service)</span></td>
+          <td class="td-constraint">V30 &lt; 10,5 cc</td>
           <td><span class="tag optimum">Optimum</span></td>
           <td><span class="tag per-lesion">par lésion intacte</span></td>
           <td style="font-size:0.76rem;color:var(--text-dim)">RN sympt. à 1 an 13% si &lt;10,5 cc vs 61% si ≥10,5 cc</td>
@@ -938,19 +932,13 @@
           <td class="td-constraint">V24 &lt; 20 cc</td>
           <td><span class="tag optimum">Objectif</span></td>
           <td><span class="tag per-patient">par patient</span></td>
-          <td style="font-size:0.76rem;color:var(--text-dim)">&lt;10% nécrose ou œdème · &lt;4% RN opérée</td>
+          <td style="font-size:0.76rem;color:var(--text-dim)">&lt;10% toute RN ou œdème · &lt;4% RN opérée</td>
           <td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2020.08.013" target="_blank">Milano HyTEC 2021</a><br><span class="ev cons">Consensus</span></td>
           <td></td>
         </tr>
         <tr style="background:rgba(255,159,67,0.025)">
           <td><span class="badge-fx fx5">5 fx</span></td>
-          <td class="td-oar">Peau</td>
-          <td class="td-constraint warn">V30 &lt; 10 cc</td>
-          <td><span class="ev svc">Service</span></td><td>—</td><td>—</td><td class="td-ref">—</td><td></td>
-        </tr>
-        <tr style="background:rgba(255,159,67,0.025)">
-          <td><span class="badge-fx fx5">5 fx</span></td>
-          <td class="td-oar">Autres OAR</td>
+          <td class="td-oar">OAR et peau</td>
           <td class="td-constraint" style="color:var(--muted)"><a class="cite-link" href="#oar">Tableau OAR ↓</a></td>
           <td>—</td><td>—</td><td>—</td>
           <td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2021.09.027" target="_blank">Timmerman 2022</a></td>
@@ -1022,7 +1010,7 @@
           <td class="td-constraint">V110% dans la marge &lt; 0,67 cc<br>V33,5 Gy dans la marge &lt; 0,055 cc</td>
           <td><span class="tag optimum">Objectif</span></td>
           <td><span class="tag per-lesion">par cavité</span></td>
-          <td style="font-size:0.76rem;color:var(--text-dim)">V110% &gt;0,67 cc : HR 8,47 (p=0,04)<br>V33,5 Gy ≥0,055 cc → RN radiologique 35% vs 5% à 12 mois<br><em style="color:var(--muted)">V25/V30/V35 encéphale − CTV non prédictifs</em></td>
+          <td style="font-size:0.76rem;color:var(--text-dim)">V110% &gt;0,67 cc : HR 8,47 (p=0,04)<br>V33,5 Gy ≥0,055 cc → toute RN 35% vs 5% à 12 mois<br><em style="color:var(--muted)">V25/V30/V35 encéphale − CTV non prédictifs</em></td>
           <td class="td-ref"><a href="https://doi.org/10.1016/j.prro.2019.09.014" target="_blank">Tanenbaum 2020</a><br><span class="ev retro">Rétro</span></td>
           <td><button class="calc-toggle" onclick="toggleCalc('c8',this)">∑ RISQUE <span class="arrow">▾</span></button></td>
         </tr>
@@ -1051,11 +1039,11 @@
         <!-- Minniti 2013 — 3 fx cavités -->
         <tr style="background:rgba(79,142,247,0.025)">
           <td><span class="badge-fx fx3">3 fx</span></td>
-          <td class="td-oar">Encéphale sain<br><small style="color:var(--muted)">V24 Gy</small></td>
+          <td class="td-oar">Encéphale − GTV<br><small style="color:var(--muted)">V24 Gy</small></td>
           <td class="td-constraint">V24 &lt; 16,8 cc</td>
           <td><span class="tag optimum">Objectif</span></td>
           <td><span class="tag per-lesion">par cavité</span></td>
-          <td style="font-size:0.76rem;color:var(--text-dim)">RN brute 16% si ≥16,8 cc vs 2% (8% vs 3% à 1 an)<br>Cavités &gt; 3 cm, 3×9 Gy, PTV = cavité + 2 mm</td>
+          <td style="font-size:0.76rem;color:var(--text-dim)">Toute RN (taux bruts) 16% si ≥16,8 cc vs 2% (8% vs 3% à 1 an)<br>Cavités &gt; 3 cm, 3×9 Gy, PTV = cavité + 2 mm</td>
           <td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2013.03.037" target="_blank">Minniti 2013</a><br><span class="ev retro">Rétro</span></td>
           <td></td>
         </tr>
@@ -1332,6 +1320,7 @@
   <div class="section-title"><span>🧾</span> Journal d'audit des sources</div>
   <div class="section-lead">Corrections apportées le 03/11/2026 par rapport à la version précédente (vérification PubMed + textes intégraux du dossier « Atlas neuro – documents »).</div>
   <ul class="audit-list">
+    <li><strong>04/11/2026 — harmonisation</strong> : une seule dénomination « encéphale − GTV » (Minniti 2011, 2013 et 2016 écrivent « encéphale sain » ou « cerveau » sans préciser la soustraction : signalé sur chaque fiche) ; V15 de Yarlagadda rattaché à « encéphale + cible » (limité à GTV + 1 cm) ; vocabulaire « toute RN » / « RN symptomatique » ; peau retirée des critères dosimétriques (reste dans le tableau des organes à risque) ; seuil interne V30 &lt; 14 cc en 5 fractions supprimé.</li>
     <li><strong>04/11/2026 — mise en forme (aucune valeur modifiée)</strong> : critères dosimétriques présentés en fiches (critère, structure et périmètre ; seuil et risque associé ; données ; remarques) filtrables par nombre de fractions et par situation (lésion en place ou lit opératoire) ; critères des cavités (Minniti 2013 et 2026, Tanenbaum) ajoutés à cette section ; texte type des consignes pour les physiciens ; tableau RadioSync masqué tant qu'aucune recherche n'est faite.</li>
     <li><strong>Critères multilocalisation</strong> : n'étaient pas issus de « Harterink 2019 » (en réalité Hartgerink 2021, essai fermé prématurément, sans plafond). Présentés comme plafond du service, mis en regard de JLGK0901 et SFRO 2025.</li>
     <li><strong>Prescription</strong> : « 5–15 mm (4,2 cc) » corrigé — 4,2 cc correspond à une sphère de 20 mm ; une sphère de 15 mm fait ≈ 1,8 cc. Doses inchangées.</li>
@@ -1572,7 +1561,7 @@ function calcMinniti2011() {
   else if (v < 6.0)   { n = 16; t = '≈ 16 %'; d = 'Q2 (V12 3,3–5,9 cc) : risque de RN ≈ 16 % à 1 an.'; }
   else if (v <= 10.9) { n = 24; t = '≈ 24 %'; d = 'Q3 (V12 6,0–10,9 cc) : risque de RN ≈ 24 % à 1 an.' + (v > 8.5 ? ' Au-delà du seuil de 8,5 cc : envisager le fractionnement.' : ' Sous le seuil de 8,5 cc.'); }
   else                { n = 51; t = '≈ 51 %'; d = 'Q4 (V12 > 10,9 cc) : risque de RN ≈ 51 % à 1 an — fractionnement fortement recommandé.'; }
-  showRes('c1', t, n, d + ' RN symptomatique ou non.', 'Minniti 2011 (Radiat Oncol 6:48) — 206 patients, 310 lésions < 3,5 cm, LINAC 15–20 Gy, Rome.');
+  showRes('c1', t, n, d + ' Toute RN.', 'Minniti 2011 (Radiat Oncol 6:48) — 206 patients, 310 lésions < 3,5 cm, LINAC 15–20 Gy, Rome.');
 }
 
 // ── Milano HyTEC 2021 — V12 tissu total (1 fx) ──────────────
@@ -1603,7 +1592,7 @@ function calcMinniti2016() {
   else if (v <= 30.2) { n = 6;  d = 'Q2 (V18 22,8–30,2 cc) : risque de RN ≈ 6 % à 1 an — sous le seuil obligatoire de 30 cc.'; }
   else if (v <= 41.2) { n = 13; d = 'Q3 (V18 30,3–41,2 cc) : risque de RN ≈ 13 % à 1 an — au-delà du seuil obligatoire de 30 cc.'; }
   else                { n = 24; d = 'Q4 (V18 > 41,2 cc) : risque de RN ≈ 24 % à 1 an — passage en 5 fractions recommandé.'; }
-  showRes('c4', '≈ ' + n + ' %', n, d + ' RN symptomatique ou non.', 'Minniti 2016 (IJROBP 95:1142) — 3×9 Gy, lésions > 2 cm, encéphale sain, Rome.');
+  showRes('c4', '≈ ' + n + ' %', n, d + ' Toute RN.', 'Minniti 2016 (IJROBP 95:1142) — 3×9 Gy, lésions > 2 cm, encéphale − GTV, Rome.');
 }
 
 // ── Upadhyay 2024 — Table 2 (3 fx, PTV + 1 cm) ──────────────
@@ -1630,7 +1619,7 @@ function calcFaruqi() {
   var v = val('i_c6'); if (v === null) return;
   var src = 'Faruqi 2020 (IJROBP 106:772) — 132 lésions intactes, 5 fx LINAC, PTV 2 mm, Sunnybrook. Seuil établi sur lésions intactes.';
   if (v < 10.5) showRes('c6', '≈ 13 %', 13, 'BMC30 ' + fr(v) + ' cc < 10,5 cc : RN symptomatique ≈ 13 % à 1 an.', src);
-  else showRes('c6', '≈ 61 %', 61, 'BMC30 ' + fr(v) + ' cc ≥ 10,5 cc : RN symptomatique ≈ 61 % à 1 an (OR 7,2). L\'équipe source passe alors de 30 à 27,5 Gy, ou discute la chirurgie.' + (v >= 14 ? ' Au-delà du seuil obligatoire du service (14 cc).' : ''), src);
+  else showRes('c6', '≈ 61 %', 61, 'BMC30 ' + fr(v) + ' cc ≥ 10,5 cc : RN symptomatique ≈ 61 % à 1 an (OR 7,2). L\'équipe source passe alors de 30 à 27,5 Gy, ou discute la chirurgie.', src);
 }
 
 // ── Andruska 2021 — V25 + V30 (5 fx) ────────────────────────
@@ -1652,7 +1641,7 @@ function calcTanenbaum() {
   if (b !== null) { if (b >= 0.0546) { hi = true; n = 35; l.push('V33,5 Gy ' + String(b).replace('.', ',') + ' cc ≥ 0,055 → RN ≈ 35 % à 12 mois ✗'); } else l.push('V33,5 Gy ' + String(b).replace('.', ',') + ' cc < 0,055 → RN ≈ 5 % à 12 mois (17 % à 18 mois) ✓'); }
   if (hi && n < 35) n = 30;
   showRes('c8', hi ? 'risque élevé' : '≈ 5 %', n, l.join(' · ') + (hi ? ' — limiter le point chaud à la cavité (CTV).' : ''),
-    'Tanenbaum 2020 (Pract Radiat Oncol 10:36) — 55 cavités, 5 fx 25–35 Gy, RN radiologique.');
+    'Tanenbaum 2020 (Pract Radiat Oncol 10:36) — 55 cavités, 5 fx 25–35 Gy, toute RN (radiologique).');
 }
 
 // ── Minniti 2026 — cavités 3 fx ─────────────────────────────
@@ -1745,8 +1734,8 @@ var PHYS = {
           'Conformation : indice de Paddick > 0,8 ; gradient de Paddick (GI) < 4 par ring, maximum 7'],
     enc: [
       { o: 1, s: 'place', t: 'V12 Gy [encéphale + cible], par lésion : < 10 cc' },
-      { o: 0, s: 'place', t: 'V12 Gy [encéphale sain] : < 8,5 cc' },
-      { o: 0, s: 'place', t: 'V15 Gy [GTV + 1 cm, sans os ni ventricules], par lésion : < 2,52 cc' }
+      { o: 0, s: 'place', t: 'V12 Gy [encéphale − GTV] : < 8,5 cc' },
+      { o: 0, s: 'place', t: 'V15 Gy [encéphale + cible limité à GTV + 1 cm, sans os ni ventricules ; dose de tous les plans], par lésion : < 2,52 cc' }
     ],
     peau: 'Peau : Dmax (0,035 cm³) < 27,5 Gy ; V25,5 Gy < 10 cm³',
     pont: 14, echec: 'passage en traitement fractionné'
@@ -1756,13 +1745,13 @@ var PHYS = {
     gen: ['Couverture : PTV couvert à > 95 % par l\'isodose de prescription',
           'Conformation : indice de conformation > 0,8'],
     enc: [
-      { o: 1, s: 'place adj', t: 'V18 Gy [encéphale − cible] : < 30 cc (obligatoire), objectif < 24–26 cc' },
+      { o: 1, s: 'place adj', t: 'V18 Gy [encéphale − GTV] : < 30 cc (obligatoire), objectif < 24–26 cc' },
       { o: 0, s: 'place', t: 'V20 Gy [encéphale + cible], par patient : < 20 cc' },
       { o: 0, s: 'place', t: 'V20 Gy [PTV + 1 cm], par lésion : < 20 cc' },
       { o: 0, s: 'place', t: 'V23 Gy [PTV + 1 cm], par lésion : < 15 cc' },
       { o: 0, s: 'adj', t: 'V20 Gy [encéphale − GTV], par cavité : < 15 cc' },
       { o: 0, s: 'adj', t: 'V24 Gy [encéphale − GTV], par cavité : < 10 cc' },
-      { o: 0, s: 'adj', t: 'V24 Gy [encéphale sain], par cavité : < 16,8 cc' }
+      { o: 0, s: 'adj', t: 'V24 Gy [encéphale − GTV], par cavité : < 16,8 cc' }
     ],
     peau: 'Peau (service) : Dmax < 24 Gy ; V22,5 Gy < 10 cm³',
     pont: 22, echec: 'passage en 5 fractions'
@@ -1772,15 +1761,15 @@ var PHYS = {
     gen: ['Couverture : PTV couvert à > 95 % par l\'isodose de prescription',
           'Conformation : indice de conformation > 0,8'],
     enc: [
-      { o: 1, s: 'place adj', t: 'V30 Gy [encéphale − GTV], par lésion : < 14 cc (obligatoire), objectif < 10 cc' },
-      { o: 0, s: 'place adj', t: 'V25 Gy [encéphale − GTV, jusqu\'au foramen magnum], par lésion : < 16 cc' },
+      { o: 0, s: 'place adj', t: 'V30 Gy [encéphale − GTV], par lésion : < 10 cc' },
+      { o: 0, s: 'place adj', t: 'V25 Gy [encéphale − GTV], par lésion : < 16 cc' },
       { o: 0, s: 'place', t: 'V24 Gy [encéphale + cible], par patient : < 20 cc' },
       { o: 0, s: 'adj', t: 'V24 Gy [encéphale − GTV], par cavité : < 15 cc' },
       { o: 0, s: 'adj', t: 'V110 % [marge PTV − CTV], par cavité : < 0,67 cc' },
       { o: 0, s: 'adj', t: 'V33,5 Gy [marge PTV − CTV], par cavité : < 0,055 cc' }
     ],
     peau: 'Peau (service) : V30 Gy < 10 cm³ ; Dmax (0,035 cm³) < 38,5 Gy',
-    pont: 25, echec: 'traitement séquentiel, à discuter en RCP'
+    pont: 25, echec: 'traitement séquentiel, à discuter en RCP', sansObl: 1
   }
 };
 /* Timmerman 2022, indices 0/1/2 = 1/3/5 fx (mêmes valeurs que le tableau OAR) */
@@ -1822,7 +1811,7 @@ function physTexte() {
   L.push('Encéphale (structure à créer entre crochets) :');
   P.enc.forEach(function (c) {
     if (c.s.split(' ').indexOf(CRIT.sit) < 0) return;
-    if (!c.o && !obj) return;
+    if (!c.o && !obj && !P.sansObl) return;
     L.push('- ' + c.t + (c.o && c.t.indexOf('obligatoire') < 0 ? ' (obligatoire)' : ''));
   });
   L.push('');
@@ -1833,7 +1822,7 @@ function physTexte() {
   L.push('- ' + P.peau);
   L.push('');
   L.push('Multilocalisation : signaler tout pont de dose > isodose ' + P.pont + ' Gy.');
-  L.push('Si un critère obligatoire n\'est pas respecté : ' + P.echec + ' (me prévenir).');
+  L.push((P.sansObl ? 'Si les critères ne sont pas respectés : ' : 'Si un critère obligatoire n\'est pas respecté : ') + P.echec + ' (me prévenir).');
   document.getElementById('phys-txt').value = L.join('\n');
   document.getElementById('phys-ok').textContent = '';
 }
