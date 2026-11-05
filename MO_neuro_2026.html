@@ -193,7 +193,7 @@
   @media print { .print-btn, nav, header { display: none !important; } .risk-calc-row { display: table-row !important; } section { break-inside: avoid; } body { background: #fff; color: #000; } }
   @media (max-width: 640px) { .container { padding: 0 14px; } .header-inner { padding: 0 14px; } .nav-inner { padding: 0 14px; } header h1 { font-size: 1.25rem; } .header-badge { display: none; } .risk-result { min-width: 100%; } }
 
-  /* ── AJOUTS v2026-11 : thème clair, niveaux de preuve, vérification, RadioSync, audit ── */
+  /* ── AJOUTS v2026-11 : thème clair, niveaux de preuve, vérification, RadioSync ── */
   body.light header { background: rgba(245,240,232,0.97); backdrop-filter: blur(10px); box-shadow: 0 1px 6px rgba(0,0,0,0.08); }
   body.light .dose-card, body.light .ref-item, body.light .table-wrap { box-shadow: 0 1px 4px rgba(0,0,0,.06); }
   body.light .risk-bar-wrap { background: rgba(0,0,0,0.08); }
@@ -276,10 +276,6 @@
   .rs-wrap[hidden], #phys-form[hidden], #phys-hint[hidden] { display: none; }
   .rs-wrap thead th { position: sticky; top: 0; z-index: 1; }
 
-  .audit-list { list-style: none; padding: 0; }
-  .audit-list li { font-size: 0.79rem; color: var(--text-dim); padding: 7px 0 7px 22px; border-bottom: 1px solid var(--line); position: relative; }
-  .audit-list li::before { content: '✎'; position: absolute; left: 2px; top: 7px; color: var(--accent); }
-  .audit-list li strong { color: var(--text); }
   .ref-item .ref-meta .src { margin-left: 0; }
   .ref-group { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 18px 0 4px; }
 </style>
@@ -310,7 +306,6 @@
     <a href="#reirradiation">Réirradiation</a>
     <a href="#surveillance">Surveillance</a>
     <a href="#references">Références</a>
-    <a href="#audit">Journal d'audit</a>
   </div>
 </nav>
 
@@ -640,7 +635,7 @@
       <div class="calc-hint">Le texte est modifiable avant copie. Il reprend les critères affichés ci-dessus et les contraintes OAR de Timmerman 2022 (tableau des organes à risque).</div>
     </div>
   </div>
-  <div class="info-box yellow"><span class="icon">🧮</span><div style="font-size:0.78rem"><strong>Contraintes du service (ponts de dose, peau, seuils « obligatoires »)</strong> : sans référence publiée. Chantier à prévoir : les exprimer de façon homogène entre 1, 3 et 5 fractions (par exemple en EQD2 ou en dose équivalente en fraction unique). Point de départ ci-dessous.</div></div>
+  <div class="info-box yellow"><span class="icon">🧮</span><div style="font-size:0.78rem"><strong>Contraintes du service (ponts de dose, seuils « obligatoires »)</strong> : sans référence publiée. Chantier à prévoir : les exprimer de façon homogène entre 1, 3 et 5 fractions (par exemple en EQD2 ou en dose équivalente en fraction unique). Point de départ ci-dessous.</div></div>
   <details class="card" style="margin-top:10px">
     <summary style="cursor:pointer;font-size:0.84rem;font-weight:600;color:var(--text)">📊 Seuils publiés exprimés en dose équivalente en fraction unique (SFED) — compilation de Faruqi 2020</summary>
     <p style="margin:8px 0">Tableau S1 du supplément de <a class="cite-link" href="https://doi.org/10.1016/j.ijrobp.2019.12.002" target="_blank">Faruqi 2020</a> (conversion par le modèle linéaire-quadratique, α/β = 2 Gy). Compilation secondaire : chaque ligne reprend l'étude d'origine, dont la définition de la RN et la structure diffèrent. <span class="src">supplément lu</span></p>
@@ -688,7 +683,6 @@
         <tr><td style="font-size:0.76rem">Dmax (≤ 0,035 cm³)</td><td class="td-constraint crit">14</td><td class="td-constraint crit">18,3</td><td class="td-constraint crit">22,5</td><td class="td-constraint crit">25,6</td><td class="td-constraint crit">28</td></tr>
         <tr><td class="td-oar" rowspan="2">Peau</td><td style="font-size:0.76rem">&lt; 10 cm³</td><td class="td-constraint">25,5</td><td class="td-constraint">28,3</td><td class="td-constraint">31</td><td class="td-constraint">33,6</td><td class="td-constraint">36,5</td><td class="td-ref" rowspan="2"><a href="https://doi.org/10.1016/j.ijrobp.2021.09.027" target="_blank">Timmerman 2022</a></td></tr>
         <tr><td style="font-size:0.76rem">Dmax (≤ 0,035 cm³)</td><td class="td-constraint crit">27,5</td><td class="td-constraint crit">30,3</td><td class="td-constraint crit">33</td><td class="td-constraint crit">36</td><td class="td-constraint crit">38,5</td></tr>
-        <tr><td class="td-oar">Peau — contrainte du service</td><td style="font-size:0.76rem">plus stricte que Timmerman</td><td>—</td><td>—</td><td class="td-constraint warn">Dmax &lt; 24 · V22,5 &lt; 10 cc</td><td>—</td><td class="td-constraint warn">V30 &lt; 10 cc</td><td><span class="ev svc">Service</span></td></tr>
         <tr><td class="td-oar">Œil / rétine, cristallin</td><td style="font-size:0.76rem">—</td><td colspan="5" style="color:var(--muted);font-size:0.76rem">Pas de contrainte publiée par Timmerman 2022 (NR)</td><td class="td-ref"><a href="https://doi.org/10.1016/j.ijrobp.2021.09.027" target="_blank">Timmerman 2022</a></td></tr>
       </tbody>
     </table>
@@ -1239,6 +1233,7 @@
 <section id="references">
 <div class="container">
   <div class="section-title"><span>📚</span> Références</div>
+  <div class="info-box blue" style="font-size:0.78rem"><span class="icon">🧾</span><div>Journal d'audit des sources et historique des modifications : <a class="cite-link" href="https://github.com/ronant99-lgtm/neuro/blob/main/MO_neuro_2026_journal.md" target="_blank">MO_neuro_2026_journal.md</a> (dépôt neuro). Articles : dossier Drive « références MO neuro meta ».</div></div>
   <div class="section-lead">Toutes vérifiées dans PubMed le 03/11/2026 (titre, auteur, année, revue). <span class="src">PDF lu</span> = chiffres contrôlés sur le texte intégral ; <span class="src">résumé</span> = chiffres contrôlés sur le résumé seulement.</div>
 
   <div class="ref-group">Contraintes dosimétriques — lésions intactes</div>
@@ -1314,38 +1309,7 @@
 </section>
 
 
-<!-- ══ JOURNAL D'AUDIT ══ -->
-<section id="audit">
-<div class="container">
-  <div class="section-title"><span>🧾</span> Journal d'audit des sources</div>
-  <div class="section-lead">Corrections apportées le 03/11/2026 par rapport à la version précédente (vérification PubMed + textes intégraux du dossier « Atlas neuro – documents »).</div>
-  <ul class="audit-list">
-    <li><strong>04/11/2026 — harmonisation</strong> : une seule dénomination « encéphale − GTV » (Minniti 2011, 2013 et 2016 écrivent « encéphale sain » ou « cerveau » sans préciser la soustraction : signalé sur chaque fiche) ; V15 de Yarlagadda rattaché à « encéphale + cible » (limité à GTV + 1 cm) ; vocabulaire « toute RN » / « RN symptomatique » ; peau retirée des critères dosimétriques (reste dans le tableau des organes à risque) ; seuil interne V30 &lt; 14 cc en 5 fractions supprimé.</li>
-    <li><strong>04/11/2026 — mise en forme (aucune valeur modifiée)</strong> : critères dosimétriques présentés en fiches (critère, structure et périmètre ; seuil et risque associé ; données ; remarques) filtrables par nombre de fractions et par situation (lésion en place ou lit opératoire) ; critères des cavités (Minniti 2013 et 2026, Tanenbaum) ajoutés à cette section ; texte type des consignes pour les physiciens ; tableau RadioSync masqué tant qu'aucune recherche n'est faite.</li>
-    <li><strong>Critères multilocalisation</strong> : n'étaient pas issus de « Harterink 2019 » (en réalité Hartgerink 2021, essai fermé prématurément, sans plafond). Présentés comme plafond du service, mis en regard de JLGK0901 et SFRO 2025.</li>
-    <li><strong>Prescription</strong> : « 5–15 mm (4,2 cc) » corrigé — 4,2 cc correspond à une sphère de 20 mm ; une sphère de 15 mm fait ≈ 1,8 cc. Doses inchangées.</li>
-    <li><strong>Tanenbaum</strong> : V33,5 Gy dans la marge ≥ 0,055 cc → RN 35 % vs <strong>5 %</strong> à 12 mois (et non 17 %, valeur à 18 mois). Année corrigée : 2020 (Pract Radiat Oncol 10:36).</li>
-    <li><strong>Minniti 2026, 3 fx</strong> : le risque « 27 % si V24 &gt; 10 cc » venait du groupe 5 fractions ; remplacé par « &gt; 10 %, valeur non publiée ».</li>
-    <li><strong>Upadhyay</strong> : Table 2 vérifiée (V20) ; ajout de la contrainte V23 &lt; 15 cc et de son estimateur ; plus d'extrapolation au-delà de 100 cc. Année : 2024 (IJROBP 118:275).</li>
-    <li><strong>Milano HyTEC</strong> : « &lt; 9 % » corrigé en « &lt; 10 % de nécrose ou d'œdème, &lt; 4 % de RN opérée » ; estimateur V12 limité aux points publiés (plus d'extrapolation jusqu'à 30 %).</li>
-    <li><strong>Yarlagadda</strong> : courbe « RN grade ≥ 2 » obtenue par décalage arbitraire du V50 supprimée. Texte intégral lu (03/11) : V50 = 16,29 cc et γ50 = 0,88 confirmés ; structure précisée (GTV + 1 cm, cible incluse, sans os ni ventricules) ; seuils 7,5 % et 10 % ajoutés.</li>
-    <li><strong>Andruska</strong> : texte intégral lu (03/11) — risques par seuil isolé confirmés (V25 : 2 % vs 22 % ; V30 : 3 % vs 23 %) et rétablis ; structure = encéphale − GTV. Mention « multiloc concomitante » retirée.</li>
-    <li><strong>SFRO 2025</strong> : texte intégral lu (03/11) — repères sur le volume total (25 cm³), les doses, les volumes de cavité et les anti-BRAF ajoutés ; le référentiel ne contient pas de tableau de contraintes dosimétriques.</li>
-    <li><strong>Vaios</strong> : l'article JAMA Netw Open 2025 (résumé sans chiffres) est remplacé par Vaios 2024 (IJROBP 118:1507), lu en entier.</li>
-    <li><strong>Organes à risque</strong> : tableau 1 à 5 fractions ajouté, repris de la carte de validation dosimétrique du Formulaire RT (Timmerman 2022 + repère HyTEC voies optiques), pour que protocole et validation concordent.</li>
-    <li><strong>Vaios 2025</strong> (lu le 03/11, même cohorte que Vaios 2024) : double immunothérapie associée à une RN symptomatique plus fréquente (HR 2,4 ; 25,9 % vs 12,3 % à 24 mois en concomitant). Les deux articles sont désormais présentés ensemble.</li>
-    <li><strong>Suppléments</strong> : tableau S1 de Faruqi (seuils publiés en dose équivalente en fraction unique) ajouté pour le chantier EQD2 ; supplément d'Upadhyay : performances voisines de V10 à V25 (AUC 0,75–0,79). Les figures du supplément d'Upadhyay (courbes NTCP) ne sont pas exploitables en texte.</li>
-    <li><strong>Upadhyay 2024 (≥ 15 métastases)</strong> : texte intégral lu — ajout des taux actuariels (RN 28 % tout grade et 13,2 % symptomatique à 1 an) et du suivi médian court (5,1 mois).</li>
-    <li><strong>Faruqi</strong> : 13 % vs 61 % confirmé sur le texte intégral, pour les lésions intactes.</li>
-    <li><strong>Minniti 2016</strong> : quartiles de V18 confirmés (0 / 6 / 13 / 24 %).</li>
-    <li><strong>Indice de gradient</strong> : Reynolds 2020 porte sur le DGI CyberKnife (et non sur le GI de Paddick) ; définition du GI rattachée à Paddick 2006 ; seuils &lt; 4 / &lt; 7 marqués comme seuils du service.</li>
-    <li><strong>Lehrer 2024</strong> : revue sur la SRS hypofractionnée, et non un récapitulatif des contraintes V12/V15 ; attribution corrigée.</li>
-    <li><strong>Ayala-Peacock</strong> : orthographe corrigée.</li>
-    <li><strong>Contraintes du service</strong> (ponts de dose 14/22/25 Gy, peau, seuils « obligatoires ») : signalées par le badge « Service ».</li>
-    <li><strong>Ajouts</strong> : structure TPS pour chaque contrainte ; Minniti 2013 (cavités 3 fx) ; repères dose-réponse HyTEC ; sections traitements systémiques (RadioSync), réirradiation et surveillance ; bibliographie 2024–2026.</li>
-  </ul>
-</div>
-</section>
+
 
 <button class="print-btn" onclick="window.print()">🖨️ Imprimer / PDF</button>
 
@@ -1753,7 +1717,7 @@ var PHYS = {
       { o: 0, s: 'adj', t: 'V24 Gy [encéphale − GTV], par cavité : < 10 cc' },
       { o: 0, s: 'adj', t: 'V24 Gy [encéphale − GTV], par cavité : < 16,8 cc' }
     ],
-    peau: 'Peau (service) : Dmax < 24 Gy ; V22,5 Gy < 10 cm³',
+    peau: 'Peau : Dmax (0,035 cm³) < 33 Gy ; V31 Gy < 10 cm³',
     pont: 22, echec: 'passage en 5 fractions'
   },
   '5': {
@@ -1768,7 +1732,7 @@ var PHYS = {
       { o: 0, s: 'adj', t: 'V110 % [marge PTV − CTV], par cavité : < 0,67 cc' },
       { o: 0, s: 'adj', t: 'V33,5 Gy [marge PTV − CTV], par cavité : < 0,055 cc' }
     ],
-    peau: 'Peau (service) : V30 Gy < 10 cm³ ; Dmax (0,035 cm³) < 38,5 Gy',
+    peau: 'Peau : Dmax (0,035 cm³) < 38,5 Gy ; V36,5 Gy < 10 cm³',
     pont: 25, echec: 'traitement séquentiel, à discuter en RCP', sansObl: 1
   }
 };
