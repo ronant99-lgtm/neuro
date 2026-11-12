@@ -903,8 +903,7 @@ var GCT = {
         proto: 'COG', pc: 'cog', label: 'Not eligible for ACNS2021', ev: 'exp', key: 'No current COG frontline trial',
         out: [ { l: 'Data', v: 'no current trial', c: 'ov-neu' } ],
         chemo: 'Metastatic disease excluded from ACNS2021 (localized only). Institutional practice in the ACNS0122 lineage.',
-        rt: null, noRt: 'Source tool: CSI 36 Gy + boost to 54 Gy primary and 45 Gy metastases (ACNS0122 lineage) — not a current COG protocol recommendation.',
-        verifyArm: 'Verify the RT doses against ACNS0122 / institutional COG practice.',
+        rt: null, noRt: 'ACNS0122 (confirmed in Goldman 2015): CSI 36 Gy + tumour-bed boost to 54 Gy; bulky metastases boosted to 45 Gy regardless of response to induction <sup>[5]</sup>. Historical regimen — not a current COG protocol recommendation.',
         refs: [ 2, 5 ]
       }, {
         proto: 'SIOP CNS GCT II · ESCP 2021', pc: 'siop', label: 'Metastatic NGGCT', ev: 'cons', key: 'PEI → CSI 30 Gy + boost → 54 Gy',
@@ -1428,7 +1427,7 @@ var PINEO = {
       arms: [ { proto: 'Literature', pc: 'lit', label: 'Index series (n = 7)', ev: 'retro', key: 'Resection; focal RT ≥ 54 Gy in some — impact not assessable',
         out: [ { l: 'Alive with stable disease at 48 mo', v: '3 / 7', c: 'ov-mid' }, { l: 'Died of disease', v: '3 / 7', c: 'ov-bad' } ],
         chemo: 'Not defined.',
-        rt: { timing: 'Post-operative, individual decision.', vol: [ { l: 'Target', v: 'Focal (tumour bed + residual)' } ], doses: [ { l: 'Focal', d: '≥ 54 Gy (3 patients)' } ], verify: 'Per the Tanguy 2026 chapter (Thomas 2020 table) — not re-checked against the Thomas full text.' },
+        rt: { timing: 'Post-operative, individual decision.', vol: [ { l: 'Target', v: 'Focal (tumour bed + residual)' } ], doses: [ { l: 'Focal', d: '54–55.8 Gy (3 / 7 patients: 55.8, 54 and 54 Gy)' } ], verify: 'Doses checked in Thomas 2020, Table 1; impact on local control not assessable.' },
         refs: [ 25, 26 ] } ],
       notes: 'Not an ATRT despite SMARCB1 loss: adult age, low Ki-67 and better course argue against infant ATRT protocols <sup>[25]</sup>.'
     },
